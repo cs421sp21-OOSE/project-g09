@@ -10,14 +10,14 @@ A brief description of your project, what it is used for.
 
 **Team**
 
-| Name | JHU Email | GitHub Username |
-| ---- | --------- | --------------- |
-|      |           |                 |
-|      |           |                 |
-|      |           |                 |
-|      |           |                 |
-|      |           |                 |
-|      |           |                 |
+|        Name          |       JHU Email       |  GitHub Username   |
+| -------------------- | --------------------- | ------------------ |
+|   Louie DiBernardo   |    ldibern1@jh.edu    |    JustATechie     |
+|     Samantha Fu      |     sfu12@jh.edu      |      sf11047       |
+|     Junjie Yang      |                       |   JunjieYang1997   |
+|      Bohua Wan       |                       |      GlenGGG       |
+|      Chu Ding        |                       |      cding91       |
+|       Qiao Lu        |                       |     Giraffea1      |
 
 ## Installing / Getting started
 
