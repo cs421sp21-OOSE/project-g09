@@ -1,7 +1,5 @@
 # Project Backlog
 
-//TODO: migrate user stories to roadmap points here.
-
 ## Iteration 1
 As a user, I would want to login into the platform so I can access my past activities  
 As a user, I should be able to sign up an account so I can log in  
