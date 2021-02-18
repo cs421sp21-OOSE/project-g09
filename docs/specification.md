@@ -12,8 +12,6 @@ A web app for people to post, browse and buy second-hand stuff.
 
 ## Functional Requirements 
 
-//TODO: migrate from user stories to bullets
-
 **Must-have**
 As a user, I would want to login into the platform so I can access my past activities  
 As a user, I should be able to sign up an account so I can log in  
