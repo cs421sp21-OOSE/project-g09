@@ -17,7 +17,7 @@ A brief description of your project, what it is used for.
 |     Junjie Yang      |                       |   JunjieYang1997   |
 |      Bohua Wan       |     bwan2@jh.edu      |      GlenGGG       |
 |      Chu Ding        |                       |      cding91       |
-|       Qiao Lu        |                       |     Giraffea1      |
+|       Qiao Lu        |    qlu19@jh.edu       |     Giraffea1      |
 
 ## Installing / Getting started
 
