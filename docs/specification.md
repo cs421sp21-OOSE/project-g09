@@ -42,9 +42,15 @@ A web app for people to post, browse and buy second-hand stuff.
 * Framework: React
 * JS, HTML, CSS
   
+
 **Backend**
+
 * Framework: TBD
-* Databasel: TBD
+* Database: TBD
+
+**Deploy**
+
+* Heroku
 
 **Options**  
 Sam - Mongo/Express/React/Node (MERN), Flask, HTML, CSS, JS  
