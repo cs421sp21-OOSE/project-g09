@@ -36,7 +36,6 @@ A web app for people to post, browse and buy second-hand stuff.
 * As a user, I want to be able to sort by recently added, oldest, recently discounted, etc., so I can see if there is anything I would like to buy that I otherwise wouldn't have seen.  
 
 
-
 ## Software Architecture & Technology Stack
 **Frontend**
 * Framework: React
@@ -45,20 +44,11 @@ A web app for people to post, browse and buy second-hand stuff.
 
 **Backend**
 
-* Framework: TBD
-* Database: TBD
+* Framework: SparkJava
+* Database: PostgreSQL
 
 **Deploy**
-
 * Heroku
-
-**Options**  
-Sam - Mongo/Express/React/Node (MERN), Flask, HTML, CSS, JS  
-Qiao - Mongo/React/HTML, CSS, JS  
-Bohua - Django/Spring Boot/Vue/MySQL/Java, Python, HTML, JS, C/C++  
-Louie - HTML (shakey), CSS (shakey), Python, Java, JS, C/C++  
-Chu - java, HTML, CSS, JS, python  
-Junjie - No web app experience before. C/C++, java, Python  
 
 ## Notes
 Focus on debugging (UI, database, etc.)  
