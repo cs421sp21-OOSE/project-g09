@@ -14,7 +14,7 @@ A brief description of your project, what it is used for.
 | -------------------- | --------------------- | ------------------ |
 |   Louie DiBernardo   |    ldibern1@jh.edu    |    JustATechie     |
 |     Samantha Fu      |     sfu12@jh.edu      |      sf11047       |
-|     Junjie Yang      |                       |   JunjieYang1997   |
+|     Junjie Yang      |  junjie.yang@jhu.edu  |   JunjieYang1997   |
 |      Bohua Wan       |     bwan2@jh.edu      |      GlenGGG       |
 |      Chu Ding        |     chud@jhu.edu      |      cding91       |
 |       Qiao Lu        |    qlu19@jh.edu       |     Giraffea1      |
