@@ -16,8 +16,8 @@ A brief description of your project, what it is used for.
 |     Samantha Fu      |     sfu12@jh.edu      |      sf11047       |
 |     Junjie Yang      |                       |   JunjieYang1997   |
 |      Bohua Wan       |     bwan2@jh.edu      |      GlenGGG       |
-|      Chu Ding        |                       |      cding91       |
-|       Qiao Lu        |                       |     Giraffea1      |
+|      Chu Ding        |     chud@jhu.edu      |      cding91       |
+|       Qiao Lu        |    qlu19@jh.edu       |     Giraffea1      |
 
 ## Installing / Getting started
 

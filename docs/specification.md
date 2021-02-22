@@ -40,10 +40,18 @@ As a user, I want the system to tell me what object I am trying to sell using co
 As a user I would like to be able to make a wish list so I can show people what things I am looking for  
 
 ## Software Architecture & Technology Stack
-Sam - Mongo/Express/React/Node (MERN), Flask, HTML, CSS, JS  
-Qiao - Mongo/React/HTML, CSS, JS  
-Bohua - Django/Spring Boot/Vue/MySQL/Java, Python, HTML, JS, C/C++  
-Louie - HTML (shakey), CSS (shakey), Python, Java, JS, C/C++  
-Chu - java, HTML, CSS, JS, python  
-Junjie - No web app experience before. C/C++, java, Python  
+**Frontend**
+* Framework: React
+* JS, HTML, CSS
+  
 
+**Backend**
+
+* Framework: SparkJava
+* Database: PostgreSQL
+
+**Deploy**
+* Heroku
+
+## Notes
+Focus on debugging (UI, database, etc.)  
