@@ -1,12 +1,12 @@
-# Name of the project 
+# JHUsed
 
-A brief description of your project, what it is used for.
+ This is a web application for JHU affiliated people to post, browse, and buy second hand items and services
 
 **Advisors** 
 
 | Name | JHU Email | GitHub Username |
 | ---- | --------- | --------------- |
-| Nanxi Ye  |           |                 |
+| Nanxi Ye | nye3@jhu.edu | maxye-frz |
 
 **Team**
 
