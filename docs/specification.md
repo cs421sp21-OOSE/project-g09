@@ -31,7 +31,7 @@ As a user, I should be able to browse items by category so that I can search for
 As a user, I would like to be able click on a specific post so that I can see the details of the item  
 As a user, I would like to have the chatting feature so that I can coordinate with the person on the other end  
 As a user, I would like to be able to pay for my purchase through the website to keep transactions secure.  
-As a user, I want to be able to sort by recently added, oldest, recently discounted, etc., so I can see if there is anything I would like to buy that I otherwise wouldn't have seen. 
+As a user, I want to be able to sort by recently added, oldest, recently discounted, etc., so I can see if there is anything I would like to buy that I otherwise wouldn't have seen.  
 As a user, I should be able to see other people’s location information so I can buy from others close to me.  
 
 **Nice-to-have**  
