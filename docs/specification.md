@@ -12,7 +12,7 @@ Our proposed solution is web application for people to post, browse, and buy
 second hand items and services. A user will be able to create a post selling an object or service that will be tagged and easily searched and filtered for convenient browsing.
 All communication and payments will be faciliatated through this platform as well, in order to keep the entire process of selling & buying consolidated in one place.
 This website will function similarly to Facebook Marketplace or Craigslist, but it will be primarily dedicated to JHU students in the Homewood community, as we hope to integrate 
-JHU SSO. We would also like to distinguish or platform by adding a wishlist feature and 
+JHU SSO. We would also like to distinguish our platform by adding a wishlist feature and 
 possible integration with a computer vision API such as Google Cloud Vision.
 
 ## Functional Requirements 
@@ -32,7 +32,7 @@ As a user, I would like to be able click on a specific post so that I can see th
 As a user, I would like to have the chatting feature so that I can coordinate with the person on the other end  
 As a user, I would like to be able to pay for my purchase through the website to keep transactions secure.  
 As a user, I want to be able to sort by recently added, oldest, recently discounted, etc., so I can see if there is anything I would like to buy that I otherwise wouldn't have seen. 
-As a user I should be able to see other people’s location information so I can buy from others close to me.  
+As a user, I should be able to see other people’s location information so I can buy from others close to me.  
 
 **Nice-to-have**
 As a user, I would want to login into the platform using my JHED account to verify my identity.  
@@ -53,5 +53,3 @@ As a user I would like to be able to make a wish list so I can show people what 
 **Deploy**
 * Heroku
 
-## Notes
-Focus on debugging (UI, database, etc.)  
