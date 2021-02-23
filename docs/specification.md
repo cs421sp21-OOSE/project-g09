@@ -17,7 +17,7 @@ possible integration with a computer vision API such as Google Cloud Vision.
 
 ## Functional Requirements 
 
-**Must-have**
+**Must-have**  
 As a user, I would want to login into the platform so I can access my past activities  
 As a user, I should be able to sign up an account so I can log in  
 As a user, I should be able to create posts so that I can buy/sell things  
@@ -34,7 +34,7 @@ As a user, I would like to be able to pay for my purchase through the website to
 As a user, I want to be able to sort by recently added, oldest, recently discounted, etc., so I can see if there is anything I would like to buy that I otherwise wouldn't have seen. 
 As a user, I should be able to see other people’s location information so I can buy from others close to me.  
 
-**Nice-to-have**
+**Nice-to-have**  
 As a user, I would want to login into the platform using my JHED account to verify my identity.  
 As a user, I want the system to tell me what object I am trying to sell using computer vision probably, so that I wouldn’t be confused about what hashtag to use.  
 As a user I would like to be able to make a wish list so I can show people what things I am looking for  
