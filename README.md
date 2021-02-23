@@ -6,7 +6,7 @@ A brief description of your project, what it is used for.
 
 | Name | JHU Email | GitHub Username |
 | ---- | --------- | --------------- |
-|      |           |                 |
+| Nanxi Ye  |           |                 |
 
 **Team**
 
