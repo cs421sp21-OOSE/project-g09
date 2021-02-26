@@ -18,12 +18,14 @@ public class Post {
    *
    * @param id       id of the post
    * @param title    title of the post
+   * @param description description of the post
    * @param location location of the post, description at the moment
    * @param image    image of the post, could be the path stored in server
    */
-  public Post(int id, String title, String location, String image) {
+  public Post(int id, String title, String description, String location, String image) {
     this.id = id;
     this.title = title;
+    this.description = description;
     this.location = location;
     this.image = image;
   }
