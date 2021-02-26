@@ -20,6 +20,7 @@ of the item
 # Tasks  
 *Set up basic client/server architecture using Java Spark and React.  
 *Hello World application.  
+*Database set up/design.  
 *Create a post class.  
 *Design homepage.  
   *Implement clicking on a post to see post details. (Similiar to HW6)  
