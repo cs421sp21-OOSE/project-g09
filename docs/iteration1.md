@@ -5,9 +5,18 @@ Additional meeting time(s) if needed:
 Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # OO Design  
-(In progress)
+(Design completed, awating conversion from drawing to diagram)
 
 # Wireframe & Use-case  
+
+(Wireframe in progress)   
+
+Use Case:  
+*The user visits our web application using a web browser.  
+*The user will be presented with the homepage having sample posted items of different categories.  
+*In the homepage, the user can click on the posts to see their detailed descriptions.  
+*In the homepage, the user can type in a search query on the homepage, and will be redirected to the search page.  
+*In the homepage, the user can click on the “Create a New Post” icon and be redirected to the create post page.  
 
 # Iteration Backlog  
 *As a user, I want to create posts, so that I can buy/sell things  
