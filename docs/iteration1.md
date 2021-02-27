@@ -20,12 +20,25 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 (Wireframe in progress)   
 
-Use Case:  
-* The user visits our web application using a web browser.  
-* The user will be presented with the homepage having sample posted items of different categories.  
-* In the homepage, the user can click on the posts to see their detailed descriptions.  
-* In the homepage, the user can type in a search query on the homepage, and will be redirected to the search page.  
-* In the homepage, the user can click on the “Create a New Post” icon and be redirected to the create post page.  
+### Browsing the homepage
+1. The user visits our web application using a web browser.  
+2. The user will be presented with the homepage having sample posted items of different categories.  
+3. In the homepage, the user can click on the posts to see their detailed descriptions.  
+4. In the homepage, the user can type in a search query on the homepage, and will be redirected to the search page.  
+5. In the homepage, the user can click on the “Create a New Post” icon and be redirected to the create post page.  
+
+### Reading a post
+(After clicking on a post)
+1. The user will be directed to a page showing the title, image, and text description of the post clicked on.
+2. The user will see the images in a slide show of images, along with a list of small images on the left of the slide show.
+3. User can click on the image in the main window will open a large window showing the image
+4. User can click on the arrows in the main window or the small image list to switch images
+
+### Editing a post
+(After clicking on the "create post" button)
+1. The page will show a editing panel to the user, which contains the boxes for post title, price, location, category, description and options to upload image
+2. The user will need to fill at least the title, price, description boxes before clicking the submit button to submit a post.
+3. After clicking on the submit button, the user can be redirected to page telling user that the post has been submitted successfully. 
 
 # Iteration Backlog  
 * As a user, I want to create posts, so that I can buy/sell things  
