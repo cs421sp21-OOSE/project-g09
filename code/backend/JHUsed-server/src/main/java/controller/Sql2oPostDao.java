@@ -2,9 +2,11 @@ package controller;
 
 import exceptions.DaoException;
 import model.Post;
+import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
 import java.util.List;
+import org.sql2o.Sql2oException;
 
 public class Sql2oPostDao implements PostDao {
 
@@ -33,7 +35,11 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public List<Post> readAll() throws DaoException {
-    return null; // stub
+    try (Connection conn = sql2o.open()) {
+      return conn.createQuery("SELECT * FROM posts;").executeAndFetch(Post.class);
+    } catch (Sql2oException ex) {
+      throw new DaoException("Unable to read posts from the database", ex);
+    }
   }
 
   @Override

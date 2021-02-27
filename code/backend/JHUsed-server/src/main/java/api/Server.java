@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import controller.PostDao;
 import controller.Sql2oPostDao;
 import exceptions.ApiError;
+import exceptions.DaoException;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 import kong.unirest.Unirest;
 import model.Post;
@@ -16,32 +18,6 @@ import util.Database;
 import static spark.Spark.*;
 
 public class Server {
-  public static void main(String[] args) throws URISyntaxException {
-    Unirest.config().defaultBaseUrl("http://localhost");
-
-    port(getHerokuAssignedPort());
-
-    Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-    PostDao postDao = getPostDao();
-
-    exception(ApiError.class, (ex, req, res) -> {
-      // Handle the exception here
-      Map<String, String> map = Map.of("status", ex.getStatus() + "",
-          "error", ex.getMessage());
-      res.body(gson.toJson(map));
-      res.status(ex.getStatus());
-      res.type("application/json");
-    });
-        
-    staticFiles.location("/public");
-    
-    
-    // TODO: implement requests
-    get("/", (req, res) -> {
-      return "Hello World";
-    });
-  }
-
   private static int getHerokuAssignedPort() {
     // Heroku stores port number as an environment variable
     String herokuPort = System.getenv("PORT");
@@ -64,4 +40,45 @@ public class Server {
     Spark.stop();
   }
 
+  public static void main(String[] args) throws URISyntaxException {
+//    Unirest.config().defaultBaseUrl("http://localhost");
+
+    port(getHerokuAssignedPort());
+
+    Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    PostDao postDao = getPostDao();
+
+    exception(ApiError.class, (ex, req, res) -> {
+      // Handle the exception here
+      Map<String, String> map = Map.of("status", ex.getStatus() + "",
+          "error", ex.getMessage());
+      res.body(gson.toJson(map));
+      res.status(ex.getStatus());
+      res.type("application/json");
+    });
+        
+//    staticFiles.location("/public");
+    
+    
+    // TODO: implement requests
+    get("/", (req, res) -> {
+      return "Hello World";
+    });
+
+    // return all posts
+    get("/posts", (req, res) ->{
+      try {
+        String title = req.queryParams("title");
+        List<Post> Posts;
+        if (title != null) {
+          Posts = postDao.readAll(title);
+        } else {
+          Posts = postDao.readAll();
+        }
+        return gson.toJson(Posts);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+  }
 }

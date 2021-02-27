@@ -64,20 +64,20 @@ public final class Database {
    */
   public static void createPostsTableWithSampleData(Sql2o sql2o, List<Post> samples) throws Sql2oException {
     // TODO Implement Me!
-//    try (Connection conn = sql2o.open()) {
-//      conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
-//
-//      String sql = "CREATE TABLE IF NOT EXISTS Posts("
-//          + "offeringName VARCHAR(15) NOT NULL PRIMARY KEY,"
-//          + "title VARCHAR(50) NOT NULL"
-//          + ");";
-//      conn.createQuery(sql).executeUpdate();
-//
-//      sql = "INSERT INTO Posts(offeringName, title) VALUES(:offeringName, :title);";
-//      for (Post Post : samples) {
-//        add(conn, Post);
-//      }
-//    }
+    try (Connection conn = sql2o.open()) {
+      conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
+
+      String sql = "CREATE TABLE IF NOT EXISTS Posts("
+          + "id VARCHAR(15) NOT NULL PRIMARY KEY,"
+          + "title VARCHAR(50) NOT NULL"
+          + ");";
+      conn.createQuery(sql).executeUpdate();
+
+      sql = "INSERT INTO Posts(id, title) VALUES(:id, :title);";
+      for (Post Post : samples) {
+        add(conn, Post);
+      }
+    }
   }
 
   // Get either the test or the production Database URL
@@ -89,7 +89,7 @@ public final class Database {
   // Add Post to the database connected to the conn object.
   private static void add(Connection conn, Post Post) throws Sql2oException {
     // TODO Implement Me!
-//    String sql = "INSERT INTO Posts(offeringName, title) VALUES(:offeringName, :title);";
-//    conn.createQuery(sql).bind(Post).executeUpdate();
+    String sql = "INSERT INTO Posts(id, title) VALUES(:id, :title);";
+    conn.createQuery(sql).bind(Post).executeUpdate();
   }
 }
