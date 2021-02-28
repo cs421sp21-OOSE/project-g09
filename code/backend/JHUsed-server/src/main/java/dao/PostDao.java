@@ -59,7 +59,7 @@ public interface PostDao {
   /**
    * Delete a posts provided its offeringName.
    *
-   * @param offeringName The post alphanumeric code.
+   * @param id The post alphanumeric code.
    * @return The post object deleted from the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
