@@ -47,10 +47,10 @@ React 17.0.1
 Node.js 14.16.0
 
 ### Prerequisites
-What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.
-[Intellij 2020.3.2](https://www.jetbrains.com/idea/)
-[Create-React-App](https://github.com/facebookincubator/create-react-app)
-[Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)
+What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.  
+[Intellij 2020.3.2](https://www.jetbrains.com/idea/)  
+[Create-React-App](https://github.com/facebookincubator/create-react-app)  
+[Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)  
 
 ### Setting up Dev
 
@@ -131,5 +131,5 @@ If the api is external, link to api documentation. If not describe your api incl
 
 ## Database
 
-PostgreSQL heroku supplied
-Explaining what database (and version) has been used. Provide download links.
+PostgreSQL heroku supplied  
+~~Explaining what database (and version) has been used. Provide download links.~~
