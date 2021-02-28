@@ -43,7 +43,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 2. The user will need to fill at least the title, price, description boxes before clicking the submit button to submit a post.
 3. After clicking on the submit button, the user can be redirected to page telling user that the post has been submitted successfully. 
 
-![](assets/Edit post.png)
+![](assets/Edit-post.png)
 
 # Iteration Backlog  
 * As a user, I want to create posts, so that I can buy/sell things  
