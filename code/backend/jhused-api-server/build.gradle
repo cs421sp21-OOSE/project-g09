@@ -30,7 +30,7 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class' : 'api.Server'
+        attributes 'Main-Class' : 'api.ApiServer'
     }
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
@@ -39,5 +39,5 @@ jar {
 
 heroku {
     jdkVersion = 11
-    processTypes(web: "java -jar build/libs/JHUsed-server-0.0.1.jar")
+    processTypes(web: "java -jar build/libs/jhused-api-server-0.0.1.jar")
 }
