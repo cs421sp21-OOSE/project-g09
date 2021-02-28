@@ -49,8 +49,11 @@ Node.js 14.16.0
 ### Prerequisites
 What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.  
 [Intellij 2020.3.2](https://www.jetbrains.com/idea/)  
-[Create-React-App](https://github.com/facebookincubator/create-react-app)  
 [Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)  
+
+Install belows in frontend folder (code/frontend/jhused-ui):  
+[Create-React-App](https://github.com/facebookincubator/create-react-app)    
+[axios](https://github.com/axios/axios)  
 
 ### Setting up Dev
 
@@ -64,11 +67,19 @@ Open Intellj
 Open Project in code/backend/jhused-api-server
 Refresh Gradle
 Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: _awesomeexpressshop@gmail.com_ Pass: _Johnshopkins6!_).
+Edit what you want
 Run api/ApiServer
 visit http://localhost:4567
 
 # to setup frontend
-To Be Done
+got to code/frontend/jhused-ui
+Open a terminal
+Install denpendencies in #Prerequisites
+Open a editor, vscode for example
+Edit what you want
+# Once you are done, run
+npm start
+# in the terminal
 ```
 
 And state what happens step-by-step. If there is any virtual environment, local server or database feeder needed, explain here.
