@@ -110,7 +110,7 @@ server, this is the right time to state it.
 
 # to upload backend to heroku:
 back to /projectg09
-git subtree push code/backend/jhused-api-server heroku master
+git subtree push --prefix code/backend/jhused-api-server heroku master
 ```
 
 And again you'd need to tell what the previous code actually does.
