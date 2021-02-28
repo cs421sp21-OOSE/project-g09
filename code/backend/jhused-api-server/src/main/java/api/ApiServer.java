@@ -33,6 +33,29 @@ public class ApiServer {
     return new Sql2oPostDao(sql2o);
   }
 
+  public static void setAccessControlRequestHeaders(){
+    options("/*",
+        (request, response) -> {
+
+          String accessControlRequestHeaders = request
+              .headers("Access-Control-Request-Headers");
+          if (accessControlRequestHeaders != null) {
+            response.header("Access-Control-Allow-Headers",
+                accessControlRequestHeaders);
+          }
+
+          String accessControlRequestMethod = request
+              .headers("Access-Control-Request-Method");
+          if (accessControlRequestMethod != null) {
+            response.header("Access-Control-Allow-Methods",
+                accessControlRequestMethod);
+          }
+
+          return "OK";
+        });
+
+    before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+  }
   /**
    * Stop the server.
    */
@@ -42,6 +65,7 @@ public class ApiServer {
 
   public static void main(String[] args) throws URISyntaxException {
     port(getHerokuAssignedPort());
+    setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     PostDao postDao = getPostDao();
 
