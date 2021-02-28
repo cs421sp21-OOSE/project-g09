@@ -32,11 +32,25 @@ Here you should say what actually happens when you execute the code above.
 ## Developing
 
 ### Built With
-List main libraries, frameworks used including versions (React, Angular etc...)
+#### Backend
+##### Framework:
+SparkJava 2.9.3  
+
+##### Build Tool & Package Manager:
+Gradle 6.7  
+
+#### Frontend
+##### Framework:
+React 17.0.1  
+
+##### Build Tool & Package Manager:
+Node.js 14.16.0
 
 ### Prerequisites
 What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.
-
+[Intellij 2020.3.2](https://www.jetbrains.com/idea/)
+[Create-React-App](https://github.com/facebookincubator/create-react-app)
+[Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)
 
 ### Setting up Dev
 
@@ -44,9 +58,17 @@ Here's a brief intro about what a developer must do in order to start developing
 the project further:
 
 ```shell
-git clone https://github.com/your/your-project.git
-cd your-project/
-packagemanager install
+git clone https://github.com/cs421sp21-homework/project-g09.git
+# to setup backend:
+Open Intellj
+Open Project in code/backend/jhused-api-server
+Refresh Gradle
+Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: _awesomeexpressshop@gmail.com_ Pass: _Johnshopkins6!_).
+Run api/ApiServer
+visit http://localhost:4567
+
+# to setup frontend
+To Be Done
 ```
 
 And state what happens step-by-step. If there is any virtual environment, local server or database feeder needed, explain here.
@@ -57,9 +79,11 @@ If your project needs some additional steps for the developer to build the
 project after some code changes, state them here. for example:
 
 ```shell
-./configure
-make
-make install
+# for backend
+just refresh gradle
+
+# for frontend
+npm start
 ```
 
 Here again you should state what actually happens when the code above gets
@@ -71,14 +95,18 @@ In case there's some step you have to take that publishes this project to a
 server, this is the right time to state it.
 
 ```shell
-packagemanager deploy your-project -s server.com -u username -p password
+#packagemanager deploy your-project -s server.com -u username -p password
+
+# to upload backend to heroku:
+back to /projectg09
+git subtree push code/backend/jhused-api-server heroku master
 ```
 
 And again you'd need to tell what the previous code actually does.
 
 ## Versioning
 
-We can maybe use [SemVer](http://semver.org/) for versioning. 
+We use [SemVer](http://semver.org/) for versioning. 
 
 ## Configuration
 
@@ -103,4 +131,5 @@ If the api is external, link to api documentation. If not describe your api incl
 
 ## Database
 
+PostgreSQL heroku supplied
 Explaining what database (and version) has been used. Provide download links.
