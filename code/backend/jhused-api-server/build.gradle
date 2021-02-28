@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-//    id "com.heroku.sdk.heroku-gradle" version "2.0.0"
     id "io.freefair.lombok" version "4.1.6"
 }
 
@@ -36,11 +35,6 @@ jar {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
-//
-//heroku {
-//    jdkVersion = 11
-//    processTypes(web: "java -jar build/libs/jhused-api-server-0.0.1.jar")
-//}
 
 task stage(dependsOn:['build', 'clean'])
 build.mustRunAfter clean
