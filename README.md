@@ -51,6 +51,7 @@ What is needed to set up the dev environment. For instance, global dependencies 
 [Intellij 2020.3.2](https://www.jetbrains.com/idea/)  
 [Create-React-App](https://github.com/facebookincubator/create-react-app)  
 [Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)  
+[axios](https://github.com/axios/axios)
 
 ### Setting up Dev
 
