@@ -1,4 +1,4 @@
-package exception;
+package exceptions;
 
 /**
  * A generic exception for CRUD operations.

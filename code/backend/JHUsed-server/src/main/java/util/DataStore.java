@@ -21,41 +21,50 @@ public final class DataStore {
    */
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
-    samples.add(new Post(0,
-        "Dummy furniture",
+    List<String> images = new ArrayList<>();
+    images.add("/somedir/somesubdir/furniture_image.jpg");
+    samples.add(new Post("0", "001",
+        "Dummy furniture", 30F,
         "Description of dummy furniture",
-        "Location of dummy furniture",
-        "/somedir/somesubdir/furniture_image.jpg"));
-    samples.add(new Post(1,
-        "Dummy TV",
+        images,
+        "Location of dummy furniture"
+        ));
+    samples.add(new Post("1", "002",
+        "Dummy TV", 40F,
         "Description of dummy TV",
-        "Location of dummy TV",
-        "/somedir/somesubdir/TV_image.jpg"));
-    samples.add(new Post(2,
-        "Dummy bed",
+        images,
+        "Location of dummy TV"
+        ));
+    samples.add(new Post("3", "003",
+        "Dummy bed", 50F,
         "Description of dummy bed",
-        "Location of dummy bed",
-        "/somedir/somesubdir/bed_image.jpg"));
-    samples.add(new Post(3,
-        "Dummy desk",
+        images,
+        "Location of dummy bed"
+        ));
+    samples.add(new Post("4", "004",
+        "Dummy desk", 29.99F,
         "Description of dummy desk",
-        "Location of dummy desk",
-        "/somedir/somesubdir/desk_image.jpg"));
-    samples.add(new Post(4,
-        "Dummy lamp",
+        images,
+        "Location of dummy desk"
+        ));
+    samples.add(new Post("5", "005",
+        "Dummy lamp", 29.99F,
         "Description of dummy lamp",
-        "Location of dummy lamp",
-        "/somedir/somesubdir/lamp_image.jpg"));
-    samples.add(new Post(5,
-        "Dummy cup",
+        images,
+        "Location of dummy lamp"
+        ));
+    samples.add(new Post("6","005",
+        "Dummy cup", 29.99F,
         "Description of dummy cup",
-        "Location of dummy cup",
-        "/somedir/somesubdir/cup_image.jpg"));
-    samples.add(new Post(6,
-        "Dummy car",
+        images,
+        "Location of dummy cup"
+        ));
+    samples.add(new Post("7","005",
+        "Dummy car", 29.99F,
         "Description of dummy car",
-        "Location of dummy car",
-        "/somedir/somesubdir/car_image.jpg"));
+        images,
+        "Location of dummy car"
+        ));
     return samples;
   }
 }

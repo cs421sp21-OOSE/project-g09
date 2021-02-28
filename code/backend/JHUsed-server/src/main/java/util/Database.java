@@ -1,13 +1,12 @@
 package util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 import model.Post;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  * A utility class with methods to establish JDBC connection, set schemas, etc.
@@ -27,7 +26,7 @@ public final class Database {
    *
    * @param args command-line arguments; not used here.
    * @throws URISyntaxException Checked exception thrown to indicate the provided database URL cannot be parsed as a
-   *                            URI reference.
+   *     URI reference.
    */
   public static void main(String[] args) throws URISyntaxException {
     Sql2o sql2o = getSql2o();
@@ -39,8 +38,8 @@ public final class Database {
    *
    * @return a Sql2o object connected to the database to be used in this application.
    * @throws URISyntaxException Checked exception thrown to indicate the provided database URL cannot be parsed as a
-   *                            URI reference.
-   * @throws Sql2oException     an generic exception thrown by Sql2o encapsulating anny issues with the Sql2o ORM.
+   *     URI reference.
+   * @throws Sql2oException an generic exception thrown by Sql2o encapsulating anny issues with the Sql2o ORM.
    */
   public static Sql2o getSql2o() throws URISyntaxException, Sql2oException {
     String databaseUrl = getDatabaseUrl();
@@ -51,53 +50,44 @@ public final class Database {
     String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
         + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
 
-    return new Sql2o(dbUrl, username, password);
+    Sql2o sql2o = new Sql2o(dbUrl, username, password);
+    return sql2o;
   }
 
   /**
-   * Create posts table schema and add sample CS posts to it.
+   * Create Posts table schema and add sample CS Posts to it.
    *
-   * @param sql2o   a Sql2o object connected to the database to be used in this application.
-   * @param samples a list of sample CS posts.
+   * @param sql2o a Sql2o object connected to the database to be used in this application.
+   * @param samples a list of sample Posts.
    * @throws Sql2oException an generic exception thrown by Sql2o encapsulating anny issues with the Sql2o ORM.
    */
   public static void createPostsTableWithSampleData(Sql2o sql2o, List<Post> samples) throws Sql2oException {
-
     try (Connection conn = sql2o.open()) {
-      conn.createQuery("DROP TABLE IF EXISTS posts;").executeUpdate();
+      conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
 
-      String sql = "CREATE TABLE IF NOT EXISTS posts("
-          + "offeringName VARCHAR(15) NOT NULL PRIMARY KEY,"
+      String sql = "CREATE TABLE IF NOT EXISTS Posts("
+          + "id VARCHAR(15) NOT NULL PRIMARY KEY,"
           + "title VARCHAR(50) NOT NULL"
           + ");";
       conn.createQuery(sql).executeUpdate();
 
-      for (Post post : samples) {
-        add(conn, post);
+      sql = "INSERT INTO Posts(id, title) VALUES(:id, :title);";
+      for (Post Post : samples) {
+        add(conn, Post);
       }
     }
   }
 
   // Get either the test or the production Database URL
   private static String getDatabaseUrl() throws URISyntaxException {
-    String databaseUrl = null;
-    if (USE_TEST_DATABASE)
-      databaseUrl = System.getenv("TEST_DATABASE_URL");
-    else
-      databaseUrl = System.getenv("DATABASE_URL");
-    if (databaseUrl==null)
-    {
-      if(USE_TEST_DATABASE)
-        throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
-      else
-        throw new URISyntaxException("null", "DATABASE_URL is not set");
-    }
+    String databaseUrl = System.getenv("DATABASE_URL");
     return databaseUrl;
   }
 
-  // Add post to the database connected to the conn object.
-  private static void add(Connection conn, Post post) throws Sql2oException {
-    String sql = "INSERT INTO posts(offeringName, title) VALUES(:offeringName, :title);";
-    conn.createQuery(sql).bind(post).executeUpdate();
+  // Add Post to the database connected to the conn object.
+  private static void add(Connection conn, Post Post) throws Sql2oException {
+    // TODO Implement Me!
+    String sql = "INSERT INTO Posts(id, title) VALUES(:id, :title);";
+    conn.createQuery(sql).bind(Post).executeUpdate();
   }
 }
