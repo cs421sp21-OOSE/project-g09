@@ -26,6 +26,8 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. In the homepage, the user can type in a search query on the homepage, and will be redirected to the search page.  
 5. In the homepage, the user can click on the “Create a New Post” icon and be redirected to the create post page.  
 
+![](assets/Homepage.png)
+
 ### Reading a post
 (After clicking on a post)
 1. The user will be directed to a page showing the title, image, and text description of the post clicked on.
@@ -33,11 +35,15 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 3. User can click on the image in the main window will open a large window showing the image
 4. User can click on the arrows in the main window or the small image list to switch images
 
+![](assets/Post.png)
+
 ### Editing a post
 (After clicking on the "create post" button)
 1. The page will show a editing panel to the user, which contains the boxes for post title, price, location, category, description and options to upload image
 2. The user will need to fill at least the title, price, description boxes before clicking the submit button to submit a post.
 3. After clicking on the submit button, the user can be redirected to page telling user that the post has been submitted successfully. 
+
+![](assets/Edit post.png)
 
 # Iteration Backlog  
 * As a user, I want to create posts, so that I can buy/sell things  
