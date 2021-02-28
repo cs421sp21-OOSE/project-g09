@@ -108,9 +108,18 @@ server, this is the right time to state it.
 ```shell
 #packagemanager deploy your-project -s server.com -u username -p password
 
+heroku login
+# These are necessary because we are using one git repo to store two separate project (apiserver and ui)
+# These set up two different heroku remote
+heroku git:remote --remote heroku-api -a jhused-api-server
+heroku git:remote --remote heroku-ui -a jhused-ui
+
 # to upload backend to heroku:
 back to /projectg09
-git subtree push --prefix code/backend/jhused-api-server heroku master
+git subtree push --prefix code/backend/jhused-api-server heroku-api master
+
+# to upload frontend to heroku
+git subtree push --prefix code/backend/jhused-ui heroku-ui master
 ```
 
 And again you'd need to tell what the previous code actually does.
