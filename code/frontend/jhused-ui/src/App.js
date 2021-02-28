@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 
 const axios = require("axios").default;
-axios.defaults.baseURL = "http://jhused-api-server.herokuapp.com/";
+axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
 // axios.defaults.baseURL = "http://localhost:4567/";
 
 class App extends React.Component {
