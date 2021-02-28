@@ -57,19 +57,21 @@ of the item
 * Set up basic client/server architecture using Java Spark and React (done)
 * Hello World application (done) 
 * Database set up/design
-  * Add images to populate the sample data (Chu)
-* Work on "create a post" page  
-  * Sql2oPostDao create() method
-  * Sql2oPostDao read() method
-  * ApiServer post api for creating post
+  * Add images to populate the sample data
 * Create a post class (done)
+ ----------------
 * Homepage (Junjie)
   * React rendering the post list 
-  * Implement clicking on a post to see post details. (Similiar to HW6)  
+  * Implement clicking on a post to see post details. (Similiar to HW6)
+  * Server class api, getAll
 * Reading a post (Junjie)
   * React rendering page/pop-up
+  * Sql2oPostDao read() method
+  * Server class api, get
 * Editing a post
   * React rendering forms, image-upload (Chu)
+  * Sql2oPostDao create() method
+  * Server class api, post
 
 # Retrospective  
 (To be done at the end of iteration 1)
