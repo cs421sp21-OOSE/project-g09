@@ -54,16 +54,21 @@ users more clearly
 of the item  
 
 # Tasks  
-* Set up basic client/server architecture using Java Spark and React.  
-* Hello World application.  
-* Database set up/design.  
-* Create a post class.  
-* Design homepage.  
-  * Implement clicking on a post to see post details. (Similiar to HW6)  
+* Set up basic client/server architecture using Java Spark and React (done)
+* Hello World application (done) 
+* Database set up/design
+  * Image storage
 * Work on "create a post" page  
-  * Uploading images  
-  * adding various text fields  
-* Work on Post Details (page/pop-up)
+  * Sql2oPostDao create() method
+  * Sql2oPostDao read() method
+  * ApiServer post api for creating post
+* Create a post class (done)
+* Homepage
+  * Implement clicking on a post to see post details. (Similiar to HW6)  
+* Reading a post
+  * React rendering page/pop-up
+* Editing a post
+  * React rendering forms, image-upload
 
 # Retrospective  
 (To be done at the end of iteration 1)
