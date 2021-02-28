@@ -66,7 +66,7 @@ git clone https://github.com/cs421sp21-homework/project-g09.git
 Open Intellj
 Open Project in code/backend/jhused-api-server
 Refresh Gradle
-Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: _awesomeexpressshop@gmail.com_ Pass: _Johnshopkins6!_).
+Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: awesomeexpressshop@gmail.com Pass: Johnshopkins6!).
 Edit what you want
 Run api/ApiServer
 visit http://localhost:4567
