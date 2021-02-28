@@ -63,10 +63,10 @@ of the item
   * Sql2oPostDao read() method
   * ApiServer post api for creating post
 * Create a post class (done)
-* Homepage
+* Homepage (Junjie)
   * React rendering the post list 
   * Implement clicking on a post to see post details. (Similiar to HW6)  
-* Reading a post
+* Reading a post (Junjie)
   * React rendering page/pop-up
 * Editing a post
   * React rendering forms, image-upload (Chu)
