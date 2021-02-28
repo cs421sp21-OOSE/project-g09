@@ -13,8 +13,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * PostsSql2oDao: concrete implementation of the PostDao interface 
   * Connection: utility class to provide static methods related to generate connection to the batabase
 
-(UML to be added)
-
+![](assets/UML-iteration1.png)
 
 # Wireframe & Use-case  
 
