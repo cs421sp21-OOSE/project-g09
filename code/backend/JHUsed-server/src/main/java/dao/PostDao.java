@@ -1,67 +1,64 @@
 package dao;
 
-import exception.DaoException;
+import exceptions.DaoException;
+import java.util.List;
 import model.Post;
 
-import java.util.List;
-
 /**
- * Data Access Object for model.Post.
+ * Data Access Object for Post.
  */
 public interface PostDao {
 
   /**
-   * Create a post.
-   *
-   * @param id The post id.
-   * @param title The post Title.
-   * @return The post object created.
+   * Create a Post.
+   * @param post The Post item to be created
+   * @return The Post object created.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Post create(int id, String title, String description, String location, String image) throws DaoException;
+  Post create(Post post) throws DaoException;
 
   /**
-   * Read a post provided its offeringName.
+   * Read a Post provided its id.
    *
-   * @param id The post id.
-   * @return The post object read from the data source.
+   * @param id The Post alphanumeric code.
+   * @return The Post object read from the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Post read(int id) throws DaoException;
+  Post read(String id) throws DaoException;
 
   /**
-   * Read all posts from the database.
+   * Read all Posts from the database.
    *
-   * @return All the posts in the data source.
+   * @return All the Posts in the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
   List<Post> readAll() throws DaoException;
 
   /**
-   * Read all posts from the database with title containing titleQuery.
+   * Read all Posts from the database with title containing titleQuery.
    *
-   * @param idQuery A search term.
-   * @return All posts retrieved.
+   * @param titleQuery A search term.
+   * @return All Posts retrieved.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  List<Post> readAll(int idQuery) throws DaoException;
+  List<Post> readAll(String titleQuery) throws DaoException;
 
   /**
-   * Update the title of a posts provided its offeringName.
+   * Update the title of a Posts provided its id.
    *
-   * @param id The post id.
-   * @param title The post Title.
-   * @return The updated post object.
+   * @param id The Post alphanumeric code.
+   * @param post The Post.
+   * @return The updated Post object.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Post update(int id, String title, String description, String location, String image) throws DaoException;
+  Post update(String id, Post post) throws DaoException;
 
   /**
-   * Delete a posts provided its offeringName.
+   * Delete a Posts provided its id.
    *
-   * @param offeringName The post alphanumeric code.
-   * @return The post object deleted from the data source.
+   * @param id The Post alphanumeric code.
+   * @return The Post object deleted from the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Post delete(int id) throws DaoException;
+  Post delete(String id) throws DaoException;
 }

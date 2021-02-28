@@ -1,86 +1,39 @@
 package model;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Data;
 
-/**
- * Represent a post
- */
+
+@Data
 public class Post {
+  String id;
+  String posterId;
+  String title;
+  Float price;
+  String description;
+  List<String> images;
+  String location;
 
-  private int id;
-  private String description;
-  private String title;
-  private String location;
-  private String image;
+  public Post() {
+    this.images = new ArrayList<>();
+  }
 
-  /**
-   * Full constructor
-   *
-   * @param id       id of the post
-   * @param title    title of the post
-   * @param description description of the post
-   * @param location location of the post, description at the moment
-   * @param image    image of the post, could be the path stored in server
-   */
-  public Post(int id, String title, String description, String location, String image) {
+  public Post(String id, String title) {
     this.id = id;
     this.title = title;
+    this.images = new ArrayList<>();
+  }
+
+  public Post(String id, String posterId, String title, Float price, String description, List<String> images,
+      String location) {
+    this.id = id;
+    this.posterId = posterId;
+    this.title = title;
+    this.price = price;
     this.description = description;
+    this.images = images;
     this.location = location;
-    this.image = image;
   }
-
-  /**
-   * getter for description
-   *
-   * @return description
-   */
-  public String getDescription() {
-    return description;
-  }
-
-  /**
-   * getter for title
-   *
-   * @return title
-   */
-  public String getTitle() {
-    return title;
-  }
-
-  /**
-   * getter for location
-   *
-   * @return location
-   */
-  public String getLocation() {
-    return location;
-  }
-
-  /**
-   * getter for image paths
-   *
-   * @return image
-   */
-  public String getImage() {
-    return image;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    Post post = (Post) o;
-    return id == post.id;
-  }
-
-  @Override
-  public String toString() {
-    return id + " " + title;
-  }
+//  No need to add getter and setter function as lombok automated these
 }
