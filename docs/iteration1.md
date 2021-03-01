@@ -60,11 +60,11 @@ of the item
   * Add images to populate the sample data
 * Create a post class (done)
  ----------------
-* Homepage (Junjie)
-  * React rendering the post list 
+* Homepage
+  * React rendering the post list (Junjie)
   * Implement clicking on a post to see post details. (Similiar to HW6)
   * Server class api, getAll
-* Reading a post (Junjie)
+* Reading a post
   * React rendering page/pop-up
   * Sql2oPostDao read() method
   * Server class api, get
