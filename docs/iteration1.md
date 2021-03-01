@@ -64,8 +64,8 @@ of the item
   * React rendering the post list (Junjie)
   * Implement clicking on a post to see post details. (Similiar to HW6)
   * Server class api, getAll
-* Reading a post
-  * React rendering page/pop-up
+* Reading a post 
+  * React rendering page/pop-up (Sam)
   * Sql2oPostDao read() method
   * Server class api, get
 * Editing a post
