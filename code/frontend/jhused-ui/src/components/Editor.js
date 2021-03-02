@@ -25,17 +25,22 @@ function Editor() {
     const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useReducer(formReducer, {});
 
-    const handleSubmit = (e => {
-        e.preventDefault();
+    const handleSubmit = (event => {
+        event.preventDefault();
         setSubmitted(true);
     });
 
-    const handleOnChange = (e => 
-            setFormData({
-                name: e.target.name,
-                value: e.target.value
-            })
-        );
+    const handleOnChange = (event => {
+        const target = event.target;
+        const name = target.name;
+        const value = target.type === 'select-multiple' ? 
+            Array.from(target.selectedOptions, option => option.value) : 
+            target.value
+        setFormData({
+            name: name,
+            value: value
+        })
+    });
 
     return (
         <div className="editor-panel">
@@ -45,7 +50,7 @@ function Editor() {
                         type="text" 
                         name="title" 
                         placeholder="Title" 
-                        value={formData.title} 
+                        value={formData.title || ""} 
                         onChange={handleOnChange}/>
                 </Form.Group>
                 <Form.Group controlId="priceForm">
@@ -53,7 +58,7 @@ function Editor() {
                         type="number" 
                         name="price" 
                         placeholder="Price" 
-                        value={formData.price}
+                        value={formData.price || ""}
                         onChange={handleOnChange}>
                     </Form.Control>
                 </Form.Group>
@@ -62,29 +67,44 @@ function Editor() {
                         type="text"
                         name="location"
                         placeholder="Location"
-                        value={formData.location}
+                        value={formData.location || ""}
                         onChange={handleOnChange}>
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Category</Form.Label>
-                    <Select options={categoryOptions}/>
+                    {/* <Select 
+                        name="category"
+                        options={categoryOptions}
+                        placeholder="Select category"
+                        isMulti
+                        onChange={handleOnChange}/> */}
+                    <Form.Label>Select category</Form.Label>
+                    <Form.Control 
+                        as="select" multiple 
+                        name="category"
+                        onChange={handleOnChange}>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Tag</Form.Label>
                     <Form.Control
                         type="text"
                         name="tag"
-                        value={formData.tag}
+                        placeholder="Tags"
+                        value={formData.tag || ""}
                         onChange={handleOnChange}>
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>Description</Form.Label>
                     <Form.Control
                         as="textarea"
                         name="description"
-                        value={formData.description} 
+                        placeholder="Write description"
+                        value={formData.description || ""} 
                         onChange={handleOnChange}>
                     </Form.Control>
                 </Form.Group>
