@@ -1,6 +1,7 @@
 import React, { useReducer, useState } from 'react';
 
-import Select from 'react-select'
+import Select from 'react-select';
+import CreatableSelecet from 'react-select';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -13,6 +14,11 @@ const formReducer = (state, action) => ({
     [action.name]: action.value
 });
 
+const createOption = (label) => ({
+    label,
+    value: label,
+  });
+
 function Editor() {
 
     const categoryOptions = [
@@ -23,7 +29,16 @@ function Editor() {
     ];
 
     const [submitted, setSubmitted] = useState(false);
-    const [formData, setFormData] = useReducer(formReducer, {});
+    const [formData, setFormData] = useReducer(formReducer, {
+        tag: []
+    });
+    
+    const [tagData, setTagData] = useState({
+        inputValue: "",
+        value: []
+    })
+    const [tagInput, setTagInput] = useState("");
+
 
     const handleSubmit = (event => {
         event.preventDefault();
@@ -40,6 +55,25 @@ function Editor() {
             name: name,
             value: value
         })
+    });
+
+    const handleSelectInputChange = (inputValue => {
+        setTagInput(inputValue);
+    });
+
+    const handleSelectKeyDown = (event => {
+        if (!tagInput) return;
+        switch (event.key) {
+            case "Enter":
+                setFormData({
+                    name: "tag",
+                    value: [...formData.tag, createOption(tagInput)]
+                });
+                setTagInput("");
+            event.preventDefault();
+                break;
+            default:
+        }
     });
 
     return (
@@ -76,28 +110,32 @@ function Editor() {
                         name="category"
                         options={categoryOptions}
                         placeholder="Select category"
-                        isMulti
-                        onChange={handleOnChange}/> */}
+                        onInputChange={handleOnChange}/> */}
                     <Form.Label>Select category</Form.Label>
                     <Form.Control 
-                        as="select" multiple 
+                        as="select" 
+                        multiple
                         name="category"
                         onChange={handleOnChange}>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
+                        <option>Furniture</option>
+                        <option>Electronics</option>
+                        <option>Textbook</option>
+                        <option>Car</option>
                     </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Control
-                        type="text"
+                    <CreatableSelecet
                         name="tag"
-                        placeholder="Tags"
+                        components={{DropdownIndicator: null}}
+                        inputValue={tagInput || ""}
                         value={formData.tag || ""}
-                        onChange={handleOnChange}>
-                    </Form.Control>
+                        isClearable
+                        isMulti
+                        menuIsOpen={false}
+                        placeholder="Tags"
+                        onInputChange={handleSelectInputChange}
+                        onKeyDown={handleSelectKeyDown}
+                    />
                 </Form.Group>
                 <Form.Group>
                     <Form.Control
