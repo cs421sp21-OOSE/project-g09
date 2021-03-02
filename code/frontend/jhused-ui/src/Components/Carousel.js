@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   CarouselProvider,
   Slider,
@@ -9,6 +9,7 @@ import {
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import "./Carousel.css";
+
 import PrevButton from "../images/carousel-button-prev.png";
 import NextButton from "../images/carousel-button-next.png";
 
@@ -27,7 +28,6 @@ const Carousel = (props) => {
             </Slide>
           ))}
         </Slider>
-
         <ButtonBack className="carousel-button"> <Image src={PrevButton} hasMasterSpinner={true} /></ButtonBack>
         <ButtonNext className="carousel-button"><Image src={NextButton} hasMasterSpinner={true} /></ButtonNext>
       </CarouselProvider>
