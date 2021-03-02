@@ -60,18 +60,19 @@ of the item
   * Add images to populate the sample data
 * Create a post class (done)
  ----------------
+* Database design (Qiao, Louie, Bohua)
 * Homepage
   * React rendering the post list (Junjie)
-  * Implement clicking on a post to see post details. (Similiar to HW6)
-  * Server class api, getAll
+  * Implement clicking on a post to see post details (Junjie, Sam)
+  * Server class api, getAll (Qiao, Louie, Bohua)
 * Reading a post 
-  * React rendering page/pop-up (Sam)
-  * Sql2oPostDao read() method
-  * Server class api, get
+  * React rendering page/pop-up (Chu, Sam)
+  * Sql2oPostDao read() method (Qiao, Louie, Bohua)
+  * Server class api, get (Qiao, Louie, Bohua)
 * Editing a post
-  * React rendering forms, image-upload (Chu)
-  * Sql2oPostDao create() method
-  * Server class api, post
+  * React rendering forms, image-upload (Chu, Sam) (imgur, flicker...github projects to start)
+  * Sql2oPostDao create() method (Qiao, Louie, Bohua)
+  * Server class api, post (Qiao, Louie, Bohua)
 
 # Retrospective  
 (To be done at the end of iteration 1)
