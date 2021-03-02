@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import ImageGrid from "./ImageGrid";
 
 const axios = require("axios").default;
 axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
@@ -27,7 +28,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        
+        <ImageGrid />
       </div>
     );
   }
