@@ -1,6 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
-import Location from "./Components/Location"
+import Location from "./Components/Location";
+import Carousel from "./Components/Carousel";
 import "./App.css";
 
 const axios = require("axios").default;
@@ -29,13 +30,9 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>Very Crude {this.state.welcom}!</p>
-          <p>
-            To make changes: Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
+        <div className="carousel-container">
+        <Carousel />
+        </div>
       </div>
     );
   }

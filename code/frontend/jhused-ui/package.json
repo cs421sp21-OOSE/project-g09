@@ -9,7 +9,9 @@
     "axios": "^0.21.1",
     "husky": "^5.1.1",
     "lint-staged": "^10.5.4",
+    "pure-react-carousel": "^1.27.6",
     "react": "^17.0.1",
+    "react-alice-carousel": "^2.4.0",
     "react-dom": "^17.0.1",
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.0"
