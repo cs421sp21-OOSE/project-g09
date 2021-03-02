@@ -1,17 +1,25 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
+import Editor from "./components/Editor";
 
 const axios = require("axios").default;
 axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
 // axios.defaults.baseURL = "http://localhost:4567/";
 
+/**
+ * Header component for the site name and logo
+ * Add stuff later
+ */
+function Header() {
+    return (
+      <h1>JHUsed</h1>
+    );
+}
+
+
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-      welcom: "Loading...",
-    };
   }
 
   async componentDidMount() {
@@ -27,14 +35,9 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>Very Crude {this.state.welcom}!</p>
-          <p>
-            To make changes: Edit <code>src/App.js</code> and save to reload.
-          </p>
-        </header>
+      <div>
+        <Header className="App-header"/>
+        <Editor/>
       </div>
     );
   }
