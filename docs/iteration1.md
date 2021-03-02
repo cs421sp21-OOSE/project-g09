@@ -60,6 +60,7 @@ of the item
   * Add images to populate the sample data
 * Create a post class (done)
  ----------------
+* Database design (Qiao, Louie, Bohua)
 * Homepage
   * React rendering the post list (Junjie)
   * Implement clicking on a post to see post details (Junjie, Sam)
