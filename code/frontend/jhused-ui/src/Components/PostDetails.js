@@ -9,16 +9,16 @@ const PostDetails = (props) => {
     <div className="post-container">
       <div className="post-body">
         <img src={ExitPng} alt="x" className="exit"></img>
-          <h1 className="post-title">{props.post.title}</h1>
-          <h1 className="post-price">{props.post.price}</h1>
-          <div className="post-content-left">
-            <Carousel images={props.post.images} />
+        <h1 className="post-title">{props.post.title}</h1>
+        <h1 className="post-price">{props.post.price}</h1>
+        <div className="post-content-left">
+          <Carousel images={props.post.images} />
+        </div>
+        <div className="post-content-right">
+          <Location location={props.post.location} size="l" />
+          <div className="post-description">
+            <p>{props.post.description} </p>
           </div>
-          <div className="post-content-right">
-            <Location location={props.post.location} size="l" />
-            <div className="post-description">
-              <p>{props.post.description} </p>
-            </div>
         </div>
       </div>
     </div>
