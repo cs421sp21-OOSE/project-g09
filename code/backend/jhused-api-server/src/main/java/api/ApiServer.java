@@ -87,7 +87,7 @@ public class ApiServer {
     // TODO: implement requests
 
     // return all posts
-    get("/posts", (req, res) -> {
+    get("/api/posts", (req, res) -> {
       try {
         String title = req.queryParams("title");
         List<Post> Posts;
