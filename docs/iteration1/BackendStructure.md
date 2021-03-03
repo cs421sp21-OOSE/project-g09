@@ -2,7 +2,7 @@
 
 In this iteration, we only have one table in database.  
 
-![](..\assets\BackendStructure\DatabaseDiagram.jpg)  
+![image](../assets/BackendStructure/DatabaseDiagram.jpg)  
 
 Thanks to PostgreSQL's fancy feature, we don't need to have separate tables just to store image URLs or hashtags.  
 
@@ -10,7 +10,7 @@ Thanks to PostgreSQL's fancy feature, we don't need to have separate tables just
 
 We now only have one model, Post, and a Category enum:  
 
-![UML-iteration1](..\assets\UML\UML-iteration1.png)  
+![image](../assets/UML/UML-iteration1.png)  
 
 # API doc:
 
