@@ -2,8 +2,6 @@ import React from "react";
 
 import PostDetails from "./Components/PostDetails";
 
-import logo from "./logo.svg";
-
 import "./App.css";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import img1 from "./images/furniture/desk.jpg";
@@ -18,7 +16,8 @@ const testPost = {
   title: "Desk",
   price: "30$",
   location: "marylander",
-  description: "this si a desk lmfaooo",
+  description:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   images: [img1, img2, img3],
 };
 class App extends React.Component {
@@ -43,14 +42,14 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-
         <Router>
-          hello world
-          <Route path="/post">
+          <Route exact path="/">
+            <img src="./images/logo.png" alt="logo" />
+          </Route>
+          <Route exact path="/post">
             <PostDetails post={testPost} />
           </Route>
         </Router>
-
       </div>
     );
   }
