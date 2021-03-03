@@ -101,5 +101,6 @@ public class ApiServer {
         throw new ApiError(ex.getMessage(), 500);
       }
     });
+    after((req, res) -> res.type("application/json"));
   }
 }
