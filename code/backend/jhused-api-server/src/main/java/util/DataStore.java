@@ -22,20 +22,20 @@ public final class DataStore {
    */
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
-    List<String> imageUrls0 = new ArrayList<String>();
-    List<String> imageUrls1 = new ArrayList<String>();
-    List<String> imageUrls2 = new ArrayList<String>();
-    List<String> imageUrls3 = new ArrayList<String>();
-    List<String> imageUrls4 = new ArrayList<String>();
-    List<String> imageUrls5 = new ArrayList<String>();
-    List<String> imageUrls6 = new ArrayList<String>();
-    List<String> hashtags0 = new ArrayList<String>();
-    List<String> hashtags1 = new ArrayList<String>();
-    List<String> hashtags2 = new ArrayList<String>();
-    List<String> hashtags3 = new ArrayList<String>();
-    List<String> hashtags4 = new ArrayList<String>();
-    List<String> hashtags5 = new ArrayList<String>();
-    List<String> hashtags6 = new ArrayList<String>();
+    List<String> imageUrls0 = new ArrayList<>();
+    List<String> imageUrls1 = new ArrayList<>();
+    List<String> imageUrls2 = new ArrayList<>();
+    List<String> imageUrls3 = new ArrayList<>();
+    List<String> imageUrls4 = new ArrayList<>();
+    List<String> imageUrls5 = new ArrayList<>();
+    List<String> imageUrls6 = new ArrayList<>();
+    List<String> hashtags0 = new ArrayList<>();
+    List<String> hashtags1 = new ArrayList<>();
+    List<String> hashtags2 = new ArrayList<>();
+    List<String> hashtags3 = new ArrayList<>();
+    List<String> hashtags4 = new ArrayList<>();
+    List<String> hashtags5 = new ArrayList<>();
+    List<String> hashtags6 = new ArrayList<>();
     hashtags0.add("some thing");
     hashtags0.add("haha");
     hashtags1.add("some thing");

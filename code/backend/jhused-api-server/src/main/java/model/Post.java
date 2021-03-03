@@ -16,7 +16,7 @@ public class Post {
   private Double price;   //must have
   private String description;   // don't need to have
   private List<String> imageUrls;   // don't need to have
-  private List<String> hashTags;    // don't need to have
+  private List<String> hashtags;    // don't need to have
   private Category category;  // must have
   private String location;  // must have
 
@@ -36,7 +36,7 @@ public class Post {
     this.price = price;
     this.description = description;
     this.imageUrls = imageUrls;
-    this.hashTags = hashTags;
+    this.hashtags = hashTags;
     this.category = category;
     this.location = location;
   }
