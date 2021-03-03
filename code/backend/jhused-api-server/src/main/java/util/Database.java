@@ -5,7 +5,6 @@ import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -94,6 +93,7 @@ public final class Database {
 
   /**
    * get either the test or the production database url
+   *
    * @return database url
    * @throws URISyntaxException if database url is not set
    */
@@ -103,14 +103,10 @@ public final class Database {
       databaseUrl = System.getenv("TEST_DATABASE_URL");
     else
       databaseUrl = System.getenv("DATABASE_URL");
-    if (databaseUrl==null)
-    {
-      if(USE_TEST_DATABASE)
-      {
+    if (databaseUrl == null) {
+      if (USE_TEST_DATABASE) {
         throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
-      }
-      else
-      {
+      } else {
         throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
       }
     }
@@ -121,6 +117,7 @@ public final class Database {
 
   /**
    * Add Post to the database connected to the conn object.
+   *
    * @param conn database connection
    * @param Post the to be add Post object
    * @throws Sql2oException
