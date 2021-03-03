@@ -23,7 +23,7 @@ public final class DataStore {
    */
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
-    samples.add(new Post("0", "001",
+    samples.add(new Post("0".repeat(36), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         sampleImageUrls(),
@@ -31,7 +31,7 @@ public final class DataStore {
         Category.FURNITURE,
         "Location of dummy furniture"
     ));
-    samples.add(new Post("1", "002",
+    samples.add(new Post("1".repeat(36), "002",
         "Dummy TV", 40D,
         "Description of dummy TV",
         sampleImageUrls(),
@@ -39,7 +39,7 @@ public final class DataStore {
         Category.TV,
         "Location of dummy TV"
     ));
-    samples.add(new Post("3", "003",
+    samples.add(new Post("3".repeat(36), "003",
         "Dummy bed", 50D,
         "Description of dummy bed",
         sampleImageUrls(),
@@ -47,7 +47,7 @@ public final class DataStore {
         Category.CAR,
         "Location of dummy bed"
     ));
-    samples.add(new Post("4", "004",
+    samples.add(new Post("4".repeat(36), "004",
         "Dummy desk", 29.99D,
         "Description of dummy desk",
         sampleImageUrls(),
@@ -55,7 +55,7 @@ public final class DataStore {
         Category.DESK,
         "Location of dummy desk"
     ));
-    samples.add(new Post("5", "005",
+    samples.add(new Post("5".repeat(36), "005",
         "Dummy lamp", 29.99D,
         "Description of dummy lamp",
         sampleImageUrls(),
@@ -63,7 +63,7 @@ public final class DataStore {
         Category.TV,
         "Location of dummy lamp"
     ));
-    samples.add(new Post("6", "005",
+    samples.add(new Post("6".repeat(36), "005",
         "Dummy cup", 29.99D,
         "Description of dummy cup",
         sampleImageUrls(),
@@ -71,7 +71,7 @@ public final class DataStore {
         Category.DESK,
         "Location of dummy cup"
     ));
-    samples.add(new Post("7", "005",
+    samples.add(new Post("7".repeat(36), "005",
         "Dummy car", 29.99D,
         "Description of dummy car",
         sampleImageUrls(),
