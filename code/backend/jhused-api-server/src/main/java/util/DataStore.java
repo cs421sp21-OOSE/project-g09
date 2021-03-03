@@ -1,5 +1,6 @@
 package util;
 
+import model.Category;
 import model.Post;
 
 import java.util.ArrayList;
@@ -15,56 +16,92 @@ public final class DataStore {
   }
 
   /**
+   * NEED REFACTOR
    * Create a list of sample CS courses.
    *
    * @return a list of sample CS courses.
    */
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
-    List<String> images = new ArrayList<>();
-    images.add("/somedir/somesubdir/furniture_image.jpg");
     samples.add(new Post("0", "001",
-        "Dummy furniture", 30F,
+        "Dummy furniture", 30D,
         "Description of dummy furniture",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.FURNITURE,
         "Location of dummy furniture"
-        ));
+    ));
     samples.add(new Post("1", "002",
-        "Dummy TV", 40F,
+        "Dummy TV", 40D,
         "Description of dummy TV",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.TV,
         "Location of dummy TV"
-        ));
+    ));
     samples.add(new Post("3", "003",
-        "Dummy bed", 50F,
+        "Dummy bed", 50D,
         "Description of dummy bed",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.CAR,
         "Location of dummy bed"
-        ));
+    ));
     samples.add(new Post("4", "004",
-        "Dummy desk", 29.99F,
+        "Dummy desk", 29.99D,
         "Description of dummy desk",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.DESK,
         "Location of dummy desk"
-        ));
+    ));
     samples.add(new Post("5", "005",
-        "Dummy lamp", 29.99F,
+        "Dummy lamp", 29.99D,
         "Description of dummy lamp",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.TV,
         "Location of dummy lamp"
-        ));
-    samples.add(new Post("6","005",
-        "Dummy cup", 29.99F,
+    ));
+    samples.add(new Post("6", "005",
+        "Dummy cup", 29.99D,
         "Description of dummy cup",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.DESK,
         "Location of dummy cup"
-        ));
-    samples.add(new Post("7","005",
-        "Dummy car", 29.99F,
+    ));
+    samples.add(new Post("7", "005",
+        "Dummy car", 29.99D,
         "Description of dummy car",
-        images,
+        sampleImageUrls(),
+        sampleHashtags(),
+        Category.FURNITURE,
         "Location of dummy car"
-        ));
+    ));
     return samples;
+  }
+
+  /**
+   * return a list internet image urls
+   * could use some more work to generate reasonable image urls.
+   * @return a list internet image urls
+   */
+  public static List<String> sampleImageUrls() {
+    List<String> imageUrls = new ArrayList<>();
+    imageUrls.add("https://www.runoob.com/wp-content/uploads/2014/03/postgresql-11-1175122.png");
+    imageUrls.add("https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/amazon-rivet-furniture-1533048038.jpg");
+    return imageUrls;
+  }
+
+  /**
+   * return some hashtags stored in a list
+   * @return a list of hashtags
+   */
+  public static List<String> sampleHashtags() {
+    List<String> hashtags = new ArrayList<>();
+    hashtags.add("something");
+    hashtags.add("something too");
+    return hashtags;
   }
 }
