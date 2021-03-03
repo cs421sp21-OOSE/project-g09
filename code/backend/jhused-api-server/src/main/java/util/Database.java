@@ -67,9 +67,7 @@ public final class Database {
     try (Connection conn = sql2o.open()) {
       conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
-      conn.createQuery("DROP CAST IF EXISTS (varchar AS Category);").executeUpdate();
       conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
-      conn.createQuery("CREATE CAST (varchar AS Category) WITH INOUT AS IMPLICIT;");
 
       String sql = "CREATE TABLE IF NOT EXISTS Posts("
           + "uuid CHAR(36) NOT NULL PRIMARY KEY,"
