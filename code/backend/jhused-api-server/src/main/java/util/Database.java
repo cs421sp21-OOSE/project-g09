@@ -5,6 +5,7 @@ import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -67,15 +68,6 @@ public final class Database {
       conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
       conn.createQuery("DROP CAST IF EXISTS (varchar AS Category);").executeUpdate();
-//      private String uuid;  // must have
-//      private String userId;  // don't need to have
-//      private String title;   //must have
-//      private Double price;   //must have
-//      private String description;   // don't need to have
-//      private List<String> imageUrls;   // don't need to have
-//      private List<String> hashTags;    // don't need to have
-//      private Category category;  // must have
-//      private String location;  // must have
       conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
       conn.createQuery("CREATE CAST (varchar AS Category) WITH INOUT AS IMPLICIT;");
 
@@ -84,8 +76,8 @@ public final class Database {
           + "userId VARCHAR(15),"   // make this foreign key in future iterations
           + "title VARCHAR(50) NOT NULL,"
           + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
-                                              // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
-                                              // is 4, because it has 4 digits after decimal point.
+          // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
+          // is 4, because it has 4 digits after decimal point.
           + "description VARCHAR(5000),"
           + "imageUrls VARCHAR(100)[],"
           + "hashtags VARCHAR(15)[],"
@@ -101,12 +93,40 @@ public final class Database {
   }
 
   // Get either the test or the production Database URL
+
+  /**
+   * get either the test or the production database url
+   * @return database url
+   * @throws URISyntaxException if database url is not set
+   */
   private static String getDatabaseUrl() throws URISyntaxException {
-    String databaseUrl = System.getenv("DATABASE_URL");
+    String databaseUrl = null;
+    if (USE_TEST_DATABASE)
+      databaseUrl = System.getenv("TEST_DATABASE_URL");
+    else
+      databaseUrl = System.getenv("DATABASE_URL");
+    if (databaseUrl==null)
+    {
+      if(USE_TEST_DATABASE)
+      {
+        throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
+      }
+      else
+      {
+        throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
+      }
+    }
     return databaseUrl;
   }
 
   // Add Post to the database connected to the conn object.
+
+  /**
+   * Add Post to the database connected to the conn object.
+   * @param conn database connection
+   * @param Post the to be add Post object
+   * @throws Sql2oException
+   */
   private static void add(Connection conn, Post Post) throws Sql2oException {
     String sql = "INSERT INTO Posts(uuid, userId, title, price, description, imageUrls, hashtags, category, location) "
         + "VALUES(:uuid, :userId, :title, :price, :description, ARRAY[:imageUrls], ARRAY[:hashtags], CAST(:category AS Category), :location);";
