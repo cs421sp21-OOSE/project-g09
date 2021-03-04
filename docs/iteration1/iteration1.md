@@ -13,7 +13,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * PostsSql2oDao: concrete implementation of the PostDao interface 
   * Connection: utility class to provide static methods related to generate connection to the batabase
 
-![](assets/UML/UML-iteration1.png)
+![](../assets/UML/UML-iteration1.png)
 
 # Wireframe & Use-case  
 
@@ -26,7 +26,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. In the homepage, the user can type in a search query on the homepage, and will be redirected to the search page.  
 5. In the homepage, the user can click on the “Create a New Post” icon and be redirected to the create post page.  
 
-![](assets/Wireframe/Wireframe-home.png)
+![](../assets/Wireframe/Wireframe-home.png)
 
 ### Reading a post
 (After clicking on a post)
@@ -35,7 +35,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 3. User can click on the image in the main window will open a large window showing the image
 4. User can click on the arrows in the main window or the small image list to switch images
 
-![](assets/Wireframe/Wireframe-viewPost.png)
+![](../assets/Wireframe/Wireframe-viewPost.png)
 
 ### Editing a post
 (After clicking on the "create post" button)
@@ -43,7 +43,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 2. The user will need to fill at least the title, price, description boxes before clicking the submit button to submit a post.
 3. After clicking on the submit button, the user can be redirected to page telling user that the post has been submitted successfully. 
 
-![](assets/Wireframe/Wireframe-createPost.png)
+![](../assets/Wireframe/Wireframe-createPost.png)
 
 # Iteration Backlog  
 * As a user, I want to create posts, so that I can buy/sell things  
@@ -60,18 +60,19 @@ of the item
   * Add images to populate the sample data
 * Create a post class (done)
  ----------------
+* Database design (Qiao, Louie, Bohua)
 * Homepage
   * React rendering the post list (Junjie)
-  * Implement clicking on a post to see post details. (Similiar to HW6)
-  * Server class api, getAll
+  * Implement clicking on a post to see post details (Junjie, Sam)
+  * Server class api, getAll (Qiao, Louie, Bohua)
 * Reading a post 
-  * React rendering page/pop-up (Sam)
-  * Sql2oPostDao read() method
-  * Server class api, get
+  * React rendering page/pop-up (Chu, Sam)
+  * Sql2oPostDao read() method (Qiao, Louie, Bohua)
+  * Server class api, get (Qiao, Louie, Bohua)
 * Editing a post
-  * React rendering forms, image-upload (Chu)
-  * Sql2oPostDao create() method
-  * Server class api, post
+  * React rendering forms, image-upload (Chu, Sam) (imgur, flicker...github projects to start)
+  * Sql2oPostDao create() method (Qiao, Louie, Bohua)
+  * Server class api, post (Qiao, Louie, Bohua)
 
 # Retrospective  
 (To be done at the end of iteration 1)
