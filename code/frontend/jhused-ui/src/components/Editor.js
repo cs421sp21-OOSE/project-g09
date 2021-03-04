@@ -6,7 +6,9 @@ import CreatableSelecet from 'react-select';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { ProgressBar, Image } from 'react-bootstrap';
+import { ProgressBar, Image, Container } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./Editor.css"
@@ -252,11 +254,18 @@ function Editor() {
                     <Button onClick={handleImageUpload}>Upload</Button>
                     <br />
                     <ProgressBar now={imageUploadProgress} max="100" />
-                    <br />
-                    {/* <Image src={formData.image} alt="upload-image" thumbnail/> */}
                 </Form.Group>
                 <Button type="submit" disabled={submitted}>Submit</Button>
             </Form>
+            <Container>
+                <Row lg={6}>
+                {(formData.image).map((img) => (
+                    <Col>
+                        <Image roundedCircle src={img} width={100} height={100}/>
+                    </Col> 
+                    ))}
+                </Row>
+            </Container>
             {/* Conditional element to display the form data in json*/}
             {submitted &&
                 <pre name="json-output">
