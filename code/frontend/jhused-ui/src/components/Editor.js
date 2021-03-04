@@ -6,24 +6,33 @@ import CreatableSelecet from 'react-select';
 
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { ProgressBar, Image } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./Editor.css"
 
+// Form reducer to update the states related to the form
+// As input to the useReducer hook
 const formReducer = (state, action) => ({
     ...state,
     [action.name]: action.value
 });
 
+// Use for react-select components
+// The value prop is an object of label and value
 const createOption = (label) => ({
     label: label,
     value: label,
   });
 
+// Use for react-select components
 const createOptionArray = (labels) => 
     (labels.map(label => createOption(label)));
 
 
+/**
+ * Editor component for creatining/editing posts
+ */
 function Editor() {
 
     const categoryOptions = [
@@ -33,24 +42,64 @@ function Editor() {
         {value: 'Car', Label: 'Car'}
     ];
 
-    const [submitted, setSubmitted] = useState(false);
+    // Reudcer to hold the states related to the form
+    // Decide on useReducer instead of useState because of the input validation features to be implemented later
     const [formData, setFormData] = useReducer(formReducer, {
-        tag: []
+        title: "",
+        price: null,
+        category: "",
+        tag: [],
+        description: "",
+        image: ""
     });
+    
+    const [submitted, setSubmitted] = useState(false);
+
+    // State for tag input 
+    // It only hold the key input. The actual values are stored in the formData
     const [tagInput, setTagInput] = useState("");
 
+    // States related to image upload but not relevant to the form
     const [image, setImage] = useState(null);
     const [imageUploadProgress, setImageUploadProgress] = useState(0);
-    const [imageUrl, setImageUrl] = useState("");
+    
+    /**
+     * Default event handler for field input
+     * Does not work on react-select components
+     */
+    const handleOnChange = (event => {
+        const target = event.target;
+        const name = target.name;
+        const value = target.value;
+        setFormData({
+            name: name,
+            value: value
+        })
+    });
 
+    /**
+     * Event handler for the submit button
+     * It allows disabling input components once the button is clicked
+     */
+    const handleSubmit = (event => {
+        event.preventDefault();
+        setSubmitted(true);
+    });
+
+    /**
+     * Event handler for image file change
+     */
     const handleImageChange = event => {
         if (event.target.files[0]) {
             setImage(event.target.files[0]);
         }
     };
-
     console.log("image: ", image);
 
+    /**
+     * Event handler for image upload
+     * Perform the image upload and update the image url state
+     */
     const handleImageUpload  = () => {
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
@@ -70,28 +119,19 @@ function Editor() {
                     .child(image.name)
                     .getDownloadURL()
                     .then(url => {
-                        setImageUrl(url);
+                        setFormData({
+                            name: "image",
+                            value: url
+                        });
                     });
             }
         );
     };
 
-
-    const handleSubmit = (event => {
-        event.preventDefault();
-        setSubmitted(true);
-    });
-
-    const handleOnChange = (event => {
-        const target = event.target;
-        const name = target.name;
-        const value = target.value;
-        setFormData({
-            name: name,
-            value: value
-        })
-    });
-
+    /**
+     * Event handlers for react-select components
+     * Could be refactored later into the handleChange
+     */
     const handleCategoryChange = (categoryData => {
         setFormData({
             name: "category",
@@ -181,12 +221,12 @@ function Editor() {
                     />
                 </Form.Group>
                 <Form.Group>
-                    <input type="file" onChange={handleImageChange}/>
-                    <button onClick={handleImageUpload}>Upload</button>
+                    <Form.File onChange={handleImageChange} label="Select images" />
+                    <Button onClick={handleImageUpload}>Upload</Button>
                     <br />
-                    <progress value={imageUploadProgress} max="100" />
+                    <ProgressBar now={imageUploadProgress} max="100" />
                     <br />
-                    <img src={imageUrl} alt="upload-image" />
+                    {/* <Image src={formData.image} alt="upload-image" thumbnail/> */}
                 </Form.Group>
                 <Button type="submit" disabled={submitted}>Submit</Button>
             </Form>
