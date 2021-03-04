@@ -3,10 +3,14 @@ import React from "react";
 import PostDetails from "./Components/PostDetails";
 
 import "./App.css";
+
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import img1 from "./images/furniture/desk.jpg";
 import img2 from "./images/furniture/desk2.jpg";
 import img3 from "./images/furniture/desk3.jpg";
+
+import ImageGrid from "./ImageGrid";
+
 
 const axios = require("axios").default;
 axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
@@ -42,6 +46,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+
         <Router>
           <Route exact path="/">
             <img src="./images/logo.png" alt="logo" />
@@ -50,6 +55,9 @@ class App extends React.Component {
             <PostDetails post={testPost} />
           </Route>
         </Router>
+
+        <ImageGrid />
+
       </div>
     );
   }

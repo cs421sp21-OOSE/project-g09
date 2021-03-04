@@ -87,7 +87,7 @@ public class ApiServer {
     // TODO: implement requests
 
     // return all posts
-    get("/posts", (req, res) -> {
+    get("/api/posts", (req, res) -> {
       try {
         String title = req.queryParams("title");
         List<Post> Posts;
@@ -101,5 +101,6 @@ public class ApiServer {
         throw new ApiError(ex.getMessage(), 500);
       }
     });
+    after((req, res) -> res.type("application/json"));
   }
 }
