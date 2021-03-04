@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.7.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "firebase": "^8.2.9",
     "husky": "^5.1.1",
     "lint-staged": "^10.5.4",
     "react": "^17.0.1",

@@ -1,4 +1,5 @@
 import React, { useReducer, useState } from 'react';
+import { storage } from "./firebase";
 
 import Select from 'react-select';
 import CreatableSelecet from 'react-select';
@@ -36,8 +37,45 @@ function Editor() {
     const [formData, setFormData] = useReducer(formReducer, {
         tag: []
     });
-    
     const [tagInput, setTagInput] = useState("");
+
+    const [image, setImage] = useState(null);
+    const [imageUploadProgress, setImageUploadProgress] = useState(0);
+    const [imageUrl, setImageUrl] = useState("");
+
+    const handleImageChange = event => {
+        if (event.target.files[0]) {
+            setImage(event.target.files[0]);
+        }
+    };
+
+    console.log("image: ", image);
+
+    const handleImageUpload  = () => {
+        const uploadTask = storage.ref(`images/${image.name}`).put(image);
+        uploadTask.on(
+            "state_changed",
+            snapshot => {
+                const progress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                setImageUploadProgress(progress);
+            },
+            error => {
+                console.log(error);
+            },
+            () => {
+                storage
+                    .ref("images")
+                    .child(image.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        setImageUrl(url);
+                    });
+            }
+        );
+    };
+
 
     const handleSubmit = (event => {
         event.preventDefault();
@@ -143,9 +181,12 @@ function Editor() {
                     />
                 </Form.Group>
                 <Form.Group>
-                    <Form.File
-                        name="image"
-                        label="Upload Images"></Form.File>
+                    <input type="file" onChange={handleImageChange}/>
+                    <button onClick={handleImageUpload}>Upload</button>
+                    <br />
+                    <progress value={imageUploadProgress} max="100" />
+                    <br />
+                    <img src={imageUrl} alt="upload-image" />
                 </Form.Group>
                 <Button type="submit" disabled={submitted}>Submit</Button>
             </Form>
