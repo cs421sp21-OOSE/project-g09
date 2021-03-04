@@ -13,10 +13,25 @@ import "./Editor.css"
 
 // Form reducer to update the states related to the form
 // As input to the useReducer hook
-const formReducer = (state, action) => ({
-    ...state,
-    [action.name]: action.value
-});
+// const formReducer = (state, action) => ({
+//     ...state,
+//     [action.name]: action.value
+// });
+
+const formReducer = function (state, action) {
+    if (action.name !== "image") {
+        return {
+            ...state,
+            [action.name]: action.value
+        };
+    }
+    else {
+        return {
+            ...state,
+            [action.name]: [...state.image, action.value]
+        };
+    }
+};
 
 // Use for react-select components
 // The value prop is an object of label and value
@@ -29,6 +44,7 @@ const createOption = (label) => ({
 const createOptionArray = (labels) => 
     (labels.map(label => createOption(label)));
 
+// Define enums for post categories
 const categories = {
     FURNITURE: {value: 0, label: "Furniture"},
     CAR: {value: 1, label: "Car"},
@@ -36,23 +52,17 @@ const categories = {
     DESK: {value: 3, label: "Desk"}
 };
 
-
 /**
  * Editor component for creatining/editing posts
  */
 function Editor() {
 
+    // Define post category options for use in the react-select component
     const categoryOptions = [
         categories.FURNITURE, 
         categories.CAR, categories.TV, 
         categories.DESK
     ];
-    // const categoryOptions = [
-    //     {value: 'Furniture', label: 'Furniture'},
-    //     {value: 'Electronics', label: 'Electronics'},
-    //     {value: 'Textbook', label: 'Textbook'},
-    //     {value: 'Car', Label: 'Car'}
-    // ];
 
     // Reudcer to hold the states related to the form
     // Decide on useReducer instead of useState because of the input validation features to be implemented later
@@ -65,6 +75,7 @@ function Editor() {
         image: []
     });
     
+    // State for the submit button - used for controlling responses after a post is submitted
     const [submitted, setSubmitted] = useState(false);
 
     // State for tag input 
@@ -74,7 +85,7 @@ function Editor() {
     // States related to image upload but not relevant to the form
     const [images, setImages] = useState([]);
     const [imageUploadProgress, setImageUploadProgress] = useState(0);
-    
+
     /**
      * Default event handler for field input
      * Does not work on react-select components
@@ -91,7 +102,8 @@ function Editor() {
 
     /**
      * Event handler for the submit button
-     * It allows disabling input components once the button is clicked
+     * TODO: disable input components once the button is clicked
+     * TODO: show a success message (use a conditional component)
      */
     const handleSubmit = (event => {
         event.preventDefault();
@@ -128,19 +140,18 @@ function Editor() {
                     console.log(error);
                 },
                 () => {
-                    storage
-                        .ref("images")
-                        .child(image.name)
-                        .getDownloadURL()
-                        .then(url => {
+                    uploadTask.snapshot.ref.getDownloadURL().then(
+                        (downloadURL) => {
+                            console.log("File available at ", downloadURL);
                             setFormData({
                                 name: "image",
-                                value: [...formData.image, url]
+                                value: downloadURL
                             });
-                        });
+                        }
+                    );
                 }
             );
-        }); 
+        });
     };
 
     /**
@@ -237,6 +248,7 @@ function Editor() {
                 </Form.Group>
                 <Form.Group>
                     <Form.File onChange={handleImageChange} label="Select images" multiple/>
+                    <br />
                     <Button onClick={handleImageUpload}>Upload</Button>
                     <br />
                     <ProgressBar now={imageUploadProgress} max="100" />
@@ -245,6 +257,7 @@ function Editor() {
                 </Form.Group>
                 <Button type="submit" disabled={submitted}>Submit</Button>
             </Form>
+            {/* Conditional element to display the form data in json*/}
             {submitted &&
                 <pre name="json-output">
                     {JSON.stringify({...formData}, null, 2)}
