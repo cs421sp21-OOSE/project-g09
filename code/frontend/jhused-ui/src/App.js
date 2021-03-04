@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Editor from "./components/Editor";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const axios = require("axios").default;
 axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
@@ -36,8 +37,11 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Header className="App-header"/>
-        <Editor/>
+        <Router>
+          <Switch>
+            <Route path="/editor" exact component={() => <Editor />}/>
+          </Switch>
+        </Router>
       </div>
     );
   }

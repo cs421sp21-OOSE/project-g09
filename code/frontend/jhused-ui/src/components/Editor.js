@@ -29,6 +29,13 @@ const createOption = (label) => ({
 const createOptionArray = (labels) => 
     (labels.map(label => createOption(label)));
 
+const categories = {
+    FURNITURE: {value: 0, label: "Furniture"},
+    CAR: {value: 1, label: "Car"},
+    TV: {value: 2, label: "TV"},
+    DESK: {value: 3, label: "Desk"}
+};
+
 
 /**
  * Editor component for creatining/editing posts
@@ -36,11 +43,16 @@ const createOptionArray = (labels) =>
 function Editor() {
 
     const categoryOptions = [
-        {value: 'Furniture', label: 'Furniture'},
-        {value: 'Electronics', label: 'Electronics'},
-        {value: 'Textbook', label: 'Textbook'},
-        {value: 'Car', Label: 'Car'}
+        categories.FURNITURE, 
+        categories.CAR, categories.TV, 
+        categories.DESK
     ];
+    // const categoryOptions = [
+    //     {value: 'Furniture', label: 'Furniture'},
+    //     {value: 'Electronics', label: 'Electronics'},
+    //     {value: 'Textbook', label: 'Textbook'},
+    //     {value: 'Car', Label: 'Car'}
+    // ];
 
     // Reudcer to hold the states related to the form
     // Decide on useReducer instead of useState because of the input validation features to be implemented later
@@ -50,7 +62,7 @@ function Editor() {
         category: "",
         tag: [],
         description: "",
-        image: ""
+        image: []
     });
     
     const [submitted, setSubmitted] = useState(false);
@@ -60,7 +72,7 @@ function Editor() {
     const [tagInput, setTagInput] = useState("");
 
     // States related to image upload but not relevant to the form
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]);
     const [imageUploadProgress, setImageUploadProgress] = useState(0);
     
     /**
@@ -91,41 +103,44 @@ function Editor() {
      */
     const handleImageChange = event => {
         if (event.target.files[0]) {
-            setImage(event.target.files[0]);
+            // setImage(event.target.files[0]);
+            setImages(event.target.files);
         }
     };
-    console.log("image: ", image);
+    console.log("image: ", images);
 
     /**
      * Event handler for image upload
      * Perform the image upload and update the image url state
      */
     const handleImageUpload  = () => {
-        const uploadTask = storage.ref(`images/${image.name}`).put(image);
-        uploadTask.on(
-            "state_changed",
-            snapshot => {
-                const progress = Math.round(
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                );
-                setImageUploadProgress(progress);
-            },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storage
-                    .ref("images")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        setFormData({
-                            name: "image",
-                            value: url
+        Array.from(images).forEach(image => {
+            const uploadTask = storage.ref(`images/${image.name}`).put(image);
+            uploadTask.on(
+                "state_changed",
+                snapshot => {
+                    const progress = Math.round(
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                    );
+                    setImageUploadProgress(progress);
+                },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("images")
+                        .child(image.name)
+                        .getDownloadURL()
+                        .then(url => {
+                            setFormData({
+                                name: "image",
+                                value: [...formData.image, url]
+                            });
                         });
-                    });
-            }
-        );
+                }
+            );
+        }); 
     };
 
     /**
@@ -221,7 +236,7 @@ function Editor() {
                     />
                 </Form.Group>
                 <Form.Group>
-                    <Form.File onChange={handleImageChange} label="Select images" />
+                    <Form.File onChange={handleImageChange} label="Select images" multiple/>
                     <Button onClick={handleImageUpload}>Upload</Button>
                     <br />
                     <ProgressBar now={imageUploadProgress} max="100" />
