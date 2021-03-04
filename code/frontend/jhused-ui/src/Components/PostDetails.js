@@ -8,7 +8,7 @@ const PostDetails = (props) => {
   return (
     <div className="post-container">
       <div className="post-body">
-        <img src={ExitPng} alt="x" className="exit"></img>
+        <a href="/"><img src={ExitPng} alt="x" className="exit"></img> </a>
         <h1 className="post-title">{props.post.title}</h1>
         <h1 className="post-price">{props.post.price}</h1>
         <div className="post-content-left">

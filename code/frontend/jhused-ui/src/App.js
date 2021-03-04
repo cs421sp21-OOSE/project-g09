@@ -51,8 +51,8 @@ class App extends React.Component {
           <Route exact path="/">
             <img src="./images/logo.png" alt="logo" />
           </Route>
-          <Route exact path="/post">
-            <PostDetails post={testPost} />
+          <Route exact path="/post/:postID" children={<PostDetails post={testPost}/>}>
+           
           </Route>
         </Router>
 

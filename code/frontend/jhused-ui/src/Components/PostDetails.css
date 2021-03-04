@@ -6,14 +6,17 @@
   border: solid 3px;
   border-radius: 30px;
   border-color: #002d72;
+  background-color: white;
   color: #002d72;
 
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
 
   padding: 0 0 1% 0;
+
+  z-index: 9999;
 }
 
 .post-body {
