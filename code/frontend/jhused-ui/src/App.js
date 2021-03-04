@@ -29,14 +29,12 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="App">
         <Router>
           <Switch>
             <Route path="/editor" exact component={() => <Editor />}/>
           </Switch>
         </Router>
-      <div>
-      <div className="App">
         <ImageGrid />
       </div>
     );
