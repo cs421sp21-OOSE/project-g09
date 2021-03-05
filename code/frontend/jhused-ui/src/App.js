@@ -1,16 +1,14 @@
 import React from "react";
-import { Switch, Route} from "react-router";
-
-import Editor from './components/Editor';
-import ImageGrid from './ImageGrid';
-
-
+import logo from "./logo.svg";
 import "./App.css";
+import ImageGrid from "./ImageGrid";
+import { Switch, Route} from "react-router";
+import Editor from './components/Editor';
+
 
 const axios = require("axios").default;
-axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
-// axios.defaults.baseURL = "http://localhost:4567/";
-
+//axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
+axios.defaults.baseURL = "http://localhost:4567/";
 class App extends React.Component {
   constructor() {
     super();
@@ -40,3 +38,4 @@ class App extends React.Component {
 }
 
 export default App;
+export {axios};
