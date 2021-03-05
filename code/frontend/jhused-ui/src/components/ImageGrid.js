@@ -1,5 +1,5 @@
 import React from "react";
-import {axios} from "../App"
+import axios from "../util/axios"
 import {Button} from "react-bootstrap";
 import "./ImageGrid.css";
 

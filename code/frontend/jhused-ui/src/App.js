@@ -17,9 +17,7 @@ const testPost = {
   images: [img1, img2, img3, img4]
 };
 
-const axios = require("axios").default;
-//axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
-axios.defaults.baseURL = "http://localhost:4567/";
+
 class App extends React.Component {
   constructor() {
     super();
@@ -50,4 +48,4 @@ class App extends React.Component {
 }
 
 export default App;
-export { axios };
+
