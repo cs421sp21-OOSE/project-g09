@@ -2,6 +2,7 @@ package api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import dao.PostDao;
 import dao.Sql2oPostDao;
 import exceptions.ApiError;
@@ -104,9 +105,63 @@ public class ApiServer {
       }
     });
 
-//    post("/api/posts/create", (req, res) -> {
-//
-//    })
+    get("/api/posts/:postUuid", (req, res) -> {
+      try {
+        String postUuid = req.params("postUuid");
+        Post post = postDao.read(postUuid);
+        if (post == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(post);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    post("/api/posts", (req, res) -> {
+      try {
+        Post post = gson.fromJson(req.body(), Post.class);
+        postDao.create(post);
+        res.status(201);
+        return gson.toJson(post);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    put("/api/posts/:postUuid", (req, res) -> {
+      try {
+        String postUuid = req.params("postUuid");
+        Post post = gson.fromJson(req.body(), Post.class);
+        if (post.getUuid() == null) {
+          throw new ApiError("Incomplete data", 500);
+        }
+        if (!post.getUuid().equals(postUuid)) {
+          throw new ApiError("postUuid does not match the resource identifier", 400);
+        }
+        post = postDao.update(post.getUuid(), post);
+        if (post == null) {
+          throw new ApiError("Resource not found", 404);
+        }
+        return gson.toJson(post);
+      } catch (DaoException | JsonSyntaxException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    delete("/api/posts/:postUuid", (req, res) -> {
+      try {
+        String postUuid = req.params("postUuid");
+        Post post = postDao.delete(postUuid);
+        if (post == null) {
+          throw new ApiError("Resource not found", 404);   // No matching post
+        }
+        return gson.toJson(post);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
     after((req, res) -> res.type("application/json"));
   }
 }
