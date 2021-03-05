@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Objects;
 import lombok.Data;
 
 import java.util.List;
@@ -78,4 +79,25 @@ public class Post {
     this.location = location;
   }
 //  No need to add getter and setter function as lombok automated these
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Post)) {
+      return false;
+    }
+    Post post = (Post) o;
+    return Objects.equals(userId, post.userId) && Objects
+        .equals(title, post.title) && Objects.equals(price, post.price) && Objects
+        .equals(description, post.description) && Objects.equals(imageUrls, post.imageUrls)
+        && Objects.equals(hashtags, post.hashtags) && category == post.category
+        && Objects.equals(location, post.location);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(userId, title, price, description, imageUrls, hashtags, category, location);
+  }
 }

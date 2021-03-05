@@ -107,7 +107,7 @@ public final class Database {
       if (USE_TEST_DATABASE) {
         throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
       } else {
-        throw new URISyntaxException("null", "TEST_DATABASE_URL is not set");
+        throw new URISyntaxException("null", "DATABASE_URL is not set");
       }
     }
     return databaseUrl;

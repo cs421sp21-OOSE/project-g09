@@ -6,6 +6,8 @@ import dao.PostDao;
 import dao.Sql2oPostDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
+import kong.unirest.Unirest;
+import kong.unirest.json.JSONObject;
 import model.Post;
 import org.sql2o.Sql2o;
 import spark.Spark;
@@ -101,6 +103,10 @@ public class ApiServer {
         throw new ApiError(ex.getMessage(), 500);
       }
     });
+
+//    post("/api/posts/create", (req, res) -> {
+//
+//    })
     after((req, res) -> res.type("application/json"));
   }
 }
