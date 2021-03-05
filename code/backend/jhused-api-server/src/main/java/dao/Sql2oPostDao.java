@@ -136,14 +136,15 @@ public class Sql2oPostDao implements PostDao {
      * Deletes the post with the passed id, and returns it after deletion.
      */
     String sql = "WITH deleted AS ("
-            + "DELETE FROM posts WHERE postId = :thisId RETURNING *"
+            + "DELETE FROM posts WHERE uuid = :thisId RETURNING *"
             + ") SELECT * FROM deleted;";
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
       return conn.createQuery(sql)
-              .addParameter("thisID", id)
+              .addParameter("thisId", id)
               .executeAndFetchFirst(Post.class);
+      //TODO Performs delete correctly, but has strange error.
     } catch (Sql2oException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
     }

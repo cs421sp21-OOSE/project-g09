@@ -182,24 +182,26 @@ class Sql2oPostDaoTest {
     });
   }
 
-//  @Test
-//  @DisplayName("delete works for valid input")
-//  void deleteExistingPost() {
-//    Post postDeleted = postDao.delete(samples.get(0).getOfferingName());
-//    assertEquals(postDeleted, samples.get(0));
-//    assertNull(postDao.read(postDeleted.getOfferingName()));
-//  }
-//
-//  @Test
-//  @DisplayName("delete returns null for non existing post")
-//  void deleteThrowsExceptionNoMatchData() {
-//    assertNull(postDao.delete("EN.000.999"));
-//  }
-//
-//  @Test
-//  @DisplayName("delete returns null for invalid input")
-//  void deleteThrowsExceptionIncompleteData() {
-//    assertNull(postDao.delete(null));
-//  }
-//
+  @Test
+  @DisplayName("delete works for valid input")
+  void deleteExistingPost() {
+    //TODO figure out weird error. Post is deleted, but return is not correct.
+    Post postDeleted = postDao.delete(samples.get(0).getUuid());
+    assertEquals(postDeleted, samples.get(0));
+    //TODO uncomment this once read is implemented
+    //assertNull(postDao.read(postDeleted.getUuid()));
+  }
+
+  @Test
+  @DisplayName("delete returns null for non existing post")
+  void deleteThrowsExceptionNoMatchData() {
+    assertNull(postDao.delete("25"));
+  }
+
+  @Test
+  @DisplayName("delete returns null for invalid input")
+  void deleteThrowsExceptionIncompleteData() {
+    assertNull(postDao.delete(null));
+  }
+
 }
