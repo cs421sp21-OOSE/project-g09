@@ -49,7 +49,7 @@ public class Sql2oPostDao implements PostDao {
 
 
     try (Connection conn = this.sql2o.open()) {
-      return mapToPosts(conn.createQuery(sql)
+      return mapToPostsGetFirst(conn.createQuery(sql)
           .addParameter("uuid", post.getUuid())
           .addParameter("userid", post.getUserId())
           .addParameter("title", post.getTitle())
@@ -59,7 +59,7 @@ public class Sql2oPostDao implements PostDao {
           .addParameter("hashtags", post.getHashtags())
           .addParameter("category", post.getCategory())
           .addParameter("location", post.getLocation())
-          .executeAndFetchTable().asList()).get(0);
+          .executeAndFetchTable().asList());
     } catch (Sql2oException|SQLException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
@@ -68,9 +68,9 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public Post read(String id) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
+      return mapToPostsGetFirst(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
           .addParameter("id", id)
-          .executeAndFetchTable().asList()).get(0);
+          .executeAndFetchTable().asList());
     } catch (Sql2oException|SQLException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
@@ -88,10 +88,10 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery("SELECT * FROM posts WHERE lower(title) LIKE :partial;")
+      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE lower(title) LIKE :partial;")
           .addParameter("partial", "%" + titleQuery.toLowerCase() + "%")
-          .executeAndFetch(Post.class);
-    } catch (Sql2oException ex) {
+          .executeAndFetchTable().asList());
+    } catch (Sql2oException|SQLException ex) {
       throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
     }
   }
@@ -153,7 +153,7 @@ public class Sql2oPostDao implements PostDao {
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery(sql)
+      return mapToPostsGetFirst(conn.createQuery(sql)
               .addParameter("newTitle", post.getTitle())
               .addParameter("newPrice", post.getPrice())
               .addParameter("newDescription", newDescription)
@@ -163,7 +163,7 @@ public class Sql2oPostDao implements PostDao {
               .addParameter("newCategory", post.getCategory())
               .addParameter("newLocation", post.getLocation())
               .addParameter("thisID", id)
-              .executeAndFetchTable().asList()).get(0);
+              .executeAndFetchTable().asList());
     } catch (Sql2oException|SQLException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post!", ex);
     }
@@ -182,9 +182,9 @@ public class Sql2oPostDao implements PostDao {
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery(sql)
+      return mapToPostsGetFirst(conn.createQuery(sql)
               .addParameter("thisId", id)
-              .executeAndFetchTable().asList()).get(0);
+              .executeAndFetchTable().asList());
       //TODO Performs delete correctly, but has strange error.
     } catch (Sql2oException|SQLException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
@@ -203,9 +203,23 @@ public class Sql2oPostDao implements PostDao {
     for (Map<String, Object> post : postMaps) {
       posts.add(mapToPost(post));
     }
+    return posts;
+  }
+
+  /**
+   * Convert a list of maps returned by sql2o to a List of Post.
+   * @param postMaps a list of maps returned by sql2o.
+   * @return the first returned Post
+   * @throws SQLException
+   */
+  private Post mapToPostsGetFirst(List<Map<String, Object>> postMaps) throws SQLException{
+    List<Post> posts = new ArrayList<>();
+    for (Map<String, Object> post : postMaps) {
+      posts.add(mapToPost(post));
+    }
     if (posts.isEmpty())
       posts.add(null);
-    return posts;
+    return posts.get(0);
   }
 
   /**

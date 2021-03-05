@@ -115,39 +115,39 @@ class Sql2oPostDaoTest {
     }
   }
 
-//  @Test
-//  @DisplayName("read returns null given invalid offering name")
-//  void readPostGivenInvalidOfferingName() {
-//    Post c1 = postDao.read("EN.00.999");
-//    assertNull(c1);
-//  }
-//
-//  @Test
-//  @DisplayName("read all the posts")
-//  void readAll() {
-//    List<Post> posts = postDao.readAll();
-//    assertIterableEquals(samples, posts);
-//  }
-//
-//  @Test
-//  @DisplayName("read all the posts that contain a query string in their title")
-//  void readAllGivenTitle() {
-//    String query = "data";
-//    List<Post> posts = postDao.readAll(query);
-//    assertNotEquals(0, posts.size());
-//    for (Post post : posts) {
-//      assertTrue(post.getTitle().toLowerCase().contains(query.toLowerCase()));
-//    }
-//  }
-//
-//  @Test
-//  @DisplayName("readAll(query) returns empty list when query not matches posts' title")
-//  void readAllGivenNonExistingTitle() {
-//    String query = "game";
-//    List<Post> posts = postDao.readAll(query);
-//    assertEquals(0, posts.size());
-//  }
-//
+  @Test
+  @DisplayName("read returns null given invalid uuid")
+  void readPostGivenInvalidOfferingName() {
+    Post c1 = postDao.read("928123");
+    assertNull(c1);
+  }
+
+  @Test
+  @DisplayName("read all the posts")
+  void readAll() {
+    List<Post> posts = postDao.readAll();
+    assertIterableEquals(samples, posts);
+  }
+
+  @Test
+  @DisplayName("read all the posts that contain a query string in their title")
+  void readAllGivenTitle() {
+    String query = "Dummy";
+    List<Post> posts = postDao.readAll(query);
+    assertNotEquals(0, posts.size());
+    for (Post post : posts) {
+      assertTrue(post.getTitle().toLowerCase().contains(query.toLowerCase()));
+    }
+  }
+
+  @Test
+  @DisplayName("readAll(query) returns empty list when query not matches posts' title")
+  void readAllGivenNonExistingTitle() {
+    String query = "game";
+    List<Post> posts = postDao.readAll(query);
+    assertEquals(0, posts.size());
+  }
+
   @Test
   @DisplayName("updating a post works")
   void updateWorks() {
