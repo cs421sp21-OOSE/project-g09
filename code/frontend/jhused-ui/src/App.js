@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import ImageGrid from "./ImageGrid";
+import ImageGrid from "./components/ImageGrid";
 import { Switch, Route } from "react-router-dom";
 import Editor from "./components/Editor";
 import img1 from "./images/furniture/desk.jpg";

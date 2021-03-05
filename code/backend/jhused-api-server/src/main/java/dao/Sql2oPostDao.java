@@ -1,6 +1,8 @@
 package dao;
 
 import exceptions.DaoException;
+import java.io.InvalidObjectException;
+import java.util.UUID;
 import model.Category;
 import model.Post;
 import org.postgresql.jdbc.PgArray;
@@ -32,12 +34,46 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post create(Post post) throws DaoException {
-    return null; // stub
+    // TODO: need to discuss uuid formation
+    if (post.getUuid().isEmpty()) {
+      post.setUuid(UUID.randomUUID().toString());
+    }
+
+    String sql = "WITH inserted AS ("
+        + "INSERT INTO posts(uuid, userid, title, price, description, "
+        + "imageurls, hashtags, category, location) "
+        + "VALUES(:uuid, :userid, :title, :price, :description, ARRAY[:imageurls], "
+        + "ARRAY[:hashtags], CAST(:category AS Category), :location) RETURNING *"
+        + ") SELECT * FROM inserted;";
+
+
+
+    try (Connection conn = this.sql2o.open()) {
+      return mapToPosts(conn.createQuery(sql)
+          .addParameter("uuid", post.getUuid())
+          .addParameter("userid", post.getUserId())
+          .addParameter("title", post.getTitle())
+          .addParameter("price", post.getPrice())
+          .addParameter("description", post.getDescription())
+          .addParameter("imageurls", post.getImageUrls())
+          .addParameter("hashtags", post.getHashtags())
+          .addParameter("category", post.getCategory())
+          .addParameter("location", post.getLocation())
+          .executeAndFetchTable().asList()).get(0);
+    } catch (Sql2oException|SQLException ex) {
+      throw new DaoException(ex.getMessage(), ex);
+    }
   }
 
   @Override
   public Post read(String id) throws DaoException {
-    return null; // stub
+    try (Connection conn = sql2o.open()) {
+      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
+          .addParameter("id", id)
+          .executeAndFetchTable().asList()).get(0);
+    } catch (Sql2oException|SQLException ex) {
+      throw new DaoException("Unable to read a post with id " + id, ex);
+    }
   }
 
   @Override
@@ -51,7 +87,13 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
-    return null; // stub
+    try (Connection conn = sql2o.open()) {
+      return conn.createQuery("SELECT * FROM posts WHERE lower(title) LIKE :partial;")
+          .addParameter("partial", "%" + titleQuery.toLowerCase() + "%")
+          .executeAndFetch(Post.class);
+    } catch (Sql2oException ex) {
+      throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
+    }
   }
 
   @Override
@@ -161,6 +203,8 @@ public class Sql2oPostDao implements PostDao {
     for (Map<String, Object> post : postMaps) {
       posts.add(mapToPost(post));
     }
+    if (posts.isEmpty())
+      posts.add(null);
     return posts;
   }
 
