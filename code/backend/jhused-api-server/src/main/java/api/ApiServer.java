@@ -137,7 +137,7 @@ public class ApiServer {
           throw new ApiError("Incomplete data", 500);
         }
         if (!post.getUuid().equals(postUuid)) {
-          throw new ApiError("offering name does not match the resource identifier", 400);
+          throw new ApiError("postUuid does not match the resource identifier", 400);
         }
         post = postDao.update(post.getUuid(), post);
         if (post == null) {

@@ -159,13 +159,12 @@ public class Sql2oPostDao implements PostDao {
               .addParameter("newDescription", newDescription)
               .addParameter("newImageUrls", imageUrls)
               .addParameter("newHashtags", hashtags)
-              //TODO Get category update working.
               .addParameter("newCategory", post.getCategory())
               .addParameter("newLocation", post.getLocation())
               .addParameter("thisID", id)
               .executeAndFetchTable().asList());
     } catch (Sql2oException|SQLException ex) { //otherwise, fail
-      throw new DaoException("Unable to update this post!", ex);
+      throw new DaoException("Unable to update this post! Check if missing fields.", ex);
     }
   }
 
