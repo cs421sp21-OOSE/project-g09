@@ -10,8 +10,10 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Server (controller): processing HTTP requests and sending responses
   * Post (model): model representation of posts created by users in the app
   * PostDao: dact access object interface for the model class to provide DB operations
-  * PostsSql2oDao: concrete implementation of the PostDao interface 
-  * Connection: utility class to provide static methods related to generate connection to the batabase
+  * Sql2oPostDao: concrete implementation of the PostDao interface 
+  * Datastore: utility class to provide samples.
+  * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
+  * 
 
 ![](../assets/UML/UML-iteration1.png)
 
