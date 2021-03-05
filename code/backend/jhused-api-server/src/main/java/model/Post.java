@@ -80,10 +80,6 @@ public class Post {
   }
 //  No need to add getter and setter function as lombok automated these
 
-  public boolean isValid() {
-    return !uuid.isEmpty() && !userId.isEmpty() && !title.isEmpty() && price != null && category != null && !location.isEmpty();
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

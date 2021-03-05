@@ -84,7 +84,7 @@ class Sql2oPostDaoTest {
 //    assertThrows(DaoException.class, () -> {
 //      postDao.create(c1);
 //    });
-    c1.setUserId("0" + " ".repeat(35));
+    c1.setUuid("0" + " ".repeat(35));
     c1.setPrice(null);
     assertThrows(DaoException.class, () -> {
       postDao.create(c1);
@@ -109,21 +109,10 @@ class Sql2oPostDaoTest {
   @Test
   @DisplayName("read a post given its uuid")
   void readPostGivenUUID() {
-//    for (Post c2 : samples) {
-//      Post c1 = postDao.read(c2.getUuid());
-//      assertEquals(c2, c1);
-//    }
-    Post c1 = new Post("0".repeat(36), "001",
-        "Dummy furniture", 30D,
-        "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
-        Category.FURNITURE,
-        "Location of dummy furniture"
-    );
-    Post c2 = postDao.read("0".repeat(36));
-    System.out.println(c2);
-    assertEquals(c1, c2);
+    for (Post c2 : samples) {
+      Post c1 = postDao.read(c2.getUuid());
+      assertEquals(c2, c1);
+    }
   }
 
 //  @Test
@@ -178,7 +167,7 @@ class Sql2oPostDaoTest {
   }
 
   @Test
-  @DisplayName("Update returns null for an invalid offeringCode")
+  @DisplayName("Update returns null for an invalid uuid")
   void updateReturnsNullInvalidCode() {
     Post ogPost = new Post("100", "Updated Title!",100D, Category.CAR,
             "Baltimore");
