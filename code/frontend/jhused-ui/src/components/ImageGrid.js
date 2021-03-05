@@ -1,6 +1,7 @@
 import React from "react";
 import {axios} from "../App"
 import {Button} from "react-bootstrap";
+import "./ImageGrid.css";
 
 
 class ImageGrid extends React.Component {
