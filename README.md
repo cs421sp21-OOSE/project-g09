@@ -54,6 +54,7 @@ What is needed to set up the dev environment. For instance, global dependencies 
 Install belows in frontend folder (code/frontend/jhused-ui):  
 [Create-React-App](https://github.com/facebookincubator/create-react-app)    
 [axios](https://github.com/axios/axios)  
+[react-router-dom](https://reactrouter.com/web/guides/quick-start)  
 
 ### Setting up Dev
 
