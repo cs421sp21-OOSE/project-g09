@@ -4,6 +4,7 @@ import ImageGrid from "./ImageGrid";
 import { Switch, Route } from "react-router-dom";
 import Editor from "./components/Editor";
 
+
 const axios = require("axios").default;
 //axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
 axios.defaults.baseURL = "http://localhost:4567/";
