@@ -2,7 +2,7 @@ import React from "react";
 import "./App.css";
 import ImageGrid from "./ImageGrid";
 import { Switch, Route} from "react-router";
-import Editor from './components/Editor';
+import Editor from './Components/Editor';
 
 
 const axios = require("axios").default;
