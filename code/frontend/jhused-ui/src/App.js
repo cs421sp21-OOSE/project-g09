@@ -24,6 +24,7 @@ const testPost = {
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   images: [img1, img2, img3],
 };
+
 class App extends React.Component {
   constructor() {
     super();
@@ -46,18 +47,6 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-
-        <Router>
-          <Route exact path="/">
-            <img src="./images/logo.png" alt="logo" />
-          </Route>
-          <Route exact path="/post/:postID" children={<PostDetails post={testPost}/>}>
-           
-          </Route>
-        </Router>
-
-        <ImageGrid />
-
       </div>
     );
   }
