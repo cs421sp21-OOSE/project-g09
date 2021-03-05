@@ -124,6 +124,7 @@ git subtree push --prefix code/frontend/jhused-ui heroku-ui master
 ```
 
 And again you'd need to tell what the previous code actually does.
+Make sure you check out the branch you want to deploy first. The command "git subtree push ..." will deploy the HEAD branch to heroku. 
 
 ## Versioning
 
