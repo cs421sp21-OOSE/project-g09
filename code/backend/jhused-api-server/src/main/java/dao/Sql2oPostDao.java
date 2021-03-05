@@ -34,16 +34,9 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post create(Post post) throws DaoException {
-    if (!post.isValid()) {
-      throw new DaoException("Invalid Post",null);
-    }
     // TODO: need to discuss uuid formation
     if (post.getUuid().isEmpty()) {
       post.setUuid(UUID.randomUUID().toString());
-    }
-
-    if (read(post.getUuid()).equals(post)) {
-      throw new DaoException("Duplicate Post exist",null);
     }
 
     String sql = "WITH inserted AS ("
@@ -56,7 +49,7 @@ public class Sql2oPostDao implements PostDao {
 
 
     try (Connection conn = this.sql2o.open()) {
-      return conn.createQuery(sql)
+      return mapToPosts(conn.createQuery(sql)
           .addParameter("uuid", post.getUuid())
           .addParameter("userid", post.getUserId())
           .addParameter("title", post.getTitle())
@@ -66,8 +59,8 @@ public class Sql2oPostDao implements PostDao {
           .addParameter("hashtags", post.getHashtags())
           .addParameter("category", post.getCategory())
           .addParameter("location", post.getLocation())
-          .executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) {
+          .executeAndFetchTable().asList()).get(0);
+    } catch (Sql2oException|SQLException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -75,10 +68,10 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public Post read(String id) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
+      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
           .addParameter("id", id)
-          .executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) {
+          .executeAndFetchTable().asList()).get(0);
+    } catch (Sql2oException|SQLException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
   }
@@ -210,6 +203,8 @@ public class Sql2oPostDao implements PostDao {
     for (Map<String, Object> post : postMaps) {
       posts.add(mapToPost(post));
     }
+    if (posts.isEmpty())
+      posts.add(null);
     return posts;
   }
 
