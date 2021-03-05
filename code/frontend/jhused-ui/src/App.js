@@ -3,11 +3,9 @@ import "./App.css";
 import ImageGrid from "./components/ImageGrid";
 import { Switch, Route } from "react-router-dom";
 import Editor from "./components/Editor";
+import axios from "./util/axios";
+import PostDetails from "./components/PostDetails";
 
-
-const axios = require("axios").default;
-//axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
-axios.defaults.baseURL = "http://localhost:4567/";
 class App extends React.Component {
   constructor() {
     super();
@@ -28,13 +26,15 @@ class App extends React.Component {
     return (
       <div className="App">
         <Switch>
-          <Route exact path="/" component={ImageGrid} />
-          <Route exact path="/editor" component={Editor} />
+          <Route exact path="/">
+            <ImageGrid />
+          </Route>
+          <Route path="/post/:postID" component={PostDetails} />
         </Switch>
+        <Route exact path="/editor" component={Editor} />
       </div>
     );
   }
 }
 
 export default App;
-export { axios };
