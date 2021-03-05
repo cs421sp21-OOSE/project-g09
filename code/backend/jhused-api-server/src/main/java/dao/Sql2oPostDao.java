@@ -61,7 +61,17 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post delete(String id) throws DaoException {
-    return null; // stub
+    String sql = "WITH deleted AS ("
+            + "DELETE FROM posts WHERE postId = :thisId RETURNING *"
+            + ") SELECT * FROM deleted;";
+    try (Connection conn = sql2o.open()) {
+      return conn.createQuery(sql)
+              .addParameter("thisID", id)
+              .executeAndFetchFirst(Post.class);
+    } catch (Sql2oException ex) {
+      throw new DaoException("Unable to delete this post", ex);
+    }
+
   }
 
   /**
