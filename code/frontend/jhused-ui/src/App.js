@@ -1,11 +1,11 @@
 import React from "react";
+import { Switch, Route} from "react-router";
+
+import Editor from './components/Editor';
+import ImageGrid from './ImageGrid';
+
+
 import "./App.css";
-
-import Editor from "./components/Editor";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-
-import ImageGrid from "./ImageGrid";
-
 
 const axios = require("axios").default;
 axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
@@ -30,12 +30,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Router>
           <Switch>
-            <Route path="/editor" exact component={() => <Editor />}/>
-          </Switch>
-        </Router>
-        <ImageGrid />
+            <Route exact path="/" component={ImageGrid}/>
+            <Route exact path="/editor" component={Editor}/>
+        </Switch>
       </div>
     );
   }
