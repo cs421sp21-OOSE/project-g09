@@ -76,7 +76,7 @@ public final class Database {
           // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
           // is 4, because it has 4 digits after decimal point.
           + "description VARCHAR(5000),"
-          + "imageUrls VARCHAR(100)[],"
+          + "imageUrls VARCHAR(500)[],"
           + "hashtags VARCHAR(15)[],"
           + "category Category NOT NULL,"
           + "location VARCHAR(100) NOT NULL"

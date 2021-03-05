@@ -41,7 +41,7 @@ class Sql2oPostDaoTest {
 
   @Test
   @DisplayName("create works for valid input")
-  void createNewPost() throws Exception {
+  void createNewPost() throws DaoException {
     Post c1 = new Post(UUID.randomUUID().toString(), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
@@ -65,7 +65,7 @@ class Sql2oPostDaoTest {
         Category.FURNITURE,
         "Location of dummy furniture"
     );
-    assertThrows(Exception.class, () -> {
+    assertThrows(DaoException.class, () -> {
       postDao.create(c1);
     });
   }
@@ -86,22 +86,22 @@ class Sql2oPostDaoTest {
 //    });
     c1.setUserId("0" + " ".repeat(35));
     c1.setPrice(null);
-    assertThrows(Exception.class, () -> {
+    assertThrows(DaoException.class, () -> {
       postDao.create(c1);
     });
     c1.setPrice(33.4);
     c1.setLocation(null);
-    assertThrows(Exception.class, () -> {
+    assertThrows(DaoException.class, () -> {
       postDao.create(c1);
     });
     c1.setLocation("some location");
     c1.setTitle(null);
-    assertThrows(Exception.class, () -> {
+    assertThrows(DaoException.class, () -> {
       postDao.create(c1);
     });
     c1.setTitle("some title");
     c1.setCategory(null);
-    assertThrows(Exception.class, () -> {
+    assertThrows(DaoException.class, () -> {
       postDao.create(c1);
     });
   }

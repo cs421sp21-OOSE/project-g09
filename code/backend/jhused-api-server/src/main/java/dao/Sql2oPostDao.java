@@ -33,9 +33,9 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
-  public Post create(Post post) throws Exception {
+  public Post create(Post post) throws DaoException {
     if (!post.isValid()) {
-      throw new Exception("Invalid Post");
+      throw new DaoException("Invalid Post",null);
     }
     // TODO: need to discuss uuid formation
     if (post.getUuid().isEmpty()) {
@@ -43,7 +43,7 @@ public class Sql2oPostDao implements PostDao {
     }
 
     if (read(post.getUuid()).equals(post)) {
-      throw new Exception("Duplicate Post exist");
+      throw new DaoException("Duplicate Post exist",null);
     }
 
     String sql = "WITH inserted AS ("
