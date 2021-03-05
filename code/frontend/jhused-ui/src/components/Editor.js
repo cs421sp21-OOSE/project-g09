@@ -75,7 +75,7 @@ function Editor() {
     
     // State for the submit button - used for controlling responses after a post is submitted
     const [submitted, setSubmitted] = useState(false);
-    const [requestStatus, setRequestStatus] = useState(400);
+    const [requestStatus, setRequestStatus] = useState();
 
     // State for tag input 
     // It only hold the key input. The actual values are stored in the formData
@@ -107,10 +107,10 @@ function Editor() {
     const handleSubmit = (event => {
         event.preventDefault();
         setSubmitted(true);
-        axios.post("localhost:4567/api/posts", formData)
+        axios.post("https://jhused-api-server.herokuapp.com/api/posts", formData)
             .then(response => {
                 console.log(response);
-                setRequestStatus(201);
+                setRequestStatus(response.status);
             })
             .catch(error => {
                 console.log(error);
@@ -290,16 +290,24 @@ function Editor() {
                     ))}
                 </Row>
             </Container>
-            {(requestStatus === 201) &&
-            <Alert variant="info">
-                Post is submitted successfully
-            </Alert>}
-            {/* Conditional element to display the form data in json*/}
-            {submitted &&
+            {submitted && 
+                ((requestStatus === 201) ? (
+                    <Alert variant="info">
+                        Post is submitted successfully
+                    </Alert>
+                    ) : (
+                    <Alert variant="info">
+                        Post submission failed
+                    </Alert>)
+                )
+            }
+            {/* Conditional element below to display the form data in json
+            Uncomment it  on for debugging use */}
+            {/* {submitted &&
                 <pre name="json-output">
                     {JSON.stringify({...formData}, null, 2)}
                 </pre>
-            }
+            } */}
         </div>
     );
 }
