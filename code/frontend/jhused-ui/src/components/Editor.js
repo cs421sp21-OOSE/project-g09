@@ -13,15 +13,8 @@ import Col from 'react-bootstrap/Col';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "./Editor.css"
 
-// Form reducer to update the states related to the form
-// As input to the useReducer hook
-// const formReducer = (state, action) => ({
-//     ...state,
-//     [action.name]: action.value
-// });
-
 const formReducer = function (state, action) {
-    if (action.name !== "image") {
+    if (action.name !== "imageUrls") {
         return {
             ...state,
             [action.name]: action.value
@@ -30,7 +23,7 @@ const formReducer = function (state, action) {
     else {
         return {
             ...state,
-            [action.name]: [...state.image, action.value]
+            [action.name]: [...state.imageUrls, action.value]
         };
     }
 };
@@ -48,10 +41,10 @@ const createOptionArray = (labels) =>
 
 // Define enums for post categories
 const categories = {
-    FURNITURE: {value: 0, label: "Furniture"},
-    CAR: {value: 1, label: "Car"},
-    TV: {value: 2, label: "TV"},
-    DESK: {value: 3, label: "Desk"}
+    FURNITURE: {value: "FURNITURE", label: "Furniture"},
+    CAR: {value: "CAR", label: "Car"},
+    TV: {value: "TV", label: "TV"},
+    DESK: {value: "DESK", label: "Desk"}
 };
 
 /**
@@ -69,12 +62,14 @@ function Editor() {
     // Reudcer to hold the states related to the form
     // Decide on useReducer instead of useState because of the input validation features to be implemented later
     const [formData, setFormData] = useReducer(formReducer, {
+        uuid: "",
+        userId: "",
         title: "",
         price: null,
         category: "",
-        tag: [],
+        hashtags: [],
         description: "",
-        image: []
+        imageUrls: []
     });
     
     // State for the submit button - used for controlling responses after a post is submitted
@@ -121,7 +116,6 @@ function Editor() {
             setImages(event.target.files);
         }
     };
-    console.log("image: ", images);
 
     /**
      * Event handler for image upload
@@ -146,7 +140,7 @@ function Editor() {
                         (downloadURL) => {
                             console.log("File available at ", downloadURL);
                             setFormData({
-                                name: "image",
+                                name: "imageUrls",
                                 value: downloadURL
                             });
                         }
@@ -176,8 +170,8 @@ function Editor() {
         switch (event.key) {
             case "Enter":
                 setFormData({
-                    name: "tag",
-                    value: [...formData.tag, tagInput]
+                    name: "hashtags",
+                    value: [...formData.hashtags, tagInput]
                 });
                 setTagInput("");
             event.preventDefault();
@@ -227,10 +221,10 @@ function Editor() {
                 </Form.Group>
                 <Form.Group>
                     <CreatableSelecet
-                        name="tag"
+                        name="hashtags"
                         components={{DropdownIndicator: null}}
                         inputValue={tagInput || ""}
-                        value={createOptionArray(formData.tag)}
+                        value={createOptionArray(formData.hashtags)}
                         isClearable
                         isMulti
                         menuIsOpen={false}
@@ -259,7 +253,7 @@ function Editor() {
             </Form>
             <Container>
                 <Row lg={6}>
-                {(formData.image).map((img) => (
+                {(formData.imageUrls).map((img) => (
                     <Col>
                         <Image roundedCircle src={img} width={100} height={100}/>
                     </Col> 
