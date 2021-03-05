@@ -76,22 +76,12 @@ public class Sql2oPostDao implements PostDao {
      * TODO not necessary, but using the ARRAY cast spews out the same
      *  strange error as the delete function.
      */
-    /*String sql = "WITH updated AS (UPDATE posts SET " +
+    String sql = "WITH updated AS (UPDATE posts SET " +
             "title = :newTitle, " +
             "price = :newPrice, " +
             "description = :newDescription, " +
             "imageUrls = ARRAY[:newImageUrls], " +
             "hashtags = ARRAY[:newHashtags], " +
-            "category = CAST(:newCategory AS Category), " +
-            "location = :newLocation " +
-            "WHERE uuid = :thisID RETURNING *) SELECT * FROM updated;";*/
-
-    String sql = "WITH updated AS (UPDATE posts SET " +
-            "title = :newTitle, " +
-            "price = :newPrice, " +
-            "description = :newDescription, " +
-            "imageUrls = :newImageUrls, " +
-            "hashtags = :newHashtags, " +
             "category = CAST(:newCategory AS Category), " +
             "location = :newLocation " +
             "WHERE uuid = :thisID RETURNING *) SELECT * FROM updated;";
@@ -121,7 +111,7 @@ public class Sql2oPostDao implements PostDao {
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery(sql)
+      return mapToPosts(conn.createQuery(sql)
               .addParameter("newTitle", post.getTitle())
               .addParameter("newPrice", post.getPrice())
               .addParameter("newDescription", newDescription)
@@ -131,8 +121,8 @@ public class Sql2oPostDao implements PostDao {
               .addParameter("newCategory", post.getCategory())
               .addParameter("newLocation", post.getLocation())
               .addParameter("thisID", id)
-              .executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) { //otherwise, fail
+              .executeAndFetchTable().asList()).get(0);
+    } catch (Sql2oException|SQLException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post!", ex);
     }
   }
