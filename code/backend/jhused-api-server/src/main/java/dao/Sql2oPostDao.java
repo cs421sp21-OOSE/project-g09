@@ -85,12 +85,12 @@ public class Sql2oPostDao implements PostDao {
    * @throws SQLException
    */
   private Post mapToPost(Map<String, Object> post) throws SQLException {
-    // Note "imageurls" must be in small case!!!
+    // Note "imageurls" and "userid" must be in small case!!!
     // Database is not case sensitive to column name!
     // Might need refactor in the future.
     Post convertedPost;
       convertedPost = new Post((String) post.get("uuid"),
-          (String) post.get("userId"),
+          (String) post.get("userid"),
           (String) post.get("title"),
           ((BigDecimal) post.get("price")).doubleValue(),
           (String) post.get("description"),
