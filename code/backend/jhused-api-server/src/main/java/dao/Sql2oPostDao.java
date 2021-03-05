@@ -141,11 +141,11 @@ public class Sql2oPostDao implements PostDao {
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery(sql)
+      return mapToPosts(conn.createQuery(sql)
               .addParameter("thisId", id)
-              .executeAndFetchFirst(Post.class);
+              .executeAndFetchTable().asList()).get(0);
       //TODO Performs delete correctly, but has strange error.
-    } catch (Sql2oException ex) { //otherwise, fail
+    } catch (Sql2oException|SQLException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
     }
 
