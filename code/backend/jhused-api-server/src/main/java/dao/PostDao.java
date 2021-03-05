@@ -15,7 +15,7 @@ public interface PostDao {
    * @return The Post object created.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Post create(Post post) throws DaoException;
+  Post create(Post post) throws Exception;
 
   /**
    * Read a Post provided its id.

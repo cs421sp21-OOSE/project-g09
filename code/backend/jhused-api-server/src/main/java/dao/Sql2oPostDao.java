@@ -1,6 +1,7 @@
 package dao;
 
 import exceptions.DaoException;
+import java.io.InvalidObjectException;
 import java.util.UUID;
 import model.Category;
 import model.Post;
@@ -32,15 +33,28 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
-  public Post create(Post post) throws DaoException {
+  public Post create(Post post) throws Exception {
+    if (!post.isValid()) {
+      throw new Exception("Invalid Post");
+    }
+    // TODO: need to discuss uuid formation
+    if (post.getUuid().isEmpty()) {
+      post.setUuid(UUID.randomUUID().toString());
+    }
+
+    if (read(post.getUuid()).equals(post)) {
+      throw new Exception("Duplicate Post exist");
+    }
+
     String sql = "WITH inserted AS ("
         + "INSERT INTO posts(uuid, userid, title, price, description, "
         + "imageurls, hashtags, category, location) "
-        + "VALUES(:uuid, :userid, :title, :price, :description, :imageurls, "
-        + ":hashtags, :category, :location) RETURNING *"
+        + "VALUES(:uuid, :userid, :title, :price, :description, ARRAY[:imageurls], "
+        + "ARRAY[:hashtags], CAST(:category AS Category), :location) RETURNING *"
         + ") SELECT * FROM inserted;";
-    String uuid = UUID.randomUUID().toString();
-    post.setUuid(uuid);
+
+
+
     try (Connection conn = this.sql2o.open()) {
       return conn.createQuery(sql)
           .addParameter("uuid", post.getUuid())
@@ -61,8 +75,8 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public Post read(String id) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery("SELECT * FROM posts WHERE uuid = :uuid;")
-          .addParameter("uuid", id)
+      return conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
+          .addParameter("id", id)
           .executeAndFetchFirst(Post.class);
     } catch (Sql2oException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
