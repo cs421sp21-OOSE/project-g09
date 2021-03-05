@@ -17,7 +17,9 @@ class ImageGrid extends React.Component {
             <div className="img-grid">
                 { this.state.posts && this.state.posts.map(post => (
                     <div className="img-wrap" key={post.uuid}>
-                        <img src={post.imageUrls[0]} alt="pic" />
+                        <a href="/api/posts/">
+                            <img src={post.imageUrls[0]} alt="pic" />
+                        </a>
                     </div>
                 ))}
             </div>
