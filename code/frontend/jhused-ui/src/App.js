@@ -1,6 +1,9 @@
 import React from "react";
 import "./App.css";
 import FakeImageGrid from "./components/ImageGrid";
+
+
+import ImageGrid from "./components/ImageGrid";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Editor from "./components/Editor";
 import axios from "./util/axios";
