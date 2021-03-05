@@ -1,6 +1,8 @@
 package dao;
 
 import exceptions.DaoException;
+import java.io.InvalidObjectException;
+import java.util.UUID;
 import model.Category;
 import model.Post;
 import org.postgresql.jdbc.PgArray;
@@ -32,12 +34,46 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post create(Post post) throws DaoException {
-    return null; // stub
+    // TODO: need to discuss uuid formation
+    if (post.getUuid().isEmpty()) {
+      post.setUuid(UUID.randomUUID().toString());
+    }
+
+    String sql = "WITH inserted AS ("
+        + "INSERT INTO posts(uuid, userid, title, price, description, "
+        + "imageurls, hashtags, category, location) "
+        + "VALUES(:uuid, :userid, :title, :price, :description, ARRAY[:imageurls], "
+        + "ARRAY[:hashtags], CAST(:category AS Category), :location) RETURNING *"
+        + ") SELECT * FROM inserted;";
+
+
+
+    try (Connection conn = this.sql2o.open()) {
+      return mapToPostsGetFirst(conn.createQuery(sql)
+          .addParameter("uuid", post.getUuid())
+          .addParameter("userid", post.getUserId())
+          .addParameter("title", post.getTitle())
+          .addParameter("price", post.getPrice())
+          .addParameter("description", post.getDescription())
+          .addParameter("imageurls", post.getImageUrls())
+          .addParameter("hashtags", post.getHashtags())
+          .addParameter("category", post.getCategory())
+          .addParameter("location", post.getLocation())
+          .executeAndFetchTable().asList());
+    } catch (Sql2oException|SQLException ex) {
+      throw new DaoException(ex.getMessage(), ex);
+    }
   }
 
   @Override
   public Post read(String id) throws DaoException {
-    return null; // stub
+    try (Connection conn = sql2o.open()) {
+      return mapToPostsGetFirst(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
+          .addParameter("id", id)
+          .executeAndFetchTable().asList());
+    } catch (Sql2oException|SQLException ex) {
+      throw new DaoException("Unable to read a post with id " + id, ex);
+    }
   }
 
   @Override
@@ -51,11 +87,24 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
-    return null; // stub
+    try (Connection conn = sql2o.open()) {
+      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE lower(title) LIKE :partial;")
+          .addParameter("partial", "%" + titleQuery.toLowerCase() + "%")
+          .executeAndFetchTable().asList());
+    } catch (Sql2oException|SQLException ex) {
+      throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
+    }
   }
 
   @Override
   public Post update(String id, Post post) throws DaoException {
+
+    //Need to check if post is valid before we check its fields.
+    if(post == null) {
+      Sql2oException ex = new Sql2oException();
+      throw new DaoException("Unable to update this post!", ex);
+    }
+
     /**
      * SQL string to be given to database.
      * Here we are updating the post with the passed id, and setting it to
@@ -64,27 +113,58 @@ public class Sql2oPostDao implements PostDao {
      * Updates all fields except for uuid and userId since those should not
      * change.
      */
-    String sql = "WITH updated AS ("
-            + "UPDATE posts SET title = :newTitle, price = :newPrice, " +
-            "description  = :newDescription, imageUrls = :newImageUrls, " +
-            "hastags = :newHashtags, category = :newCategory, " +
-            "location = :newLocation WHERE postId = :thisID " +
-            "RETURNING *) SELECT * FROM updated;";
+
+    /**
+     * TODO not necessary, but using the ARRAY cast spews out the same
+     *  strange error as the delete function.
+     */
+    String sql = "WITH updated AS (UPDATE posts SET " +
+            "title = :newTitle, " +
+            "price = :newPrice, " +
+            "description = :newDescription, " +
+            "imageUrls = ARRAY[:newImageUrls], " +
+            "hashtags = ARRAY[:newHashtags], " +
+            "category = CAST(:newCategory AS Category), " +
+            "location = :newLocation " +
+            "WHERE uuid = :thisID RETURNING *) SELECT * FROM updated;";
+
+    //make placer-holder variables for fields that might be null.
+    String newDescription;
+    List<String> imageUrls, hashtags;
+
+    //check each from passed post to ensure no errors occur.
+    if(post.getDescription() == null) {
+      newDescription = "";
+    } else {
+      newDescription = post.getDescription();
+    }
+
+    if(post.getImageUrls() == null) {
+      imageUrls = new ArrayList<>();
+    } else {
+      imageUrls = post.getImageUrls();
+    }
+
+    if(post.getHashtags() == null) {
+      hashtags = new ArrayList<>();
+    } else {
+      hashtags = post.getHashtags();
+    }
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery(sql)
+      return mapToPostsGetFirst(conn.createQuery(sql)
               .addParameter("newTitle", post.getTitle())
               .addParameter("newPrice", post.getPrice())
-              .addParameter("newDescription", post.getDescription())
-              .addParameter("newImageUrls", post.getImageUrls())
-              .addParameter("newHashtags", post.getHashtags())
+              .addParameter("newDescription", newDescription)
+              .addParameter("newImageUrls", imageUrls)
+              .addParameter("newHashtags", hashtags)
               .addParameter("newCategory", post.getCategory())
               .addParameter("newLocation", post.getLocation())
               .addParameter("thisID", id)
-              .executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) { //otherwise, fail
-      throw new DaoException("Unable to update this post!", ex);
+              .executeAndFetchTable().asList());
+    } catch (Sql2oException|SQLException ex) { //otherwise, fail
+      throw new DaoException("Unable to update this post! Check if missing fields.", ex);
     }
   }
 
@@ -96,15 +176,15 @@ public class Sql2oPostDao implements PostDao {
      * Deletes the post with the passed id, and returns it after deletion.
      */
     String sql = "WITH deleted AS ("
-            + "DELETE FROM posts WHERE postId = :thisId RETURNING *"
+            + "DELETE FROM posts WHERE uuid = :thisId RETURNING *"
             + ") SELECT * FROM deleted;";
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return conn.createQuery(sql)
-              .addParameter("thisID", id)
-              .executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) { //otherwise, fail
+      return mapToPostsGetFirst(conn.createQuery(sql)
+              .addParameter("thisId", id)
+              .executeAndFetchTable().asList());
+    } catch (Sql2oException|SQLException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
     }
 
@@ -122,6 +202,22 @@ public class Sql2oPostDao implements PostDao {
       posts.add(mapToPost(post));
     }
     return posts;
+  }
+
+  /**
+   * Convert a list of maps returned by sql2o to a List of Post.
+   * @param postMaps a list of maps returned by sql2o.
+   * @return the first returned Post
+   * @throws SQLException
+   */
+  private Post mapToPostsGetFirst(List<Map<String, Object>> postMaps) throws SQLException{
+    List<Post> posts = new ArrayList<>();
+    for (Map<String, Object> post : postMaps) {
+      posts.add(mapToPost(post));
+    }
+    if (posts.isEmpty())
+      posts.add(null);
+    return posts.get(0);
   }
 
   /**

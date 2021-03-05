@@ -1,8 +1,9 @@
 import React from "react";
 import "./App.css";
-import ImageGrid from "./ImageGrid";
-import { Switch, Route} from "react-router";
-import Editor from './components/Editor';
+
+import ImageGrid from "./components/ImageGrid";
+import { Switch, Route } from "react-router-dom";
+import Editor from "./components/Editor";
 
 
 const axios = require("axios").default;
@@ -27,9 +28,9 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-          <Switch>
-            <Route exact path="/" component={ImageGrid}/>
-            <Route exact path="/editor" component={Editor}/>
+        <Switch>
+          <Route exact path="/" component={ImageGrid} />
+          <Route exact path="/editor" component={Editor} />
         </Switch>
       </div>
     );
@@ -37,4 +38,4 @@ class App extends React.Component {
 }
 
 export default App;
-export {axios};
+export { axios };

@@ -3,8 +3,8 @@
 }
 
 .location img {
-    width: 1.5%;
-    height: 1.5%;
+    width: 1.1rem;
+    height: 1.1rem;
 }
 
 .location p {
@@ -14,8 +14,8 @@
 }
 
 .location.l img {
-    width: 3%;
-    height: 3%;
+    width: 2rem;
+    height: 2rem;
 }
 
 .location.l p {
