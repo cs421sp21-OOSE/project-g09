@@ -56,6 +56,13 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post update(String id, Post post) throws DaoException {
+
+    //Need to check if post is valid before we check its fields.
+    if(post == null) {
+      Sql2oException ex = new Sql2oException();
+      throw new DaoException("Unable to update this post!", ex);
+    }
+
     /**
      * SQL string to be given to database.
      * Here we are updating the post with the passed id, and setting it to
@@ -67,19 +74,52 @@ public class Sql2oPostDao implements PostDao {
     String sql = "WITH updated AS ("
             + "UPDATE posts SET title = :newTitle, price = :newPrice, " +
             "description  = :newDescription, imageUrls = :newImageUrls, " +
-            "hastags = :newHashtags, category = :newCategory, " +
-            "location = :newLocation WHERE postId = :thisID " +
+            "hashtags = :newHashtags, " +
+            "location = :newLocation WHERE uuid = :thisID " +
             "RETURNING *) SELECT * FROM updated;";
+
+    //use this when testing category updates.
+    /*String sql = "WITH updated AS ("
+            + "UPDATE posts SET title = :newTitle, price = :newPrice, " +
+            "description  = :newDescription, imageUrls = :newImageUrls, " +
+            "hashtags = :newHashtags, category = :newCategory," +
+            "location = :newLocation WHERE uuid = :thisID " +
+            "RETURNING *) SELECT * FROM updated;";*/
+
+
+    //make placer-holder variables for fields that might be null.
+    String newDescription;
+    List<String> imageUrls, hashtags;
+
+    //check each from passed post to ensure no errors occur.
+    if(post.getDescription() == null) {
+      newDescription = "";
+    } else {
+      newDescription = post.getDescription();
+    }
+
+    if(post.getImageUrls() == null) {
+      imageUrls = new ArrayList<>();
+    } else {
+      imageUrls = post.getImageUrls();
+    }
+
+    if(post.getHashtags() == null) {
+      hashtags = new ArrayList<>();
+    } else {
+      hashtags = post.getHashtags();
+    }
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
       return conn.createQuery(sql)
               .addParameter("newTitle", post.getTitle())
               .addParameter("newPrice", post.getPrice())
-              .addParameter("newDescription", post.getDescription())
-              .addParameter("newImageUrls", post.getImageUrls())
-              .addParameter("newHashtags", post.getHashtags())
-              .addParameter("newCategory", post.getCategory())
+              .addParameter("newDescription", newDescription)
+              .addParameter("newImageUrls", imageUrls)
+              .addParameter("newHashtags", hashtags)
+              //TODO Get category update working.
+              //.addParameter("newCategory", post.getCategory())
               .addParameter("newLocation", post.getLocation())
               .addParameter("thisID", id)
               .executeAndFetchFirst(Post.class);

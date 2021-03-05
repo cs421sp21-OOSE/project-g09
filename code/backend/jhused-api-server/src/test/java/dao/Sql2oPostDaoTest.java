@@ -148,30 +148,40 @@ class Sql2oPostDaoTest {
 //    assertEquals(0, posts.size());
 //  }
 //
-//  @Test
-//  @DisplayName("updating a post works")
-//  void updateWorks() {
-//    String title = "Updated Title!";
-//    Post post = postDao.update(samples.get(0).getOfferingName(), title);
-//    assertEquals(title, post.getTitle());
-//    assertEquals(samples.get(0).getOfferingName(), post.getOfferingName());
-//  }
-//
-//  @Test
-//  @DisplayName("Update returns null for an invalid offeringCode")
-//  void updateReturnsNullInvalidCode() {
-//    Post post = postDao.update("EN.000.999", "UpdatedTitle");
-//    assertNull(post);
-//  }
-//
-//  @Test
-//  @DisplayName("Update throws exception for an invalid title")
-//  void updateThrowsExceptionInvalidTitle() {
-//    assertThrows(DaoException.class, () -> {
-//      postDao.update(samples.get(0).getOfferingName(), null);
-//    });
-//  }
-//
+  @Test
+  @DisplayName("updating a post works")
+  void updateWorks() {
+    //create a post to send to the update method.
+    Post ogPost = new Post("100", "Updated Title!",100D, Category.CAR,
+            "Baltimore");
+
+    //get the post back, give the first item in samples uuid.
+    Post post = postDao.update(samples.get(0).getUuid(), ogPost);
+    //check to make sure the fields updated.
+    assertEquals("Updated Title!", post.getTitle());
+    assertEquals(100D, post.getPrice());
+    //TODO get category update working.
+    //assertEquals(Category.CAR, post.getCategory());
+    assertEquals("Baltimore", post.getLocation());
+  }
+
+  @Test
+  @DisplayName("Update returns null for an invalid offeringCode")
+  void updateReturnsNullInvalidCode() {
+    Post ogPost = new Post("100", "Updated Title!",100D, Category.CAR,
+            "Baltimore");
+    Post post = postDao.update("25", ogPost);
+    assertNull(post);
+  }
+
+  @Test
+  @DisplayName("Update throws exception for an invalid title")
+  void updateThrowsExceptionInvalidPost() {
+    assertThrows(DaoException.class, () -> {
+      postDao.update(samples.get(0).getUuid(), null);
+    });
+  }
+
 //  @Test
 //  @DisplayName("delete works for valid input")
 //  void deleteExistingPost() {
