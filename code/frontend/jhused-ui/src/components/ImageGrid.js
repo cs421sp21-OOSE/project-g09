@@ -1,5 +1,7 @@
 import React from "react";
-import {axios} from "../App"
+import PostDetails from "./PostDetails";
+import {Route} from "react-router-dom";
+import axios from "../util/axios"
 import {Button} from "react-bootstrap";
 import "./ImageGrid.css";
 
@@ -22,13 +24,14 @@ class ImageGrid extends React.Component {
                 <div className="img-grid">
                     { this.state.posts && this.state.posts.map(post => (
                         <div className="img-wrap" key={post.uuid}>
-                            <a href= {'/api/posts/' + post.uuid}>
+                            <a href= {'/post/' + post.uuid}>
                                 <img src={post.imageUrls[0]} alt="pic" />
                             </a>
                         </div>
                     ))}
                 </div>
             </div>
+            
         )
     }
 }
