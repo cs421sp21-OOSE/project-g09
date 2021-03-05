@@ -2,6 +2,9 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import ImageGrid from "./ImageGrid";
+import { Switch, Route} from "react-router";
+import Editor from './components/Editor';
+
 
 const axios = require("axios").default;
 //axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
@@ -9,9 +12,6 @@ axios.defaults.baseURL = "http://localhost:4567/";
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-      welcom: "Loading...",
-    };
   }
 
   async componentDidMount() {
@@ -28,7 +28,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <ImageGrid />
+          <Switch>
+            <Route exact path="/" component={ImageGrid}/>
+            <Route exact path="/editor" component={Editor}/>
+        </Switch>
       </div>
     );
   }
