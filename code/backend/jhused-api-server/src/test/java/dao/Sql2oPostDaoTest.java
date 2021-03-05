@@ -160,8 +160,7 @@ class Sql2oPostDaoTest {
     //check to make sure the fields updated.
     assertEquals("Updated Title!", post.getTitle());
     assertEquals(100D, post.getPrice());
-    //TODO get category update working.
-    //assertEquals(Category.CAR, post.getCategory());
+    assertEquals(Category.CAR, post.getCategory());
     assertEquals("Baltimore", post.getLocation());
   }
 
