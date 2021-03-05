@@ -120,7 +120,7 @@ back to /projectg09
 git subtree push --prefix code/backend/jhused-api-server heroku-api master
 
 # to upload frontend to heroku
-git subtree push --prefix code/backend/jhused-ui heroku-ui master
+git subtree push --prefix code/frontend/jhused-ui heroku-ui master
 ```
 
 And again you'd need to tell what the previous code actually does.
