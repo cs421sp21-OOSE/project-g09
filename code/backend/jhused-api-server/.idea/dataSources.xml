@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://ec2-34-239-33-57.compute-1.amazonaws.com:5432/d5hus6l9q3f7su</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="jhused-api-test-database" uuid="1f8fe3e3-c2d7-4911-b833-bb1fccefa8a5">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-54-146-73-98.compute-1.amazonaws.com:5432/d34qgup3tl9k2i</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

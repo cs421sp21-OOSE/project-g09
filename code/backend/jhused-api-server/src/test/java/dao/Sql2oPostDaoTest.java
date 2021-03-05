@@ -148,48 +148,59 @@ class Sql2oPostDaoTest {
 //    assertEquals(0, posts.size());
 //  }
 //
-//  @Test
-//  @DisplayName("updating a post works")
-//  void updateWorks() {
-//    String title = "Updated Title!";
-//    Post post = postDao.update(samples.get(0).getOfferingName(), title);
-//    assertEquals(title, post.getTitle());
-//    assertEquals(samples.get(0).getOfferingName(), post.getOfferingName());
-//  }
-//
-//  @Test
-//  @DisplayName("Update returns null for an invalid offeringCode")
-//  void updateReturnsNullInvalidCode() {
-//    Post post = postDao.update("EN.000.999", "UpdatedTitle");
-//    assertNull(post);
-//  }
-//
-//  @Test
-//  @DisplayName("Update throws exception for an invalid title")
-//  void updateThrowsExceptionInvalidTitle() {
-//    assertThrows(DaoException.class, () -> {
-//      postDao.update(samples.get(0).getOfferingName(), null);
-//    });
-//  }
-//
-//  @Test
-//  @DisplayName("delete works for valid input")
-//  void deleteExistingPost() {
-//    Post postDeleted = postDao.delete(samples.get(0).getOfferingName());
-//    assertEquals(postDeleted, samples.get(0));
-//    assertNull(postDao.read(postDeleted.getOfferingName()));
-//  }
-//
-//  @Test
-//  @DisplayName("delete returns null for non existing post")
-//  void deleteThrowsExceptionNoMatchData() {
-//    assertNull(postDao.delete("EN.000.999"));
-//  }
-//
-//  @Test
-//  @DisplayName("delete returns null for invalid input")
-//  void deleteThrowsExceptionIncompleteData() {
-//    assertNull(postDao.delete(null));
-//  }
-//
+  @Test
+  @DisplayName("updating a post works")
+  void updateWorks() {
+    //create a post to send to the update method.
+    Post ogPost = new Post("100", "Updated Title!",100D, Category.CAR,
+            "Baltimore");
+
+    //get the post back, give the first item in samples uuid.
+    Post post = postDao.update(samples.get(0).getUuid(), ogPost);
+    //check to make sure the fields updated.
+    assertEquals("Updated Title!", post.getTitle());
+    assertEquals(100D, post.getPrice());
+    assertEquals(Category.CAR, post.getCategory());
+    assertEquals("Baltimore", post.getLocation());
+  }
+
+  @Test
+  @DisplayName("Update returns null for an invalid offeringCode")
+  void updateReturnsNullInvalidCode() {
+    Post ogPost = new Post("100", "Updated Title!",100D, Category.CAR,
+            "Baltimore");
+    Post post = postDao.update("25", ogPost);
+    assertNull(post);
+  }
+
+  @Test
+  @DisplayName("Update throws exception for an invalid title")
+  void updateThrowsExceptionInvalidPost() {
+    assertThrows(DaoException.class, () -> {
+      postDao.update(samples.get(0).getUuid(), null);
+    });
+  }
+
+  @Test
+  @DisplayName("delete works for valid input")
+  void deleteExistingPost() {
+    //TODO figure out weird error. Post is deleted, but return is not correct.
+    Post postDeleted = postDao.delete(samples.get(0).getUuid());
+    assertEquals(postDeleted, samples.get(0));
+    //TODO uncomment this once read is implemented
+    //assertNull(postDao.read(postDeleted.getUuid()));
+  }
+
+  @Test
+  @DisplayName("delete returns null for non existing post")
+  void deleteThrowsExceptionNoMatchData() {
+    assertNull(postDao.delete("25"));
+  }
+
+  @Test
+  @DisplayName("delete returns null for invalid input")
+  void deleteThrowsExceptionIncompleteData() {
+    assertNull(postDao.delete(null));
+  }
+
 }
