@@ -1,5 +1,5 @@
 import React from "react";
-import {axios} from "./App"
+import {axios} from "../App"
 
 class ImageGrid extends React.Component {
     state = {
