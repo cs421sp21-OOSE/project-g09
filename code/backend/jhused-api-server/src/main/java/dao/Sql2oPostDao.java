@@ -71,21 +71,30 @@ public class Sql2oPostDao implements PostDao {
      * Updates all fields except for uuid and userId since those should not
      * change.
      */
-    String sql = "WITH updated AS ("
-            + "UPDATE posts SET title = :newTitle, price = :newPrice, " +
-            "description  = :newDescription, imageUrls = :newImageUrls, " +
+
+    /**
+     * TODO not necessary, but using the ARRAY cast spews out the same
+     *  strange error as the delete function.
+     */
+    /*String sql = "WITH updated AS (UPDATE posts SET " +
+            "title = :newTitle, " +
+            "price = :newPrice, " +
+            "description = :newDescription, " +
+            "imageUrls = ARRAY[:newImageUrls], " +
+            "hashtags = ARRAY[:newHashtags], " +
+            "category = CAST(:newCategory AS Category), " +
+            "location = :newLocation " +
+            "WHERE uuid = :thisID RETURNING *) SELECT * FROM updated;";*/
+
+    String sql = "WITH updated AS (UPDATE posts SET " +
+            "title = :newTitle, " +
+            "price = :newPrice, " +
+            "description = :newDescription, " +
+            "imageUrls = :newImageUrls, " +
             "hashtags = :newHashtags, " +
-            "location = :newLocation WHERE uuid = :thisID " +
-            "RETURNING *) SELECT * FROM updated;";
-
-    //use this when testing category updates.
-    /*String sql = "WITH updated AS ("
-            + "UPDATE posts SET title = :newTitle, price = :newPrice, " +
-            "description  = :newDescription, imageUrls = :newImageUrls, " +
-            "hashtags = :newHashtags, category = :newCategory," +
-            "location = :newLocation WHERE uuid = :thisID " +
-            "RETURNING *) SELECT * FROM updated;";*/
-
+            "category = CAST(:newCategory AS Category), " +
+            "location = :newLocation " +
+            "WHERE uuid = :thisID RETURNING *) SELECT * FROM updated;";
 
     //make placer-holder variables for fields that might be null.
     String newDescription;
@@ -119,7 +128,7 @@ public class Sql2oPostDao implements PostDao {
               .addParameter("newImageUrls", imageUrls)
               .addParameter("newHashtags", hashtags)
               //TODO Get category update working.
-              //.addParameter("newCategory", post.getCategory())
+              .addParameter("newCategory", post.getCategory())
               .addParameter("newLocation", post.getLocation())
               .addParameter("thisID", id)
               .executeAndFetchFirst(Post.class);
