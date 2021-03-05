@@ -56,12 +56,58 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post update(String id, Post post) throws DaoException {
-    return null; // stub
+    /**
+     * SQL string to be given to database.
+     * Here we are updating the post with the passed id, and setting it to
+     * all of the information stored within the separate post passed.
+     *
+     * Updates all fields except for uuid and userId since those should not
+     * change.
+     */
+    String sql = "WITH updated AS ("
+            + "UPDATE posts SET title = :newTitle, price = :newPrice, " +
+            "description  = :newDescription, imageUrls = :newImageUrls, " +
+            "hastags = :newHashtags, category = :newCategory, " +
+            "location = :newLocation WHERE postId = :thisID " +
+            "RETURNING *) SELECT * FROM updated;";
+
+    //attempt to open connection and perform sql string.
+    try (Connection conn = sql2o.open()) {
+      return conn.createQuery(sql)
+              .addParameter("newTitle", post.getTitle())
+              .addParameter("newPrice", post.getPrice())
+              .addParameter("newDescription", post.getDescription())
+              .addParameter("newImageUrls", post.getImageUrls())
+              .addParameter("newHashtags", post.getHashtags())
+              .addParameter("newCategory", post.getCategory())
+              .addParameter("newLocation", post.getLocation())
+              .addParameter("thisID", id)
+              .executeAndFetchFirst(Post.class);
+    } catch (Sql2oException ex) { //otherwise, fail
+      throw new DaoException("Unable to update this post!", ex);
+    }
   }
 
   @Override
   public Post delete(String id) throws DaoException {
-    return null; // stub
+    /**
+     * SQL string to be given to database.
+     *
+     * Deletes the post with the passed id, and returns it after deletion.
+     */
+    String sql = "WITH deleted AS ("
+            + "DELETE FROM posts WHERE postId = :thisId RETURNING *"
+            + ") SELECT * FROM deleted;";
+
+    //attempt to open connection and perform sql string.
+    try (Connection conn = sql2o.open()) {
+      return conn.createQuery(sql)
+              .addParameter("thisID", id)
+              .executeAndFetchFirst(Post.class);
+    } catch (Sql2oException ex) { //otherwise, fail
+      throw new DaoException("Unable to delete this post!", ex);
+    }
+
   }
 
   /**
