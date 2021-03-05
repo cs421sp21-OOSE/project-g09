@@ -4,12 +4,7 @@ import Location from "./Location";
 import Carousel from "./Carousel";
 import axios from "../util/axios";
 import "./PostDetails.css";
-import { useParams } from "react-router-dom";
-
-import img1 from "../images/furniture/desk.jpg";
-import img2 from "../images/furniture/desk2.jpg";
-import img3 from "../images/furniture/desk3.jpg";
-import img4 from "../images/furniture/desk4.jpg";
+import { useParams, useHistory } from "react-router-dom";
 
 const testPost = {
   title: "",
@@ -24,6 +19,13 @@ const PostDetails = (props) => {
   console.log(params.postID);
 
   const [post, setPost] = useState(testPost);
+
+  const history = useHistory();
+
+  const closeModal = (e) => {
+    e.stopPropagation();
+    history.goBack();
+  };
 
   useEffect(() => {
     const path = "/api/posts/" + params.postID;
@@ -42,9 +44,7 @@ const PostDetails = (props) => {
   return (
     <div className="post-container">
       <div className="post-body">
-        <a href="/">
-          <img src={ExitPng} alt="x" className="exit"></img>{" "}
-        </a>
+        <img src={ExitPng} alt="x" className="exit" onClick={closeModal}></img>{" "}
         <h1 className="post-title">{post.title}</h1>
         <h1 className="post-price">${post.price}</h1>
         <div className="post-content-left">
