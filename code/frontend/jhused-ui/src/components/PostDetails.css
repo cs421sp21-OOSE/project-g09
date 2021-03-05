@@ -22,7 +22,7 @@
 .post-body {
   display: grid;
   grid-template-columns: 55% 45%;
-  grid-template-rows: 17% 83%;
+  grid-template-rows: 15% 85%;
 
   position: relative;
   width: 100%;
@@ -81,4 +81,14 @@
 .post-container p {
     text-align: left;
 }
+
+.post-container .location p {
+  font-size: 1.5rem;
+}
+
+.post-container .location img {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
 
