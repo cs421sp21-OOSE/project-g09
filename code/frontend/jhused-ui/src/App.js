@@ -1,13 +1,10 @@
 import React from "react";
 import "./App.css";
-import FakeImageGrid from "./components/ImageGrid";
-
-
-import ImageGrid from "./components/ImageGrid";
+import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Editor from "./components/Editor";
-import axios from "./util/axios";
 import PostDetails from "./components/PostDetails";
+import logo from "./images/logo.png";
 
 const App = () => {
   const location = useLocation();
@@ -15,9 +12,12 @@ const App = () => {
 
   return (
     <div className="App">
+      <div className="jhused-header">
+      <img className="jhused-logo" src={logo} alt="logo"/>
+      </div>
       <Switch location={background || location}>
         <Route exact path="/">
-          <FakeImageGrid />
+          <HomePage />
         </Route>
         <Route exact path="/editor" component={Editor} />
       </Switch>

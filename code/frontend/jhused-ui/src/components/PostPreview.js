@@ -1,11 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Location from "./Location";
-
-import img1 from "../images/furniture/desk.jpg";
-import img2 from "../images/furniture/desk2.jpg";
-import img3 from "../images/furniture/desk3.jpg";
-import img4 from "../images/furniture/desk4.jpg";
+import "./PostPreview.css"
 
 const PostPreview = (props) => {
   const location = useLocation();
@@ -24,10 +20,10 @@ const PostPreview = (props) => {
             alt="item preview image"
           />
         </div>
-        <div className="post-card-info">
-          <div className="post-card-header">
-            <p> {props.post.title}</p>
-            <p> ${props.post.price} </p>
+        <div className="post-card-body">
+          <div className="post-card-details">
+            <p className="post-card-title"> {props.post.title}</p>
+            <p className="post-card-price"> ${props.post.price} </p>
           </div>
           <Location location={props.post.location} />
         </div>

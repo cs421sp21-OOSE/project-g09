@@ -30,9 +30,6 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
 
 @keyframes App-logo-spin {
   from {
@@ -42,5 +39,11 @@
     transform: rotate(360deg);
   }
 }
+
+.jhused-logo {
+  width: 35%;
+  float: left;
+}
+
 
 

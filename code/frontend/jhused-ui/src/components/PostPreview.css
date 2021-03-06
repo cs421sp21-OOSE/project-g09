@@ -1,10 +1,3 @@
-.img-grid{
-    margin: 20px auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 40px;
-}
-
 .img-wrap{
     overflow: hidden;
     height: 0;
@@ -22,4 +15,38 @@
     top: 0;
     left: 0;
     border-radius: 30px;
+}
+
+.post-card a {
+    color: #002D72;
+}
+
+.post-card a:hover {
+    color: #D72638;
+}
+
+.post-card a:hover, .post-card a:visited, .post-card a:link, .post-card a:active
+{
+    text-decoration: none;
+}
+
+.post-card-details {
+    position: relative;
+    margin: 0 0 0 0;
+    padding: 0;
+}
+
+.post-card-details {
+    font-size: 1.5rem;
+    display: flex;
+}
+
+.post-card-price {
+    position: absolute;
+    margin: 0;
+    right: 0%;
+}
+
+.post-card-title {
+    margin: 0;
 }
