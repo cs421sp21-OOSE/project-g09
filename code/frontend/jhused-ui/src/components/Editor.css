@@ -1,3 +1,58 @@
 .editor-panel {
-    padding: 5px 10px;
-} 
+  padding: 7rem 0.5rem 0.5rem 0.5rem;
+}
+
+.form-control {
+  border: solid #002d72;
+  border-radius: 1rem;
+}
+
+.form-control::placeholder {
+  color: rgb(189, 27, 27);
+  font-size: 1.2rem;
+}
+
+.category-select__control {
+  border: solid #002d72 !important;
+  border-radius: 1rem !important;
+}
+
+.category-select__placeholder {
+  color: rgb(189, 27, 27) !important;
+  font-size: 1.2rem;
+}
+
+.hashtag-select__control {
+  border: solid #002d72 !important;
+  border-radius: 1rem !important;
+}
+
+.hashtag-select__placeholder {
+  color: rgb(189, 27, 27) !important;
+  font-size: 1.2rem;
+}
+
+.form-file-label {
+  color: rgb(189, 27, 27);
+}
+
+.image-upload-container {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-upload {
+  font-size: 1.2rem;
+  color: white;
+  background-color: #002d72;
+  border-radius: 1rem;
+  padding-inline: 1rem;
+}
+
+.btn-submit {
+  font-size: 1.2rem;
+  color: white;
+  background-color: rgb(189, 27, 27);
+  border-radius: 1rem;
+  padding-inline: 1rem;
+}
