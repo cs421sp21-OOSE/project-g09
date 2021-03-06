@@ -21,13 +21,15 @@
 
 ## Installing / Getting started
 
-A quick introduction of the minimal setup you need to get the app up & running.
+Set the current directory to code/frontend/jhused-ui. Then type the following in the terminal to install all the front end dependencies
 
 ```shell
-commands here
+npm install
 ```
-
-Here you should say what actually happens when you execute the code above.
+Type the following to start the app on the localhost:3000
+```shell
+npm start
+```
 
 ## Developing
 
@@ -121,10 +123,10 @@ back to /projectg09
 git subtree push --prefix code/backend/jhused-api-server heroku-api master
 
 # to upload frontend to heroku
-git subtree push --prefix code/backend/jhused-ui heroku-ui master
+git subtree push --prefix code/frontend/jhused-ui heroku-ui master
 ```
 
-And again you'd need to tell what the previous code actually does.
+And again you'd need to tell what the previous code actually does. Make sure you check out the branch you want to deploy first. The command "git subtree push ..." will deploy the HEAD branch to heroku.
 
 ## Versioning
 
@@ -145,13 +147,15 @@ Give an example
 
 ## Style guide
 
-Explain your code style and show how to check it.
+Java
+https://google.github.io/styleguide/javaguide.html  
+Javascript/React
+https://airbnb.io/javascript/react/  
 
 ## Api Reference
 
-If the api is external, link to api documentation. If not describe your api including authentication methods as well as explaining all the endpoints with their required parameters.
+The api are internal use only.  
 
 ## Database
 
 PostgreSQL heroku supplied  
-~~Explaining what database (and version) has been used. Provide download links.~~
