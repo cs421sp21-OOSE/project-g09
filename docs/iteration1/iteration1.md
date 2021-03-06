@@ -13,7 +13,6 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Sql2oPostDao: concrete implementation of the PostDao interface 
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
-  * 
 
 ![](../assets/UML/UML-iteration1.png)
 
@@ -77,4 +76,18 @@ of the item
   * Server class api, post (Qiao, Louie, Bohua)
 
 # Retrospective  
-(To be done at the end of iteration 1)
+What we have done:
+* We have implemented the features required for all of the four user stories planned for this iteration. 
+* We have set up a working web application with Spark java backend + postgreSQL databse and ReactJS frontend. Getting familiar with these technology stacks in this iteration allow the team to add other features more smoothly in next a few iteartions.
+* We have created the data structure used in the database to represent post data
+* We have created the class design to support the backend implementation
+* We have secured Firebase as the third party storage to host all of our post images
+* We have created an identifiable UI design for our web app
+
+What we have not done:
+* We didn't misse any features required for implementing the user stories planned for this iteration
+* We didn't make user return to the homepage after submitting the post, which is feature we should implement in the next iteration. 
+
+What we have learned
+* Turning user story into very detailed tasks such as building a specific class seem to really help dividing tasks among teammates
+
