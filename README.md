@@ -1,6 +1,7 @@
 # JHUsed
 
- This is a web application for JHU affiliated people to post, browse, and buy second hand items and services
+ This is a web application for JHU affiliated people to post, browse, and buy second hand items and services.
+ https://jhused-ui.herokuapp.com/
 
 **Advisors** 
 
