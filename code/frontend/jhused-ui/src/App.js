@@ -1,22 +1,28 @@
 import React from "react";
 import "./App.css";
-
-import ImageGrid from "./components/ImageGrid";
+import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import Editor from "./components/Editor";
-import axios from "./util/axios";
 import PostDetails from "./components/PostDetails";
+import logo from "./images/logo.png";
 
 const App = () => {
+  const location = useLocation();
+  const background = location.state && location.state.background;
+
   return (
     <div className="App">
-      <Switch>
+      <div className="jhused-header">
+      <img className="jhused-logo" src={logo} alt="logo"/>
+      </div>
+      <Switch location={background || location}>
         <Route exact path="/">
-          <ImageGrid />
+          <HomePage />
         </Route>
-        <Route path="/post/:postID" component={PostDetails} />
+        <Route exact path="/editor" component={Editor} />
       </Switch>
-      <Route exact path="/editor" component={Editor} />
+
+      {background && <Route path="/post/:postID" children={<PostDetails />} />}
     </div>
   );
 };

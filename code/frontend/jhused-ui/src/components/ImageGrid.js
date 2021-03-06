@@ -1,39 +1,26 @@
-import React from "react";
-import PostDetails from "./PostDetails";
-import {Route} from "react-router-dom";
-import axios from "../util/axios"
-import {Button} from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import axios from "../util/axios";
 import "./ImageGrid.css";
+import PostPreview from "./PostPreview";
 
 
-class ImageGrid extends React.Component {
-    state = {
-        posts: []
-    };
+const ImageGrid = () => {
+  const [posts, setPosts] = useState([]);
 
-    componentDidMount() {
-        axios.get('/api/posts').then(response => {
-            this.setState({ posts: response.data })
-        });
-    }
+  useEffect(() => {
+    axios.get("/api/posts").then((response) => {
+      setPosts(response.data);
+    });
+  });
 
-    render() {
-        return (
-            <div>
-                <Button className="post-button" onClick={event => window.location.href='/editor'}>Post</Button>
-                <div className="img-grid">
-                    { this.state.posts && this.state.posts.map(post => (
-                        <div className="img-wrap" key={post.uuid}>
-                            <a href= {'/post/' + post.uuid}>
-                                <img src={post.imageUrls[0]} alt="pic" />
-                            </a>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            
-        )
-    }
-}
+  return (
+    <div className="img-grid-container">
+      <div className="img-grid">
+        {posts &&
+          posts.map((post) => <PostPreview post={post} key={post.uuid} />)}
+      </div>
+    </div>
+  );
+};
 
 export default ImageGrid;

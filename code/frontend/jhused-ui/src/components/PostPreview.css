@@ -1,0 +1,52 @@
+.img-wrap{
+    overflow: hidden;
+    height: 0;
+    padding: 50% 0;
+    position: relative;
+    opacity: 0.8;
+    border-radius: 30px;
+}
+
+.post-card-img {
+    min-width: 100%;
+    min-height: 100%;
+    max-width: 150%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 30px;
+}
+
+.post-card a {
+    color: #002D72;
+}
+
+.post-card a:hover {
+    color: #D72638;
+}
+
+.post-card a:hover, .post-card a:visited, .post-card a:link, .post-card a:active
+{
+    text-decoration: none;
+}
+
+.post-card-details {
+    position: relative;
+    margin: 0 0 0 0;
+    padding: 0;
+}
+
+.post-card-details {
+    font-size: 1.5rem;
+    display: flex;
+}
+
+.post-card-price {
+    position: absolute;
+    margin: 0;
+    right: 0%;
+}
+
+.post-card-title {
+    margin: 0;
+}
