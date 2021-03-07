@@ -23,8 +23,8 @@ const Carousel = (props) => {
       >
         <Slider>
           {props.images.map((item, index) => (
-            <Slide index={index} className="slide">
-              <Image src={item} hasMasterSpinner={true} className="sliderimg" />
+            <Slide index={index} className="slide" key={index}>
+              <Image src={item} hasMasterSpinner={true} className="sliderimg" key={index} />
             </Slide>
           ))}
         </Slider>

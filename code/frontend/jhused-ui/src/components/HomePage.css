@@ -1,0 +1,14 @@
+.post-button {
+  margin: 0;
+  background-color: white;
+  border: solid #002d72;
+  color: #d72638;
+  border-radius: 10rem;
+  font-size: 1.5rem;
+  padding-inline: 1rem;
+}
+
+.home-page-header {
+  padding: 2rem 0;
+  text-align: right;
+}

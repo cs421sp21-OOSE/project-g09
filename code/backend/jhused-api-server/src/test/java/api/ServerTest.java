@@ -63,7 +63,7 @@ class ServerTest {
 
   @Test
   public void getPostsGivenUuidNotInDatabase() throws UnirestException {
-    final String UUID = "0".repeat(36);
+    final String UUID = "79388574";
     final String URL = BASE_URL + "/api/posts/" + UUID;
     HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
     assertEquals(404, jsonResponse.getStatus());
@@ -190,5 +190,24 @@ class ServerTest {
     HttpResponse<JsonNode> jsonResponse = Unirest.put(URL)
         .body(gson.toJson(posts)).asJson();
     assertEquals(500, jsonResponse.getStatus());
+  }
+
+  @Test
+  public void deleteCourseWorks() throws UnirestException {
+    // This test will break if "000..." does not exists in database
+    final String UUID = "0".repeat(36);
+    final String URL = BASE_URL + "/api/posts/" + UUID;
+    HttpResponse<JsonNode> jsonResponse = Unirest.delete(URL).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
+  }
+
+  @Test
+  public void deleteCourseNotInDatabase() throws UnirestException {
+    // This test will break if "090984375" exists in database
+    final String UUID = "090984375";
+    final String URL = BASE_URL + "/api/posts/" + UUID;
+    HttpResponse<JsonNode> jsonResponse = Unirest.delete(URL).asJson();
+    assertEquals(404, jsonResponse.getStatus());
   }
 }

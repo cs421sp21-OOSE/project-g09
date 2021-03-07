@@ -1,37 +1,30 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import ImageGrid from "./ImageGrid";
+import HomePage from "./components/HomePage";
+import { Switch, Route, useLocation } from "react-router-dom";
+import Editor from "./components/Editor";
+import PostDetails from "./components/PostDetails";
+import logo from "./images/logo.png";
 
-const axios = require("axios").default;
-axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
-// axios.defaults.baseURL = "http://localhost:4567/";
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      welcom: "Loading...",
-    };
-  }
+const App = () => {
+  const location = useLocation();
+  const background = location.state && location.state.background;
 
-  async componentDidMount() {
-    axios.get("").then((response) => {
-      console.log(response);
-      const message = response.data;
-      this.setState({
-        welcom: message.message,
-      });
-      console.log(this.state.welcom);
-    });
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <ImageGrid />
+  return (
+    <div className="App">
+      <div className="jhused-header">
+      <img className="jhused-logo" src={logo} alt="logo"/>
       </div>
-    );
-  }
-}
+      <Switch location={background || location}>
+        <Route exact path="/">
+          <HomePage />
+        </Route>
+        <Route exact path="/editor" component={Editor} />
+      </Switch>
+
+      {background && <Route path="/post/:postID" children={<PostDetails />} />}
+    </div>
+  );
+};
 
 export default App;
