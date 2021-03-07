@@ -85,8 +85,7 @@ What we have done:
 * We have created an identifiable UI design for our web app
 
 What we have not done:
-* We didn't misse any features required for implementing the user stories planned for this iteration
-* We didn't make user return to the homepage after submitting the post, which is feature we should implement in the next iteration. 
+* We didn't make user return to the homepage after submitting the post, which is feature we should implement in the next iteration, but we didn't miss any features required for implementing the user stories planned for this iteration
 
 What we have learned
 * Turning user story into very detailed tasks such as building a specific class seem to really help dividing tasks among teammates
