@@ -54,7 +54,7 @@ Search
 - [ ] Frontend UI search bar (Junjie)
 
 Backlog 
-- [ ] Create post redirect to home page
+- [ ] Create post redirect to home page (Chu)
 - [ ] Allow deletion of tags (Chu)
 - [ ] Make post detail popup not expand (Sam)
 
