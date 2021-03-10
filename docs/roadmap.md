@@ -14,11 +14,11 @@ As a user, I want to edit my posts after I post, so that I can update the post w
 As a user, I want to mark something as sold, so that selling information is kept up to date.  
 As a user, I want to browse items by category, so that I can search for specific things to buy.  
 As a user, I want to search for the item/service that I am interested, so that I don’t have to see things that I don’t want  
+As a user, I want to sort by recently added, oldest, recently updated, lowest price ot highest, and highest to price to lowest, so that I can see if there is anything I would like to buy that I otherwise wouldn't have seen  
 
 ## Iteration 3  
 
 As a user, I want to have the chatting feature, so that I can coordinate with the person on the other end  
-As a user, I want to sort by recently added, oldest, recently discounted, etc., so that I can see if there is anything I would like to buy that I otherwise wouldn't have seen  
 As a user, I want to login into the platform, so that I can access my past activities  
 As a user, I want to sign up an account, so that I can log in  
 
