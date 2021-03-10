@@ -65,7 +65,7 @@ function Editor() {
     uuid: "",
     userId: "",
     title: "",
-    price: null,
+    price: 0.,
     category: "",
     hashtags: [],
     description: "",
@@ -188,6 +188,13 @@ function Editor() {
     }
   };
 
+  const handleCreatableChange = (value, actionMedia) => {
+    setFormData({
+      name: "hashtags",
+      value: value.map(obj => obj.value)
+    });
+  };
+
   return (
     <div className="editor-panel">
       <Form onSubmit={handleSubmit}>
@@ -261,6 +268,7 @@ function Editor() {
                 placeholder="Type tags"
                 onInputChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
+                onChange={handleCreatableChange}
                 isDisabled={submitted}
               />
             </Form.Group>
@@ -332,11 +340,9 @@ function Editor() {
         ))}
       {/* Conditional element below to display the form data in json
             Uncomment it  on for debugging use */}
-      {/* {submitted &&
-                <pre name="json-output">
-                    {JSON.stringify({...formData}, null, 2)}
-                </pre>
-            } */}
+      {/* <pre name="json-output">
+          {JSON.stringify({...formData}, null, 2)}
+      </pre> */}
     </div>
   );
 }
