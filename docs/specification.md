@@ -22,7 +22,7 @@ As a user, I want to login into the platform, so that I can access my past activ
 As a user, I want to sign up an account, so that I can log in  
 As a user, I want to create posts, so that I can buy/sell things  
 As a user, I want to include text in the post, so that I can describe things  
-As a user, I want to sign in to post an item with tags for its category, so that a buyer can search through category  
+As a user, I want to post an item with tags for its category, so that a buyer can search through category  
 As a user, I want to search for the item/service that I am interested, so that I don’t have to see things that I don’t want  
 As a user, I want to include image in the post, so that I can show other users more clearly  
 As a user, I want to edit my posts after I post, so that I can update the post when I feel like to  
