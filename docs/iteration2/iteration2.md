@@ -33,29 +33,29 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # Tasks  
 Post Editing
-- [] myPage of posts for editing (Sam)
-- [] Route for myPage + button to navigate there (Sam)
-- [] Editing UI form (same as before, but with data populated) (Chu)
+- [ ] myPage of posts for editing (Sam)
+- [ ] Route for myPage + button to navigate there (Sam)
+- [ ] Editing UI form (same as before, but with data populated) (Chu)
 
 Mark Item as Sold
-- [] Modify Database design (Qiao)
-- [] UI button for updating status - in post editor (Chu)
-- [] Homepage should only render unsold items - frontend job (Bohua)
+- [ ] Modify Database design (Qiao)
+- [ ] UI button for updating status - in post editor (Chu)
+- [ ] Homepage should only render unsold items - frontend job (Bohua)
 
 Filter by Category
-- [] Button for category filtering (Junjie)
+- [ ] Button for category filtering (Junjie)
 
 Sorting
-- [] One route method w/ query params (Chu)
-- [] Frontend choose sort type (Bohua)
+- [ ] One route method w/ query params (Chu)
+- [ ] Frontend choose sort type (Bohua)
 
 Search
-- [] Update backend search - description, location, title, tags (Louie)
-- [] Frontend UI search bar (Junjie)
+- [ ] Update backend search - description, location, title, tags (Louie)
+- [ ] Frontend UI search bar (Junjie)
 
 Backlog 
-- [] Create post redirect to home page
-- [] Allow deletion of tags (Chu)
-- [] Make post detail popup not expand (Sam)
+- [ ] Create post redirect to home page
+- [ ] Allow deletion of tags (Chu)
+- [ ] Make post detail popup not expand (Sam)
 
 # Retrospective  
