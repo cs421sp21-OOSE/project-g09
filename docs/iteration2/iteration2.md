@@ -55,7 +55,7 @@ Search
 
 Backlog 
 - [ ] Create post redirect to home page
-- [ ] Allow deletion of tags (Chu)
+- [x] Allow deletion of tags (Chu)
 - [ ] Make post detail popup not expand (Sam)
 
 # Retrospective  
