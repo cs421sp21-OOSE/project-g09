@@ -1,0 +1,35 @@
+.editor-popup-frame {
+    position: fixed;
+    z-index: 1;
+    width: 60%;
+    height: 80%;
+    left: 20%;
+    border: solid 3px;
+    border-radius: 30px;
+    border-color: #002d72;
+    background-color: white;
+    padding: 3rem 1rem 1rem 1rem;
+}
+
+.editor-header-text {
+    position: absolute;
+    top: 2%;
+    left: 4%;
+    font-size: 1.2rem;
+    color: #002d72;
+}
+
+.close-popup {
+    position: absolute;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #002d72;
+    position: absolute;
+    top: 2%;
+    right: 1.5%;
+}
+
+.close-popup {
+    cursor: pointer;
+}
+
