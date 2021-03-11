@@ -1,9 +1,10 @@
 package model;
 
-import java.util.Objects;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 
 // frontend has form, it receive user's post information convert it to a json, sends the json to backend using post
@@ -11,7 +12,6 @@ import java.util.List;
 
 /**
  * Model Post
- *
  */
 @Data
 public class Post {
@@ -24,24 +24,27 @@ public class Post {
   private List<Hashtag> hashtags;    // don't need to have
   private Category category;  // must have
   private String location;  // must have
+  private Instant creatTime;
+  private Instant updateTime;
 
   /**
    * Constructor for Post.
    * This constructor is made basically for testing.
+   *
    * @param title
    */
-  public Post(String title)
-  {
-    this.title=title;
+  public Post(String title) {
+    this.title = title;
   }
 
   /**
    * Constructor for Post.
    * All parameters are NOT NULL fields.
-   * @param uuid UUID should be generated, it should always be in length 36. It is the primary key for Post.
-   * @param title title of the post.
-   * @param price price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
-   *              Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
+   *
+   * @param uuid     UUID should be generated, it should always be in length 36. It is the primary key for Post.
+   * @param title    title of the post.
+   * @param price    price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
+   *                 Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
    * @param category enum, represent category.
    * @param location location of the post.
    */
@@ -56,15 +59,16 @@ public class Post {
   /**
    * Constructor for Post.
    * This one has parameter for all fields
-   * @param uuid UUID should be generated, it should always be in length 36. It is the primary key for Post.
-   * @param title title of the post.
-   * @param price price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
-   *              Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
+   *
+   * @param uuid        UUID should be generated, it should always be in length 36. It is the primary key for Post.
+   * @param title       title of the post.
+   * @param price       price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
+   *                    Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
    * @param description description may not exceeds 1000 characters.
-   * @param images a list of image urls.
-   * @param hashtags a list of hashtags.
-   * @param category enum, represents category.
-   * @param location location of the post.
+   * @param images      a list of image urls.
+   * @param hashtags    a list of hashtags.
+   * @param category    enum, represents category.
+   * @param location    location of the post.
    */
   public Post(String uuid, String userId, String title, Double price, String description, List<Image> images,
               List<Hashtag> hashtags, Category category, String location) {
@@ -74,7 +78,7 @@ public class Post {
     this.price = price;
     this.description = description;
     this.images = images;
-    for (Image image: images) {
+    for (Image image : images) {
       image.setPostId(this.uuid);
     }
     this.hashtags = hashtags;
@@ -83,12 +87,11 @@ public class Post {
   }
 //  No need to add getter and setter function as lombok automated these
 
-  public void setImages(List<Image> images){
-    for (Image image: images)
-    {
+  public void setImages(List<Image> images) {
+    for (Image image : images) {
       image.setPostId(this.uuid);
     }
-    this.images=images;
+    this.images = images;
   }
 
   @Override
