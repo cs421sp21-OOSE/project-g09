@@ -85,7 +85,9 @@ public final class Database {
           // is 4, because it has 4 digits after decimal point.
           + "description VARCHAR(5000),"
           + "category Category NOT NULL,"
-          + "location VARCHAR(100) NOT NULL"
+          + "location VARCHAR(100) NOT NULL,"
+          + "create_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,"
+          + "update_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP"
           + ");";
       conn.createQuery(sql).executeUpdate();
 
