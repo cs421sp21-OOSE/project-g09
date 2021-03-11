@@ -3,6 +3,7 @@ package util;
 import model.Hashtag;
 import model.Image;
 import model.Post;
+import org.sfm.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
@@ -200,7 +201,8 @@ public final class Database {
   private static void addHashtag(Connection conn, Hashtag hashtag) throws Sql2oException {
     List<Hashtag> existingHashtag = conn.createQuery("SELECT * from hashtags where hashtag_id=:hashtagId OR " +
         "hashtag=:hashtag;")
-        .addColumnMapping("hashtag_id", "hashtagId")
+        .setAutoDeriveColumnNames(true)
+        .setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder())
         .bind(hashtag)
         .executeAndFetch(Hashtag.class);
     if (existingHashtag.isEmpty()) {
