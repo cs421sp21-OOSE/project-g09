@@ -18,11 +18,30 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # Wireframe & Use-case  
 
+### Browsing the homepage
+1. The user visits our web application using a web browser.
+2. The user will be presented with the homepage having sample posted items of different categories.
+3. The user can choose to only see items from certain category by choosing the drop down category.
+4. The user can choose the order of items listed by selecting in the sort drop style(most recent, least recent, price low to high, price hight to low).
+
 ![](../assets/Wireframe/Wireframe-home-iteration2.png)
+
+### Account page for user
+(After clicking on post on the account button)
+1. The user can visit an account page where the username, location, and items posted by the user will be displayed.
+2. The user can click on the home button to go back to the homepage where all posts are displayed.
 
 ![](../assets/Wireframe/Wireframe-myPosts-iteration2.png)
 
+### Editing a post
+(After clicking on post on the account page)
+1. The user will be able to visit the editing panel of a post after clicking on the post on the account page.
+2. The editing panel contains the same boxes for post title, price, location, category, description and options to upload image plus a sold button.
+3. The user can edit the information in the boxes, and once the button save is clicked, the post will be updated in the database.
+4. The user can mark the item as sold once the sold button is clicked, and the post would not appear under search anymore.
+
 ![](../assets/Wireframe/Wireframe-editPost-iteration2.png)
+
 
 # Iteration Backlog  
 * As a user, I want to post an item with tags for its category, so that a buyer can search through category  
