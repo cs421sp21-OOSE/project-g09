@@ -1,6 +1,6 @@
 package util;
 
-import model.HashTag;
+import model.Hashtag;
 import model.Image;
 import model.Post;
 import org.sql2o.Connection;
@@ -66,16 +66,19 @@ public final class Database {
    */
   public static void createPostsTableWithSampleData(Sql2o sql2o, List<Post> samples) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
-      conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
+      // Must drop images and hashtags before posts, to avoid foreign key dependency error
+      conn.createQuery("DROP TABLE IF EXISTS posts_hashtags;").executeUpdate();
+      conn.createQuery("DROP TABLE IF EXISTS images;").executeUpdate();
+      conn.createQuery("DROP TABLE IF EXISTS hashtags;").executeUpdate();
+      conn.createQuery("DROP TABLE IF EXISTS posts;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
       conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
-      conn.createQuery("DROP TABLE IF EXISTS Images;").executeUpdate();
-      conn.createQuery("DROP TABLE IF EXISTS Hashtags;").executeUpdate();
 
 
-      String sql = "CREATE TABLE IF NOT EXISTS Posts("
+      // change naming rule to use underscores, as column names are case insensitive
+      String sql = "CREATE TABLE IF NOT EXISTS posts("
           + "uuid CHAR(36) NOT NULL PRIMARY KEY,"
-          + "userId VARCHAR(15),"   // make this foreign key in future iterations
+          + "user_id CHAR(36),"   // make this foreign key in future iterations
           + "title VARCHAR(50) NOT NULL,"
           + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
           // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
@@ -86,23 +89,57 @@ public final class Database {
           + ");";
       conn.createQuery(sql).executeUpdate();
 
-      sql = "CREATE TABLE IF NOT EXISTS Images("
-          + "imgId VARCHAR(36) NOT NULL PRIMARY KEY,"
-          + "postId VARCHAR(36) NOT NULL,"
-          + "url VARCHAR(100) NOT NULL"
-          + ");";
-      conn.createQuery(sql).executeUpdate();
-
-      sql = "CREATE TABLE IF NOT EXISTS Hashtags("
-          + "hashTagId VARCHAR(36) NOT NULL PRIMARY KEY,"
-          + "postId VARCHAR(36) NOT NULL,"
-          + "hashTag VARCHAR(20) NOT NULL"
-          + ");";
-      conn.createQuery(sql).executeUpdate();
+      createHashtagsTable(sql2o);
+      createPostsHashtagsTable(sql2o);
+      createImagesTable(sql2o);
 
       for (Post Post : samples) {
-        add(conn, Post);
+        addPostsWithInnerObjects(conn, Post);
       }
+    }
+  }
+
+  public static void createImagesTable(Sql2o sql2o) throws Sql2oException {
+    try (Connection conn = sql2o.open()) {
+      conn.createQuery("DROP TABLE IF EXISTS Images;").executeUpdate();
+      String sql = "CREATE TABLE IF NOT EXISTS images("
+          + "img_id CHAR(36) NOT NULL PRIMARY KEY,"
+          + "post_id CHAR(36) NOT NULL,"
+          + "url VARCHAR(500) NOT NULL,"
+          + "FOREIGN KEY (post_id) " // Note: no comma here
+          + "REFERENCES posts(uuid) "
+//              + "ON DELETE CASCADE "
+          + ");";
+      conn.createQuery(sql).executeUpdate();
+    }
+  }
+
+  public static void createPostsHashtagsTable(Sql2o sql2o) throws Sql2oException {
+    try (Connection conn = sql2o.open()) {
+      conn.createQuery("DROP TABLE IF EXISTS posts_hashtags;").executeUpdate();
+      String sql = "CREATE TABLE IF NOT EXISTS posts_hashtags("
+          + "post_id CHAR(36) NOT NULL,"
+          + "hashtag_id CHAR(36) NOT NULL,"
+          + "PRIMARY KEY (post_id, hashtag_id),"
+          + "FOREIGN KEY (post_id) " // Note: no comma here
+          + "REFERENCES posts(uuid), "
+//          + "ON DELETE CASCADE,"
+          + "FOREIGN KEY (hashtag_id) " // Note: no comma here
+          + "REFERENCES hashtags(hashtag_id) "
+//          + "ON DELETE CASCADE "
+          + ");";
+      conn.createQuery(sql).executeUpdate();
+    }
+  }
+
+  public static void createHashtagsTable(Sql2o sql2o) throws Sql2oException {
+    try (Connection conn = sql2o.open()) {
+      conn.createQuery("DROP TABLE IF EXISTS hashtags;").executeUpdate();
+      String sql = "CREATE TABLE IF NOT EXISTS hashtags("
+          + "hashtag_id CHAR(36) NOT NULL PRIMARY KEY,"
+          + "hashtag VARCHAR(100) NOT NULL UNIQUE"
+          + ");";
+      conn.createQuery(sql).executeUpdate();
     }
   }
 
@@ -139,26 +176,43 @@ public final class Database {
    * @param post the to be add Post object
    * @throws Sql2oException
    */
-  private static void add(Connection conn, Post post) throws Sql2oException {
-    String sql = "INSERT INTO Posts(uuid, userId, title, price, description, category, location) "
+  private static void addPostsWithInnerObjects(Connection conn, Post post) throws Sql2oException {
+    String sql = "INSERT INTO Posts(uuid, user_id, title, price, description, category, location) "
         + "VALUES(:uuid, :userId, :title, :price, :description, CAST(:category AS Category), :location);";
     conn.createQuery(sql).bind(post).executeUpdate();
-    for (Image image : post.getImageUrls()) {
+    for (Image image : post.getImages()) {
       addImage(conn, image);
     }
-    for (HashTag hashTag : post.getHashtags()) {
-      addHashTag(conn, hashTag);
+    for (Hashtag hashtag : post.getHashtags()) {
+      addHashtag(conn, hashtag);
+      addPostHashtag(conn, post, hashtag);
     }
   }
+
   private static void addImage(Connection conn, Image image) throws Sql2oException {
-    String sql = "INSERT INTO Images(imgId, postId, url) "
+    String sql = "INSERT INTO Images(img_id, post_id, url) "
         + "VALUES(:imgId, :postId, :url);";
     conn.createQuery(sql).bind(image).executeUpdate();
   }
 
-  private static void addHashTag(Connection conn, HashTag hashTag) throws Sql2oException {
-    String sql = "INSERT INTO HashTags(hashTagId, postId, hashTag) "
-        + "VALUES(:hashTagId, :postId, :hashTag);";
-    conn.createQuery(sql).bind(hashTag).executeUpdate();
+  private static void addHashtag(Connection conn, Hashtag hashtag) throws Sql2oException {
+    List<Hashtag> existingHashtag = conn.createQuery("SELECT * from hashtags where hashtag_id=:hashtagId OR " +
+        "hashtag=:hashtag;")
+        .addColumnMapping("hashtag_id", "hashtagId")
+        .bind(hashtag)
+        .executeAndFetch(Hashtag.class);
+    if (existingHashtag.isEmpty()) {
+      String sql = "INSERT INTO Hashtags(hashtag_id, hashtag) "
+          + "VALUES(:hashtagId, :hashtag);";
+      conn.createQuery(sql).bind(hashtag).executeUpdate();
+    }
+  }
+
+  private static void addPostHashtag(Connection conn, Post post, Hashtag hashtag) throws Sql2oException {
+    String sql = "INSERT INTO posts_hashtags(post_id, hashtag_id) "
+        + "VALUES(:postId, :hashtagId);";
+    conn.createQuery(sql).addParameter("postId", post.getUuid())
+        .addParameter("hashtagId", hashtag.getHashtagId())
+        .executeUpdate();
   }
 }

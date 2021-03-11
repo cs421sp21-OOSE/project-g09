@@ -20,8 +20,8 @@ public class Post {
   private String title;   //must have
   private Double price;   //must have
   private String description;   // don't need to have
-  private List<Image> imageUrls;   // don't need to have
-  private List<HashTag> hashtags;    // don't need to have
+  private List<Image> images;   // don't need to have
+  private List<Hashtag> hashtags;    // don't need to have
   private Category category;  // must have
   private String location;  // must have
 
@@ -61,24 +61,35 @@ public class Post {
    * @param price price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
    *              Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
    * @param description description may not exceeds 1000 characters.
-   * @param imageUrls a list of image urls.
-   * @param hashTags a list of hashtags.
+   * @param images a list of image urls.
+   * @param hashtags a list of hashtags.
    * @param category enum, represents category.
    * @param location location of the post.
    */
-  public Post(String uuid, String userId, String title, Double price, String description, List<Image> imageUrls,
-              List<HashTag> hashTags, Category category, String location) {
+  public Post(String uuid, String userId, String title, Double price, String description, List<Image> images,
+              List<Hashtag> hashtags, Category category, String location) {
     this.uuid = uuid;
     this.userId = userId;
     this.title = title;
     this.price = price;
     this.description = description;
-    this.imageUrls = imageUrls;
-    this.hashtags = hashTags;
+    this.images = images;
+    for (Image image: images) {
+      image.setPostId(this.uuid);
+    }
+    this.hashtags = hashtags;
     this.category = category;
     this.location = location;
   }
 //  No need to add getter and setter function as lombok automated these
+
+  public void setImages(List<Image> images){
+    for (Image image: images)
+    {
+      image.setPostId(this.uuid);
+    }
+    this.images=images;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -91,13 +102,13 @@ public class Post {
     Post post = (Post) o;
     return Objects.equals(userId, post.userId) && Objects
         .equals(title, post.title) && Objects.equals(price, post.price) && Objects
-        .equals(description, post.description) && Objects.equals(imageUrls, post.imageUrls)
+        .equals(description, post.description) && Objects.equals(images, post.images)
         && Objects.equals(hashtags, post.hashtags) && category == post.category
         && Objects.equals(location, post.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, title, price, description, imageUrls, hashtags, category, location);
+    return Objects.hash(userId, title, price, description, images, hashtags, category, location);
   }
 }

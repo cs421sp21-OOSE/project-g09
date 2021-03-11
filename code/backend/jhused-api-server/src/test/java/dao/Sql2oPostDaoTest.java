@@ -45,8 +45,8 @@ class Sql2oPostDaoTest {
     Post c1 = new Post(UUID.randomUUID().toString(), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -60,8 +60,8 @@ class Sql2oPostDaoTest {
     Post c1 = new Post("0".repeat(36), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -76,8 +76,8 @@ class Sql2oPostDaoTest {
     Post c1 = new Post(null, "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -153,8 +153,8 @@ class Sql2oPostDaoTest {
     Post ogPost = new Post(samples.get(0).getUuid(), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
