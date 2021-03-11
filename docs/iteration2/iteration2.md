@@ -58,5 +58,7 @@ Backlog
 - [x] Allow deletion of tags (Chu)
 - [ ] Make post detail popup not expand (Sam)
 - [ ] Show avaiable hashtags in the hastag select (Chu)
+- [ ] Pagination (if we have time) - update API & frontend ui to show pages
+- [ ] Media queries for responsiveness :(
 
 # Retrospective  
