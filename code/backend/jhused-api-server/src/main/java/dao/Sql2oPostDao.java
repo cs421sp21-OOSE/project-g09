@@ -1,10 +1,10 @@
 package dao;
 
 import exceptions.DaoException;
-import java.io.InvalidObjectException;
+
 import java.util.UUID;
 import model.Category;
-import model.HashTag;
+import model.Hashtag;
 import model.Image;
 import model.Post;
 import org.postgresql.jdbc.PgArray;
@@ -56,7 +56,7 @@ public class Sql2oPostDao implements PostDao {
           .addParameter("title", post.getTitle())
           .addParameter("price", post.getPrice())
           .addParameter("description", post.getDescription())
-          .addParameter("imageurls", post.getImageUrls())
+          .addParameter("imageurls", post.getImages())
           .addParameter("hashtags", post.getHashtags())
           .addParameter("category", post.getCategory())
           .addParameter("location", post.getLocation())
@@ -133,7 +133,7 @@ public class Sql2oPostDao implements PostDao {
     //make placer-holder variables for fields that might be null.
     String newDescription;
     List<Image> imageUrls;
-    List<HashTag> hashtags;
+    List<Hashtag> hashtags;
 
     //check each from passed post to ensure no errors occur.
     if(post.getDescription() == null) {
@@ -142,10 +142,10 @@ public class Sql2oPostDao implements PostDao {
       newDescription = post.getDescription();
     }
 
-    if(post.getImageUrls() == null) {
+    if(post.getImages() == null) {
       imageUrls = new ArrayList<>();
     } else {
-      imageUrls = post.getImageUrls();
+      imageUrls = post.getImages();
     }
 
     if(post.getHashtags() == null) {
@@ -240,7 +240,7 @@ public class Sql2oPostDao implements PostDao {
           ((BigDecimal) post.get("price")).doubleValue(),
           (String) post.get("description"),
           new ArrayList<Image>(Arrays.asList((Image [])(((PgArray) post.get("imageurls")).getArray()))),
-          new ArrayList<HashTag>(Arrays.asList((HashTag [])(((PgArray) post.get("hashtags")).getArray()))),
+          new ArrayList<Hashtag>(Arrays.asList((Hashtag[])(((PgArray) post.get("hashtags")).getArray()))),
           Category.valueOf((String)post.get("category")),
           (String) post.get("location"));
     return convertedPost;

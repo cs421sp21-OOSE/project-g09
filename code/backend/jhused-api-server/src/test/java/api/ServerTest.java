@@ -75,8 +75,8 @@ class ServerTest {
     Post post = new Post(UUID.randomUUID().toString(), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -102,8 +102,8 @@ class ServerTest {
     Post post = new Post("0".repeat(36), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -119,8 +119,8 @@ class ServerTest {
     Post post = new Post("0".repeat(36), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -138,8 +138,8 @@ class ServerTest {
     Post post = new Post("0374".repeat(9), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -154,8 +154,8 @@ class ServerTest {
     Post post = new Post("7562".repeat(9), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
@@ -179,8 +179,8 @@ class ServerTest {
     Post post = new Post("8572".repeat(9), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
-        DataStore.sampleImageUrls(),
-        DataStore.sampleHashtags(),
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Location of dummy furniture"
     );
