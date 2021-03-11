@@ -66,16 +66,17 @@ public final class Database {
    */
   public static void createPostsTableWithSampleData(Sql2o sql2o, List<Post> samples) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
+      // Must drop images and hashtags before posts, to avoid foreign key dependency error
       conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
       conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
-      conn.createQuery("DROP TABLE IF EXISTS Images;").executeUpdate();
       conn.createQuery("DROP TABLE IF EXISTS Hashtags;").executeUpdate();
 
 
+      // change naming rule to use underscores, as column names are case insensitive
       String sql = "CREATE TABLE IF NOT EXISTS Posts("
           + "uuid CHAR(36) NOT NULL PRIMARY KEY,"
-          + "userId VARCHAR(15),"   // make this foreign key in future iterations
+          + "user_id CHAR(36),"   // make this foreign key in future iterations
           + "title VARCHAR(50) NOT NULL,"
           + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
           // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
@@ -86,23 +87,39 @@ public final class Database {
           + ");";
       conn.createQuery(sql).executeUpdate();
 
-      sql = "CREATE TABLE IF NOT EXISTS Images("
-          + "imgId VARCHAR(36) NOT NULL PRIMARY KEY,"
-          + "postId VARCHAR(36) NOT NULL,"
-          + "url VARCHAR(100) NOT NULL"
-          + ");";
-      conn.createQuery(sql).executeUpdate();
-
-      sql = "CREATE TABLE IF NOT EXISTS Hashtags("
-          + "hashTagId VARCHAR(36) NOT NULL PRIMARY KEY,"
-          + "postId VARCHAR(36) NOT NULL,"
-          + "hashTag VARCHAR(20) NOT NULL"
-          + ");";
-      conn.createQuery(sql).executeUpdate();
+      createHashTagsTable(sql2o);
+      createImagesTable(sql2o);
 
       for (Post Post : samples) {
         add(conn, Post);
       }
+    }
+  }
+
+  public static void createImagesTable(Sql2o sql2o) throws Sql2oException {
+    try (Connection conn = sql2o.open()) {
+      conn.createQuery("DROP TABLE IF EXISTS Images;").executeUpdate();
+      String sql = "CREATE TABLE IF NOT EXISTS Images("
+              + "img_id CHAR(36) NOT NULL PRIMARY KEY,"
+              + "post_id CHAR(36) NOT NULL,"
+              + "url VARCHAR(500) NOT NULL,"
+              + "FOREIGN KEY (post_id)" // Note: no comma here
+              + "REFERENCES posts(uuid)"
+              + ");";
+      conn.createQuery(sql).executeUpdate();
+    }
+  }
+
+
+  public static void createHashTagsTable(Sql2o sql2o) throws Sql2oException {
+    try (Connection conn = sql2o.open()) {
+      conn.createQuery("DROP TABLE IF EXISTS Hashtags;").executeUpdate();
+      String sql = "CREATE TABLE IF NOT EXISTS Hashtags("
+          + "hashtag_id CHAR(36) NOT NULL PRIMARY KEY,"
+          + "post_id CHAR(36) NOT NULL,"
+          + "hashTag VARCHAR(100) NOT NULL"
+          + ");";
+      conn.createQuery(sql).executeUpdate();
     }
   }
 
