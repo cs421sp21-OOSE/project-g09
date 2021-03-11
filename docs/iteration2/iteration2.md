@@ -14,7 +14,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
 
-![](../assets/UML/UML-iteration1.png)
+![](../assets/UML/UML-iteration2.png)
 
 # Wireframe & Use-case  
 
