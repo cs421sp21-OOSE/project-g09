@@ -87,7 +87,6 @@ public class ApiServer {
       return gson.toJson(message);
     });
 
-    // TODO: implement requests
 
     // return all posts
     get("/api/posts", (req, res) -> {

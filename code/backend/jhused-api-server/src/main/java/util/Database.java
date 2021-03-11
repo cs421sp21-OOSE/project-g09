@@ -1,5 +1,7 @@
 package util;
 
+import model.HashTag;
+import model.Image;
 import model.Post;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -13,7 +15,7 @@ import java.util.List;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = false;
+  public static boolean USE_TEST_DATABASE = true;
 
   private Database() {
     // This class should not be instantiated.
@@ -67,6 +69,9 @@ public final class Database {
       conn.createQuery("DROP TABLE IF EXISTS Posts;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
       conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
+      conn.createQuery("DROP TABLE IF EXISTS Images;").executeUpdate();
+      conn.createQuery("DROP TABLE IF EXISTS Hashtags;").executeUpdate();
+
 
       String sql = "CREATE TABLE IF NOT EXISTS Posts("
           + "uuid CHAR(36) NOT NULL PRIMARY KEY,"
@@ -76,10 +81,22 @@ public final class Database {
           // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
           // is 4, because it has 4 digits after decimal point.
           + "description VARCHAR(5000),"
-          + "imageUrls VARCHAR(500)[],"
-          + "hashtags VARCHAR(15)[],"
           + "category Category NOT NULL,"
           + "location VARCHAR(100) NOT NULL"
+          + ");";
+      conn.createQuery(sql).executeUpdate();
+
+      sql = "CREATE TABLE IF NOT EXISTS Images("
+          + "imgId VARCHAR(36) NOT NULL PRIMARY KEY,"
+          + "postId VARCHAR(36) NOT NULL,"
+          + "url VARCHAR(100) NOT NULL"
+          + ");";
+      conn.createQuery(sql).executeUpdate();
+
+      sql = "CREATE TABLE IF NOT EXISTS Hashtags("
+          + "hashTagId VARCHAR(36) NOT NULL PRIMARY KEY,"
+          + "postId VARCHAR(36) NOT NULL,"
+          + "hashTag VARCHAR(20) NOT NULL"
           + ");";
       conn.createQuery(sql).executeUpdate();
 
@@ -119,12 +136,29 @@ public final class Database {
    * Add Post to the database connected to the conn object.
    *
    * @param conn database connection
-   * @param Post the to be add Post object
+   * @param post the to be add Post object
    * @throws Sql2oException
    */
-  private static void add(Connection conn, Post Post) throws Sql2oException {
-    String sql = "INSERT INTO Posts(uuid, userId, title, price, description, imageUrls, hashtags, category, location) "
-        + "VALUES(:uuid, :userId, :title, :price, :description, ARRAY[:imageUrls], ARRAY[:hashtags], CAST(:category AS Category), :location);";
-    conn.createQuery(sql).bind(Post).executeUpdate();
+  private static void add(Connection conn, Post post) throws Sql2oException {
+    String sql = "INSERT INTO Posts(uuid, userId, title, price, description, category, location) "
+        + "VALUES(:uuid, :userId, :title, :price, :description, CAST(:category AS Category), :location);";
+    conn.createQuery(sql).bind(post).executeUpdate();
+    for (Image image : post.getImageUrls()) {
+      addImage(conn, image);
+    }
+    for (HashTag hashTag : post.getHashtags()) {
+      addHashTag(conn, hashTag);
+    }
+  }
+  private static void addImage(Connection conn, Image image) throws Sql2oException {
+    String sql = "INSERT INTO Images(imgId, postId, url) "
+        + "VALUES(:imgId, :postId, :url);";
+    conn.createQuery(sql).bind(image).executeUpdate();
+  }
+
+  private static void addHashTag(Connection conn, HashTag hashTag) throws Sql2oException {
+    String sql = "INSERT INTO HashTags(hashTagId, postId, hashTag) "
+        + "VALUES(:hashTagId, :postId, :hashTag);";
+    conn.createQuery(sql).bind(hashTag).executeUpdate();
   }
 }

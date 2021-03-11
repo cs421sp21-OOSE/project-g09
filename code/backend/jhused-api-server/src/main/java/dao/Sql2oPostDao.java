@@ -4,6 +4,8 @@ import exceptions.DaoException;
 import java.io.InvalidObjectException;
 import java.util.UUID;
 import model.Category;
+import model.HashTag;
+import model.Image;
 import model.Post;
 import org.postgresql.jdbc.PgArray;
 import org.sql2o.Connection;
@@ -34,7 +36,6 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public Post create(Post post) throws DaoException {
-    // TODO: need to discuss uuid formation
     if (post.getUuid().isEmpty()) {
       post.setUuid(UUID.randomUUID().toString());
     }
@@ -70,6 +71,7 @@ public class Sql2oPostDao implements PostDao {
     try (Connection conn = sql2o.open()) {
       return mapToPostsGetFirst(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
           .addParameter("id", id)
+
           .executeAndFetchTable().asList());
     } catch (Sql2oException|SQLException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
@@ -130,7 +132,8 @@ public class Sql2oPostDao implements PostDao {
 
     //make placer-holder variables for fields that might be null.
     String newDescription;
-    List<String> imageUrls, hashtags;
+    List<Image> imageUrls;
+    List<HashTag> hashtags;
 
     //check each from passed post to ensure no errors occur.
     if(post.getDescription() == null) {
@@ -236,8 +239,8 @@ public class Sql2oPostDao implements PostDao {
           (String) post.get("title"),
           ((BigDecimal) post.get("price")).doubleValue(),
           (String) post.get("description"),
-          new ArrayList<String>(Arrays.asList((String [])(((PgArray) post.get("imageurls")).getArray()))),
-          new ArrayList<String>(Arrays.asList((String [])(((PgArray) post.get("hashtags")).getArray()))),
+          new ArrayList<Image>(Arrays.asList((Image [])(((PgArray) post.get("imageurls")).getArray()))),
+          new ArrayList<HashTag>(Arrays.asList((HashTag [])(((PgArray) post.get("hashtags")).getArray()))),
           Category.valueOf((String)post.get("category")),
           (String) post.get("location"));
     return convertedPost;

@@ -20,8 +20,8 @@ public class Post {
   private String title;   //must have
   private Double price;   //must have
   private String description;   // don't need to have
-  private List<String> imageUrls;   // don't need to have
-  private List<String> hashtags;    // don't need to have
+  private List<Image> imageUrls;   // don't need to have
+  private List<HashTag> hashtags;    // don't need to have
   private Category category;  // must have
   private String location;  // must have
 
@@ -66,8 +66,8 @@ public class Post {
    * @param category enum, represents category.
    * @param location location of the post.
    */
-  public Post(String uuid, String userId, String title, Double price, String description, List<String> imageUrls,
-              List<String> hashTags, Category category, String location) {
+  public Post(String uuid, String userId, String title, Double price, String description, List<Image> imageUrls,
+              List<HashTag> hashTags, Category category, String location) {
     this.uuid = uuid;
     this.userId = userId;
     this.title = title;

@@ -81,9 +81,7 @@ class Sql2oPostDaoTest {
         Category.FURNITURE,
         "Location of dummy furniture"
     );
-//    assertThrows(DaoException.class, () -> {
-//      postDao.create(c1);
-//    });
+
     c1.setUuid("0" + " ".repeat(35));
     c1.setPrice(null);
     assertThrows(DaoException.class, () -> {
@@ -117,7 +115,7 @@ class Sql2oPostDaoTest {
 
   @Test
   @DisplayName("read returns null given invalid uuid")
-  void readPostGivenInvalidOfferingName() {
+  void readPostGivenInvalidId() {
     Post c1 = postDao.read("928123");
     assertNull(c1);
   }
