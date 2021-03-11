@@ -76,6 +76,8 @@ Backlog
 - [ ] Create post redirect to home page (Chu)
 - [ ] Allow deletion of tags (Chu)
 - [ ] Make post detail popup not expand (Sam)
+- [ ] Pagination (if we have time) - update API & frontend ui to show pages
+- [ ] Media queries for responsiveness :(
 
 # Retrospective  
 
