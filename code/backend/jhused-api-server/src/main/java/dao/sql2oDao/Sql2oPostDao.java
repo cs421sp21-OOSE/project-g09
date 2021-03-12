@@ -74,9 +74,9 @@ public class Sql2oPostDao implements PostDao {
    * the inserted post.
    * Need to
    * 1. insert post to post table,
-   * 2. then insert image,
-   * 3. then insert hashtag,
-   * 4. then insert post_hashtag
+   * 2. then insert image by calling create of ImageDao,
+   * 3. then insert hashtag by calling create of HashtagDao,
+   * 4. then insert post_hashtag, do this here.
    * Sequence between 2 and 3 can exchange.
    * Be careful about foreign key constrain.
    * @param post The Post item to be created
