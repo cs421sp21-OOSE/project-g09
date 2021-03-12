@@ -8,15 +8,24 @@
     border-radius: 30px;
     border-color: #002d72;
     background-color: white;
-    padding: 3rem 1rem 1rem 1rem;
+    overflow: hidden;
 }
 
-.editor-header-text {
+.editor-popup-header {
+    background: #002d72;
+    height: 2.5rem;
+}
+
+.editor-popup-text {
     position: absolute;
-    top: 2%;
+    top: 1%;
     left: 4%;
     font-size: 1.2rem;
-    color: #002d72;
+    color: #ffffff;
+}
+
+.editor-popup-content {
+    padding: 3rem 1rem 1rem 1rem;
 }
 
 .close-popup {
@@ -25,8 +34,8 @@
     height: 1.5rem;
     color: #002d72;
     position: absolute;
-    top: 2%;
-    right: 1.5%;
+    top: 1%;
+    right: 3%;
 }
 
 .close-popup {

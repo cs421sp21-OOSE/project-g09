@@ -8,7 +8,7 @@ function EditorPopUp(props) {
     return (
         <div className="editor-popup-frame">
             <div className="editor-popup-header">
-                <span className="editor-header-text">
+                <span className="editor-popup-text">
                     Create new post
                 </span>
                 <img 
