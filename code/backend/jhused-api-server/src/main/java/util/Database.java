@@ -3,8 +3,9 @@ package util;
 import model.Hashtag;
 import model.Image;
 import model.Post;
-import org.sfm.sql2o.SfmResultSetHandlerFactoryBuilder;
+import org.simpleflatmapper.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
+import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 import org.sql2o.quirks.PostgresQuirks;
@@ -103,6 +104,14 @@ public final class Database {
     }
   }
 
+  /**
+   * Create table: images
+   * images has a forein key referencing uuid of posts.
+   * When the posts that own this image get deleted, this image
+   * will be automatically deleted.
+   * @param sql2o sql2o
+   * @throws Sql2oException
+   */
   public static void createImagesTable(Sql2o sql2o) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
       conn.createQuery("DROP TABLE IF EXISTS Images;").executeUpdate();
@@ -118,6 +127,15 @@ public final class Database {
     }
   }
 
+  /**
+   * Create table: posts_hashtags
+   * posts_hashtags store many to many relationships between posts and hashtags
+   * it has two foreign keys, referencing the primary keys of posts and hashtags
+   * When deleting posts or hashtag, corresponding row in this table will be automatically
+   * deleted, thanks to ON DELETE CASCADE.
+   * @param sql2o sql2o
+   * @throws Sql2oException
+   */
   public static void createPostsHashtagsTable(Sql2o sql2o) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
       conn.createQuery("DROP TABLE IF EXISTS posts_hashtags;").executeUpdate();
@@ -136,6 +154,12 @@ public final class Database {
     }
   }
 
+  /**
+   * Create table: hashtags
+   * hashtags store hashtag id and hashtag (the content)
+   * @param sql2o
+   * @throws Sql2oException
+   */
   public static void createHashtagsTable(Sql2o sql2o) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
       conn.createQuery("DROP TABLE IF EXISTS hashtags;").executeUpdate();
@@ -193,18 +217,36 @@ public final class Database {
     }
   }
 
+  /**
+   * Add image instance to images table.
+   * @param conn connection to database
+   * @param image image instance
+   * @throws Sql2oException
+   */
   private static void addImage(Connection conn, Image image) throws Sql2oException {
     String sql = "INSERT INTO Images(img_id, post_id, url) "
         + "VALUES(:imgId, :postId, :url);";
     conn.createQuery(sql).bind(image).executeUpdate();
   }
 
+  /**
+   * Add hashtag to hastags table.
+   * First check if the hashtag is already in the table.
+   * If insert a hashtag that already in the table (eigher primary key duplicate
+   * or hashtag (the column) duplicate), the database will raise exception.
+   * @param conn connection
+   * @param hashtag hashtag instance
+   * @throws Sql2oException
+   */
   private static void addHashtag(Connection conn, Hashtag hashtag) throws Sql2oException {
-    List<Hashtag> existingHashtag = conn.createQuery("SELECT * from hashtags where hashtag_id=:hashtagId OR " +
-        "hashtag=:hashtag;")
-        .setAutoDeriveColumnNames(true)
-        .bind(hashtag)
-        .executeAndFetch(Hashtag.class);
+    // To use simpleflatmapper, must use Query as original chain will break
+    Query query = conn.createQuery("SELECT * from hashtags where hashtag_id=:hashtagId OR " +
+        "hashtag=:hashtag;");
+    // Below line is all you need to add when using simpleflatmapper, everything else is the same
+    query.setAutoDeriveColumnNames(true)
+        .setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
+    // bind, no need to convert names
+    List<Hashtag> existingHashtag = query.bind(hashtag).executeAndFetch(Hashtag.class);
     if (existingHashtag.isEmpty()) {
       String sql = "INSERT INTO Hashtags(hashtag_id, hashtag) "
           + "VALUES(:hashtagId, :hashtag);";
@@ -212,6 +254,13 @@ public final class Database {
     }
   }
 
+  /**
+   * Add post to hashtag relationship to posts_hashtags table.
+   * @param conn
+   * @param post
+   * @param hashtag
+   * @throws Sql2oException
+   */
   private static void addPostHashtag(Connection conn, Post post, Hashtag hashtag) throws Sql2oException {
     String sql = "INSERT INTO posts_hashtags(post_id, hashtag_id) "
         + "VALUES(:postId, :hashtagId);";

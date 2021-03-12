@@ -22,7 +22,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.2.10'
     implementation 'org.sql2o:sql2o:1.6.0'
     implementation 'org.sql2o.extensions:sql2o-postgres:1.6.0'
-    implementation group: 'org.simpleflatmapper', name: 'simpleFlatMapper', version: '1.9.1'
+    implementation 'org.simpleflatmapper:sfm-sql2o-jre9:8.2.3'
 }
 
 test {
