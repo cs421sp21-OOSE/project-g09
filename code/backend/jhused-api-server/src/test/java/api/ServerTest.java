@@ -124,7 +124,7 @@ class ServerTest {
         Category.FURNITURE,
         "Location of dummy furniture"
     );
-    final String URL = BASE_URL + "/api/posts/" + post.getUuid();
+    final String URL = BASE_URL + "/api/posts/" + post.getId();
     HttpResponse<Post> jsonResponse = Unirest.put(URL)
         .body(gson.toJson(post)).asObject(Post.class);
     assertEquals(200, jsonResponse.getStatus());
@@ -143,7 +143,7 @@ class ServerTest {
         Category.FURNITURE,
         "Location of dummy furniture"
     );
-    final String URL = BASE_URL + "/api/posts/" + post.getUuid();
+    final String URL = BASE_URL + "/api/posts/" + post.getId();
     HttpResponse<JsonNode> jsonResponse = Unirest.put(URL)
         .body(gson.toJson(post)).asJson();
     assertEquals(404, jsonResponse.getStatus());
@@ -186,7 +186,7 @@ class ServerTest {
     );
     ArrayList<Post> posts = new ArrayList<Post>();
     posts.add(post);
-    final String URL = BASE_URL + "/api/posts/" + posts.get(0).getUuid();
+    final String URL = BASE_URL + "/api/posts/" + posts.get(0).getId();
     HttpResponse<JsonNode> jsonResponse = Unirest.put(URL)
         .body(gson.toJson(posts)).asJson();
     assertEquals(500, jsonResponse.getStatus());
