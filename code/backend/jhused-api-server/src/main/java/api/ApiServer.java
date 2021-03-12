@@ -4,11 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import dao.PostDao;
-import dao.Sql2oPostDao;
+import dao.sql2oDao.Sql2oPostDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
-import kong.unirest.Unirest;
-import kong.unirest.json.JSONObject;
 import model.Post;
 import org.sql2o.Sql2o;
 import spark.Spark;
@@ -132,13 +130,13 @@ public class ApiServer {
       try {
         String postUuid = req.params("postUuid");
         Post post = gson.fromJson(req.body(), Post.class);
-        if (post.getUuid() == null) {
+        if (post.getId() == null) {
           throw new ApiError("Incomplete data", 500);
         }
-        if (!post.getUuid().equals(postUuid)) {
+        if (!post.getId().equals(postUuid)) {
           throw new ApiError("postUuid does not match the resource identifier", 400);
         }
-        post = postDao.update(post.getUuid(), post);
+        post = postDao.update(post.getId(), post);
         if (post == null) {
           throw new ApiError("Resource not found", 404);
         }

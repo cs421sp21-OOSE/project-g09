@@ -1,5 +1,6 @@
 package dao;
 
+import dao.sql2oDao.Sql2oPostDao;
 import exceptions.DaoException;
 import model.Category;
 import model.Post;
@@ -82,7 +83,7 @@ class Sql2oPostDaoTest {
         "Location of dummy furniture"
     );
 
-    c1.setUuid("0" + " ".repeat(35));
+    c1.setId("0" + " ".repeat(35));
     c1.setPrice(null);
     assertThrows(DaoException.class, () -> {
       postDao.create(c1);
@@ -108,7 +109,7 @@ class Sql2oPostDaoTest {
   @DisplayName("read a post given its uuid")
   void readPostGivenUUID() {
     for (Post c2 : samples) {
-      Post c1 = postDao.read(c2.getUuid());
+      Post c1 = postDao.read(c2.getId());
       assertEquals(c2, c1);
     }
   }
@@ -150,7 +151,7 @@ class Sql2oPostDaoTest {
   @DisplayName("updating a post works")
   void updateWorks() {
     //create a post to send to the update method.
-    Post ogPost = new Post(samples.get(0).getUuid(), "001",
+    Post ogPost = new Post(samples.get(0).getId(), "001",
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -160,7 +161,7 @@ class Sql2oPostDaoTest {
     );
 
     //get the post back, give the first item in samples uuid.
-    Post post = postDao.update(samples.get(0).getUuid(), ogPost);
+    Post post = postDao.update(samples.get(0).getId(), ogPost);
     assertEquals(ogPost, post);
   }
 
@@ -177,7 +178,7 @@ class Sql2oPostDaoTest {
   @DisplayName("Update throws exception for an invalid title")
   void updateThrowsExceptionInvalidPost() {
     assertThrows(DaoException.class, () -> {
-      postDao.update(samples.get(0).getUuid(), null);
+      postDao.update(samples.get(0).getId(), null);
     });
   }
 
@@ -185,7 +186,7 @@ class Sql2oPostDaoTest {
   @DisplayName("delete works for valid input")
   void deleteExistingPost() {
     //TODO figure out weird error. Post is deleted, but return is not correct.
-    Post postDeleted = postDao.delete(samples.get(0).getUuid());
+    Post postDeleted = postDao.delete(samples.get(0).getId());
     assertEquals(postDeleted, samples.get(0));
     //TODO uncomment this once read is implemented
     //assertNull(postDao.read(postDeleted.getUuid()));

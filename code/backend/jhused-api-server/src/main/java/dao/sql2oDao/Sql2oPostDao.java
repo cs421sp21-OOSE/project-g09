@@ -1,5 +1,6 @@
-package dao;
+package dao.sql2oDao;
 
+import dao.PostDao;
 import exceptions.DaoException;
 
 import java.util.UUID;
@@ -8,7 +9,9 @@ import model.Hashtag;
 import model.Image;
 import model.Post;
 import org.postgresql.jdbc.PgArray;
+import org.simpleflatmapper.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
+import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
@@ -22,6 +25,38 @@ import java.util.Map;
 public class Sql2oPostDao implements PostDao {
 
   private final Sql2o sql2o;
+  /**
+   * The rule is add [<child class name>s_] before child's column name,
+   * for example, Post has List<Image> images, then in order for simpleflatmapper to
+   * know how to convert, add "images_" to the column of table image, that is to convert
+   * image.id to images_id, image.post_id to images_post_id, image.url to images_url.
+   */
+  private final String SELECT_POST_GIVEN_ID= "WITH posts AS (" +
+          "SELECT post.*," +
+          "image.id as images_id," +
+          "image.post_id as images_post_id," +
+          "image.url as images_url," +
+          "hashtag.id as hashtags_id," +
+          "hashtag.hashtag as hashtags_hashtag " +
+          "FROM post " +
+          "LEFT JOIN image on image.post_id=post.id " +
+          "LEFT JOIN post_hashtag on post_hashtag.post_id=post.id " +
+          "LEFT JOIN hashtag on hashtag.id=post_hashtag.hashtag_id " +
+          "ORDER BY post.id) " +
+          "SELECT * FROM posts "+
+          "WHERE posts.id = :id";
+
+  private final String SELECT_ALL_POSTS = "SELECT post.*," +
+      "image.id as images_id," +
+      "image.post_id as images_post_id," +
+      "image.url as images_url," +
+      "hashtag.id as hashtags_id," +
+      "hashtag.hashtag as hashtags_hashtag " +
+      "FROM post " +
+      "LEFT JOIN image on image.post_id=post.id " +
+      "LEFT JOIN post_hashtag on post_hashtag.post_id=post.id " +
+      "LEFT JOIN hashtag on hashtag.id=post_hashtag.hashtag_id " +
+      "ORDER BY post.id";
 
   /**
    * Construct Sql2oPostDao.
@@ -34,15 +69,29 @@ public class Sql2oPostDao implements PostDao {
     this.sql2o = sql2o;
   }
 
+  /**
+   * Insert the post into database, then return
+   * the inserted post.
+   * Need to
+   * 1. insert post to post table,
+   * 2. then insert image,
+   * 3. then insert hashtag,
+   * 4. then insert post_hashtag
+   * Sequence between 2 and 3 can exchange.
+   * Be careful about foreign key constrain.
+   * @param post The Post item to be created
+   * @return
+   * @throws DaoException
+   */
   @Override
   public Post create(Post post) throws DaoException {
-    if (post.getUuid().isEmpty()) {
-      post.setUuid(UUID.randomUUID().toString());
+    if (post.getId().isEmpty()) {
+      post.setId(UUID.randomUUID().toString());
     }
 
     String sql = "WITH inserted AS ("
         + "INSERT INTO posts(uuid, userid, title, price, description, "
-        + "imageurls, hashtags, category, location) "
+        + "category, location) "
         + "VALUES(:uuid, :userid, :title, :price, :description, ARRAY[:imageurls], "
         + "ARRAY[:hashtags], CAST(:category AS Category), :location) RETURNING *"
         + ") SELECT * FROM inserted;";
@@ -50,18 +99,10 @@ public class Sql2oPostDao implements PostDao {
 
 
     try (Connection conn = this.sql2o.open()) {
-      return mapToPostsGetFirst(conn.createQuery(sql)
-          .addParameter("uuid", post.getUuid())
-          .addParameter("userid", post.getUserId())
-          .addParameter("title", post.getTitle())
-          .addParameter("price", post.getPrice())
-          .addParameter("description", post.getDescription())
-          .addParameter("imageurls", post.getImages())
-          .addParameter("hashtags", post.getHashtags())
-          .addParameter("category", post.getCategory())
-          .addParameter("location", post.getLocation())
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException|SQLException ex) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
+      return query.bind(Post.class).executeAndFetchFirst(Post.class);
+    } catch (Sql2oException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
