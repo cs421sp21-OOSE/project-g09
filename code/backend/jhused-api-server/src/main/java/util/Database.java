@@ -7,6 +7,7 @@ import org.sfm.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
+import org.sql2o.quirks.PostgresQuirks;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -54,7 +55,7 @@ public final class Database {
     String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
         + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
 
-    Sql2o sql2o = new Sql2o(dbUrl, username, password);
+    Sql2o sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks());
     return sql2o;
   }
 
@@ -111,7 +112,7 @@ public final class Database {
           + "url VARCHAR(500) NOT NULL,"
           + "FOREIGN KEY (post_id) " // Note: no comma here
           + "REFERENCES posts(uuid) "
-//              + "ON DELETE CASCADE "
+          + "ON DELETE CASCADE"
           + ");";
       conn.createQuery(sql).executeUpdate();
     }
@@ -125,11 +126,11 @@ public final class Database {
           + "hashtag_id CHAR(36) NOT NULL,"
           + "PRIMARY KEY (post_id, hashtag_id),"
           + "FOREIGN KEY (post_id) " // Note: no comma here
-          + "REFERENCES posts(uuid), "
-//          + "ON DELETE CASCADE,"
+          + "REFERENCES posts(uuid) "
+          + "ON DELETE CASCADE,"
           + "FOREIGN KEY (hashtag_id) " // Note: no comma here
           + "REFERENCES hashtags(hashtag_id) "
-//          + "ON DELETE CASCADE "
+          + "ON DELETE CASCADE"
           + ");";
       conn.createQuery(sql).executeUpdate();
     }
@@ -202,7 +203,6 @@ public final class Database {
     List<Hashtag> existingHashtag = conn.createQuery("SELECT * from hashtags where hashtag_id=:hashtagId OR " +
         "hashtag=:hashtag;")
         .setAutoDeriveColumnNames(true)
-        .setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder())
         .bind(hashtag)
         .executeAndFetch(Hashtag.class);
     if (existingHashtag.isEmpty()) {
