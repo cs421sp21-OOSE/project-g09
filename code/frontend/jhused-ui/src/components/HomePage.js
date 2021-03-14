@@ -6,18 +6,34 @@ import "./HomePage.css";
 
 const HomePage = () => {
 
+  // State for controlling whether editor should show up
   const [editorLive, setEditorLive] = useState(false);
+
+  // State for controlling the editor mode: update a post or create a post
+  const [editorMode, setEditorMode] = useState();
 
   const handlePostBtnChange = () => {
     setEditorLive(!editorLive);
   };
 
+  const handleUpdateBtnChange = () => {
+    setEditorLive(!editorLive);
+  }
+
+
   return (
     <div className="home-page">
       <div className="home-page-header">
+        {/* For setting up editor's post-updating feature only - delete later once my page is setup */}
         <button
           className="post-button"
-          // onClick={(event) => (window.location.href = "/editor")}
+          id="update-button"
+          onClick={handleUpdateBtnChange}
+        >
+          Update
+        </button>
+        <button
+          className="post-button"
           onClick={handlePostBtnChange}
         >
           Post

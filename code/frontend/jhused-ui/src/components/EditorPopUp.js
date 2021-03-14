@@ -19,7 +19,7 @@ function EditorPopUp(props) {
                 </img>
             </div>
             <div className="editor-popup-content">
-                <Editor />
+                <Editor status="create"/>
             </div>
         </div>
     );

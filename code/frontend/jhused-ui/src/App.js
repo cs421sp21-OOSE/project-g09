@@ -19,7 +19,6 @@ const App = () => {
         <Route exact path="/">
           <HomePage />
         </Route>
-        <Route exact path="/editor" component={Editor} />
       </Switch>
 
       {background && <Route path="/post/:postID" children={<PostDetails />} />}
