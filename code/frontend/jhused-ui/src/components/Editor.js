@@ -246,7 +246,7 @@ function Editor() {
                 classNamePrefix="category-select"
                 label="category-select"
                 name="category"
-                placeholder="Select category"
+                placeholder="Category"
                 options={categoryOptions}
                 onChange={handleCategoryChange}
                 isDisabled={submitted}
@@ -265,7 +265,7 @@ function Editor() {
                 isClearable
                 isMulti
                 menuIsOpen={false}
-                placeholder="Type tags"
+                placeholder="Hashtags"
                 onInputChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
                 onChange={handleCreatableChange}
@@ -276,10 +276,12 @@ function Editor() {
         </Row>
         <Form.Group>
           <Form.Control
+            className="description-area"
             as="textarea"
             size="lg"
+            rows={4}
             name="description"
-            placeholder="Write description"
+            placeholder="Description"
             value={formData.description || ""}
             onChange={handleOnChange}
             disabled={submitted}
@@ -288,7 +290,7 @@ function Editor() {
         <Form.Group>
           <Form.File
             onChange={handleImageChange}
-            label="Select images"
+            label="Images"
             multiple
             disabled={submitted}
           />
@@ -316,7 +318,7 @@ function Editor() {
                 onClick={handleImageUpload}
                 disabled={submitted}
               >
-                Upload Images
+                Upload
               </Button>
             </Col>
             <Col>
