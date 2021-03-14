@@ -199,7 +199,7 @@ function Editor() {
     <div className="editor-panel">
       <Form onSubmit={handleSubmit}>
         <Row>
-          <Col lg={10}>
+          <Col lg={9}>
             <Form.Group controlId="titleForm">
               <Form.Control
                 type="text"
@@ -211,7 +211,7 @@ function Editor() {
               />
             </Form.Group>
           </Col>
-          <Col lg={2}>
+          <Col lg={3}>
             <Form.Group controlId="priceForm">
               <Form.Control
                 type="number"
@@ -239,21 +239,21 @@ function Editor() {
           </Col>
         </Row>
         <Row>
-          <Col lg={3}>
+          <Col lg={5}>
             <Form.Group>
               <Select
                 className="category-select"
                 classNamePrefix="category-select"
                 label="category-select"
                 name="category"
-                placeholder="Select category"
+                placeholder="Category"
                 options={categoryOptions}
                 onChange={handleCategoryChange}
                 isDisabled={submitted}
               />
             </Form.Group>
           </Col>
-          <Col lg={9}>
+          <Col lg={7}>
             <Form.Group>
               <CreatableSelecet
                 className="hashtag-select"
@@ -265,7 +265,7 @@ function Editor() {
                 isClearable
                 isMulti
                 menuIsOpen={false}
-                placeholder="Type tags"
+                placeholder="Hashtags"
                 onInputChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
                 onChange={handleCreatableChange}
@@ -276,10 +276,12 @@ function Editor() {
         </Row>
         <Form.Group>
           <Form.Control
+            className="description-area"
             as="textarea"
             size="lg"
+            rows={4}
             name="description"
-            placeholder="Write description"
+            placeholder="Description"
             value={formData.description || ""}
             onChange={handleOnChange}
             disabled={submitted}
@@ -288,7 +290,7 @@ function Editor() {
         <Form.Group>
           <Form.File
             onChange={handleImageChange}
-            label="Select images"
+            label="Images"
             multiple
             disabled={submitted}
           />
@@ -316,7 +318,7 @@ function Editor() {
                 onClick={handleImageUpload}
                 disabled={submitted}
               >
-                Upload Images
+                Upload
               </Button>
             </Col>
             <Col>

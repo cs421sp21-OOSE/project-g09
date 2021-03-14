@@ -1,5 +1,5 @@
 .editor-panel {
-  padding: 7rem 0.5rem 0.5rem 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 
 .form-control {
@@ -30,6 +30,10 @@
 .hashtag-select__placeholder {
   color: rgb(189, 27, 27) !important;
   font-size: 1.2rem;
+}
+
+.description-area {
+  height: 10px;
 }
 
 .form-file-label {
