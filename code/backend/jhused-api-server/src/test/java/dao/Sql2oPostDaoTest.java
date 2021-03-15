@@ -43,7 +43,7 @@ class Sql2oPostDaoTest {
   @Test
   @DisplayName("create works for valid input")
   void createNewPost() throws DaoException {
-    Post c1 = new Post(UUID.randomUUID().toString(), "001",
+    Post c1 = new Post(UUID.randomUUID().toString(), "001"+" ".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -52,13 +52,15 @@ class Sql2oPostDaoTest {
         "Location of dummy furniture"
     );
     Post c2 = postDao.create(c1);
+    c1.setCreateTime(c2.getCreateTime());
+    c1.setUpdateTime(c2.getUpdateTime());
     assertEquals(c1, c2);
   }
 
   @Test
   @DisplayName("create throws exception for duplicate post")
   void createThrowsExceptionDuplicateData() {
-    Post c1 = new Post("0".repeat(36), "001",
+    Post c1 = new Post("0".repeat(36), "001"+" ".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -74,7 +76,7 @@ class Sql2oPostDaoTest {
   @Test
   @DisplayName("create throws exception for invalid input")
   void createThrowsExceptionIncompleteData() {
-    Post c1 = new Post(null, "001",
+    Post c1 = new Post(null, "001"+" ".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -151,7 +153,7 @@ class Sql2oPostDaoTest {
   @DisplayName("updating a post works")
   void updateWorks() {
     //create a post to send to the update method.
-    Post ogPost = new Post(samples.get(0).getId(), "001",
+    Post ogPost = new Post(samples.get(0).getId(), "001"+" ".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),

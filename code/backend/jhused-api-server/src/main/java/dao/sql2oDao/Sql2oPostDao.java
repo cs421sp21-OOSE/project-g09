@@ -1,6 +1,9 @@
 package dao.sql2oDao;
 
+import dao.HashtagDao;
+import dao.ImageDao;
 import dao.PostDao;
+import dao.PostHashtagDao;
 import exceptions.DaoException;
 import model.Category;
 import model.Hashtag;
@@ -20,6 +23,9 @@ import java.util.*;
 public class Sql2oPostDao implements PostDao {
 
   private final Sql2o sql2o;
+  private final ImageDao imageDao;
+  private final HashtagDao hashtagDao;
+  private final PostHashtagDao postHashtagDao;
   /**
    * The rule is add [<child class name>s_] before child's column name,
    * for example, Post has List<Image> images, then in order for simpleflatmapper to
@@ -39,7 +45,7 @@ public class Sql2oPostDao implements PostDao {
       "LEFT JOIN hashtag on hashtag.id=post_hashtag.hashtag_id " +
       "ORDER BY post.id) " +
       "SELECT * FROM posts " +
-      "WHERE posts.id = :id";
+      "WHERE posts.id = :id;";
 
   private final String SELECT_ALL_POSTS = "SELECT post.*," +
       "image.id as images_id," +
@@ -51,7 +57,7 @@ public class Sql2oPostDao implements PostDao {
       "LEFT JOIN image on image.post_id=post.id " +
       "LEFT JOIN post_hashtag on post_hashtag.post_id=post.id " +
       "LEFT JOIN hashtag on hashtag.id=post_hashtag.hashtag_id " +
-      "ORDER BY post.id";
+      "ORDER BY post.id"; // no trilling semi-colon for convenience
 
   /**
    * Construct Sql2oPostDao.
@@ -62,6 +68,9 @@ public class Sql2oPostDao implements PostDao {
    */
   public Sql2oPostDao(Sql2o sql2o) {
     this.sql2o = sql2o;
+    imageDao = new Sql2oImageDao(sql2o);
+    hashtagDao = new Sql2oHashtagDao(sql2o);
+    postHashtagDao = new Sql2oPostHashtagDao(sql2o);
   }
 
   /**
@@ -81,23 +90,39 @@ public class Sql2oPostDao implements PostDao {
    */
   @Override
   public Post create(Post post) throws DaoException {
-    if (post != null && post.getId().isEmpty()) {
-      post.setId(UUID.randomUUID().toString());
-    }
-
-    String sql = "WITH inserted AS ("
-        + "INSERT INTO posts(uuid, userid, title, price, description, "
-        + "category, location) "
-        + "VALUES(:uuid, :userid, :title, :price, :description, ARRAY[:imageurls], "
-        + "ARRAY[:hashtags], CAST(:category AS Category), :location) RETURNING *"
-        + ") SELECT * FROM inserted;";
-
+    String insertPostSql = "INSERT INTO post(" +
+        "id, user_id, title, price, description, category, location) " +
+        "VALUES(:id, :userId, :title, :price, :description, CAST(:category AS Category), :location);";
 
     try (Connection conn = this.sql2o.open()) {
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      if (post.getId().isEmpty()) {
+        post.setId(UUID.randomUUID().toString());
+      }
+      // first insert the post
+      conn.createQuery(insertPostSql).setAutoDeriveColumnNames(true).bind(post).executeUpdate();
+      // then insert image
+      if (!post.getImages().isEmpty()) {
+        for (Image image : post.getImages()) {
+          imageDao.create(image);
+        }
+      }
+      // then insert hashtag and post_hashtag
+      if (!post.getHashtags().isEmpty()) {
+        for (Hashtag hashtag : post.getHashtags()) {
+          // using exact search (though case insensitive)
+          List<Hashtag> existingHashtag = hashtagDao.readAll(hashtag.getHashtag());
+          if (existingHashtag.isEmpty()) {
+            hashtagDao.create(hashtag);
+            postHashtagDao.create(post.getId(), hashtag.getId());
+          }else{
+            postHashtagDao.create(post.getId(), existingHashtag.get(0).getId());
+          }
+        }
+      }
+      Query query = conn.createQuery(SELECT_POST_GIVEN_ID).setAutoDeriveColumnNames(true);
       query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
-      return query.bind(Post.class).executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) {
+      return query.addParameter("id", post.getId()).executeAndFetchFirst(Post.class);
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -105,11 +130,10 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public Post read(String id) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPostsGetFirst(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
-          .addParameter("id", id)
-
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) {
+      Query query = conn.createQuery(SELECT_POST_GIVEN_ID).setAutoDeriveColumnNames(true);
+      query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
+      return query.addParameter("id", id).executeAndFetchFirst(Post.class);
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
   }
@@ -117,8 +141,10 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public List<Post> readAll() throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery("SELECT * FROM posts;").executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) {
+      Query query = conn.createQuery(SELECT_ALL_POSTS).setAutoDeriveColumnNames(true);
+      query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
+      return query.executeAndFetch(Post.class);
+    } catch (Sql2oException ex) {
       throw new DaoException("Unable to read posts from the database", ex);
     }
   }
@@ -126,10 +152,12 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE lower(title) LIKE :partial;")
-          .addParameter("partial", "%" + titleQuery.toLowerCase() + "%")
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) {
+      String sql = "WITH posts AS ("+SELECT_ALL_POSTS+") " +
+          "SELECT * FROM posts WHERE posts.title ILIKE :partial;";
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
+      return query.addParameter("partial", "%" + titleQuery + "%").executeAndFetch(Post.class);
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
     }
   }
