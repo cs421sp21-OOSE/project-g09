@@ -18,7 +18,7 @@ const PostDetails = (props) => {
   const params = useParams();
   console.log(params.postID);
 
-  const [post, setPost] = useState(testPost);
+  const [post, setPost] = useState(null);
 
   const history = useHistory();
 
@@ -41,24 +41,33 @@ const PostDetails = (props) => {
       });
   });
 
-  return (
-    <div className="post-container">
-      <div className="post-body">
-        <img src={ExitPng} alt="x" className="exit" onClick={closeModal}></img>{" "}
-        <h1 className="post-title">{post.title}</h1>
-        <h1 className="post-price">${post.price}</h1>
-        <div className="post-content-left">
-          <Carousel images={post.imageUrls} />
-        </div>
-        <div className="post-content-right">
-          <Location location={post.location} size="s" />
-          <div className="post-description">
-            <p>{post.description} </p>
+  if (post) {
+    return (
+      <div className="post-container">
+        <div className="post-body">
+          <img
+            src={ExitPng}
+            alt="x"
+            className="exit"
+            onClick={closeModal}
+          ></img>{" "}
+          <h1 className="post-title">{post.title}</h1>
+          <h1 className="post-price">${post.price}</h1>
+          <div className="post-content-left">
+            <Carousel images={post.imageUrls} />
+          </div>
+          <div className="post-content-right">
+            <Location location={post.location} size="s" />
+            <div className="post-description">
+              <p>{post.description} </p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return "";
+  }
 };
 
 export default PostDetails;
