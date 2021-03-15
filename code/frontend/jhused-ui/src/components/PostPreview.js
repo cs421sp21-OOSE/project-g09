@@ -2,11 +2,14 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Location from "./Location";
 import "./PostPreview.css"
+import Edit from "../images/edit.png";
 
 const PostPreview = (props) => {
   const location = useLocation();
+
   return (
     <div className="post-card">
+      
       <Link
         to={{
           pathname: `/post/${props.post.uuid}`,
@@ -28,6 +31,7 @@ const PostPreview = (props) => {
           <Location location={props.post.location} />
         </div>
       </Link>
+      {props.displayEdit ? <img src={Edit} alt="edit" className="edit-button" /> : ""}
     </div>
   );
 };

@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from "react";
-import axios from "../util/axios";
 import "./ImageGrid.css";
 import PostPreview from "./PostPreview";
 
 
-const ImageGrid = () => {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    axios.get("/api/posts").then((response) => {
-      setPosts(response.data);
-    });
-  });
-
+const ImageGrid = (props) => {
   return (
     <div className="img-grid-container">
       <div className="img-grid">
-        {posts &&
-          posts.map((post) => <PostPreview post={post} key={post.uuid} />)}
+        {props.posts &&
+          props.posts.map((post) => <PostPreview displayEdit={props.displayEdit} post={post} key={post.uuid} />)}
       </div>
     </div>
   );

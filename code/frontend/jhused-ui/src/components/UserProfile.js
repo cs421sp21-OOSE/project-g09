@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ImageGrid from "./ImageGrid";
 import EditorPopUp from "./EditorPopUp";
 import { useParams } from "react-router-dom";
 import Icon from "../images/icon.png";
 import Location from "./Location";
+import axios from "../util/axios";
 
 // notes - add edit button as children of the post card
 // - rewrite image grid to extract state info from it into home page, so
@@ -17,6 +18,14 @@ const UserProfile = (props) => {
   const handlePostBtnChange = () => {
     setEditorLive(!editorLive);
   };
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios.get("/api/posts").then((response) => {
+      setPosts(response.data);
+    });
+  });
 
   return (
     <div className="user-profile">
@@ -38,7 +47,7 @@ const UserProfile = (props) => {
         </div>
         <h1> My Posts </h1>
         <div className="user-posts">
-          <ImageGrid />
+          <ImageGrid posts={posts} displayEdit={true}/>
         </div>
         User
       </div>

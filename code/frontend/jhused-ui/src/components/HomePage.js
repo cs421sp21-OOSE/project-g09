@@ -1,12 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ImageGrid from "./ImageGrid";
 import EditorPopup from "./EditorPopUp";
 //import { Button } from "react-bootstrap";
 import "./HomePage.css";
+import axios from "../util/axios";
 
 const HomePage = () => {
 
   const [editorLive, setEditorLive] = useState(false);
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    axios.get("/api/posts").then((response) => {
+      setPosts(response.data);
+    });
+  });
 
   const handlePostBtnChange = () => {
     setEditorLive(!editorLive);
@@ -25,7 +34,7 @@ const HomePage = () => {
       </div>
       {editorLive ? <EditorPopup toggle={handlePostBtnChange}/> : null}
       
-      <ImageGrid />
+      <ImageGrid posts={posts} displayEdit={true}/>
     </div>
   );
 };
