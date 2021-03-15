@@ -11,6 +11,8 @@ import { ProgressBar, Image, Container, Alert } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import deleteIcon from "../images/delete.png";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Editor.css";
 
@@ -50,7 +52,7 @@ const categories = {
 /**
  * Editor component for creatining/editing posts
  */
-function Editor() {
+function Editor(props) {
   // Define post category options for use in the react-select component
   const categoryOptions = [
     categories.FURNITURE,
@@ -61,16 +63,20 @@ function Editor() {
 
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
-  const [formData, setFormData] = useReducer(formReducer, {
+  const emptyForm = {
     uuid: "",
     userId: "",
     title: "",
     price: 0.,
+    location: "",
     category: "",
     hashtags: [],
     description: "",
     imageUrls: [],
-  });
+  };
+
+  const [formData, setFormData] = useReducer(formReducer, 
+    props.post ?? emptyForm);
 
   // State for the submit button - used for controlling responses after a post is submitted
   const [submitted, setSubmitted] = useState(false);
@@ -311,24 +317,28 @@ function Editor() {
         </Form.Group>
         <Form.Group>
           <Row>
-            <Col>
+            <Col >
+                {props.mode==="update" ? 
+                  <Image src={deleteIcon} width={40}></Image> : null}
+            </Col>
+            <Col md={4}>
               <Button
-                className="float-left"
+                // className="float-left"
                 variant="upload"
                 onClick={handleImageUpload}
                 disabled={submitted}
               >
                 Upload
               </Button>
-            </Col>
-            <Col>
+            </Col >
+            <Col md={4}>
               <Button
-                className="float-right"
+                // className="float-right"
                 variant="submit"
                 type="submit"
                 disabled={submitted}
               >
-                Submit
+                {props.mode==="update"? "Save" : "Submit"}
               </Button>
             </Col>
           </Row>

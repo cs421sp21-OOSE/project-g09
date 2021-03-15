@@ -9,7 +9,7 @@ function EditorPopUp(props) {
         <div className="editor-popup-frame">
             <div className="editor-popup-header">
                 <span className="editor-popup-text">
-                    Create new post
+                    {props.mode==="update" ? "Modify post" : "New post"}
                 </span>
                 <img 
                     src={ExitPng} 
@@ -19,7 +19,7 @@ function EditorPopUp(props) {
                 </img>
             </div>
             <div className="editor-popup-content">
-                <Editor status="create"/>
+                <Editor mode={props.mode} post={props.post}/>
             </div>
         </div>
     );
