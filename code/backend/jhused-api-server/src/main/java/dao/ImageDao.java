@@ -49,7 +49,6 @@ public interface ImageDao {
   /**
    * Update the title of a Images provided its id.
    *
-   * @param id The Image id.
    * @param image The Image.
    * @return The updated Image object.
    * @throws DaoException A generic exception for CRUD operations.
