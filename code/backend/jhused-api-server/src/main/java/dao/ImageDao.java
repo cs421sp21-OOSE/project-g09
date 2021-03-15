@@ -49,12 +49,11 @@ public interface ImageDao {
   /**
    * Update the title of a Images provided its id.
    *
-   * @param id The Image id.
    * @param image The Image.
    * @return The updated Image object.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Image update(String id, Image image) throws DaoException;
+  Image update(Image image) throws DaoException;
 
   /**
    * Delete a Image provided its id.
