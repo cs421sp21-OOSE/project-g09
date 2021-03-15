@@ -3,20 +3,20 @@ package dao.sql2oDao;
 import dao.HashtagDao;
 import exceptions.DaoException;
 import model.Hashtag;
-import model.Image;
 import org.simpleflatmapper.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class Sql2oHashtagDao implements HashtagDao {
   private final Sql2o sql2o;
 
-  public Sql2oHashtagDao(Sql2o sql2o){this.sql2o=sql2o;}
+  public Sql2oHashtagDao(Sql2o sql2o) {
+    this.sql2o = sql2o;
+  }
 
   @Override
   public Hashtag create(Hashtag hashtag) throws DaoException {
@@ -29,7 +29,7 @@ public class Sql2oHashtagDao implements HashtagDao {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
       return query.bind(hashtag).executeAndFetchFirst(Hashtag.class);
-    } catch (Sql2oException |NullPointerException ex) {
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -79,8 +79,8 @@ public class Sql2oHashtagDao implements HashtagDao {
       return query.addParameter("hashtag", hashtag.getHashtag())
           .addParameter("id", id)
           .executeAndFetchFirst(Hashtag.class);
-    } catch (Sql2oException|NullPointerException ex) {
-      throw new DaoException("Unable to update the hashtag: "+ex.getMessage(), ex);
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to update the hashtag: " + ex.getMessage(), ex);
     }
   }
 }

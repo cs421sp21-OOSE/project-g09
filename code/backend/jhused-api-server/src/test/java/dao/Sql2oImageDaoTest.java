@@ -19,7 +19,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Sql2oImageDaoTest {
-  private static final List<Post> samplePosts=DataStore.samplePosts();
+  private static final List<Post> samplePosts = DataStore.samplePosts();
   private static Sql2o sql2o;
   private ImageDao imageDao;
 
@@ -75,6 +75,16 @@ public class Sql2oImageDaoTest {
   }
 
   @Test
+  void createDuplicateImage() {
+    Image newImage = new Image(samplePosts.get(0).getImages().get(0).getId(), "574839".repeat(6), "https" +
+        "://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
+        ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
+    assertThrows(DaoException.class, () -> {
+      imageDao.create(newImage);
+    });
+  }
+
+  @Test
   void createImageWithNullImage() {
     assertThrows(DaoException.class, () -> {
       imageDao.create(null);
@@ -84,7 +94,8 @@ public class Sql2oImageDaoTest {
   @Test
   void updateImageWorks() {
     Post post = samplePosts.get(0);
-    Image newImage = new Image(post.getImages().get(0).getId(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
+    Image newImage = new Image(post.getImages().get(0).getId(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq" +
+        "-wpengine" +
         ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
     Image updatedImage = imageDao.update(newImage.getId(), newImage);
     assertEquals(updatedImage, newImage);
@@ -93,7 +104,7 @@ public class Sql2oImageDaoTest {
   @Test
   void updateImageThrowsExceptionInvalidImage() {
     Post post = samplePosts.get(0);
-    Image newImage = new Image(UUID.randomUUID().toString(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
+    Image newImage = new Image(post.getImages().get(0).getId(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
         ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
     assertThrows(DaoException.class, () -> {
       imageDao.update(newImage.getId(), null);
@@ -103,7 +114,8 @@ public class Sql2oImageDaoTest {
   @Test
   void updateImageReturnNullInvalidID() {
     Post post = samplePosts.get(0);
-    Image newImage = new Image(post.getImages().get(0).getId(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
+    Image newImage = new Image(post.getImages().get(0).getId(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq" +
+        "-wpengine" +
         ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
     assertNull(imageDao.update("756499".repeat(6), newImage));
   }
