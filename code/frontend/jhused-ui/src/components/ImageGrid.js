@@ -8,7 +8,7 @@ const ImageGrid = (props) => {
     <div className="img-grid-container">
       <div className="img-grid">
         {props.posts &&
-          props.posts.map((post) => <PostPreview displayEdit={props.displayEdit} post={post} key={post.uuid} />)}
+          props.posts.map((post) => <PostPreview displayEdit={props.displayEdit} post={post} key={post.uuid} onEdit={props.onEdit} />)}
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ const PostPreview = (props) => {
           <Location location={props.post.location} />
         </div>
       </Link>
-      {props.displayEdit ? <img src={Edit} alt="edit" className="edit-button" /> : ""}
+      {props.displayEdit ? <img src={Edit} alt="edit" className="edit-button" onClick={props.onEdit}/> : ""}
     </div>
   );
 };

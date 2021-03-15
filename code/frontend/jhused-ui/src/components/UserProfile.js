@@ -47,7 +47,7 @@ const UserProfile = (props) => {
         </div>
         <h1> My Posts </h1>
         <div className="user-posts">
-          <ImageGrid posts={posts} displayEdit={true}/>
+          <ImageGrid posts={posts} displayEdit={true} onEdit={handlePostBtnChange}/>
         </div>
         User
       </div>
