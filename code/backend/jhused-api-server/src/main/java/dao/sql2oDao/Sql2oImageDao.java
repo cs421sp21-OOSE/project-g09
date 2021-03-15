@@ -28,22 +28,25 @@ public class Sql2oImageDao implements ImageDao {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
       return query.bind(image).executeAndFetchFirst(Image.class);
-    } catch (Sql2oException ex) {
+    } catch (Sql2oException|NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
 
   @Override
-  public Image update(Image image) throws DaoException {
+  public Image update(String id, Image image) throws DaoException {
     String sql = "WITH updated AS ("
-        + "UPDATE image SET post_id = :post_id, url = :url WHERE id = :id RETURNING *"
+        + "UPDATE image SET post_id = :postId, url = :url WHERE id = :id RETURNING *"
         + ") SELECT * FROM updated;";
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
-      return query.bind(image).executeAndFetchFirst(Image.class);
-    } catch (Sql2oException ex) {
-      throw new DaoException("Unable to update the course", ex);
+      return query.addParameter("postId", image.getPostId())
+          .addParameter("url", image.getUrl())
+          .addParameter("id", id)
+          .executeAndFetchFirst(Image.class);
+    } catch (Sql2oException|NullPointerException ex) {
+      throw new DaoException("Unable to update the image: "+ex.getMessage(), ex);
     }
   }
 }

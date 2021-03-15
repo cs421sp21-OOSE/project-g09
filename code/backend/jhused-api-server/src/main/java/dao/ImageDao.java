@@ -53,7 +53,7 @@ public interface ImageDao {
    * @return The updated Image object.
    * @throws DaoException A generic exception for CRUD operations.
    */
-  Image update(Image image) throws DaoException;
+  Image update(String id, Image image) throws DaoException;
 
   /**
    * Delete a Image provided its id.
