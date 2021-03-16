@@ -5,9 +5,9 @@ import org.simpleflatmapper.map.annotation.Key;
 @Data
 public class Image {
   @Key
-  String id;
-  String postId;
-  String url;
+  private String id;
+  private String postId;
+  private String url;
 
   /**
    * Be sure that postId is consistent with the post that owns this image
