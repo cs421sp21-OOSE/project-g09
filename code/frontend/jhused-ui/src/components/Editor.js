@@ -41,10 +41,6 @@ const createOption = (label) => ({
 const createOptionArray = (labels) =>
   labels.map((label) => createOption(label));
 
-// For converting upper case category to capitalized
-const capitalize = (word) => word.charAt(0).toUpperCase() + 
-  word.slice(1).toLowerCase();
-
 // Define enums for post categories
 const categories = {
   FURNITURE: { value: "FURNITURE", label: "Furniture" },
@@ -128,8 +124,16 @@ function Editor(props) {
           console.log(error);
         });
         break;
-      case "uppdate":
-        
+      case "update":
+        axios
+        .put("https://jhused-api-server.herokuapp.com/api/posts/" + formData.uuid, formData)
+        .then((response) => {
+          console.log(response);
+          setRequestStatus(response.status);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
         break;
       default:
         // do nothing
@@ -361,10 +365,10 @@ function Editor(props) {
         </Form.Group>
       </Form>
       {submitted &&
-        (requestStatus === 201 ? (
-          <Alert variant="info">Post is submitted successfully</Alert>
+        (requestStatus === 201 || 200 ? (
+          <Alert variant="info">Post is {props.mode==="update" ? "updated" : "submitted"} successfully</Alert>
         ) : (
-          <Alert variant="info">Post submission failed</Alert>
+          <Alert variant="info">Post {props.mode==="update" ? "update" : "submission"} failed</Alert>
         ))}
       {/* Conditional element below to display the form data in json
             Uncomment it  on for debugging use */}
