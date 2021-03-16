@@ -1,38 +1,20 @@
 import React, { useState } from "react";
 import ImageGrid from "./ImageGrid";
 import EditorPopup from "./EditorPopUp";
-//import { Button } from "react-bootstrap";
+import axios from "axios";
 import "./HomePage.css";
 
 const HomePage = () => {
-
-  // Dummy post data of the 1st post shown in the homepage
-  // Used to building editor's feature of updating post
-  // Delete this variable after post mypage's update button is set-up
-  // The update button on my page should pass the post data to 
-  const postData = {
-    "uuid": "000000000000000000000000000000000000",
-    "userId": "001",
-    "title": "Dummy furniture",
-    "price": 30.0,
-    "description": "Description of dummy furniture",
-    "imageUrls": [
-        "https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1592920567-mid-century-double-pop-up-coffee-table-walnut-white-marble-2-c.jpg",
-        "https://apicms.thestar.com.my/uploads/images/2020/02/21/570850.jpg"
-    ],
-    "hashtags": [
-        "something",
-        "something too"
-    ],
-    "category": "FURNITURE",
-    "location": "Location of dummy furniture"
-  };
-
+  
   // State for controlling whether editor should show up
   const [editorLive, setEditorLive] = useState(false);
 
   // State for controlling the editor mode: update a post or create a post
   const [editorMode, setEditorMode] = useState("create");
+
+  // State of the post data which is to be fed into the post editor
+  // Only needed for building the update feature of the editor
+  const [postData, setPostData] = useState({});
 
   const handlePostBtnChange = () => {
     setEditorMode("create");
@@ -40,8 +22,18 @@ const HomePage = () => {
   };
 
   const handleUpdateBtnChange = () => {
-    setEditorMode("update");
-    setEditorLive(!editorLive);
+    const postID = "000000000000000000000000000000000000";
+    
+    const postData = axios.get("https://jhused-api-server.herokuapp.com/api/posts/" + postID)
+      .then((response) => 
+        {
+          console.log(response);
+          setPostData(response.data);
+          setEditorMode("update");
+          setEditorLive(!editorLive);
+        });
+
+    
   }
 
   return (

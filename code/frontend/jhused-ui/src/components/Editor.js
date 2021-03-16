@@ -116,15 +116,26 @@ function Editor(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     setSubmitted(true);
-    axios
-      .post("https://jhused-api-server.herokuapp.com/api/posts", formData)
-      .then((response) => {
-        console.log(response);
-        setRequestStatus(response.status);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    switch (props.mode) {
+      case "create":
+        axios
+        .post("https://jhused-api-server.herokuapp.com/api/posts", formData)
+        .then((response) => {
+          console.log(response);
+          setRequestStatus(response.status);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        break;
+      case "uppdate":
+        
+        break;
+      default:
+        // do nothing
+    }
+
+
   };
 
   /**
@@ -330,7 +341,6 @@ function Editor(props) {
             </Col>
             <Col md={4}>
               <Button
-                // className="float-left"
                 variant="upload"
                 onClick={handleImageUpload}
                 disabled={submitted}
@@ -340,7 +350,6 @@ function Editor(props) {
             </Col >
             <Col md={4}>
               <Button
-                // className="float-right"
                 variant="submit"
                 type="submit"
                 disabled={submitted}

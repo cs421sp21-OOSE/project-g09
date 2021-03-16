@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
-import Editor from "./components/Editor";
 import PostDetails from "./components/PostDetails";
 import logo from "./images/logo.png";
 
