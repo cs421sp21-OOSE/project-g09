@@ -32,6 +32,22 @@
   width: 40px;
 }
 
+.category-filter {
+  top: 40px;
+  left: 50px;
+  position: relative;
+  border-color: #002d72;
+  border-style: solid;
+  border-width: 2px 0 2px 0;
+  font-size: 1.5rem;
+  color: #002d72;
+  height: 50px;
+  width: 90%;
+  padding-right: 75%;
+  padding-top: 10px;
+  padding-bottom: 50px;
+}
+
 #update-button {
   margin-right: 2rem;
 }
