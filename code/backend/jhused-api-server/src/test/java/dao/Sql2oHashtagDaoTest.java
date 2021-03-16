@@ -9,8 +9,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sql2o.Sql2o;
-import util.DataStore;
-import util.Database;
+import util.database.DataStore;
+import util.database.Database;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -164,5 +164,23 @@ public class Sql2oHashtagDaoTest {
     Post post = samplePosts.get(0);
     Hashtag newHashtag = new Hashtag(post.getHashtags().get(0).getId(), "test");
     assertNull(hashtagDao.update("756499".repeat(6), newHashtag));
+  }
+
+  @Test
+  void getHashtagsGivenPostIdWork() {
+    for (Post post: samplePosts)
+    {
+      assertEquals(post.getHashtags(), hashtagDao.getHashtagsOfPost(post.getId()));
+    }
+  }
+
+  @Test
+  void getHashtagsGivenInvalidPostIdReturnEmpty() {
+    assertEquals(0,hashtagDao.getHashtagsOfPost("999771".repeat(6)).size());
+  }
+
+  @Test
+  void getHashtagsGivenNullPostIdReturnEmpty() {
+    assertEquals(0,hashtagDao.getHashtagsOfPost(null).size());
   }
 }

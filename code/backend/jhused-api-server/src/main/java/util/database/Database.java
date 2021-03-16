@@ -1,4 +1,4 @@
-package util;
+package util.database;
 
 import model.Hashtag;
 import model.Image;
@@ -6,11 +6,16 @@ import model.Post;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
+import org.sql2o.converters.Converter;
 import org.sql2o.quirks.PostgresQuirks;
+import util.sql2oConverter.InstantConverter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class with methods to establish JDBC connection, set schemas, etc.
@@ -54,9 +59,15 @@ public final class Database {
     String username = dbUri.getUserInfo().split(":")[0];
     String password = dbUri.getUserInfo().split(":")[1];
     String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
-        + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
+        + dbUri.getPort() + dbUri.getPath();
+    // accommodate local postgresql
+    if (!dbUri.getHost().contains("localhost")) {
+      dbUrl = dbUrl + "?sslmode=require";
+    }
 
-    Sql2o sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks());
+    Map<Class, Converter> converters = new HashMap<>();
+    converters.put(Instant.class, new InstantConverter());
+    Sql2o sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks(converters));
     return sql2o;
   }
 
@@ -268,19 +279,9 @@ public final class Database {
    */
   private static void addHashtag(Sql2o sql2o, Hashtag hashtag) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
-      // To use simpleflatmapper, must use Query as original chain will break
-//      Query query = conn.createQuery("SELECT * from hashtag where hashtag_id=:hashtagId OR " +
-//          "hashtag=:hashtag;");
-//      // Below line is all you need to add when using simpleflatmapper, everything else is the same
-//      query.setAutoDeriveColumnNames(true)
-//          .setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
-//      // bind, no need to convert names
-//      List<Hashtag> existingHashtag = query.bind(hashtag).executeAndFetch(Hashtag.class);
-//      if (existingHashtag.isEmpty()) {
       String sql = "INSERT INTO hashtag(id, hashtag) "
           + "VALUES(:id, :hashtag) ON CONFLICT DO NOTHING;";
       conn.createQuery(sql).bind(hashtag).executeUpdate();
-//      }
     }
   }
 

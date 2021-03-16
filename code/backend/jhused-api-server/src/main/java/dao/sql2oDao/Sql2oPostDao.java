@@ -1,13 +1,15 @@
 package dao.sql2oDao;
 
+import dao.HashtagDao;
+import dao.ImageDao;
 import dao.PostDao;
+import dao.PostHashtagDao;
 import exceptions.DaoException;
 import model.Category;
 import model.Hashtag;
 import model.Image;
 import model.Post;
 import org.postgresql.jdbc.PgArray;
-import org.simpleflatmapper.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
@@ -19,39 +21,11 @@ import java.util.*;
 
 public class Sql2oPostDao implements PostDao {
 
+  private static final String SELECT_ALL_POSTS = "";
   private final Sql2o sql2o;
-  /**
-   * The rule is add [<child class name>s_] before child's column name,
-   * for example, Post has List<Image> images, then in order for simpleflatmapper to
-   * know how to convert, add "images_" to the column of table image, that is to convert
-   * image.id to images_id, image.post_id to images_post_id, image.url to images_url.
-   */
-  private final String SELECT_POST_GIVEN_ID = "WITH posts AS (" +
-      "SELECT post.*," +
-      "image.id as images_id," +
-      "image.post_id as images_post_id," +
-      "image.url as images_url," +
-      "hashtag.id as hashtags_id," +
-      "hashtag.hashtag as hashtags_hashtag " +
-      "FROM post " +
-      "LEFT JOIN image on image.post_id=post.id " +
-      "LEFT JOIN post_hashtag on post_hashtag.post_id=post.id " +
-      "LEFT JOIN hashtag on hashtag.id=post_hashtag.hashtag_id " +
-      "ORDER BY post.id) " +
-      "SELECT * FROM posts " +
-      "WHERE posts.id = :id";
-
-  private final String SELECT_ALL_POSTS = "SELECT post.*," +
-      "image.id as images_id," +
-      "image.post_id as images_post_id," +
-      "image.url as images_url," +
-      "hashtag.id as hashtags_id," +
-      "hashtag.hashtag as hashtags_hashtag " +
-      "FROM post " +
-      "LEFT JOIN image on image.post_id=post.id " +
-      "LEFT JOIN post_hashtag on post_hashtag.post_id=post.id " +
-      "LEFT JOIN hashtag on hashtag.id=post_hashtag.hashtag_id " +
-      "ORDER BY post.id";
+  private final ImageDao imageDao;
+  private final HashtagDao hashtagDao;
+  private final PostHashtagDao postHashtagDao;
 
   /**
    * Construct Sql2oPostDao.
@@ -62,6 +36,9 @@ public class Sql2oPostDao implements PostDao {
    */
   public Sql2oPostDao(Sql2o sql2o) {
     this.sql2o = sql2o;
+    imageDao = new Sql2oImageDao(sql2o);
+    hashtagDao = new Sql2oHashtagDao(sql2o);
+    postHashtagDao = new Sql2oPostHashtagDao(sql2o);
   }
 
   /**
@@ -81,23 +58,52 @@ public class Sql2oPostDao implements PostDao {
    */
   @Override
   public Post create(Post post) throws DaoException {
-    if (post != null && post.getId().isEmpty()) {
-      post.setId(UUID.randomUUID().toString());
-    }
-
-    String sql = "WITH inserted AS ("
-        + "INSERT INTO posts(uuid, userid, title, price, description, "
-        + "category, location) "
-        + "VALUES(:uuid, :userid, :title, :price, :description, ARRAY[:imageurls], "
-        + "ARRAY[:hashtags], CAST(:category AS Category), :location) RETURNING *"
-        + ") SELECT * FROM inserted;";
-
+    String insertPostSql = "WITH posts AS (INSERT INTO post(" +
+        "id, user_id, title, price, description, category, location) " +
+        "VALUES(:id, :userId, :title, :price, :description, CAST(:category AS Category), :location)" +
+        "RETURNING *) SELECT * FROM posts;";
 
     try (Connection conn = this.sql2o.open()) {
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
-      return query.bind(Post.class).executeAndFetchFirst(Post.class);
-    } catch (Sql2oException ex) {
+      // will catch NullPointerException
+      if (post.getId().isEmpty()) {
+        post.setId(UUID.randomUUID().toString());
+      }
+
+      // first insert the post
+      Post createdPost =
+          conn.createQuery(insertPostSql).setAutoDeriveColumnNames(true).bind(post).executeAndFetchFirst(Post.class);
+
+      if (post != null) {
+        // then insert image and store created images
+        List<Image> createdImages = new ArrayList<>();
+        if (!post.getImages().isEmpty()) {
+          for (Image image : post.getImages()) {
+            createdImages.add(imageDao.create(image));
+          }
+        }
+
+        // then insert hashtag and post_hashtag, and store created hashtags
+        List<Hashtag> createdHashtags = new ArrayList<>();
+        if (!post.getHashtags().isEmpty()) {
+          for (Hashtag hashtag : post.getHashtags()) {
+            // check if the hashtag already exists, using exact search (though case insensitive)
+            List<Hashtag> existingHashtag = hashtagDao.readAllExactCaseInsensitive(hashtag.getHashtag());
+            if (existingHashtag.isEmpty()) {
+              createdHashtags.add(hashtagDao.create(hashtag));
+              postHashtagDao.create(post.getId(), hashtag.getId());
+            } else {
+              createdHashtags.add(hashtag);
+              postHashtagDao.create(post.getId(), existingHashtag.get(0).getId());
+            }
+          }
+        }
+
+        // add images and hashtags to post
+        createdPost.setImages(createdImages);
+        createdPost.setHashtags(createdHashtags);
+      }
+      return createdPost;
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -105,20 +111,41 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public Post read(String id) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPostsGetFirst(conn.createQuery("SELECT * FROM posts WHERE uuid = :id;")
+      Post post = conn.createQuery("SELECT * FROM post WHERE post.id=:id")
+          .setAutoDeriveColumnNames(true)
           .addParameter("id", id)
-
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) {
+          .executeAndFetchFirst(Post.class);
+      if (post != null) {
+        post.setImages(imageDao.getImagesOfPost(post.getId()));
+        post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+      }
+      return post;
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
   }
 
+  /**
+   * This will be very slow if we have lots of posts.
+   * TODO: Need to refactor.
+   *
+   * @return A list of posts
+   * @throws DaoException
+   */
   @Override
   public List<Post> readAll() throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery("SELECT * FROM posts;").executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) {
+      List<Post> posts = conn.createQuery("SELECT * FROM post")
+          .setAutoDeriveColumnNames(true)
+          .executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException ex) {
       throw new DaoException("Unable to read posts from the database", ex);
     }
   }
@@ -126,23 +153,23 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
     try (Connection conn = sql2o.open()) {
-      return mapToPosts(conn.createQuery("SELECT * FROM posts WHERE lower(title) LIKE :partial;")
-          .addParameter("partial", "%" + titleQuery.toLowerCase() + "%")
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) {
+      String sql = "SELECT * FROM post WHERE post.title ILIKE :partial;";
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query.addParameter("partial", "%" + titleQuery + "%").executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
     }
   }
 
   @Override
   public Post update(String id, Post post) throws DaoException {
-
-    //Need to check if post is valid before we check its fields.
-    if (post == null) {
-      Sql2oException ex = new Sql2oException();
-      throw new DaoException("Unable to update this post!", ex);
-    }
-
     /**
      * SQL string to be given to database.
      * Here we are updating the post with the passed id, and setting it to
@@ -156,53 +183,47 @@ public class Sql2oPostDao implements PostDao {
      * TODO not necessary, but using the ARRAY cast spews out the same
      *  strange error as the delete function.
      */
-    String sql = "WITH updated AS (UPDATE posts SET " +
-        "title = :newTitle, " +
-        "price = :newPrice, " +
-        "description = :newDescription, " +
-        "imageUrls = ARRAY[:newImageUrls], " +
-        "hashtags = ARRAY[:newHashtags], " +
-        "category = CAST(:newCategory AS Category), " +
-        "location = :newLocation " +
-        "WHERE uuid = :thisID RETURNING *) SELECT * FROM updated;";
-
-    //make placer-holder variables for fields that might be null.
-    String newDescription;
-    List<Image> imageUrls;
-    List<Hashtag> hashtags;
-
-    //check each from passed post to ensure no errors occur.
-    if (post.getDescription() == null) {
-      newDescription = "";
-    } else {
-      newDescription = post.getDescription();
-    }
-
-    if (post.getImages() == null) {
-      imageUrls = new ArrayList<>();
-    } else {
-      imageUrls = post.getImages();
-    }
-
-    if (post.getHashtags() == null) {
-      hashtags = new ArrayList<>();
-    } else {
-      hashtags = post.getHashtags();
-    }
+    String updateSql = "WITH updated AS (UPDATE post SET " +
+        "user_id = :userId, " +
+        "title = :title, " +
+        "price = :price, " +
+        "description = :description, " +
+        "category = CAST(:category AS Category), " +
+        "location = :location " +
+        "WHERE id = :id RETURNING *) SELECT * FROM updated;";
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return mapToPostsGetFirst(conn.createQuery(sql)
-          .addParameter("newTitle", post.getTitle())
-          .addParameter("newPrice", post.getPrice())
-          .addParameter("newDescription", newDescription)
-          .addParameter("newImageUrls", imageUrls)
-          .addParameter("newHashtags", hashtags)
-          .addParameter("newCategory", post.getCategory())
-          .addParameter("newLocation", post.getLocation())
-          .addParameter("thisID", id)
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) { //otherwise, fail
+      //make placer-holder variables for fields that might be null.
+
+      //check each from passed post to ensure no errors occur.
+      if (post.getDescription() == null) {
+        post.setDescription("");
+      }
+      if (post.getImages() == null) {
+        post.setImages(new ArrayList<>());
+      }
+
+      if (post.getHashtags() == null) {
+        post.setHashtags(new ArrayList<>());
+      }
+      Post updatedPost = conn.createQuery(updateSql).setAutoDeriveColumnNames(true)
+          .bind(post).addParameter("id", id).executeAndFetchFirst(Post.class);
+      if (updatedPost != null) {
+        List<Image> toBeUpdatedImages = new ArrayList<>();
+        List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
+        for (Image image:post.getImages()) {
+            toBeUpdatedImages.add(imageDao.createOrUpdate(image.getId(), image));
+        }
+        for (Hashtag hashtag:post.getHashtags()) {
+          toBeUpdatedHashtags.add(hashtagDao.createOrUpdate(hashtag.getId(), hashtag));
+        }
+        updatedPost.setImages(toBeUpdatedImages);
+        updatedPost.setHashtags(toBeUpdatedHashtags);
+      }
+
+      return updatedPost;
+    } catch (Sql2oException | NullPointerException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post! Check if missing fields.", ex);
     }
   }
@@ -215,15 +236,21 @@ public class Sql2oPostDao implements PostDao {
      * Deletes the post with the passed id, and returns it after deletion.
      */
     String sql = "WITH deleted AS ("
-        + "DELETE FROM posts WHERE uuid = :thisId RETURNING *"
+        + "DELETE FROM post WHERE id = :id RETURNING *"
         + ") SELECT * FROM deleted;";
 
     //attempt to open connection and perform sql string.
     try (Connection conn = sql2o.open()) {
-      return mapToPostsGetFirst(conn.createQuery(sql)
-          .addParameter("thisId", id)
-          .executeAndFetchTable().asList());
-    } catch (Sql2oException | SQLException ex) { //otherwise, fail
+      List<Image> images = imageDao.getImagesOfPost(id);
+      List<Hashtag> hashtags = hashtagDao.getHashtagsOfPost(id);
+      Post post = conn.createQuery(sql).setAutoDeriveColumnNames(true)
+          .addParameter("id", id).executeAndFetchFirst(Post.class);
+      if (post != null) {
+        post.setImages(images);
+        post.setHashtags(hashtags);
+      }
+      return post;
+    } catch (Sql2oException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
     }
 

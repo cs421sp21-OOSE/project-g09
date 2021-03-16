@@ -3,6 +3,7 @@ import PostPreview from "./PostPreview";
 
 
 const ImageGrid = ({ posts }) => {
+
   return (
     <div className="img-grid-container">
       <div className="img-grid">
