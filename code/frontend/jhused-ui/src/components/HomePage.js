@@ -9,22 +9,33 @@ const HomePage = () => {
 
   const [editorLive, setEditorLive] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [searchedPosts, setSearchPosts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchedPosts, setSearchedPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
+      console.log("run1")
       axios.get("/api/posts").then((response) => {
           setPosts(response.data);
-          setSearchPosts(response.data);
-          setFilteredPosts(response.data);
       });
   }, [])
 
+    useEffect( () => {
+        console.log("run3")
+        setSearchedPosts( posts.filter( (post) => {
+            if (searchTerm === "") {
+                return post;
+            } else if (post.title.toLowerCase().includes(searchTerm.toLowerCase())) {
+                return post;
+            }
+            else return null;
+        }) );
+    }, [posts, searchTerm])
+
     useEffect(() => {
-        setFilteredPosts( posts.filter( (post) => {
+        console.log("run2")
+        setFilteredPosts( searchedPosts.filter( (post) => {
             if (selectedCategory === "ALL") {
                 return post;
             }
@@ -33,18 +44,9 @@ const HomePage = () => {
             }
             else return null;
         }) );
-    }, [posts, selectedCategory])
+    }, [searchedPosts, selectedCategory])
 
-    useEffect( () => {
-        setSearchPosts( filteredPosts.filter( (post) => {
-            if (searchTerm === "") {
-                return post;
-            } else if (post.title.toLowerCase().includes(searchTerm.toLowerCase())) {
-                return post;
-            }
-            else return null;
-        }) );
-    }, [filteredPosts, searchTerm])
+
 
 
   const handlePostBtnChange = () => {
@@ -82,7 +84,7 @@ const HomePage = () => {
           </div>
       </div>
       {editorLive ? <EditorPopup toggle={handlePostBtnChange}/> : null}
-      <ImageGrid posts={searchedPosts}/>
+      <ImageGrid posts={filteredPosts}/>
     </div>
   );
 };
