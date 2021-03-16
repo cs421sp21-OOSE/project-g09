@@ -15,14 +15,12 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
-      console.log("run1")
       axios.get("/api/posts").then((response) => {
           setPosts(response.data);
       });
   }, [])
 
     useEffect( () => {
-        console.log("run3")
         setSearchedPosts( posts.filter( (post) => {
             if (searchTerm === "") {
                 return post;
@@ -34,7 +32,6 @@ const HomePage = () => {
     }, [posts, searchTerm])
 
     useEffect(() => {
-        console.log("run2")
         setFilteredPosts( searchedPosts.filter( (post) => {
             if (selectedCategory === "ALL") {
                 return post;
