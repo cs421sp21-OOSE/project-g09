@@ -2,6 +2,8 @@ package dao;
 
 import exceptions.DaoException;
 import java.util.List;
+
+import model.Hashtag;
 import model.Image;
 
 /**
@@ -60,9 +62,19 @@ public interface ImageDao {
    * This should never be called, as deleting post will automatically
    * delete its images.
    *
-   * @param id The Image id.
+   * @param postId The Image id.
    * @return The Image object deleted from the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
 //  Image delete(String id) throws DaoException;
+  List<Image> getImagesOfPost(String postId) throws DaoException;
+
+  /**
+   * Create or Update the Images provided its id.
+   *
+   * @param image The Image.
+   * @return The updated Image object.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  Image createOrUpdate(String id, Image image) throws DaoException;
 }

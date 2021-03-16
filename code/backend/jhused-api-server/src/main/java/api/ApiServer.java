@@ -10,7 +10,7 @@ import exceptions.DaoException;
 import model.Post;
 import org.sql2o.Sql2o;
 import spark.Spark;
-import util.Database;
+import util.database.Database;
 
 import java.net.URISyntaxException;
 import java.util.List;

@@ -5,8 +5,8 @@ import exceptions.DaoException;
 import model.Category;
 import model.Post;
 import org.junit.jupiter.api.*;
-import util.DataStore;
-import util.Database;
+import util.database.DataStore;
+import util.database.Database;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -43,7 +43,7 @@ class Sql2oPostDaoTest {
   @Test
   @DisplayName("create works for valid input")
   void createNewPost() throws DaoException {
-    Post c1 = new Post(UUID.randomUUID().toString(), "001",
+    Post c1 = new Post(UUID.randomUUID().toString(), "001"+"1".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -52,13 +52,15 @@ class Sql2oPostDaoTest {
         "Location of dummy furniture"
     );
     Post c2 = postDao.create(c1);
+    c1.setCreateTime(c2.getCreateTime());
+    c1.setUpdateTime(c2.getUpdateTime());
     assertEquals(c1, c2);
   }
 
   @Test
   @DisplayName("create throws exception for duplicate post")
   void createThrowsExceptionDuplicateData() {
-    Post c1 = new Post("0".repeat(36), "001",
+    Post c1 = new Post("0".repeat(36), "001"+"1".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -74,7 +76,7 @@ class Sql2oPostDaoTest {
   @Test
   @DisplayName("create throws exception for invalid input")
   void createThrowsExceptionIncompleteData() {
-    Post c1 = new Post(null, "001",
+    Post c1 = new Post(null, "001"+"1".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -83,7 +85,7 @@ class Sql2oPostDaoTest {
         "Location of dummy furniture"
     );
 
-    c1.setId("0" + " ".repeat(35));
+    c1.setId("0" + "1".repeat(35));
     c1.setPrice(null);
     assertThrows(DaoException.class, () -> {
       postDao.create(c1);
@@ -151,17 +153,19 @@ class Sql2oPostDaoTest {
   @DisplayName("updating a post works")
   void updateWorks() {
     //create a post to send to the update method.
-    Post ogPost = new Post(samples.get(0).getId(), "001",
-        "Dummy furniture", 30D,
-        "Description of dummy furniture",
+    Post ogPost = new Post(samples.get(0).getId(), "191"+"1".repeat(33),
+        "Dummy furnitulre", 31.3,
+        "Description ofa dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dummy furniture"
+        "Location of dumm*y furniture"
     );
 
     //get the post back, give the first item in samples uuid.
     Post post = postDao.update(samples.get(0).getId(), ogPost);
+    ogPost.setCreateTime(post.getCreateTime());
+    ogPost.setUpdateTime(post.getUpdateTime());
     assertEquals(ogPost, post);
   }
 
@@ -185,11 +189,9 @@ class Sql2oPostDaoTest {
   @Test
   @DisplayName("delete works for valid input")
   void deleteExistingPost() {
-    //TODO figure out weird error. Post is deleted, but return is not correct.
     Post postDeleted = postDao.delete(samples.get(0).getId());
     assertEquals(postDeleted, samples.get(0));
-    //TODO uncomment this once read is implemented
-    //assertNull(postDao.read(postDeleted.getUuid()));
+    assertNull(postDao.read(postDeleted.getId()));
   }
 
   @Test
