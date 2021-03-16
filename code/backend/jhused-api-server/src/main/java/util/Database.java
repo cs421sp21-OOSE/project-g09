@@ -98,9 +98,28 @@ public final class Database {
       createPostsHashtagsTable(sql2o);
       createImagesTable(sql2o);
 
-      for (Post Post : samples) {
-        addPostsWithInnerObjects(sql2o, Post);
-      }
+      insertSampleData(sql2o, samples);
+    }
+  }
+
+  public static void truncateTables(Sql2o sql2o) throws Sql2oException {
+    try (Connection conn = sql2o.open()) {
+      // no need to truncate images and post_hashtag, as they will be deleted automatically when
+      // foreign key table get truncated.
+      conn.createQuery("TRUNCATE TABLE post CASCADE").executeUpdate();
+      conn.createQuery("TRUNCATE TABLE hashtag CASCADE").executeUpdate();
+    }
+  }
+
+  /**
+   * Used for test, avoid creating table each time
+   *
+   * @param sql2o   sql2o
+   * @param samples samples of posts
+   */
+  public static void insertSampleData(Sql2o sql2o, List<Post> samples) {
+    for (Post post : samples) {
+      addPostsWithInnerObjects(sql2o, post);
     }
   }
 

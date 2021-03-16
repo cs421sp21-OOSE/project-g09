@@ -86,6 +86,21 @@ public final class DataStore {
   }
 
   /**
+   * return a list of images corresponding to the list of posts
+   * returned by samplePosts()
+   * @return a list of images owned by posts returned by samplePosts()
+   */
+  public static List<Image> sampleImages(){
+    List<Image> images = new ArrayList<>();
+    List<Post> posts = samplePosts();
+    for (Post post: posts)
+    {
+      images.addAll(post.getImages());
+    }
+    return images;
+  }
+
+  /**
    * return a list of 2 Image (models) given 2 ids.
    * This is used for tests
    * @return a list Image
