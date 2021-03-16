@@ -11,7 +11,7 @@ const ImageGrid = () => {
     axios.get("/api/posts").then((response) => {
       setPosts(response.data);
     });
-  });
+  }, []);
 
   return (
     <div className="img-grid-container">
