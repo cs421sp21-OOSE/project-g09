@@ -63,4 +63,6 @@ public interface HashtagDao {
    * @throws DaoException A generic exception for CRUD operations.
    */
 //  Hashtag delete(String id) throws DaoException;
+
+  List<Hashtag> getHashtagsOfPost(String postId) throws DaoException;
 }

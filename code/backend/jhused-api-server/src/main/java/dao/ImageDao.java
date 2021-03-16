@@ -2,6 +2,8 @@ package dao;
 
 import exceptions.DaoException;
 import java.util.List;
+
+import model.Hashtag;
 import model.Image;
 
 /**
@@ -65,4 +67,5 @@ public interface ImageDao {
    * @throws DaoException A generic exception for CRUD operations.
    */
 //  Image delete(String id) throws DaoException;
+  List<Image> getImagesOfPost(String postId) throws DaoException;
 }

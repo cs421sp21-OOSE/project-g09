@@ -16,7 +16,7 @@ import java.util.List;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE=true;
+  public static boolean USE_TEST_DATABASE = true;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -54,7 +54,11 @@ public final class Database {
     String username = dbUri.getUserInfo().split(":")[0];
     String password = dbUri.getUserInfo().split(":")[1];
     String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
-        + dbUri.getPort() + dbUri.getPath();//+ "?sslmode=require";
+        + dbUri.getPort() + dbUri.getPath();
+    // accommodate local postgresql
+    if (!dbUri.getHost().contains("localhost")) {
+      dbUrl = dbUrl + "?sslmode=require";
+    }
 
     Sql2o sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks());
     return sql2o;

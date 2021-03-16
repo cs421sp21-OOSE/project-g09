@@ -165,4 +165,22 @@ public class Sql2oHashtagDaoTest {
     Hashtag newHashtag = new Hashtag(post.getHashtags().get(0).getId(), "test");
     assertNull(hashtagDao.update("756499".repeat(6), newHashtag));
   }
+
+  @Test
+  void getHashtagsGivenPostIdWork() {
+    for (Post post: samplePosts)
+    {
+      assertEquals(post.getHashtags(), hashtagDao.getHashtagsOfPost(post.getId()));
+    }
+  }
+
+  @Test
+  void getHashtagsGivenInvalidPostIdReturnEmpty() {
+    assertEquals(0,hashtagDao.getHashtagsOfPost("999771".repeat(6)).size());
+  }
+
+  @Test
+  void getHashtagsGivenNullPostIdReturnEmpty() {
+    assertEquals(0,hashtagDao.getHashtagsOfPost(null).size());
+  }
 }

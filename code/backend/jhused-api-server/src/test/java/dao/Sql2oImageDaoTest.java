@@ -119,4 +119,22 @@ public class Sql2oImageDaoTest {
         ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
     assertNull(imageDao.update("756499".repeat(6), newImage));
   }
+
+  @Test
+  void getImagesGivenPostIdWork() {
+    for (Post post: samplePosts)
+    {
+      assertEquals(post.getImages(), imageDao.getImagesOfPost(post.getId()));
+    }
+  }
+
+  @Test
+  void getImagesGivenInvalidPostIdReturnEmpty() {
+    assertEquals(0, imageDao.getImagesOfPost("999771".repeat(6)).size());
+  }
+
+  @Test
+  void getImagesGivenNullPostIdReturnEmpty() {
+    assertEquals(0, imageDao.getImagesOfPost(null).size());
+  }
 }
