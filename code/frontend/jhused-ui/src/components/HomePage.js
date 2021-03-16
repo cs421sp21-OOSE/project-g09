@@ -9,10 +9,15 @@ const HomePage = () => {
   
   // State for controlling whether editor should show up
   const [editorLive, setEditorLive] = useState(false);
+  // All the posts
   const [posts, setPosts] = useState([]);
+  // posts after searching
   const [searchedPosts, setSearchedPosts] = useState([]);
+  // posts after filtering
   const [filteredPosts, setFilteredPosts] = useState([]);
+  // State of the Search Bar
   const [searchTerm, setSearchTerm] = useState("");
+  // State of the category filter
   const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
@@ -21,31 +26,28 @@ const HomePage = () => {
       });
   }, [])
 
-    useEffect( () => {
-        setSearchedPosts( posts.filter( (post) => {
-            if (searchTerm === "") {
-                return post;
-            } else if (post.title.toLowerCase().includes(searchTerm.toLowerCase())) {
-                return post;
-            }
-            else return null;
-        }) );
-    }, [posts, searchTerm])
+  useEffect( () => {
+      setSearchedPosts( posts.filter( (post) => {
+          if (searchTerm === "") {
+              return post;
+          } else if (post.title.toLowerCase().includes(searchTerm.toLowerCase())) { /*TODO: searching is only for title currently*/
+              return post;
+          }
+          else return null;
+      }) );
+  }, [posts, searchTerm])
 
-    useEffect(() => {
-        setFilteredPosts( searchedPosts.filter( (post) => {
-            if (selectedCategory === "ALL") {
-                return post;
-            }
-            else if (post.category === selectedCategory) {
-                return post;
-            }
-            else return null;
-        }) );
-    }, [searchedPosts, selectedCategory])
-
-
-
+  useEffect(() => {
+      setFilteredPosts( searchedPosts.filter( (post) => {
+          if (selectedCategory === "ALL") {
+              return post;
+          }
+          else if (post.category === selectedCategory) {
+              return post;
+          }
+          else return null;
+      }) );
+  }, [searchedPosts, selectedCategory])
 
   // State for controlling the editor mode: update a post or create a post
   const [editorMode, setEditorMode] = useState("create");
@@ -91,26 +93,26 @@ const HomePage = () => {
         >
           Post
         </button>
-          <div className="searchBar">
-              <input
-                  type="text"
-                  placeholder="Search..."
-                  onChange={(event) => {
-                      setSearchTerm(event.target.value);
-                  }}
-              />
-          </div>
-          <div className="categoryFilter"> {/*TODO: the categories are hard-coded for now*/}
-              <select onChange={(event) => {
-                  setSelectedCategory(event.target.value);
-              }}>
-                  <option value="ALL">ALL</option>
-                  <option value="FURNITURE">FURNITURE</option>
-                  <option value="CAR">CAR</option>
-                  <option value="TV">TV</option>
-                  <option value="DESK">DESK</option>
-              </select>
-          </div>
+        <div className="searchBar">
+          <input
+            type="text"
+            placeholder="Search..."
+            onChange={(event) => {
+              setSearchTerm(event.target.value);
+            }}
+          />
+        </div>
+        <div className="categoryFilter"> {/*TODO: the categories are hard-coded for now*/}
+          <select onChange={(event) => {
+              setSelectedCategory(event.target.value);
+          }}>
+              <option value="ALL">ALL</option>
+              <option value="FURNITURE">FURNITURE</option>
+              <option value="CAR">CAR</option>
+              <option value="TV">TV</option>
+              <option value="DESK">DESK</option>
+          </select>
+        </div>
       </div>
       {editorLive ? 
         <EditorPopup 
@@ -118,6 +120,7 @@ const HomePage = () => {
           mode={editorMode}
           post={editorMode==="update" ? postData : null}
           /> : null}
+      {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
       <ImageGrid posts={filteredPosts}/>
 
     </div>
