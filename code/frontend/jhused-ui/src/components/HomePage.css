@@ -8,6 +8,30 @@
   padding-inline: 1rem;
 }
 
+.search-bar {
+  position: absolute;
+  left: 350px;
+  top: 32px;
+}
+
+.search {
+  border: solid #002d72;
+  border-radius: 10rem;
+  font-size: 1.5rem;
+  color: #d72638;
+  height: 40px;
+  width: 90%;
+  padding: 2px 23px 2px 30px;
+  background-color: white;
+}
+
+.search-icon {
+  position: relative;
+  top: -5px;
+  right: 50px;
+  width: 40px;
+}
+
 #update-button {
   margin-right: 2rem;
 }

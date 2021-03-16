@@ -3,7 +3,7 @@ import ImageGrid from "./ImageGrid";
 import EditorPopup from "./EditorPopUp";
 import "./HomePage.css";
 import axios from "../util/axios";
-
+import SearchIcon from "../images/search.png";
 
 const HomePage = () => {
   
@@ -93,14 +93,15 @@ const HomePage = () => {
         >
           Post
         </button>
-        <div className="searchBar">
-          <input
+        <div className="search-bar">
+          <input className="search"
             type="text"
             placeholder="Search..."
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
           />
+          <img className="search-icon" src={SearchIcon} alt="search icon"/>
         </div>
         <div className="categoryFilter"> {/*TODO: the categories are hard-coded for now*/}
           <select onChange={(event) => {
