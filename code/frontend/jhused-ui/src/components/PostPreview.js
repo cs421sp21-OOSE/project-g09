@@ -7,6 +7,7 @@ const PostPreview = (props) => {
   const location = useLocation();
   return (
     <div className="post-card">
+      {/* Comment by CD (delete later): a button should be added in this class for updating post. The button is alive in mypage only. The callback should pass post object to the editor pop up class */}
       <Link
         to={{
           pathname: `/post/${props.post.uuid}`,

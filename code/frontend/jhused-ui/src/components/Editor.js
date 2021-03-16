@@ -11,6 +11,8 @@ import { ProgressBar, Image, Container, Alert } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import deleteIcon from "../images/delete.png";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Editor.css";
 
@@ -50,7 +52,7 @@ const categories = {
 /**
  * Editor component for creatining/editing posts
  */
-function Editor() {
+function Editor(props) {
   // Define post category options for use in the react-select component
   const categoryOptions = [
     categories.FURNITURE,
@@ -61,16 +63,20 @@ function Editor() {
 
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
-  const [formData, setFormData] = useReducer(formReducer, {
+  const emptyForm = {
     uuid: "",
     userId: "",
     title: "",
     price: 0.,
+    location: "",
     category: "",
     hashtags: [],
     description: "",
     imageUrls: [],
-  });
+  };
+
+  const [formData, setFormData] = useReducer(formReducer, 
+    props.post ?? emptyForm);
 
   // State for the submit button - used for controlling responses after a post is submitted
   const [submitted, setSubmitted] = useState(false);
@@ -106,15 +112,34 @@ function Editor() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setSubmitted(true);
-    axios
-      .post("https://jhused-api-server.herokuapp.com/api/posts", formData)
-      .then((response) => {
-        console.log(response);
-        setRequestStatus(response.status);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    switch (props.mode) {
+      case "create":
+        axios
+        .post("https://jhused-api-server.herokuapp.com/api/posts", formData)
+        .then((response) => {
+          console.log(response);
+          setRequestStatus(response.status);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        break;
+      case "update":
+        axios
+        .put("https://jhused-api-server.herokuapp.com/api/posts/" + formData.uuid, formData)
+        .then((response) => {
+          console.log(response);
+          setRequestStatus(response.status);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+        break;
+      default:
+        // do nothing
+    }
+
+
   };
 
   /**
@@ -246,6 +271,9 @@ function Editor() {
                 classNamePrefix="category-select"
                 label="category-select"
                 name="category"
+                value={formData.category === "" ? null : 
+                    categories[formData.category]
+                }
                 placeholder="Category"
                 options={categoryOptions}
                 onChange={handleCategoryChange}
@@ -311,34 +339,36 @@ function Editor() {
         </Form.Group>
         <Form.Group>
           <Row>
-            <Col>
+            <Col >
+                {props.mode==="update" ? 
+                  <Image src={deleteIcon} width={40}></Image> : null}
+            </Col>
+            <Col md={4}>
               <Button
-                className="float-left"
                 variant="upload"
                 onClick={handleImageUpload}
                 disabled={submitted}
               >
                 Upload
               </Button>
-            </Col>
-            <Col>
+            </Col >
+            <Col md={4}>
               <Button
-                className="float-right"
                 variant="submit"
                 type="submit"
                 disabled={submitted}
               >
-                Submit
+                {props.mode==="update"? "Save" : "Submit"}
               </Button>
             </Col>
           </Row>
         </Form.Group>
       </Form>
       {submitted &&
-        (requestStatus === 201 ? (
-          <Alert variant="info">Post is submitted successfully</Alert>
+        (requestStatus === 201 || 200 ? (
+          <Alert variant="info">Post is {props.mode==="update" ? "updated" : "submitted"} successfully</Alert>
         ) : (
-          <Alert variant="info">Post submission failed</Alert>
+          <Alert variant="info">Post {props.mode==="update" ? "update" : "submission"} failed</Alert>
         ))}
       {/* Conditional element below to display the form data in json
             Uncomment it  on for debugging use */}
