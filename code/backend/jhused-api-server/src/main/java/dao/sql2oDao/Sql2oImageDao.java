@@ -2,7 +2,6 @@ package dao.sql2oDao;
 
 import dao.ImageDao;
 import exceptions.DaoException;
-import model.Hashtag;
 import model.Image;
 import org.sql2o.Connection;
 import org.sql2o.Query;
@@ -57,6 +56,23 @@ public class Sql2oImageDao implements ImageDao {
       return query.addParameter("postId", postId).executeAndFetch(Image.class);
     } catch (Sql2oException ex) {
       throw new DaoException("Unable to read hashtags given postId from the database", ex);
+    }
+  }
+
+  @Override
+  public Image createOrUpdate(String id, Image image) throws DaoException {
+    String sql = "WITH inserted AS ("
+        + "INSERT INTO image(id, post_id, url) "
+        + "VALUES(:id, :postId, :url) "
+        + "ON CONFLICT (id) DO UPDATE "
+        + "SET post_id = :postId, url = :url RETURNING *"
+        + ") SELECT * FROM inserted;";
+
+    try (Connection conn = this.sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      return query.bind(image).executeAndFetchFirst(Image.class);
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException(ex.getMessage(), ex);
     }
   }
 }

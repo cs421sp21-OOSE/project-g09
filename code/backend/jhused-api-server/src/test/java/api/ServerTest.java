@@ -11,8 +11,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import util.DataStore;
-import util.Database;
+import util.database.DataStore;
+import util.database.Database;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;

@@ -1,10 +1,8 @@
 package model;
 import lombok.Data;
-import org.simpleflatmapper.map.annotation.Key;
 
 @Data
 public class Image {
-  @Key
   private String id;
   private String postId;
   private String url;

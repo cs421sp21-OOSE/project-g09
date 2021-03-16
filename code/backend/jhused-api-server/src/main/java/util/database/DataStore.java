@@ -1,4 +1,4 @@
-package util;
+package util.database;
 
 import model.Category;
 import model.Hashtag;
@@ -26,7 +26,7 @@ public final class DataStore {
    */
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
-    samples.add(new Post("0".repeat(36), "001",
+    samples.add(new Post("0".repeat(36), "001"+"1".repeat(33),
         "Dummy furniture", 30D,
         "Description of dummy furniture",
         sampleImages("0".repeat(36),"1".repeat(36),Category.FURNITURE),
@@ -34,7 +34,7 @@ public final class DataStore {
         Category.FURNITURE,
         "Location of dummy furniture"
     ));
-    samples.add(new Post("1".repeat(36), "002",
+    samples.add(new Post("1".repeat(36), "002"+"1".repeat(33),
         "Dummy TV", 40D,
         "Description of dummy TV",
         sampleImages("2".repeat(36),"3".repeat(36),Category.TV),
@@ -42,7 +42,7 @@ public final class DataStore {
         Category.TV,
         "Location of dummy TV"
     ));
-    samples.add(new Post("3".repeat(36), "003",
+    samples.add(new Post("3".repeat(36), "003"+"1".repeat(33),
         "Dummy car", 50D,
         "Description of dummy car",
         sampleImages("4".repeat(36),"5".repeat(36),Category.CAR),
@@ -50,7 +50,7 @@ public final class DataStore {
         Category.CAR,
         "Location of dummy bed"
     ));
-    samples.add(new Post("4".repeat(36), "004",
+    samples.add(new Post("4".repeat(36), "004"+"1".repeat(33),
         "Dummy desk", 29.99D,
         "Description of dummy desk",
         sampleImages("6".repeat(36),"7".repeat(36),Category.DESK),
@@ -58,7 +58,7 @@ public final class DataStore {
         Category.DESK,
         "Location of dummy desk"
     ));
-    samples.add(new Post("5".repeat(36), "005",
+    samples.add(new Post("5".repeat(36), "005"+"1".repeat(33),
         "Dummy lamp", 29.99D,
         "Description of dummy lamp",
         sampleImages("8".repeat(36),"9".repeat(36),Category.FURNITURE),
@@ -66,7 +66,7 @@ public final class DataStore {
         Category.FURNITURE,
         "Location of dummy lamp"
     ));
-    samples.add(new Post("6".repeat(36), "005",
+    samples.add(new Post("6".repeat(36), "005"+"1".repeat(33),
         "Dummy cup", 29.99D,
         "Description of dummy cup",
         sampleImages("10".repeat(18),"12".repeat(18),Category.FURNITURE),
@@ -74,7 +74,7 @@ public final class DataStore {
         Category.FURNITURE,
         "Location of dummy cup"
     ));
-    samples.add(new Post("7".repeat(36), "005",
+    samples.add(new Post("7".repeat(36), "005"+"1".repeat(33),
         "Dummy car", 29.99D,
         "Description of dummy car",
         sampleImages("13".repeat(18),"14".repeat(18),Category.CAR),

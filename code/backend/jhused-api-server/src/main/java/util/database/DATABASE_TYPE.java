@@ -1,4 +1,4 @@
-package util;
+package util.database;
 
 public enum DATABASE_TYPE {
   LOCAL,
