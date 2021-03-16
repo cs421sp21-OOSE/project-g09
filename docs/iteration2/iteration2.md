@@ -35,7 +35,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 Post Editing
 - [ ] myPage of posts for editing (Sam)
 - [ ] Route for myPage + button to navigate there (Sam)
-- [ ] Editing UI form (same as before, but with data populated) (Chu)
+- [x] Editing UI form (same as before, but with data populated) (Chu)
 
 Mark Item as Sold
 - [ ] Modify Database design (Qiao)
