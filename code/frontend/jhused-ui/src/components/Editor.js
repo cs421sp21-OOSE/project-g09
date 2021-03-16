@@ -41,6 +41,10 @@ const createOption = (label) => ({
 const createOptionArray = (labels) =>
   labels.map((label) => createOption(label));
 
+// For converting upper case category to capitalized
+const capitalize = (word) => word.charAt(0).toUpperCase() + 
+  word.slice(1).toLowerCase();
+
 // Define enums for post categories
 const categories = {
   FURNITURE: { value: "FURNITURE", label: "Furniture" },
@@ -252,6 +256,9 @@ function Editor(props) {
                 classNamePrefix="category-select"
                 label="category-select"
                 name="category"
+                value={formData.category === "" ? null : 
+                    categories[formData.category]
+                }
                 placeholder="Category"
                 options={categoryOptions}
                 onChange={handleCategoryChange}
