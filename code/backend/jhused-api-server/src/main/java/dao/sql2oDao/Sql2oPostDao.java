@@ -256,6 +256,85 @@ public class Sql2oPostDao implements PostDao {
 
   }
 
+  @Override
+  public List<Post> searchAll(String searchQuery) {
+    String sql = "SELECT * FROM post WHERE " +
+            "post.title ILIKE :partialTitle OR " +
+            "post.description ILIKE :partialDescription OR " +
+            "post.location ILIKE :partialLocation;";
+
+    try (Connection conn = sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query
+              .addParameter("partialTitle", "%" + searchQuery + "%")
+              .addParameter("partialDescription", "%" + searchQuery + "%")
+              .addParameter("partialLocation", "%" + searchQuery + "%")
+              .executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with matching items: " +
+              searchQuery, ex);
+    }
+  }
+
+  @Override
+  public List<Post> searchCategory(String searchQuery, Category specified) {
+    String sql = "SELECT * FROM post WHERE " +
+            "post.category = CAST(:specifiedCategory AS Category) AND " +
+            "(post.title ILIKE :partialTitle OR " +
+            "post.description ILIKE :partialDescription OR " +
+            "post.location ILIKE :partialLocation);";
+
+    try (Connection conn = sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query
+              .addParameter("specifiedCategory", specified)
+              .addParameter("partialTitle", "%" + searchQuery + "%")
+              .addParameter("partialDescription", "%" + searchQuery + "%")
+              .addParameter("partialLocation", "%" + searchQuery + "%")
+              .executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with matching items: " +
+              searchQuery, ex);
+    }
+  }
+
+
+  @Override
+  public List<Post> getCategory(Category specified) {
+    String sql = "SELECT * FROM post WHERE post.category = CAST(:specifiedCategory AS Category);";
+
+    try (Connection conn = sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query
+              .addParameter("specifiedCategory", specified)
+              .executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with Category " + specified, ex);
+    }
+
+  }
+
   /**
    * Convert a list of maps returned by sql2o to a List of Post.
    *
