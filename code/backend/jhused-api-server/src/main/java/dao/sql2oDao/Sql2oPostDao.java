@@ -256,6 +256,18 @@ public class Sql2oPostDao implements PostDao {
 
   }
 
+  public List<Post> searchAll(String query) {
+    return null; //stub
+  }
+
+  public List<Post> searchCategory(String query, Category specified) {
+    return null; //stub
+  }
+
+  public List<Post> getCategory(Category specified) {
+    return null; //stub
+  }
+
   /**
    * Convert a list of maps returned by sql2o to a List of Post.
    *
