@@ -208,7 +208,7 @@ class Sql2oPostDaoTest {
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dumm*y furniture"
+        "Location of dummy furniture"
     );
 
     //get the post back, give the first item in samples uuid.
