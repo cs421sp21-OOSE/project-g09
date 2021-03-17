@@ -288,14 +288,16 @@ public class Sql2oPostDao implements PostDao {
     return null; //stub
   }
 
-  //TODO get this working.
+
   @Override
   public List<Post> getCategory(Category specified) {
-    String sql = "SELECT * FROM post WHERE post.category IS :partial;";
+    String sql = "SELECT * FROM post WHERE post.category = CAST(:specifiedCategory AS Category);";
 
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      List<Post> posts = query.addParameter("partial", specified).executeAndFetch(Post.class);
+      List<Post> posts = query
+              .addParameter("specifiedCategory", specified)
+              .executeAndFetch(Post.class);
       if (!posts.isEmpty()) {
         for (Post post : posts) {
           post.setImages(imageDao.getImagesOfPost(post.getId()));

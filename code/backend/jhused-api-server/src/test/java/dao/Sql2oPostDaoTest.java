@@ -238,8 +238,6 @@ class Sql2oPostDaoTest {
     assertFalse(postDao.searchAll("").isEmpty());
   }
 
-
-  //TODO Get the tested function working.
   @Test
   @DisplayName("returns posts with specified category")
   void getPostsFromCategory() {
@@ -249,6 +247,12 @@ class Sql2oPostDaoTest {
       assertEquals(thisPost.getCategory(), Category.DESK);
     }
 
+  }
+
+  @Test
+  @DisplayName("null category returns empty post list.")
+  void getPostsFromCategoryNull() {
+    assertTrue(postDao.getCategory(null).isEmpty());
   }
 
 
