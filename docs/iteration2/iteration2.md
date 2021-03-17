@@ -69,7 +69,7 @@ Sorting
 - [ ] Frontend choose sort type (Bohua)
 
 Search
-- [ ] Update backend search - description, location, title, tags (Louie)
+- [X] Update backend search - description, location, title, tags (Louie)
 - [ ] Frontend UI search bar (Junjie)
 
 Backlog 
