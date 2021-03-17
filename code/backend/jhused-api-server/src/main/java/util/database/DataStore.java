@@ -27,20 +27,20 @@ public final class DataStore {
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
     samples.add(new Post("0".repeat(36), "001"+"1".repeat(33),
-        "Dummy furniture", 30D,
-        "Description of dummy furniture",
+        "Brown Coffee Table", 99.99D,
+        "Sleek modern looking, almost new",
         sampleImages("0".repeat(36),"1".repeat(36),Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dummy furniture"
+        "Hampden"
     ));
     samples.add(new Post("1".repeat(36), "002"+"1".repeat(33),
-        "Dummy TV", 40D,
-        "Description of dummy TV",
+        "Samsung TV brand new", 489.99D,
+        "Samsung, brand new, what else to say?",
         sampleImages("2".repeat(36),"3".repeat(36),Category.TV),
         sampleHashtags(Category.TV),
         Category.TV,
-        "Location of dummy TV"
+        "BestBuy"
     ));
     samples.add(new Post("3".repeat(36), "003"+"1".repeat(33),
         "Dummy car", 50D,

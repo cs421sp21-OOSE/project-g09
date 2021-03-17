@@ -70,6 +70,15 @@ class ServerTest {
   }
 
   @Test
+  public void getPostsSorted() throws UnirestException {
+    final String sortQuery = "?sort=price:asc";
+    final String URL = BASE_URL + "/api/posts" + sortQuery;
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
+  }
+
+  @Test
   public void postPostWorks() throws UnirestException {
     // This test will break if this post is already in database
     Post post = new Post(UUID.randomUUID().toString(), "001",

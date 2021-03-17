@@ -169,6 +169,51 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  public List<Post> readAll(String keyword, Map<String, String> sortParams) throws DaoException {
+    try (Connection conn = sql2o.open()) {
+
+      // Add search keyword if needed
+      String sql;
+      if (keyword == null) {
+        sql = "SELECT * FROM post";
+      }
+      else {
+        sql = "SELECT * FROM post WHERE title ILIKE :keyword " +
+                "OR description ILIKE :keyword " +
+                "OR location ILIKE :keyword";
+      }
+
+      // Add sort query if needed
+      if (!sortParams.isEmpty()) {
+        StringBuilder sb = new StringBuilder(sql + " ORDER BY ");
+        for (String key : sortParams.keySet()) {
+          sb.append(key + " " + sortParams.get(key).toUpperCase() + ", ");
+        }
+        sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
+        sb.append(";");
+        sql = sb.toString();
+      }
+
+      Query query = conn.createQuery(sql);
+      if (keyword != null) {
+        query.addParameter("keyword", "%" + keyword + "%");
+      }
+      List<Post> posts = query.setAutoDeriveColumnNames(true)
+              .executeAndFetch(Post.class);
+
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with partialTitle " + keyword, ex);
+    }
+  }
+
+  @Override
   public Post update(String id, Post post) throws DaoException {
     /**
      * SQL string to be given to database.

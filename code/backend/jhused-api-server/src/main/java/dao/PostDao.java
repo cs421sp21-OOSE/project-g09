@@ -2,6 +2,8 @@ package dao;
 
 import exceptions.DaoException;
 import java.util.List;
+import java.util.Map;
+
 import model.Post;
 
 /**
@@ -42,6 +44,17 @@ public interface PostDao {
    * @throws DaoException A generic exception for CRUD operations.
    */
   List<Post> readAll(String titleQuery) throws DaoException;
+
+  /**
+   * Get all matching posts and sort them
+   * Find post whose data match the keyword; sort the order by sort parameters
+   *
+   * @param keyword search keyword
+   * @param sortParams map of sort keys and sort orders
+   * @return list of matching posts with the sorted order
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Post> readAll(String keyword, Map<String, String> sortParams);
 
   /**
    * Update the title of a Posts provided its id.
