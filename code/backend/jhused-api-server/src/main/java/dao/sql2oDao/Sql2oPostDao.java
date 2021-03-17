@@ -175,9 +175,10 @@ public class Sql2oPostDao implements PostDao {
       String sql = "SELECT * FROM post";
       // Handle category query parameter
       // Adapted from searchCategory
+      Category category = null;
       if (specified != null) {
-        // TODO: need to convert specified category  to ENUM
-        sql = sql + "WHERE " +
+        category = Category.valueOf(specified.toUpperCase()); // convert to enum
+        sql = sql + " WHERE " +
                 "post.category = CAST(:specifiedCategory AS Category)";
       }
       // Handle keyword search
@@ -208,7 +209,7 @@ public class Sql2oPostDao implements PostDao {
       // Build query
       Query query = conn.createQuery(sql);
       if (specified != null) {
-        query.addParameter("specifiedCategory", specified);
+        query.addParameter("specifiedCategory", category);
       }
       if (searchQuery != null) {
         query.addParameter("partialTitle", "%" + searchQuery + "%")
@@ -422,7 +423,6 @@ public class Sql2oPostDao implements PostDao {
               searchQuery, ex);
     }
   }
-
 
   @Override
   public List<Post> getCategory(Category specified) {
