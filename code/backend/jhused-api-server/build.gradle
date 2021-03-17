@@ -25,6 +25,7 @@ dependencies {
     implementation 'org.jdbi:jdbi3-bom:3.16.0'
     implementation 'org.jdbi:jdbi3-core:3.16.0'
     implementation 'org.jdbi:jdbi3-postgres:3.16.0'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
 }
 
 test {

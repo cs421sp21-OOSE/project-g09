@@ -256,16 +256,57 @@ public class Sql2oPostDao implements PostDao {
 
   }
 
-  public List<Post> searchAll(String query) {
+  @Override
+  public List<Post> searchAll(String searchQuery) {
+    String sql = "SELECT * FROM post WHERE " +
+            "post.title ILIKE :partialTitle OR " +
+            "post.description ILIKE :partialDescription OR " +
+            "post.location ILIKE :partialLocation;";
+
+    try (Connection conn = sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query
+              .addParameter("partialTitle", "%" + searchQuery + "%")
+              .addParameter("partialDescription", "%" + searchQuery + "%")
+              .addParameter("partialLocation", "%" + searchQuery + "%")
+              .executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with matching items: " +
+              searchQuery, ex);
+    }
+  }
+
+  @Override
+  public List<Post> searchCategory(String searchQuery, Category specified) {
     return null; //stub
   }
 
-  public List<Post> searchCategory(String query, Category specified) {
-    return null; //stub
-  }
-
+  //TODO get this working.
+  @Override
   public List<Post> getCategory(Category specified) {
-    return null; //stub
+    String sql = "SELECT * FROM post WHERE post.category IS :partial;";
+
+    try (Connection conn = sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query.addParameter("partial", specified).executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with Category " + specified, ex);
+    }
+
   }
 
   /**

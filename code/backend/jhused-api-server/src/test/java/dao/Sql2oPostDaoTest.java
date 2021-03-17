@@ -5,8 +5,11 @@ import exceptions.DaoException;
 import model.Category;
 import model.Post;
 import org.junit.jupiter.api.*;
+import spark.utils.Assert;
 import util.database.DataStore;
 import util.database.Database;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.containsString;
 
 import java.net.URISyntaxException;
 import java.util.List;
@@ -205,5 +208,48 @@ class Sql2oPostDaoTest {
   void deleteThrowsExceptionIncompleteData() {
     assertNull(postDao.delete(null));
   }
+
+  @Test
+  @DisplayName("Get posts with somewhat matching titles, descriptions and " +
+          "locations")
+  void searchAllPosts() { //string below can be changed to anything.
+    String searchQuery = "ca";
+    List<Post> searched = postDao.searchAll(searchQuery);
+
+    for (Post thisPost: searched) {
+      if(!(thisPost.getTitle().contains(searchQuery) ||
+              thisPost.getDescription().contains(searchQuery) ||
+              thisPost.getLocation().contains(searchQuery))) {
+        fail();
+      }
+    }
+
+  }
+
+  @Test
+  @DisplayName("Search null returns no posts.")
+  void searchAllPostsNull() { //string below can be changed to anything.
+    assertTrue(postDao.searchAll(null).isEmpty());
+  }
+
+  @Test
+  @DisplayName("Search empty string returns all posts")
+  void searchAllPostsEmptyString() { //string below can be changed to anything.
+    assertFalse(postDao.searchAll("").isEmpty());
+  }
+
+
+  //TODO Get the tested function working.
+  @Test
+  @DisplayName("returns posts with specified category")
+  void getPostsFromCategory() {
+    List<Post> posts = postDao.getCategory(Category.DESK);
+
+    for(Post thisPost: posts) {
+      assertEquals(thisPost.getCategory(), Category.DESK);
+    }
+
+  }
+
 
 }
