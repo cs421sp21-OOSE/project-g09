@@ -285,7 +285,31 @@ public class Sql2oPostDao implements PostDao {
 
   @Override
   public List<Post> searchCategory(String searchQuery, Category specified) {
-    return null; //stub
+    String sql = "SELECT * FROM post WHERE " +
+            "post.category = CAST(:specifiedCategory AS Category) AND " +
+            "(post.title ILIKE :partialTitle OR " +
+            "post.description ILIKE :partialDescription OR " +
+            "post.location ILIKE :partialLocation);";
+
+    try (Connection conn = sql2o.open()) {
+      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
+      List<Post> posts = query
+              .addParameter("specifiedCategory", specified)
+              .addParameter("partialTitle", "%" + searchQuery + "%")
+              .addParameter("partialDescription", "%" + searchQuery + "%")
+              .addParameter("partialLocation", "%" + searchQuery + "%")
+              .executeAndFetch(Post.class);
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read a post with matching items: " +
+              searchQuery, ex);
+    }
   }
 
 

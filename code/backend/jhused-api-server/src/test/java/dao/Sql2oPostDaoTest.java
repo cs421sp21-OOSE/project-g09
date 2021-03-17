@@ -239,6 +239,39 @@ class Sql2oPostDaoTest {
   }
 
   @Test
+  @DisplayName("Get posts with somewhat matching titles, descriptions and " +
+          "locations from the specified category")
+  void searchCategory() { //string and category below can be changed to anything.
+    String searchQuery = "bed";
+    Category specifiedCategory = Category.CAR;
+    List<Post> searched = postDao.searchCategory(searchQuery, specifiedCategory);
+
+    for (Post thisPost: searched) {
+
+      assertSame(thisPost.getCategory(), specifiedCategory);
+
+      if(!(thisPost.getTitle().contains(searchQuery) ||
+              thisPost.getDescription().contains(searchQuery) ||
+              thisPost.getLocation().contains(searchQuery))) {
+        fail();
+      }
+
+    }
+
+  }
+
+  @Test
+  @DisplayName("Get posts with somewhat matching titles, descriptions and " +
+          "locations from the specified category")
+  void searchCategoryNull() { //string below can be changed to anything.
+    String searchQuery = "bed";
+    assertTrue(postDao.searchCategory(searchQuery, null).isEmpty());
+
+  }
+
+
+
+  @Test
   @DisplayName("returns posts with specified category")
   void getPostsFromCategory() {
     List<Post> posts = postDao.getCategory(Category.DESK);
