@@ -115,9 +115,7 @@ public class ApiServer {
           }
         }
 
-//        List<Post> posts = postDao.readAllAdvanced(null, keyword, sortParams);
-        List<Post> posts = postDao.readAll(keyword, sortParams);
-
+        List<Post> posts = postDao.readAllAdvanced(null, keyword, sortParams);
 
         return gson.toJson(posts);
       } catch (DaoException ex) {

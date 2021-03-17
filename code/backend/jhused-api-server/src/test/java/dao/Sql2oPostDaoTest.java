@@ -161,7 +161,7 @@ class Sql2oPostDaoTest {
 
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "desc");
-    List<Post> posts = postDao.readAll(null, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null,null, sortParams);
     assertNotEquals(0, posts.size());
     assertEquals(true, Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
   }
@@ -171,7 +171,7 @@ class Sql2oPostDaoTest {
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
     sortParams.put("update_time", "desc");
-    List<Post> posts = postDao.readAll(null, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null,null, sortParams);
 
     assertEquals("Coffee cup", posts.get(0).getTitle());
   }
@@ -180,7 +180,7 @@ class Sql2oPostDaoTest {
   void readAllSearch() {
     String query = "minimalist";
     Map<String, String> sortParams = new LinkedHashMap<>();
-    List<Post> posts = postDao.readAll(query, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, query, sortParams);
     assertEquals(1, posts.size());
   }
 
@@ -188,7 +188,7 @@ class Sql2oPostDaoTest {
   void readAllSearchNoMatch() {
     String query = "milan";
     Map<String, String> sortParams = new LinkedHashMap<>();
-    List<Post> posts = postDao.readAll(query, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, query, sortParams);
     assertEquals(0, posts.size());
   }
 
@@ -200,7 +200,7 @@ class Sql2oPostDaoTest {
     String query = "car";
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
-    List<Post> posts = postDao.readAll(query, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, query, sortParams);
     assertEquals("1998 Toyota car", posts.get(0).getTitle());
   }
 

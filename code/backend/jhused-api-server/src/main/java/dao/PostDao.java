@@ -46,6 +46,7 @@ public interface PostDao {
    */
   List<Post> readAll(String titleQuery) throws DaoException;
 
+
   /**
    * Get all matching posts and sort them
    * Find post whose data match the keyword; sort the order by sort parameters
@@ -55,17 +56,18 @@ public interface PostDao {
    * @return list of matching posts with the sorted order
    * @throws DaoException A generic exception for CRUD operations.
    */
+  @Deprecated
   List<Post> readAll(String keyword, Map<String, String> sortParams) throws DaoException;
 
   /**
    * Get all method which can handle all query parameters
-   * @param specified ategory to be searched in
+   * @param specified category to be searched in
    * @param searchQuery A search term.
    * @param sortParams map of sort keys and sort orders
    * @throws DaoException A generic exception for CRUD operations.
    * @return list of matching posts with the sorted order
    */
-  List<Post> readAllAdvanced(Category specified, String searchQuery, Map<String, String> sortParams)
+  List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams)
           throws DaoException;
 
   /**

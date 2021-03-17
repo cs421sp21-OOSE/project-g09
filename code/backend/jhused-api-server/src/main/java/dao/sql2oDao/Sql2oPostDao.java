@@ -170,12 +170,13 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
-  public List<Post> readAllAdvanced(Category specified, String searchQuery, Map<String, String> sortParams) {
+  public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
     try (Connection conn = sql2o.open()) {
       String sql = "SELECT * FROM post";
       // Handle category query parameter
       // Adapted from searchCategory
       if (specified != null) {
+        // TODO: need to convert specified category  to ENUM
         sql = sql + "WHERE " +
                 "post.category = CAST(:specifiedCategory AS Category)";
       }
@@ -365,6 +366,7 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  @Deprecated
   public List<Post> searchAll(String searchQuery) {
     String sql = "SELECT * FROM post WHERE " +
             "post.title ILIKE :partialTitle OR " +
@@ -392,6 +394,7 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  @Deprecated
   public List<Post> searchCategory(String searchQuery, Category specified) {
     String sql = "SELECT * FROM post WHERE " +
             "post.category = CAST(:specifiedCategory AS Category) AND " +
