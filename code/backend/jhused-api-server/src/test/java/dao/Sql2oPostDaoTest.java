@@ -275,7 +275,6 @@ class Sql2oPostDaoTest {
         fail();
       }
     }
-
   }
 
   @Test

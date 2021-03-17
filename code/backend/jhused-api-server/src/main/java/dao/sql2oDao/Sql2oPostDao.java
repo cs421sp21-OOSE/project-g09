@@ -150,6 +150,7 @@ public class Sql2oPostDao implements PostDao {
     }
   }
 
+  @Deprecated
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
     try (Connection conn = sql2o.open()) {
@@ -169,18 +170,80 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  public List<Post> readAllAdvanced(Category specified, String searchQuery, Map<String, String> sortParams) {
+    try (Connection conn = sql2o.open()) {
+      String sql = "SELECT * FROM post";
+      // Handle category query parameter
+      // Adapted from searchCategory
+      if (specified != null) {
+        sql = sql + "WHERE " +
+                "post.category = CAST(:specifiedCategory AS Category)";
+      }
+      // Handle keyword search
+      // Adapted from searchCategory
+      if (searchQuery != null) {
+        if (specified == null) {
+          sql = sql + " WHERE ";
+        }
+        else {
+          sql = sql + " AND ";
+        }
+        sql = sql + "(post.title ILIKE :partialTitle OR " +
+                    "post.description ILIKE :partialDescription OR " +
+                    "post.location ILIKE :partialLocation)";
+      }
+      // Handle sort
+      // Adapted from readAll
+      if (!sortParams.isEmpty()) {
+        StringBuilder sb = new StringBuilder(sql + " ORDER BY ");
+        for (String key : sortParams.keySet()) {
+          sb.append(key + " " + sortParams.get(key).toUpperCase() + ", ");
+        }
+        sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
+        sb.append(";");
+        sql = sb.toString();
+      }
+
+      // Build query
+      Query query = conn.createQuery(sql);
+      if (specified != null) {
+        query.addParameter("specifiedCategory", specified);
+      }
+      if (searchQuery != null) {
+        query.addParameter("partialTitle", "%" + searchQuery + "%")
+                .addParameter("partialDescription", "%" + searchQuery + "%")
+                .addParameter("partialLocation", "%" + searchQuery + "%");
+      }
+
+      // Submit query to db and fetch posts
+      List<Post> posts = query.setAutoDeriveColumnNames(true)
+              .executeAndFetch(Post.class);
+
+      if (!posts.isEmpty()) {
+        for (Post post : posts) {
+          post.setImages(imageDao.getImagesOfPost(post.getId()));
+          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+        }
+      }
+      return posts;
+
+    } catch (Sql2oException | NullPointerException ex) {
+      throw new DaoException("Unable to read post with the query parameters", ex);
+    }
+
+  }
+
+  @Override
   public List<Post> readAll(String keyword, Map<String, String> sortParams) throws DaoException {
     try (Connection conn = sql2o.open()) {
-
-      // Add search keyword if needed
       String sql;
       if (keyword == null) {
         sql = "SELECT * FROM post";
       }
       else {
-        sql = "SELECT * FROM post WHERE title ILIKE :keyword " +
-                "OR description ILIKE :keyword " +
-                "OR location ILIKE :keyword";
+        sql = "SELECT * FROM post WHERE post.title ILIKE :keyword " +
+                "OR post.description ILIKE :keyword " +
+                "OR post.location ILIKE :keyword";
       }
 
       // Add sort query if needed

@@ -90,9 +90,11 @@ public class ApiServer {
       return gson.toJson(message);
     });
 
-    // return all posts
+    // Read all posts matching the query parameters if they exist
+    // Handle category match, keyword search, and sort
     get("/api/posts", (req, res) -> {
       try {
+        String categoryString = req.queryParams("category");
         String keyword = req.queryParams("keyword"); // use keyword for search
         String sort = req.queryParams("sort");
 
@@ -113,7 +115,9 @@ public class ApiServer {
           }
         }
 
+//        List<Post> posts = postDao.readAllAdvanced(null, keyword, sortParams);
         List<Post> posts = postDao.readAll(keyword, sortParams);
+
 
         return gson.toJson(posts);
       } catch (DaoException ex) {

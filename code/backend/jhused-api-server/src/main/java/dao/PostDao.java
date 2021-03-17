@@ -55,7 +55,18 @@ public interface PostDao {
    * @return list of matching posts with the sorted order
    * @throws DaoException A generic exception for CRUD operations.
    */
-  List<Post> readAll(String keyword, Map<String, String> sortParams);
+  List<Post> readAll(String keyword, Map<String, String> sortParams) throws DaoException;
+
+  /**
+   * Get all method which can handle all query parameters
+   * @param specified ategory to be searched in
+   * @param searchQuery A search term.
+   * @param sortParams map of sort keys and sort orders
+   * @throws DaoException A generic exception for CRUD operations.
+   * @return list of matching posts with the sorted order
+   */
+  List<Post> readAllAdvanced(Category specified, String searchQuery, Map<String, String> sortParams)
+          throws DaoException;
 
   /**
    * Update the title of a Posts provided its id.
