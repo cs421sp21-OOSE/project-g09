@@ -12,7 +12,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
 
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -135,8 +137,9 @@ class Sql2oPostDaoTest {
 
   @Test
   @DisplayName("read all the posts that contain a query string in their title")
+  // Change query "dummy" to "Table" because sample data are updated
   void readAllGivenTitle() {
-    String query = "Dummy";
+    String query = "Table";
     List<Post> posts = postDao.readAll(query);
     assertNotEquals(0, posts.size());
     for (Post post : posts) {
@@ -153,6 +156,55 @@ class Sql2oPostDaoTest {
   }
 
   @Test
+  void readAllSorted() {
+    double THRESHOLD = 0.0001;
+
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "desc");
+    List<Post> posts = postDao.readAll(null, sortParams);
+    assertNotEquals(0, posts.size());
+    assertEquals(true, Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
+  }
+
+  @Test
+  void readAllSortedMultiple() {
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "asc");
+    sortParams.put("update_time", "desc");
+    List<Post> posts = postDao.readAll(null, sortParams);
+
+    assertEquals("Coffee cup", posts.get(0).getTitle());
+  }
+
+  @Test
+  void readAllSearch() {
+    String query = "minimalist";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    List<Post> posts = postDao.readAll(query, sortParams);
+    assertEquals(1, posts.size());
+  }
+
+  @Test
+  void readAllSearchNoMatch() {
+    String query = "milan";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    List<Post> posts = postDao.readAll(query, sortParams);
+    assertEquals(0, posts.size());
+  }
+
+  @Test
+  // This test will break because this search cannot handle whole word search
+  // The search will return a post with location Carlyle which has car keyword
+  // Need to discuss if we need to do whole word search or get more order
+  void readAllSearchAndSort() {
+    String query = "car";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "asc");
+    List<Post> posts = postDao.readAll(query, sortParams);
+    assertEquals("1998 Toyota car", posts.get(0).getTitle());
+  }
+
+  @Test
   @DisplayName("updating a post works")
   void updateWorks() {
     //create a post to send to the update method.
@@ -162,7 +214,7 @@ class Sql2oPostDaoTest {
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dumm*y furniture"
+        "Location of dummy furniture"
     );
 
     //get the post back, give the first item in samples uuid.
