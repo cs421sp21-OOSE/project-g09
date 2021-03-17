@@ -18,7 +18,7 @@ const PostPreview = (props) => {
           <img
             className="post-card-img"
             src={props.post.imageUrls[0]}
-            alt="item preview image"
+            alt="item preview"
           />
         </div>
         <div className="post-card-body">

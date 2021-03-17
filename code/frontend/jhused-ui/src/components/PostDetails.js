@@ -39,7 +39,7 @@ const PostDetails = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, [params]);
 
   return (
     <div className="post-container">
