@@ -265,13 +265,13 @@ class Sql2oPostDaoTest {
   @DisplayName("Get posts with somewhat matching titles, descriptions and " +
           "locations")
   void searchAllPosts() { //string below can be changed to anything.
-    String searchQuery = "ca";
+    String searchQuery = "ca".toLowerCase();
     List<Post> searched = postDao.searchAll(searchQuery);
 
-    for (Post thisPost: searched) {
-      if(!(thisPost.getTitle().contains(searchQuery) ||
-              thisPost.getDescription().contains(searchQuery) ||
-              thisPost.getLocation().contains(searchQuery))) {
+    for (Post thisPost: searched) { // search is case insensitive so need lowercase to match that
+      if(!(thisPost.getTitle().toLowerCase().contains(searchQuery) ||
+              thisPost.getDescription().toLowerCase().contains(searchQuery) ||
+              thisPost.getLocation().toLowerCase().contains(searchQuery))) {
         fail();
       }
     }
