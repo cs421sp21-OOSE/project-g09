@@ -9,7 +9,9 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -147,6 +149,53 @@ class Sql2oPostDaoTest {
     String query = "game";
     List<Post> posts = postDao.readAll(query);
     assertEquals(0, posts.size());
+  }
+
+  @Test
+  void readAllSorted() {
+    double THRESHOLD = 0.0001;
+
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "desc");
+    List<Post> posts = postDao.readAll(null, sortParams);
+    assertNotEquals(0, posts.size());
+    assertEquals(true, Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
+  }
+
+  @Test
+  void readAllSortedMultiple() {
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "asc");
+    sortParams.put("update_time", "desc");
+    List<Post> posts = postDao.readAll(null, sortParams);
+
+    assertEquals("Coffee cup", posts.get(0).getTitle());
+  }
+
+  @Test
+  void readAllSearch() {
+    String query = "minimalist";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    List<Post> posts = postDao.readAll(query, sortParams);
+    assertEquals(1, posts.size());
+  }
+
+  @Test
+  void readAllSearchNoMatch() {
+    String query = "milan";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    List<Post> posts = postDao.readAll(query, sortParams);
+    assertEquals(0, posts.size());
+  }
+
+  @Test
+  void readAllSearchAndSort() {
+    String query = "car";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "asc");
+    List<Post> posts = postDao.readAll(query, sortParams);
+    assertEquals(2, posts.size());
+    assertEquals("1998 Toyota car", posts.get(0).getTitle());
   }
 
   @Test
