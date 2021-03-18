@@ -17,7 +17,7 @@ const PostPreview = (props) => {
         <div className="img-wrap">
           <img
             className="post-card-img"
-            src={props.post.imageUrls[0]}
+            src={props.post.images[0].url}
             alt="item preview"
           />
         </div>
