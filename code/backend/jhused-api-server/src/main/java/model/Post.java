@@ -20,6 +20,7 @@ public class Post {
   private String userId;  // don't need to have
   private String title;   //must have
   private Double price;   //must have
+  private SaleState saleState;  // must have, default SALE
   private String description;   // don't need to have
   private List<Image> images;   // don't need to have
   private List<Hashtag> hashtags;    // don't need to have
@@ -55,6 +56,7 @@ public class Post {
     this.price = price;
     this.category = category;
     this.location = location;
+    this.saleState = SaleState.SALE;
   }
 
   /**
@@ -62,17 +64,19 @@ public class Post {
    * This one has parameter for all fields
    *
    * @param id          UUID should be generated, it should always be in length 36. It is the primary key for Post.
+   * @param userId      The user's id
    * @param title       title of the post.
    * @param price       price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
    *                    Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
+   * @param saleState   Indicate whether the post is in the state of sale or has been sold, or is dealing.
    * @param description description may not exceeds 1000 characters.
    * @param images      a list of image urls.
    * @param hashtags    a list of hashtags.
    * @param category    enum, represents category.
    * @param location    location of the post.
    */
-  public Post(String id, String userId, String title, Double price, String description, List<Image> images,
-              List<Hashtag> hashtags, Category category, String location) {
+  public Post(String id, String userId, String title, Double price, SaleState saleState, String description
+          , List<Image> images, List<Hashtag> hashtags, Category category, String location) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -82,6 +86,7 @@ public class Post {
     this.hashtags = hashtags;
     this.category = category;
     this.location = location;
+    this.saleState = saleState;
   }
 
   /**
@@ -89,9 +94,11 @@ public class Post {
    * This one has parameter for all fields
    *
    * @param id          UUID should be generated, it should always be in length 36. It is the primary key for Post.
+   * @param userId      The user's id
    * @param title       title of the post.
    * @param price       price of the post, it is stored as Numeric(12, 2) in PostgreSQL.
    *                    Meaning, it should have 12 valid digits and 2 digit precision after decimal point.
+   * @param saleState   Indicate whether the post is in the state of sale or has been sold, or is dealing.
    * @param description description may not exceeds 1000 characters.
    * @param images      a list of image urls.
    * @param hashtags    a list of hashtags.
@@ -100,8 +107,9 @@ public class Post {
    * @param createTime  created time should be set by database
    * @param updateTime  updated time should be set by database
    */
-  public Post(String id, String userId, String title, Double price, String description, List<Image> images,
-              List<Hashtag> hashtags, Category category, String location, Instant createTime, Instant updateTime) {
+  public Post(String id, String userId, String title, Double price, SaleState saleState, String description,
+              List<Image> images, List<Hashtag> hashtags, Category category, String location, Instant createTime,
+              Instant updateTime) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -113,6 +121,7 @@ public class Post {
     this.location = location;
     this.createTime = createTime;
     this.updateTime = updateTime;
+    this.saleState = saleState;
   }
 //  No need to add getter and setter function as lombok automated these
 

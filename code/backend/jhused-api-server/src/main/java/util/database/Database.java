@@ -1,8 +1,6 @@
 package util.database;
 
-import model.Hashtag;
-import model.Image;
-import model.Post;
+import model.*;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
@@ -86,7 +84,13 @@ public final class Database {
       conn.createQuery("DROP TABLE IF EXISTS hashtag;").executeUpdate();
       conn.createQuery("DROP TABLE IF EXISTS post;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
-      conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
+      conn.createQuery("DROP TYPE IF EXISTS SaleState;").executeUpdate();
+      conn.createQuery("CREATE TYPE Category as enum (" +
+              getAllNamesGivenValues(Category.values())+
+              ");").executeUpdate();
+      conn.createQuery("CREATE TYPE SaleState as enum (" +
+              getAllNamesGivenValues(SaleState.values()) +
+              ");").executeUpdate();
 
 
       // change naming rule to use underscores, as column names are case insensitive
@@ -97,6 +101,7 @@ public final class Database {
           + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
           // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
           // is 4, because it has 4 digits after decimal point.
+          + "sale_state SaleState NOT NULL DEFAULT 'SALE',"
           + "description VARCHAR(5000),"
           + "category Category NOT NULL,"
           + "location VARCHAR(100) NOT NULL,"
@@ -239,8 +244,9 @@ public final class Database {
    */
   private static void addPostsWithInnerObjects(Sql2o sql2o, Post post) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
-      String sql = "INSERT INTO post(id, user_id, title, price, description, category, location) "
-          + "VALUES(:id, :userId, :title, :price, :description, CAST(:category AS Category), :location);";
+      String sql = "INSERT INTO post(id, user_id, title, price, sale_state, description, category, location) "
+          + "VALUES(:id, :userId, :title, :price, CAST(:saleState AS SaleState), " +
+              ":description, CAST(:category AS Category), :location);";
       conn.createQuery(sql).bind(post).executeUpdate();
       for (Image image : post.getImages()) {
         addImage(sql2o, image);
@@ -337,5 +343,22 @@ public final class Database {
       conn.createQuery("CREATE TRIGGER " + TRIG_NAME + " BEFORE UPDATE ON " + TABLE_NAME + " FOR EACH ROW EXECUTE " +
           "PROCEDURE " + AUTO_UPDATE_TIMESTAMP_FUNC_NAME + "();").executeUpdate();
     }
+  }
+
+  /**
+   * return all names of a enum for creating enum type in database
+   * @param values all the values of a enum, pass Enum.values() to this arg
+   * @param <T> The Enum type
+   * @return a string of enum names. For example: "'SALE', 'SOLD', 'DEALING'".
+   */
+  private static <T extends Enum<T>> String getAllNamesGivenValues (T[] values)
+  {
+    String allNames = "";
+    for (T s: values)
+    {
+      allNames = allNames+"'"+s.name()+"', ";
+    }
+    allNames = allNames.substring(0,allNames.lastIndexOf(", "));
+    return allNames;
   }
 }

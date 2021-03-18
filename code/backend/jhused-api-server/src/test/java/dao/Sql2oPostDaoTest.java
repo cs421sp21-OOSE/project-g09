@@ -4,6 +4,7 @@ import dao.sql2oDao.Sql2oPostDao;
 import exceptions.DaoException;
 import model.Category;
 import model.Post;
+import model.SaleState;
 import org.junit.jupiter.api.*;
 import spark.utils.Assert;
 import util.database.DataStore;
@@ -49,7 +50,7 @@ class Sql2oPostDaoTest {
   @DisplayName("create works for valid input")
   void createNewPost() throws DaoException {
     Post c1 = new Post(UUID.randomUUID().toString(), "001"+"1".repeat(33),
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -66,7 +67,7 @@ class Sql2oPostDaoTest {
   @DisplayName("create throws exception for duplicate post")
   void createThrowsExceptionDuplicateData() {
     Post c1 = new Post("0".repeat(36), "001"+"1".repeat(33),
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -82,7 +83,7 @@ class Sql2oPostDaoTest {
   @DisplayName("create throws exception for invalid input")
   void createThrowsExceptionIncompleteData() {
     Post c1 = new Post(null, "001"+"1".repeat(33),
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -246,7 +247,7 @@ class Sql2oPostDaoTest {
   void updateWorks() {
     //create a post to send to the update method.
     Post ogPost = new Post(samples.get(0).getId(), "191"+"1".repeat(33),
-        "Dummy furnitulre", 31.3,
+        "Dummy furnitulre", 31.3, SaleState.SALE,
         "Description ofa dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),

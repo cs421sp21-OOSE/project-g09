@@ -5,10 +5,7 @@ import dao.ImageDao;
 import dao.PostDao;
 import dao.PostHashtagDao;
 import exceptions.DaoException;
-import model.Category;
-import model.Hashtag;
-import model.Image;
-import model.Post;
+import model.*;
 import org.postgresql.jdbc.PgArray;
 import org.sql2o.Connection;
 import org.sql2o.Query;
@@ -59,8 +56,9 @@ public class Sql2oPostDao implements PostDao {
   @Override
   public Post create(Post post) throws DaoException {
     String insertPostSql = "WITH posts AS (INSERT INTO post(" +
-        "id, user_id, title, price, description, category, location) " +
-        "VALUES(:id, :userId, :title, :price, :description, CAST(:category AS Category), :location)" +
+        "id, user_id, title, price, sale_state, description, category, location) " +
+        "VALUES(:id, :userId, :title, :price, CAST(:saleState AS SaleState), " +
+        ":description, CAST(:category AS Category), :location)" +
         "RETURNING *) SELECT * FROM posts;";
 
     try (Connection conn = this.sql2o.open()) {
@@ -254,6 +252,7 @@ public class Sql2oPostDao implements PostDao {
         "user_id = :userId, " +
         "title = :title, " +
         "price = :price, " +
+        "sale_state = CAST(:saleState AS SaleState)," +
         "description = :description, " +
         "category = CAST(:category AS Category), " +
         "location = :location " +
@@ -451,6 +450,7 @@ public class Sql2oPostDao implements PostDao {
         (String) post.get("userid"),
         (String) post.get("title"),
         ((BigDecimal) post.get("price")).doubleValue(),
+        SaleState.valueOf((String) post.get("sale_sate")),
         (String) post.get("description"),
         new ArrayList<Image>(Arrays.asList((Image[]) (((PgArray) post.get("imageurls")).getArray()))),
         new ArrayList<Hashtag>(Arrays.asList((Hashtag[]) (((PgArray) post.get("hashtags")).getArray()))),

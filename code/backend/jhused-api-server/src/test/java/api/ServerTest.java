@@ -7,6 +7,7 @@ import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import model.Category;
 import model.Post;
+import model.SaleState;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -133,7 +134,7 @@ class ServerTest {
   public void postPostWorks() throws UnirestException {
     // This test will break if this post is already in database
     Post post = new Post(UUID.randomUUID().toString(), "001",
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -160,7 +161,7 @@ class ServerTest {
   public void postPostThatAlreadyExist() throws UnirestException {
     // This test will break if "0    " is not in the database
     Post post = new Post("0".repeat(36), "001",
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -177,7 +178,7 @@ class ServerTest {
   public void putPostWorks() throws UnirestException {
     // This test will break if "0 " is not in the database
     Post post = new Post("0".repeat(36), "001",
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -196,7 +197,7 @@ class ServerTest {
   public void putPostNotInDataset() throws UnirestException {
     // This test will break if "0374  " is in the database
     Post post = new Post("0374".repeat(9), "001",
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -212,7 +213,7 @@ class ServerTest {
   @Test
   public void putPostWithIncorrectUuid() throws UnirestException {
     Post post = new Post("7562".repeat(9), "001",
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
@@ -237,7 +238,7 @@ class ServerTest {
   @Test
   public void putPostAsArray() throws UnirestException {
     Post post = new Post("8572".repeat(9), "001",
-        "Dummy furniture", 30D,
+        "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
