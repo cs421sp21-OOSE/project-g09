@@ -14,6 +14,7 @@ import PrevButton from "../images/carousel-button-prev.png";
 import NextButton from "../images/carousel-button-next.png";
 
 const Carousel = (props) => {
+  console.log(props.images);
   return (
     <div className="carousel-container">
       <CarouselProvider
