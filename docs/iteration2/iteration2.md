@@ -46,7 +46,7 @@ Filter by Category
 - [ ] Button for category filtering (Junjie)
 
 Sorting
-- [ ] One route method w/ query params (Chu)
+- [x] One route method w/ query params (Chu)
 - [ ] Frontend choose sort type (Bohua)
 
 Search
