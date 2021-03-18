@@ -39,7 +39,7 @@ Post Editing
 
 Mark Item as Sold
 - [ ] Modify Database design (Qiao)
-- [x] UI button for updating status - in post editor (Chu)
+- [ ] UI button for updating status - in post editor (Chu)
 - [ ] Homepage should only render unsold items - frontend job (Bohua)
 
 Filter by Category
