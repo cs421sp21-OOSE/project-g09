@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import Icon from "../images/icon.png";
 import Location from "./Location";
 import axios from "../util/axios";
+import "./UserProfile.css";
 
 // notes - add edit button as children of the post card
 // - rewrite image grid to extract state info from it into home page, so
@@ -13,15 +14,27 @@ import axios from "../util/axios";
 
 const UserProfile = (props) => {
   const params = useParams();
-  const [editorLive, setEditorLive] = useState(false);
+  const [createEditorLive, setCreateEditorLive] = useState(false);
+  const [updateEditorLive, setUpdateEditorLive] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [selectedPost, setSelectedPost] = useState({});
 
   const handlePostBtnChange = () => {
-    setEditorLive(!editorLive);
+    setCreateEditorLive(!createEditorLive);
   };
 
-  const [posts, setPosts] = useState([]);
+  const handleEditBtnChange = (post) => {
+    if (updateEditorLive) {
+      setSelectedPost({});
+    } else {
+      setSelectedPost(post);
+    }
+
+    setUpdateEditorLive(!updateEditorLive);
+  };
 
   useEffect(() => {
+    // TO DO: THIS NEEDS TO BE FILTERED BY USER ID
     axios.get("/api/posts").then((response) => {
       setPosts(response.data);
     });
@@ -34,22 +47,37 @@ const UserProfile = (props) => {
           className="create-button"
           // onClick={(event) => (window.location.href = "/editor")}
           onClick={handlePostBtnChange}
-        ></button>
-        User
+        >
+          Post
+        </button>
       </div>
 
-      {editorLive ? <EditorPopUp toggle={handlePostBtnChange} /> : null}
+      {createEditorLive ? (
+        <EditorPopUp toggle={handlePostBtnChange} mode={"create"} post={null} />
+      ) : null}
+      {updateEditorLive ? (
+        <EditorPopUp
+          toggle={handleEditBtnChange}
+          mode={"update"}
+          post={selectedPost}
+        />
+      ) : null}
       <div className="user-profile-body">
         <div className="user-info">
-          <img src={Icon} alt="icon" />
-          <h1> Username </h1>
-          <Location location="telephone building" size="l"/>
+          <img className="user-icon" src={Icon} alt="icon" />
+          <div className="user-info-text">
+            <h1 className="username-text"> Username </h1>
+            <Location location="telephone building" size="l" />
+          </div>
         </div>
-        <h1> My Posts </h1>
+        <h1 className="post-header"> My Posts </h1>
         <div className="user-posts">
-          <ImageGrid posts={posts} displayEdit={true} onEdit={handlePostBtnChange}/>
+          <ImageGrid
+            posts={posts}
+            displayEdit={true}
+            onEdit={handleEditBtnChange}
+          />
         </div>
-        User
       </div>
     </div>
   );

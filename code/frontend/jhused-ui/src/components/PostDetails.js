@@ -6,14 +6,6 @@ import axios from "../util/axios";
 import "./PostDetails.css";
 import { useParams, useHistory } from "react-router-dom";
 
-const testPost = {
-  title: "",
-  location: "",
-  price: "",
-  description: "",
-  imageUrls: [],
-};
-
 const PostDetails = (props) => {
   const params = useParams();
   console.log(params.postID);

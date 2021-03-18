@@ -7,6 +7,13 @@
     position: absolute;
     top: 5%;
     right: 5%; 
+
+    opacity: 0;
+    transition: opacity ease 1s;
+}
+
+.edit-button:hover {
+    cursor: pointer;
 }
 
 .img-wrap{
@@ -15,7 +22,8 @@
     padding: 50% 0;
     position: relative;
     opacity: 0.8;
-    border-radius: 30px;
+    
+
 }
 
 .post-card-img {
@@ -25,7 +33,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    border-radius: 30px;
+    
 }
 
 .post-card a {
@@ -61,3 +69,18 @@
 .post-card-title {
     margin: 0;
 }
+
+.user-profile .post-card:hover .edit-button {
+    opacity: 1;
+}
+
+.user-profile .img-wrap {
+    opacity: 1;
+    color: white;
+    transition: opacity ease 1s;
+}
+
+.user-profile .post-card:hover .img-wrap {
+    opacity: .5;
+}
+
