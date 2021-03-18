@@ -3,13 +3,13 @@ package dao.sql2oDao;
 import dao.HashtagDao;
 import exceptions.DaoException;
 import model.Hashtag;
-import model.Image;
 import org.sql2o.Connection;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Sql2oHashtagDao implements HashtagDao {
   private final Sql2o sql2o;
@@ -26,6 +26,9 @@ public class Sql2oHashtagDao implements HashtagDao {
         + ") SELECT * FROM inserted;";
 
     try (Connection conn = this.sql2o.open()) {
+      if (hashtag != null && (hashtag.getId() == null || hashtag.getId() == "" || hashtag.getId().length() != 36)) {
+        hashtag.setId(UUID.randomUUID().toString());
+      }
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       return query.bind(hashtag).executeAndFetchFirst(Hashtag.class);
     } catch (Sql2oException | NullPointerException ex) {
@@ -66,7 +69,7 @@ public class Sql2oHashtagDao implements HashtagDao {
 
   @Override
   public List<Hashtag> readAll(String hashtagQuery) throws DaoException {
-    return readAllExactCaseInsensitive("%"+hashtagQuery+"%");
+    return readAllExactCaseInsensitive("%" + hashtagQuery + "%");
   }
 
   @Override
@@ -107,6 +110,9 @@ public class Sql2oHashtagDao implements HashtagDao {
         + ") SELECT * FROM inserted;";
 
     try (Connection conn = this.sql2o.open()) {
+      if (hashtag != null && (hashtag.getId() == null || hashtag.getId() == "" || hashtag.getId().length() != 36)) {
+        hashtag.setId(UUID.randomUUID().toString());
+      }
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       return query.bind(hashtag).executeAndFetchFirst(Hashtag.class);
     } catch (Sql2oException | NullPointerException ex) {
