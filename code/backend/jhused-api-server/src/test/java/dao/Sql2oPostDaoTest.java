@@ -161,7 +161,7 @@ class Sql2oPostDaoTest {
 
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "desc");
-    List<Post> posts = postDao.readAll(null, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null,null, sortParams);
     assertNotEquals(0, posts.size());
     assertEquals(true, Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
   }
@@ -171,7 +171,7 @@ class Sql2oPostDaoTest {
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
     sortParams.put("update_time", "desc");
-    List<Post> posts = postDao.readAll(null, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null,null, sortParams);
 
     assertEquals("Coffee cup", posts.get(0).getTitle());
   }
@@ -179,16 +179,14 @@ class Sql2oPostDaoTest {
   @Test
   void readAllSearch() {
     String query = "minimalist";
-    Map<String, String> sortParams = new LinkedHashMap<>();
-    List<Post> posts = postDao.readAll(query, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, query, null);
     assertEquals(1, posts.size());
   }
 
   @Test
   void readAllSearchNoMatch() {
     String query = "milan";
-    Map<String, String> sortParams = new LinkedHashMap<>();
-    List<Post> posts = postDao.readAll(query, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, query, null);
     assertEquals(0, posts.size());
   }
 
@@ -197,11 +195,50 @@ class Sql2oPostDaoTest {
   // The search will return a post with location Carlyle which has car keyword
   // Need to discuss if we need to do whole word search or get more order
   void readAllSearchAndSort() {
-    String query = "car";
+    String query = "coffee";
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
-    List<Post> posts = postDao.readAll(query, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, query, sortParams);
+    assertEquals("Coffee cup", posts.get(0).getTitle());
+  }
+
+  @Test
+  void readAllWithCategory() {
+    String category= "car";
+    List<Post> posts = postDao.readAllAdvanced(category, null, null);
+    assertNotEquals(0, posts.size());
+    assertEquals("Dream car to sell", posts.get(0).getTitle());
+  }
+
+  @Test
+  void readAllWithCategoryAndSort() {
+    String category= "car";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "asc");
+    List<Post> posts = postDao.readAllAdvanced(category, null, sortParams);
+    assertNotEquals(0, posts.size());
     assertEquals("1998 Toyota car", posts.get(0).getTitle());
+  }
+
+  @Test
+  void readAllWithCategoryAndKeyword() {
+    String category= "furniture";
+    String keyword = "lamp";
+    List<Post> posts = postDao.readAllAdvanced(category, keyword, null);
+    assertEquals(1, posts.size());
+    assertEquals("Minimalist lamp", posts.get(0).getTitle());
+  }
+
+  @Test
+  void readAllWithCategoryAndKeywordAndSort() {
+    String category= "furniture";
+    String keyword = "coffee";
+    Map<String, String> sortParams = new LinkedHashMap<>();
+    sortParams.put("price", "asc");
+    List<Post> posts = postDao.readAllAdvanced(category, keyword, sortParams);
+    assertEquals(2, posts.size());
+    assertEquals("Coffee cup", posts.get(0).getTitle());
+
   }
 
   @Test
@@ -275,7 +312,6 @@ class Sql2oPostDaoTest {
         fail();
       }
     }
-
   }
 
   @Test

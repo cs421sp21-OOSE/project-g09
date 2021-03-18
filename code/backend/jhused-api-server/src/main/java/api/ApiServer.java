@@ -23,6 +23,7 @@ public class ApiServer {
           "create_time", "update_time", "location");
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
+  private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
 
   private static int getHerokuAssignedPort() {
     // Heroku stores port number as an environment variable
@@ -90,9 +91,15 @@ public class ApiServer {
       return gson.toJson(message);
     });
 
-    // return all posts
+    // Read all posts matching the query parameters if they exist
+    // Handle category match, keyword search, and sort
     get("/api/posts", (req, res) -> {
       try {
+        String categoryString = req.queryParams("category");
+        if (categoryString != null && !CATEGORY_KEYS.contains(categoryString.toLowerCase())) {
+          throw new ApiError("Invalid category parameter", 400);
+        }
+
         String keyword = req.queryParams("keyword"); // use keyword for search
         String sort = req.queryParams("sort");
 
@@ -107,15 +114,15 @@ public class ApiServer {
             // HTTP request check: sort key must match sortable column names; order key must match available orders
             if (sortItem.length != 2 || !COLUMN_KEYS.contains(sortItem[0].toLowerCase()) ||
                     !ORDER_KEYS.contains(sortItem[1].toLowerCase())) {
-              throw new ApiError("Invalid sort parameter", 404);
+              throw new ApiError("Invalid sort parameter", 400);
             }
             sortParams.put(sortItem[0].toLowerCase(), sortItem[1].toUpperCase());
           }
         }
 
-        List<Post> posts = postDao.readAll(keyword, sortParams);
-
+        List<Post> posts = postDao.readAllAdvanced(categoryString, keyword, sortParams);
         return gson.toJson(posts);
+
       } catch (DaoException ex) {
         throw new ApiError(ex.getMessage(), 500);
       }

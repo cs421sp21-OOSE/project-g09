@@ -150,6 +150,7 @@ public class Sql2oPostDao implements PostDao {
     }
   }
 
+  @Deprecated
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
     try (Connection conn = sql2o.open()) {
@@ -169,22 +170,33 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
-  public List<Post> readAll(String keyword, Map<String, String> sortParams) throws DaoException {
+  public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
     try (Connection conn = sql2o.open()) {
-
-      // Add search keyword if needed
-      String sql;
-      if (keyword == null) {
-        sql = "SELECT * FROM post";
+      String sql = "SELECT * FROM post";
+      // Handle category query parameter
+      // Adapted from searchCategory
+      Category category = null;
+      if (specified != null) {
+        category = Category.valueOf(specified.toUpperCase()); // convert to enum
+        sql = sql + " WHERE " +
+                "post.category = CAST(:specifiedCategory AS Category)";
       }
-      else {
-        sql = "SELECT * FROM post WHERE title ILIKE :keyword " +
-                "OR description ILIKE :keyword " +
-                "OR location ILIKE :keyword";
+      // Handle keyword search
+      // Adapted from searchCategory
+      if (searchQuery != null) {
+        if (specified == null) {
+          sql = sql + " WHERE ";
+        }
+        else {
+          sql = sql + " AND ";
+        }
+        sql = sql + "(post.title ILIKE :partialTitle OR " +
+                    "post.description ILIKE :partialDescription OR " +
+                    "post.location ILIKE :partialLocation)";
       }
-
-      // Add sort query if needed
-      if (!sortParams.isEmpty()) {
+      // Handle sort
+      // Adapted from readAll
+      if (sortParams != null && !sortParams.isEmpty()) {
         StringBuilder sb = new StringBuilder(sql + " ORDER BY ");
         for (String key : sortParams.keySet()) {
           sb.append(key + " " + sortParams.get(key).toUpperCase() + ", ");
@@ -194,10 +206,18 @@ public class Sql2oPostDao implements PostDao {
         sql = sb.toString();
       }
 
+      // Build query
       Query query = conn.createQuery(sql);
-      if (keyword != null) {
-        query.addParameter("keyword", "%" + keyword + "%");
+      if (specified != null) {
+        query.addParameter("specifiedCategory", category);
       }
+      if (searchQuery != null) {
+        query.addParameter("partialTitle", "%" + searchQuery + "%")
+                .addParameter("partialDescription", "%" + searchQuery + "%")
+                .addParameter("partialLocation", "%" + searchQuery + "%");
+      }
+
+      // Submit query to db and fetch posts
       List<Post> posts = query.setAutoDeriveColumnNames(true)
               .executeAndFetch(Post.class);
 
@@ -208,9 +228,11 @@ public class Sql2oPostDao implements PostDao {
         }
       }
       return posts;
+
     } catch (Sql2oException | NullPointerException ex) {
-      throw new DaoException("Unable to read a post with partialTitle " + keyword, ex);
+      throw new DaoException("Unable to read post with the query parameters", ex);
     }
+
   }
 
   @Override
@@ -302,6 +324,7 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  @Deprecated
   public List<Post> searchAll(String searchQuery) {
     String sql = "SELECT * FROM post WHERE " +
             "post.title ILIKE :partialTitle OR " +
@@ -329,6 +352,7 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  @Deprecated
   public List<Post> searchCategory(String searchQuery, Category specified) {
     String sql = "SELECT * FROM post WHERE " +
             "post.category = CAST(:specifiedCategory AS Category) AND " +
@@ -356,7 +380,6 @@ public class Sql2oPostDao implements PostDao {
               searchQuery, ex);
     }
   }
-
 
   @Override
   public List<Post> getCategory(Category specified) {
