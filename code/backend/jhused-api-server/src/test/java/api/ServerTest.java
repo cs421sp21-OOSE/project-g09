@@ -92,7 +92,7 @@ class ServerTest {
     final String sortQuery = "?sort=name:asc";
     final String URL = BASE_URL + "/api/posts" + sortQuery;
     HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
-    assertEquals(404, jsonResponse.getStatus());
+    assertEquals(400, jsonResponse.getStatus());
   }
 
   @Test
@@ -100,12 +100,29 @@ class ServerTest {
     final String sortQuery = "?sort=price:ascend";
     final String URL = BASE_URL + "/api/posts" + sortQuery;
     HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
-    assertEquals(404, jsonResponse.getStatus());
+    assertEquals(400, jsonResponse.getStatus());
   }
 
   @Test
   public void getPostSearchSorted() throws UnirestException {
     final String sortQuery = "?keyword=lamp&sort=price:asc";
+    final String URL = BASE_URL + "/api/posts" + sortQuery;
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
+  }
+
+  @Test
+  public void getPostCategoryWrong() throws UnirestException {
+    final String sortQuery = "?category=coupon";
+    final String URL = BASE_URL + "/api/posts" + sortQuery;
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
+    assertEquals(400, jsonResponse.getStatus());
+  }
+
+  @Test
+  public void getPostCategorySearchSorted() throws UnirestException {
+    final String sortQuery = "?category=furniture&keyword=coffee&sort=price:asc";
     final String URL = BASE_URL + "/api/posts" + sortQuery;
     HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
     assertEquals(200, jsonResponse.getStatus());

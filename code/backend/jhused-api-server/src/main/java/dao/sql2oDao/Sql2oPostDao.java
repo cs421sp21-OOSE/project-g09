@@ -196,7 +196,7 @@ public class Sql2oPostDao implements PostDao {
       }
       // Handle sort
       // Adapted from readAll
-      if (!sortParams.isEmpty()) {
+      if (sortParams != null && !sortParams.isEmpty()) {
         StringBuilder sb = new StringBuilder(sql + " ORDER BY ");
         for (String key : sortParams.keySet()) {
           sb.append(key + " " + sortParams.get(key).toUpperCase() + ", ");
@@ -233,49 +233,6 @@ public class Sql2oPostDao implements PostDao {
       throw new DaoException("Unable to read post with the query parameters", ex);
     }
 
-  }
-
-  @Override
-  public List<Post> readAll(String keyword, Map<String, String> sortParams) throws DaoException {
-    try (Connection conn = sql2o.open()) {
-      String sql;
-      if (keyword == null) {
-        sql = "SELECT * FROM post";
-      }
-      else {
-        sql = "SELECT * FROM post WHERE post.title ILIKE :keyword " +
-                "OR post.description ILIKE :keyword " +
-                "OR post.location ILIKE :keyword";
-      }
-
-      // Add sort query if needed
-      if (!sortParams.isEmpty()) {
-        StringBuilder sb = new StringBuilder(sql + " ORDER BY ");
-        for (String key : sortParams.keySet()) {
-          sb.append(key + " " + sortParams.get(key).toUpperCase() + ", ");
-        }
-        sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
-        sb.append(";");
-        sql = sb.toString();
-      }
-
-      Query query = conn.createQuery(sql);
-      if (keyword != null) {
-        query.addParameter("keyword", "%" + keyword + "%");
-      }
-      List<Post> posts = query.setAutoDeriveColumnNames(true)
-              .executeAndFetch(Post.class);
-
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-        }
-      }
-      return posts;
-    } catch (Sql2oException | NullPointerException ex) {
-      throw new DaoException("Unable to read a post with partialTitle " + keyword, ex);
-    }
   }
 
   @Override
