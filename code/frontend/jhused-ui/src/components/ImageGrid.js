@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect } from "react";
+
 import "./ImageGrid.css";
 import PostPreview from "./PostPreview";
 
 
 const ImageGrid = (props) => {
+
   return (
     <div className="img-grid-container">
       <div className="img-grid">

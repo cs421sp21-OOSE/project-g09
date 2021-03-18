@@ -31,7 +31,7 @@ const PostDetails = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, [params]);
 
   if (post) {
     return (

@@ -10,15 +10,21 @@ import exceptions.DaoException;
 import model.Post;
 import org.sql2o.Sql2o;
 import spark.Spark;
-import util.Database;
+import util.database.Database;
 
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static spark.Spark.*;
 
 public class ApiServer {
+  // Admissible query parameters for sorting
+  private static final Set<String> COLUMN_KEYS = Set.of("title", "price",
+          "create_time", "update_time", "location");
+  // Admissible sort types
+  private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
+  private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
+
   private static int getHerokuAssignedPort() {
     // Heroku stores port number as an environment variable
     String herokuPort = System.getenv("PORT");
@@ -85,18 +91,38 @@ public class ApiServer {
       return gson.toJson(message);
     });
 
-
-    // return all posts
+    // Read all posts matching the query parameters if they exist
+    // Handle category match, keyword search, and sort
     get("/api/posts", (req, res) -> {
       try {
-        String title = req.queryParams("title");
-        List<Post> Posts;
-        if (title != null) {
-          Posts = postDao.readAll(title);
-        } else {
-          Posts = postDao.readAll();
+        String categoryString = req.queryParams("category");
+        if (categoryString != null && !CATEGORY_KEYS.contains(categoryString.toLowerCase())) {
+          throw new ApiError("Invalid category parameter", 400);
         }
-        return gson.toJson(Posts);
+
+        String keyword = req.queryParams("keyword"); // use keyword for search
+        String sort = req.queryParams("sort");
+
+        Map<String, String> sortParams = new LinkedHashMap<>(); // need to preserve parameter order
+        if (sort != null ) {
+          // Remove spaces and break into multiple sort queries
+          String[] sortQuery = sort.replaceAll("\\s", "").split(",");
+
+          for (String query : sortQuery) {
+            String[] sortItem = query.split(":"); // split column name and order key
+
+            // HTTP request check: sort key must match sortable column names; order key must match available orders
+            if (sortItem.length != 2 || !COLUMN_KEYS.contains(sortItem[0].toLowerCase()) ||
+                    !ORDER_KEYS.contains(sortItem[1].toLowerCase())) {
+              throw new ApiError("Invalid sort parameter", 400);
+            }
+            sortParams.put(sortItem[0].toLowerCase(), sortItem[1].toUpperCase());
+          }
+        }
+
+        List<Post> posts = postDao.readAllAdvanced(categoryString, keyword, sortParams);
+        return gson.toJson(posts);
+
       } catch (DaoException ex) {
         throw new ApiError(ex.getMessage(), 500);
       }

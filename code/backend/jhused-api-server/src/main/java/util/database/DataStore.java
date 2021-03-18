@@ -1,9 +1,6 @@
-package util;
+package util.database;
 
-import model.Category;
-import model.Hashtag;
-import model.Image;
-import model.Post;
+import model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,61 +23,69 @@ public final class DataStore {
    */
   public static List<Post> samplePosts() {
     List<Post> samples = new ArrayList<>();
-    samples.add(new Post("0".repeat(36), "001",
-        "Dummy furniture", 30D,
-        "Description of dummy furniture",
+    samples.add(new Post("0".repeat(36), "001"+"1".repeat(33),
+        "Brown Coffee Table", 99.99D, SaleState.SALE,
+        "Sleek modern looking, almost new",
         sampleImages("0".repeat(36),"1".repeat(36),Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dummy furniture"
+        "Hampden"
     ));
-    samples.add(new Post("1".repeat(36), "002",
-        "Dummy TV", 40D,
-        "Description of dummy TV",
+    samples.add(new Post("1".repeat(36), "002"+"1".repeat(33),
+        "Samsung TV brand new", 489.99D, SaleState.SALE,
+        "Samsung, brand new, what else to say?",
         sampleImages("2".repeat(36),"3".repeat(36),Category.TV),
         sampleHashtags(Category.TV),
         Category.TV,
-        "Location of dummy TV"
+        "BestBuy"
     ));
-    samples.add(new Post("3".repeat(36), "003",
-        "Dummy car", 50D,
-        "Description of dummy car",
+    samples.add(new Post("3".repeat(36), "003"+"1".repeat(33),
+        "Dream car to sell", 20000D, SaleState.SALE,
+        "Compact car with amazing turquoise color",
         sampleImages("4".repeat(36),"5".repeat(36),Category.CAR),
         sampleHashtags(Category.CAR),
         Category.CAR,
-        "Location of dummy bed"
+        "Inner Harbor"
     ));
-    samples.add(new Post("4".repeat(36), "004",
-        "Dummy desk", 29.99D,
-        "Description of dummy desk",
+    samples.add(new Post("4".repeat(36), "004"+"1".repeat(33),
+        "Vintage office desk", 129.99D, SaleState.SALE,
+        "I bought from IKEA",
         sampleImages("6".repeat(36),"7".repeat(36),Category.DESK),
         sampleHashtags(Category.DESK),
         Category.DESK,
-        "Location of dummy desk"
+        "Carlyle"
     ));
-    samples.add(new Post("5".repeat(36), "005",
-        "Dummy lamp", 29.99D,
-        "Description of dummy lamp",
+    samples.add(new Post("5".repeat(36), "005"+"1".repeat(33),
+        "Minimalist lamp", 29.99D, SaleState.SALE,
+        "I'm minimalist",
         sampleImages("8".repeat(36),"9".repeat(36),Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dummy lamp"
+        "ICON"
     ));
-    samples.add(new Post("6".repeat(36), "005",
-        "Dummy cup", 29.99D,
-        "Description of dummy cup",
+    samples.add(new Post("6".repeat(36), "005"+"1".repeat(33),
+        "Coffee cup", 29.99D, SaleState.SALE,
+        "Great for drinking beer",
         sampleImages("10".repeat(18),"12".repeat(18),Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
-        "Location of dummy cup"
+        "Marylander"
     ));
-    samples.add(new Post("7".repeat(36), "005",
-        "Dummy car", 29.99D,
-        "Description of dummy car",
+    samples.add(new Post("7".repeat(36), "005"+"1".repeat(33),
+        "1998 Toyota car", 7000D, SaleState.SALE,
+        "It still works",
         sampleImages("13".repeat(18),"14".repeat(18),Category.CAR),
         sampleHashtags(Category.CAR),
         Category.CAR,
-        "Location of dummy car"
+        "Towson"
+    ));
+    samples.add(new Post("8".repeat(36), "005"+"2".repeat(33),
+            "1998 Toyota car", 7100D, SaleState.SOLD,
+            "It still works",
+            sampleImages("15".repeat(18),"16".repeat(18),Category.TV),
+            sampleHashtags(Category.TV),
+            Category.TV,
+            "Towson"
     ));
     return samples;
   }

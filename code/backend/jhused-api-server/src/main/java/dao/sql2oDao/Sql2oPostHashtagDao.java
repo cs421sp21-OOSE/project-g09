@@ -2,7 +2,6 @@ package dao.sql2oDao;
 
 import dao.PostHashtagDao;
 import exceptions.DaoException;
-import org.simpleflatmapper.sql2o.SfmResultSetHandlerFactoryBuilder;
 import org.sql2o.Connection;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
@@ -26,7 +25,6 @@ public class Sql2oPostHashtagDao implements PostHashtagDao {
 
     try (Connection conn = this.sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      query.setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
       Map<String, Object> resultSet =
           query.addParameter("postId", postId)
               .addParameter("hashtagId", hashtagId)

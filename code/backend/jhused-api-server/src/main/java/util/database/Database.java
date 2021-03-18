@@ -1,22 +1,25 @@
-package util;
+package util.database;
 
-import model.Hashtag;
-import model.Image;
-import model.Post;
+import model.*;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
+import org.sql2o.converters.Converter;
 import org.sql2o.quirks.PostgresQuirks;
+import util.sql2oConverter.InstantConverter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = true;
+  public static boolean USE_TEST_DATABASE = false;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -54,9 +57,15 @@ public final class Database {
     String username = dbUri.getUserInfo().split(":")[0];
     String password = dbUri.getUserInfo().split(":")[1];
     String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':'
-        + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
+        + dbUri.getPort() + dbUri.getPath();
+    // accommodate local postgresql
+    if (!dbUri.getHost().contains("localhost")) {
+      dbUrl = dbUrl + "?sslmode=require";
+    }
 
-    Sql2o sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks());
+    Map<Class, Converter> converters = new HashMap<>();
+    converters.put(Instant.class, new InstantConverter());
+    Sql2o sql2o = new Sql2o(dbUrl, username, password, new PostgresQuirks(converters));
     return sql2o;
   }
 
@@ -75,7 +84,13 @@ public final class Database {
       conn.createQuery("DROP TABLE IF EXISTS hashtag;").executeUpdate();
       conn.createQuery("DROP TABLE IF EXISTS post;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
-      conn.createQuery("CREATE TYPE Category as enum ('FURNITURE', 'TV', 'DESK', 'CAR');").executeUpdate();
+      conn.createQuery("DROP TYPE IF EXISTS SaleState;").executeUpdate();
+      conn.createQuery("CREATE TYPE Category as enum (" +
+              getAllNamesGivenValues(Category.values())+
+              ");").executeUpdate();
+      conn.createQuery("CREATE TYPE SaleState as enum (" +
+              getAllNamesGivenValues(SaleState.values()) +
+              ");").executeUpdate();
 
 
       // change naming rule to use underscores, as column names are case insensitive
@@ -86,6 +101,7 @@ public final class Database {
           + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
           // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
           // is 4, because it has 4 digits after decimal point.
+          + "sale_state SaleState NOT NULL DEFAULT 'SALE',"
           + "description VARCHAR(5000),"
           + "category Category NOT NULL,"
           + "location VARCHAR(100) NOT NULL,"
@@ -228,8 +244,9 @@ public final class Database {
    */
   private static void addPostsWithInnerObjects(Sql2o sql2o, Post post) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
-      String sql = "INSERT INTO post(id, user_id, title, price, description, category, location) "
-          + "VALUES(:id, :userId, :title, :price, :description, CAST(:category AS Category), :location);";
+      String sql = "INSERT INTO post(id, user_id, title, price, sale_state, description, category, location) "
+          + "VALUES(:id, :userId, :title, :price, CAST(:saleState AS SaleState), " +
+              ":description, CAST(:category AS Category), :location);";
       conn.createQuery(sql).bind(post).executeUpdate();
       for (Image image : post.getImages()) {
         addImage(sql2o, image);
@@ -268,19 +285,9 @@ public final class Database {
    */
   private static void addHashtag(Sql2o sql2o, Hashtag hashtag) throws Sql2oException {
     try (Connection conn = sql2o.open()) {
-      // To use simpleflatmapper, must use Query as original chain will break
-//      Query query = conn.createQuery("SELECT * from hashtag where hashtag_id=:hashtagId OR " +
-//          "hashtag=:hashtag;");
-//      // Below line is all you need to add when using simpleflatmapper, everything else is the same
-//      query.setAutoDeriveColumnNames(true)
-//          .setResultSetHandlerFactoryBuilder(new SfmResultSetHandlerFactoryBuilder());
-//      // bind, no need to convert names
-//      List<Hashtag> existingHashtag = query.bind(hashtag).executeAndFetch(Hashtag.class);
-//      if (existingHashtag.isEmpty()) {
       String sql = "INSERT INTO hashtag(id, hashtag) "
           + "VALUES(:id, :hashtag) ON CONFLICT DO NOTHING;";
       conn.createQuery(sql).bind(hashtag).executeUpdate();
-//      }
     }
   }
 
@@ -336,5 +343,22 @@ public final class Database {
       conn.createQuery("CREATE TRIGGER " + TRIG_NAME + " BEFORE UPDATE ON " + TABLE_NAME + " FOR EACH ROW EXECUTE " +
           "PROCEDURE " + AUTO_UPDATE_TIMESTAMP_FUNC_NAME + "();").executeUpdate();
     }
+  }
+
+  /**
+   * return all names of a enum for creating enum type in database
+   * @param values all the values of a enum, pass Enum.values() to this arg
+   * @param <T> The Enum type
+   * @return a string of enum names. For example: "'SALE', 'SOLD', 'DEALING'".
+   */
+  private static <T extends Enum<T>> String getAllNamesGivenValues (T[] values)
+  {
+    String allNames = "";
+    for (T s: values)
+    {
+      allNames = allNames+"'"+s.name()+"', ";
+    }
+    allNames = allNames.substring(0,allNames.lastIndexOf(", "));
+    return allNames;
   }
 }
