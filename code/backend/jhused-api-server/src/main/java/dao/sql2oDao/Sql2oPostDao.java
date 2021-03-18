@@ -63,7 +63,7 @@ public class Sql2oPostDao implements PostDao {
 
     try (Connection conn = this.sql2o.open()) {
       // will catch NullPointerException
-      if (post.getId().isEmpty()) {
+      if (post != null && (post.getId() == null || post.getId().isEmpty()) || post.getId().length() != 36) {
         post.setId(UUID.randomUUID().toString());
       }
 
@@ -76,6 +76,7 @@ public class Sql2oPostDao implements PostDao {
         List<Image> createdImages = new ArrayList<>();
         if (!post.getImages().isEmpty()) {
           for (Image image : post.getImages()) {
+            image.setPostId(post.getId());
             createdImages.add(imageDao.create(image));
           }
         }
@@ -177,20 +178,19 @@ public class Sql2oPostDao implements PostDao {
       if (specified != null) {
         category = Category.valueOf(specified.toUpperCase()); // convert to enum
         sql = sql + " WHERE " +
-                "post.category = CAST(:specifiedCategory AS Category)";
+            "post.category = CAST(:specifiedCategory AS Category)";
       }
       // Handle keyword search
       // Adapted from searchCategory
       if (searchQuery != null) {
         if (specified == null) {
           sql = sql + " WHERE ";
-        }
-        else {
+        } else {
           sql = sql + " AND ";
         }
         sql = sql + "(post.title ILIKE :partialTitle OR " +
-                    "post.description ILIKE :partialDescription OR " +
-                    "post.location ILIKE :partialLocation)";
+            "post.description ILIKE :partialDescription OR " +
+            "post.location ILIKE :partialLocation)";
       }
       // Handle sort
       // Adapted from readAll
@@ -211,13 +211,13 @@ public class Sql2oPostDao implements PostDao {
       }
       if (searchQuery != null) {
         query.addParameter("partialTitle", "%" + searchQuery + "%")
-                .addParameter("partialDescription", "%" + searchQuery + "%")
-                .addParameter("partialLocation", "%" + searchQuery + "%");
+            .addParameter("partialDescription", "%" + searchQuery + "%")
+            .addParameter("partialLocation", "%" + searchQuery + "%");
       }
 
       // Submit query to db and fetch posts
       List<Post> posts = query.setAutoDeriveColumnNames(true)
-              .executeAndFetch(Post.class);
+          .executeAndFetch(Post.class);
 
       if (!posts.isEmpty()) {
         for (Post post : posts) {
@@ -278,10 +278,11 @@ public class Sql2oPostDao implements PostDao {
       if (updatedPost != null) {
         List<Image> toBeUpdatedImages = new ArrayList<>();
         List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
-        for (Image image:post.getImages()) {
-            toBeUpdatedImages.add(imageDao.createOrUpdate(image.getId(), image));
+        for (Image image : post.getImages()) {
+          image.setPostId(post.getId());
+          toBeUpdatedImages.add(imageDao.createOrUpdate(image.getId(), image));
         }
-        for (Hashtag hashtag:post.getHashtags()) {
+        for (Hashtag hashtag : post.getHashtags()) {
           toBeUpdatedHashtags.add(hashtagDao.createOrUpdate(hashtag.getId(), hashtag));
         }
         updatedPost.setImages(toBeUpdatedImages);
@@ -326,17 +327,17 @@ public class Sql2oPostDao implements PostDao {
   @Deprecated
   public List<Post> searchAll(String searchQuery) {
     String sql = "SELECT * FROM post WHERE " +
-            "post.title ILIKE :partialTitle OR " +
-            "post.description ILIKE :partialDescription OR " +
-            "post.location ILIKE :partialLocation;";
+        "post.title ILIKE :partialTitle OR " +
+        "post.description ILIKE :partialDescription OR " +
+        "post.location ILIKE :partialLocation;";
 
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       List<Post> posts = query
-              .addParameter("partialTitle", "%" + searchQuery + "%")
-              .addParameter("partialDescription", "%" + searchQuery + "%")
-              .addParameter("partialLocation", "%" + searchQuery + "%")
-              .executeAndFetch(Post.class);
+          .addParameter("partialTitle", "%" + searchQuery + "%")
+          .addParameter("partialDescription", "%" + searchQuery + "%")
+          .addParameter("partialLocation", "%" + searchQuery + "%")
+          .executeAndFetch(Post.class);
       if (!posts.isEmpty()) {
         for (Post post : posts) {
           post.setImages(imageDao.getImagesOfPost(post.getId()));
@@ -346,7 +347,7 @@ public class Sql2oPostDao implements PostDao {
       return posts;
     } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with matching items: " +
-              searchQuery, ex);
+          searchQuery, ex);
     }
   }
 
@@ -354,19 +355,19 @@ public class Sql2oPostDao implements PostDao {
   @Deprecated
   public List<Post> searchCategory(String searchQuery, Category specified) {
     String sql = "SELECT * FROM post WHERE " +
-            "post.category = CAST(:specifiedCategory AS Category) AND " +
-            "(post.title ILIKE :partialTitle OR " +
-            "post.description ILIKE :partialDescription OR " +
-            "post.location ILIKE :partialLocation);";
+        "post.category = CAST(:specifiedCategory AS Category) AND " +
+        "(post.title ILIKE :partialTitle OR " +
+        "post.description ILIKE :partialDescription OR " +
+        "post.location ILIKE :partialLocation);";
 
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       List<Post> posts = query
-              .addParameter("specifiedCategory", specified)
-              .addParameter("partialTitle", "%" + searchQuery + "%")
-              .addParameter("partialDescription", "%" + searchQuery + "%")
-              .addParameter("partialLocation", "%" + searchQuery + "%")
-              .executeAndFetch(Post.class);
+          .addParameter("specifiedCategory", specified)
+          .addParameter("partialTitle", "%" + searchQuery + "%")
+          .addParameter("partialDescription", "%" + searchQuery + "%")
+          .addParameter("partialLocation", "%" + searchQuery + "%")
+          .executeAndFetch(Post.class);
       if (!posts.isEmpty()) {
         for (Post post : posts) {
           post.setImages(imageDao.getImagesOfPost(post.getId()));
@@ -376,7 +377,7 @@ public class Sql2oPostDao implements PostDao {
       return posts;
     } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with matching items: " +
-              searchQuery, ex);
+          searchQuery, ex);
     }
   }
 
@@ -387,8 +388,8 @@ public class Sql2oPostDao implements PostDao {
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       List<Post> posts = query
-              .addParameter("specifiedCategory", specified)
-              .executeAndFetch(Post.class);
+          .addParameter("specifiedCategory", specified)
+          .executeAndFetch(Post.class);
       if (!posts.isEmpty()) {
         for (Post post : posts) {
           post.setImages(imageDao.getImagesOfPost(post.getId()));
