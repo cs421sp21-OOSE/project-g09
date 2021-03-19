@@ -12,6 +12,24 @@ import "./UserProfile.css";
 // so imagegrid only deals with rendering
 // frontend will filter posts by user id, but would be ideal to like. do that in the backend eventually.
 
+const compareByStatus = (a, b) => {
+  if (a.saleState === b.saleState) {
+    return 0;
+  }
+
+  if (a.saleState === "SOLD" && b.saleState === "SALE") {
+    return 1;
+  }
+
+  if (a.saleState === "DEALING" && b.saleState === "SOLD") {
+    return -1;
+  }
+
+  if (a.saleState === "SALE" && b.saleState === "DEALING") {
+    return 1;
+  }
+};
+
 const UserProfile = (props) => {
   const params = useParams();
   const [createEditorLive, setCreateEditorLive] = useState(false);
@@ -31,12 +49,46 @@ const UserProfile = (props) => {
     }
 
     setUpdateEditorLive(!updateEditorLive);
+
+    setPosts((posts) => {
+      posts.sort((a, b) => {
+        if (a.saleState === b.saleState) {
+          return 0;
+        } else if (a.saleState === "SOLD") {
+          return 1;
+        } else if (a.saleState === "SALE") {
+          return -1;
+        } else {
+          if (a.saleState === "DEALING" && b.saleState === "SOLD") {
+            return -1;
+          } else {
+            return 1;
+          }
+        }
+      });
+    });
   };
 
   useEffect(() => {
-    // TO DO: THIS NEEDS TO BE FILTERED BY USER ID
+    // TO DO: THIS NEEDS TO BE FILTERED BY USER ID TOO
     axios.get("/api/posts").then((response) => {
-      setPosts(response.data);
+      const postArray = response.data;
+      postArray.sort((a, b) => {
+        if (a.saleState === b.saleState) {
+          return 0;
+        } else if (a.saleState === "SOLD") {
+          return 1;
+        } else if (a.saleState === "SALE") {
+          return -1;
+        } else {
+          if (a.saleState === "DEALING" && b.saleState === "SOLD") {
+            return -1;
+          } else {
+            return 1;
+          }
+        }
+      });
+      setPosts(postArray);
     });
   });
 
