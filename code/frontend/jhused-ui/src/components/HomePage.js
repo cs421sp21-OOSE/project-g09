@@ -42,7 +42,7 @@ const HomePage = () => {
       .then((response) => {
         setPosts(response.data);
       });
-  }, []);
+  }, [setPosts]);
 
   // searching among all posts
   useEffect( () => {
