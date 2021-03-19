@@ -26,7 +26,7 @@ const HomePage = () => {
   // State of the sorting type
   const [sortType, setSortType] = useState("Create Time");
   // State of the sorting direction
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortDirection, setSortDirection] = useState("desc");
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
 
@@ -60,7 +60,7 @@ const HomePage = () => {
         } else return null;
       })
     );
-  }, [posts, searchTerm]);
+  }, [posts, searchTerm, setSearchedPosts]);
 
   // filtering among searched posts
   useEffect(() => {
@@ -76,7 +76,7 @@ const HomePage = () => {
         } else return null;
       })
     );
-  }, [searchedPosts, selectedCategory]);
+  }, [searchedPosts, selectedCategory, setFilteredPosts]);
 
   // sorting among searched&filtered posts
   useEffect(() => {
@@ -105,7 +105,7 @@ const HomePage = () => {
           .sort(sortByPrice)
       );
     } else;
-  }, [filteredPosts, sortType, sortDirection]);
+  }, [filteredPosts, sortType, sortDirection, setSortedPosts]);
 
   const sortByCreateTime = (a, b) => {
     return (
@@ -135,17 +135,6 @@ const HomePage = () => {
   const handlePostBtnChange = () => {
     setEditorMode("create");
     setEditorLive(!editorLive);
-  };
-
-  const handleUpdateBtnChange = () => {
-    const postID = "000000000000000000000000000000000000";
-
-    const postData = axios.get("/api/posts/" + postID).then((response) => {
-      console.log(response);
-      setPostData(response.data);
-      setEditorMode("update");
-      setEditorLive(!editorLive);
-    });
   };
 
   return (
@@ -189,15 +178,14 @@ const HomePage = () => {
         </div>
 
         <div className="dropdown" id="sort-dropdown">
-          {" "}
           {/*TODO: the sorting options are hard-coded for now*/}
           <select
             onChange={(event) => {
               setSortType(event.target.value);
             }}
           >
-            <option>Create Time</option>
             <option>Update Time</option>
+            <option>Create Time</option>
             <option>Price</option>
           </select>
           <button
