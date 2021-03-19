@@ -68,7 +68,7 @@ function Editor(props) {
     categories.DESK,
   ];
 
-  const statusOptions = [status.SOLD, status.DEALING];
+  const statusOptions = [status.SOLD, status.DEALING, status.SALE];
 
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
