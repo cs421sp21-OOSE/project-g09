@@ -49,6 +49,13 @@ const categories = {
   DESK: { value: "DESK", label: "Desk" },
 };
 
+// Define enums for post categories
+const status = {
+  SOLD: { value: "SOLD", label: "Sold" },
+  SALE: { value: "SALE", label: "For Sale" },
+  DEALING: { value: "DEALING", label: "On Hold" },
+};
+
 /**
  * Editor component for creatining/editing posts
  */
@@ -61,13 +68,15 @@ function Editor(props) {
     categories.DESK,
   ];
 
+  const statusOptions = [status.SOLD, status.DEALING, status.SALE];
+
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
   const emptyForm = {
     id: "",
     userId: "",
     title: "",
-    price: 0.,
+    price: 0,
     saleState: "SALE",
     description: "",
     images: [],
@@ -76,8 +85,10 @@ function Editor(props) {
     location: "",
   };
 
-  const [formData, setFormData] = useReducer(formReducer, 
-    props.post ?? emptyForm);
+  const [formData, setFormData] = useReducer(
+    formReducer,
+    props.post ?? emptyForm
+  );
 
   // State for the submit button - used for controlling responses after a post is submitted
   const [submitted, setSubmitted] = useState(false);
@@ -114,31 +125,29 @@ function Editor(props) {
     switch (props.mode) {
       case "create":
         axios
-        .post("/api/posts", formData)
-        .then((response) => {
-          console.log(response);
-          setRequestStatus(response.status);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .post("/api/posts", formData)
+          .then((response) => {
+            console.log(response);
+            setRequestStatus(response.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         break;
       case "update":
         axios
-        .put("/api/posts/" + formData.id, formData)
-        .then((response) => {
-          console.log(response);
-          setRequestStatus(response.status);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          .put("/api/posts/" + formData.id, formData)
+          .then((response) => {
+            console.log(response);
+            setRequestStatus(response.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         break;
       default:
-        // do nothing
+      // do nothing
     }
-
-
   };
 
   /**
@@ -175,10 +184,10 @@ function Editor(props) {
             setFormData({
               name: "images",
               value: {
-                id: "", 
+                id: "",
                 postId: formData.id,
-                url: downloadURL
-              }
+                url: downloadURL,
+              },
             });
           });
         }
@@ -201,13 +210,20 @@ function Editor(props) {
     setTagInput(inputValue);
   };
 
+  const handleStatusChange = (statusData) => {
+    setFormData({
+      name: "saleState",
+      value: statusData.value,
+    });
+  };
+
   const handleTagKeyDown = (event) => {
     if (!tagInput) return;
     switch (event.key) {
       case "Enter":
         setFormData({
           name: "hashtags",
-          value: [...formData.hashtags, {hashtag: tagInput}],
+          value: [...formData.hashtags, { hashtag: tagInput }],
         });
         setTagInput("");
         event.preventDefault();
@@ -219,7 +235,7 @@ function Editor(props) {
   const handleCreatableChange = (values, actionMedia) => {
     setFormData({
       name: "hashtags",
-      value: values.map(obj => ({hashtag: obj.value}))
+      value: values.map((obj) => ({ hashtag: obj.value })),
     });
   };
 
@@ -252,6 +268,31 @@ function Editor(props) {
             </Form.Group>
           </Col>
         </Row>
+
+        {props.mode === "update" ? (
+          <Row>
+            <Col lg={5}>
+              <Form.Group>
+                <Select
+                  className="status-select"
+                  classNamePrefix="status-select"
+                  label="status-select"
+                  name="status"
+                  value={
+                    formData.saleState === ""
+                      ? null
+                      : status[formData.saleState]
+                  }
+                  placeholder="Status"
+                  options={statusOptions}
+                  onChange={handleStatusChange}
+                  isDisabled={submitted}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        ) : null}
+
         <Row>
           <Col>
             <Form.Group>
@@ -274,8 +315,10 @@ function Editor(props) {
                 classNamePrefix="category-select"
                 label="category-select"
                 name="category"
-                value={formData.category === "" ? null : 
-                    categories[formData.category]
+                value={
+                  formData.category === ""
+                    ? null
+                    : categories[formData.category]
                 }
                 placeholder="Category"
                 options={categoryOptions}
@@ -342,9 +385,10 @@ function Editor(props) {
         </Form.Group>
         <Form.Group>
           <Row>
-            <Col >
-                {props.mode==="update" ? 
-                  <Image src={deleteIcon} width={40}></Image> : null}
+            <Col>
+              {props.mode === "update" ? (
+                <Image src={deleteIcon} width={40}></Image>
+              ) : null}
             </Col>
             <Col md={4}>
               <Button
@@ -354,14 +398,10 @@ function Editor(props) {
               >
                 Upload
               </Button>
-            </Col >
+            </Col>
             <Col md={4}>
-              <Button
-                variant="submit"
-                type="submit"
-                disabled={submitted}
-              >
-                {props.mode==="update"? "Save" : "Submit"}
+              <Button variant="submit" type="submit" disabled={submitted}>
+                {props.mode === "update" ? "Save" : "Submit"}
               </Button>
             </Col>
           </Row>
@@ -369,9 +409,14 @@ function Editor(props) {
       </Form>
       {submitted &&
         (requestStatus === 201 || 200 ? (
-          <Alert variant="info">Post is {props.mode==="update" ? "updated" : "submitted"} successfully</Alert>
+          <Alert variant="info">
+            Post is {props.mode === "update" ? "updated" : "submitted"}{" "}
+            successfully
+          </Alert>
         ) : (
-          <Alert variant="info">Post {props.mode==="update" ? "update" : "submission"} failed</Alert>
+          <Alert variant="info">
+            Post {props.mode === "update" ? "update" : "submission"} failed
+          </Alert>
         ))}
       {/* Conditional element below to display the form data in json
             Uncomment it  on for debugging use */}
