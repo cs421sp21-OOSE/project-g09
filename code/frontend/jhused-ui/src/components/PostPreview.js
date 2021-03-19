@@ -41,6 +41,13 @@ const PostPreview = (props) => {
       ) : (
         ""
       )}
+      {props.post.saleState === "SOLD" ? (
+        <div className="post-card-sold">
+          SOLD
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
