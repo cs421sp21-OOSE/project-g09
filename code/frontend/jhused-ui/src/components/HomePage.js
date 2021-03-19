@@ -25,6 +25,8 @@ const HomePage = () => {
   const [sortType, setSortType] = useState("Create Time")
   // State of the sorting direction
   const [sortDirection, setSortDirection] = useState("asc");
+  // posts after sorting
+  const [sortedPosts, setSortedPosts] = useState([]);
 
   useEffect(() => {
       axios.get("/api/posts").then((response) => {
@@ -54,6 +56,18 @@ const HomePage = () => {
           else return null;
       }) );
   }, [searchedPosts, selectedCategory])
+
+  useEffect(() => {
+    setSortedPosts(filteredPosts.filter((post)=>{return post}).sort(sortByPrice));
+  }, [filteredPosts, sortType, sortDirection])
+
+  const sortByCreateTime = (a, b) => {
+    return (a.createTime.seconds - b.createTime.seconds) * (sortDirection === 'asc' ? 1 : -1)
+  }
+
+  const sortByPrice = (a, b) => {
+    return (a.price - b.price) * (sortDirection === 'asc' ? 1 : -1)
+  }
 
   // State for controlling the editor mode: update a post or create a post
   const [editorMode, setEditorMode] = useState("create");
@@ -99,6 +113,7 @@ const HomePage = () => {
         >
           Post
         </button>
+
         <div className="search-bar">
           <input className="search"
             type="text"
@@ -109,38 +124,44 @@ const HomePage = () => {
           />
           <img className="search-icon" src={SearchIcon} alt="search icon"/>
         </div>
+
         <div className="category-filter"> {/*TODO: the categories are hard-coded for now*/}
           <select onChange={(event) => {
               setSelectedCategory(event.target.value);
           }}>
-              <option value="ALL">ALL</option>
-              <option value="FURNITURE">FURNITURE</option>
-              <option value="CAR">CAR</option>
-              <option value="TV">TV</option>
-              <option value="DESK">DESK</option>
+            <option value="ALL">ALL</option>
+            <option value="FURNITURE">FURNITURE</option>
+            <option value="CAR">CAR</option>
+            <option value="TV">TV</option>
+            <option value="DESK">DESK</option>
           </select>
         </div>
-        <div className="sort-dropdown">
+
+        <div className="sort-dropdown"> {/*TODO: the sorting options are hard-coded for now*/}
           <select onChange={(event) => {
             setSortType(event.target.value);
           }}>
-
+            <option value="price">Price</option>
+            <option value="create_time">Create Time</option>
+            <option value="update_time">Update Time</option>
           </select>
           <button className="sort-direction" onClick={
-            () => {sortDirection === "asc" ? setSortDirection("desc") : setSortDirection("asc")}
-          }>
+            () => {sortDirection === "asc" ? setSortDirection("desc") : setSortDirection("asc");}
+            }>
             <img src={sortDirection === "asc" ? UpArrow : DownArrow} alt="sort direction icon"/>
           </button>
         </div>
       </div>
+
       {editorLive ? 
         <EditorPopup 
           toggle={handlePostBtnChange} 
           mode={editorMode}
           post={editorMode==="update" ? postData : null}
           /> : null}
+
       {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
-      <ImageGrid posts={filteredPosts}/>
+      <ImageGrid posts={sortedPosts}/>
 
     </div>
   );
