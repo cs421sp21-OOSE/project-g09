@@ -40,16 +40,19 @@ const HomePage = () => {
   }, [posts, searchTerm])
 
   useEffect(() => {
-      setFilteredPosts( searchedPosts.filter( (post) => {
-          if (selectedCategory === "ALL") {
-              return post;
+    setFilteredPosts(
+      searchedPosts.filter((post) => {
+        if (post.saleState !== "SOLD") {
+          if (
+            selectedCategory === "ALL" ||
+            post.category === selectedCategory
+          ) {
+            return post;
           }
-          else if (post.category === selectedCategory) {
-              return post;
-          }
-          else return null;
-      }) );
-  }, [searchedPosts, selectedCategory])
+        } else return null;
+      })
+    );
+  }, [searchedPosts, selectedCategory]);
 
   // State for controlling the editor mode: update a post or create a post
   const [editorMode, setEditorMode] = useState("create");
