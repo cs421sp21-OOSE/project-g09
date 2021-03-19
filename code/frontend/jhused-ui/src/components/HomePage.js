@@ -21,7 +21,9 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
-      axios.get("/api/posts").then((response) => {
+      axios.get("/api/posts", {params:{
+        "sort":"update_time:desc"
+      }}).then((response) => {
           setPosts(response.data);
       });
   }, [])
