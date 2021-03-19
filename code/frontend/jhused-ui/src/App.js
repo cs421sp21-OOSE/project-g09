@@ -4,6 +4,7 @@ import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
 import logo from "./images/logo.png";
+import Editor from "./components/Editor";
 
 const App = () => {
   const location = useLocation();
