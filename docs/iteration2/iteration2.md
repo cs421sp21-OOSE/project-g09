@@ -80,3 +80,17 @@ Backlog
 - [ ] Pagination (if we have time) - update API & frontend ui to show pages
 
 # Retrospective  
+This time, we started early to give ourselves more time to actually code; we made sure to 
+break down user stories into tasks and assign them early on, which was extremely helpful.
+We were able to complete all our user stories on time, so a user may sort items, filter by category,
+& visit a general profile page to edit posts. One thing we did have a discussion about
+was where sorting should be implemented; for now we've left it on the frontend but will likely be moving
+it to the backend in the future. In addition to this, we did not have time to implement pagniation for our
+app but will add that to our backlog. 
+One thing that came up was the UI. We have researched and ultimately settled on using a CSS framework
+and then borrowing design inspiration from similar websites, including Etsy and Depop. This will be a
+future issue to work through at the start of the next iteration. Thus the current version of the website
+that is deployed is using our old styling and is not browser repsonsive; this will be dealt with when we
+migrate our CSS.
+Moving forwards, we will try to coordinate more between members who are working on the same/similar features
+and also ensure that work gets distributed equally.
