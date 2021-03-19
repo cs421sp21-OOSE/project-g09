@@ -89,7 +89,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  z-index: 99999;
   color: #d72638;
   font-size: 5rem;
 }
