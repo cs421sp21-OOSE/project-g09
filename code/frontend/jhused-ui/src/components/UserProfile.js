@@ -15,18 +15,16 @@ import "./UserProfile.css";
 const compareByStatus = (a, b) => {
   if (a.saleState === b.saleState) {
     return 0;
-  }
-
-  if (a.saleState === "SOLD" && b.saleState === "SALE") {
+  } else if (a.saleState === "SOLD") {
     return 1;
-  }
-
-  if (a.saleState === "DEALING" && b.saleState === "SOLD") {
+  } else if (a.saleState === "SALE") {
     return -1;
-  }
-
-  if (a.saleState === "SALE" && b.saleState === "DEALING") {
-    return 1;
+  } else {
+    if (a.saleState === "DEALING" && b.saleState === "SOLD") {
+      return -1;
+    } else {
+      return 1;
+    }
   }
 };
 
@@ -50,44 +48,18 @@ const UserProfile = (props) => {
 
     setUpdateEditorLive(!updateEditorLive);
 
-    setPosts((posts) => {
-      posts.sort((a, b) => {
-        if (a.saleState === b.saleState) {
-          return 0;
-        } else if (a.saleState === "SOLD") {
-          return 1;
-        } else if (a.saleState === "SALE") {
-          return -1;
-        } else {
-          if (a.saleState === "DEALING" && b.saleState === "SOLD") {
-            return -1;
-          } else {
-            return 1;
-          }
-        }
+    if (updateEditorLive) {
+      setPosts((posts) => {
+        posts.sort(compareByStatus);
       });
-    });
+    }
   };
 
   useEffect(() => {
     // TO DO: THIS NEEDS TO BE FILTERED BY USER ID TOO
     axios.get("/api/posts").then((response) => {
       const postArray = response.data;
-      postArray.sort((a, b) => {
-        if (a.saleState === b.saleState) {
-          return 0;
-        } else if (a.saleState === "SOLD") {
-          return 1;
-        } else if (a.saleState === "SALE") {
-          return -1;
-        } else {
-          if (a.saleState === "DEALING" && b.saleState === "SOLD") {
-            return -1;
-          } else {
-            return 1;
-          }
-        }
-      });
+      postArray.sort(compareByStatus);
       setPosts(postArray);
     });
   });
