@@ -61,6 +61,12 @@ const HomePage = () => {
   // Only needed for building the update feature of the editor
   const [postData, setPostData] = useState({});
 
+  useEffect(() => {
+    axios.get("/api/posts").then((response) => {
+      setPosts(response.data);
+    });
+  });
+
   const handlePostBtnChange = () => {
     setEditorMode("create");
     setEditorLive(!editorLive);
@@ -120,6 +126,7 @@ const HomePage = () => {
           </select>
         </div>
       </div>
+
       {editorLive ? 
         <EditorPopup 
           toggle={handlePostBtnChange} 
@@ -128,6 +135,7 @@ const HomePage = () => {
           /> : null}
       {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
       <ImageGrid posts={filteredPosts}/>
+
 
     </div>
   );

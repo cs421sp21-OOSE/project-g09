@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Location from "./Location";
-import "./PostPreview.css"
+import "./PostPreview.css";
+import Edit from "../images/edit.png";
 
 const PostPreview = (props) => {
   const location = useLocation();
+
   return (
     <div className="post-card">
       {/* Comment by CD (delete later): a button should be added in this class for updating post. The button is alive in mypage only. The callback should pass post object to the editor pop up class */}
@@ -29,6 +31,16 @@ const PostPreview = (props) => {
           <Location location={props.post.location} />
         </div>
       </Link>
+      {props.displayEdit ? (
+        <img
+          src={Edit}
+          alt="edit"
+          className="edit-button"
+          onClick={() => props.onEdit(props.post)}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };
