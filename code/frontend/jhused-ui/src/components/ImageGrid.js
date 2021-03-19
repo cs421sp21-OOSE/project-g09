@@ -8,7 +8,7 @@ const ImageGrid = ({ posts }) => {
     <div className="img-grid-container">
       <div className="img-grid">
         {posts &&
-          posts.map((post) => <PostPreview post={post} key={post.uuid} />)}
+          posts.map((post) => <PostPreview post={post} key={post.id} />)}
       </div>
     </div>
   );

@@ -10,14 +10,14 @@ const PostPreview = (props) => {
       {/* Comment by CD (delete later): a button should be added in this class for updating post. The button is alive in mypage only. The callback should pass post object to the editor pop up class */}
       <Link
         to={{
-          pathname: `/post/${props.post.uuid}`,
+          pathname: `/post/${props.post.id}`,
           state: { background: location },
         }}
       >
         <div className="img-wrap">
           <img
             className="post-card-img"
-            src={props.post.imageUrls[0]}
+            src={props.post.images[0].url}
             alt="item preview"
           />
         </div>
