@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ImageGrid from "./ImageGrid";
 import EditorPopup from "./EditorPopUp";
 import "./HomePage.css";
@@ -6,9 +6,12 @@ import axios from "../util/axios";
 import SearchIcon from "../images/search.png";
 import DownArrow from "../images/down-arrow.png";
 import UpArrow from "../images/up-arrow.png";
+import Icon from "../images/icon.png";
+
+const userID = "4"; // dummy userID for now
+
 
 const HomePage = () => {
-  
   // State for controlling whether editor should show up
   const [editorLive, setEditorLive] = useState(false);
   // All the posts
@@ -30,10 +33,16 @@ const HomePage = () => {
 
   // get all posts
   useEffect(() => {
-      axios.get("/api/posts").then((response) => {
-          setPosts(response.data);
+    axios
+      .get("/api/posts", {
+        params: {
+          sort: "update_time:desc",
+        },
+      })
+      .then((response) => {
+        setPosts(response.data);
       });
-  }, [])
+  }, []);
 
   // searching among all posts
   useEffect( () => {
@@ -49,16 +58,19 @@ const HomePage = () => {
 
   // filtering among searched posts
   useEffect(() => {
-      setFilteredPosts( searchedPosts.filter( (post) => {
-          if (selectedCategory === "ALL") {
-              return post;
+    setFilteredPosts(
+      searchedPosts.filter((post) => {
+        if (post.saleState !== "SOLD") {
+          if (
+            selectedCategory === "ALL" ||
+            post.category === selectedCategory
+          ) {
+            return post;
           }
-          else if (post.category === selectedCategory) {
-              return post;
-          }
-          else return null;
-      }) );
-  }, [searchedPosts, selectedCategory])
+        } else return null;
+      })
+    );
+  }, [searchedPosts, selectedCategory]);
 
   // sorting among searched&filtered posts
   useEffect(() => {
@@ -93,6 +105,12 @@ const HomePage = () => {
   // Only needed for building the update feature of the editor
   const [postData, setPostData] = useState({});
 
+  useEffect(() => {
+    axios.get("/api/posts").then((response) => {
+      setPosts(response.data);
+    });
+  });
+
   const handlePostBtnChange = () => {
     setEditorMode("create");
     setEditorLive(!editorLive);
@@ -100,47 +118,38 @@ const HomePage = () => {
 
   const handleUpdateBtnChange = () => {
     const postID = "000000000000000000000000000000000000";
-    
-    const postData = axios.get("/api/posts/" + postID)
-      .then((response) => 
-        {
-          console.log(response);
-          setPostData(response.data);
-          setEditorMode("update");
-          setEditorLive(!editorLive);
-        });
 
-    
-  }
+    const postData = axios.get("/api/posts/" + postID).then((response) => {
+      console.log(response);
+      setPostData(response.data);
+      setEditorMode("update");
+      setEditorLive(!editorLive);
+    });
+  };
 
   return (
     <div className="home-page">
       <div className="home-page-header">
         {/* Button for setting up editor's post-updating feature only - delete later once my page is setup */}
-        <button
-          className="post-button"
-          id="update-button"
-          onClick={handleUpdateBtnChange}
-        >
-          Update
-        </button>
-        <button
-          className="post-button"
-          onClick={handlePostBtnChange}
-        >
+        <button className="post-button" onClick={handlePostBtnChange}>
           Post
         </button>
 
         <div className="search-bar">
-          <input className="search"
+          <input
+            className="search"
             type="text"
             placeholder="Search..."
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
           />
-          <img className="search-icon" src={SearchIcon} alt="search icon"/>
+          <img className="search-icon" src={SearchIcon} alt="search icon" />
         </div>
+
+        <a href={`/user/${userID}`}>
+          <img className="home-user-icon" src={Icon} alt="icon" />
+        </a>
 
         <div className="dropdown"> {/*TODO: the categories are hard-coded for now*/}
           <select onChange={(event) => {
@@ -179,6 +188,16 @@ const HomePage = () => {
 
       {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
       <ImageGrid posts={sortedPosts}/>
+
+      {editorLive ? (
+        <EditorPopup
+          toggle={handlePostBtnChange}
+          mode={editorMode}
+          post={editorMode === "update" ? postData : null}
+        />
+      ) : null}
+      {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
+      <ImageGrid posts={sortedPosts} />
 
     </div>
   );

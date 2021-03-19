@@ -1,0 +1,40 @@
+.user-profile-header {
+  padding: 2rem 0;
+  text-align: right;
+}
+
+.user-info {
+  display: flex;
+  border-bottom: solid 3px;
+  border-top: solid 3px;
+  color: #002d72;
+}
+
+.username-text {
+  text-align: left;
+}
+.user-info-text {
+  display: block;
+}
+
+.create-button {
+  margin: 0;
+  background-color: white;
+  border: solid #002d72;
+  color: #d72638;
+  border-radius: 10rem;
+  font-size: 1.5rem;
+  padding-inline: 1rem;
+}
+
+.user-icon {
+  width: 7rem;
+  height: 7rem;
+}
+
+.post-header {
+  text-align: left;
+  color: #002d72;
+  margin: 1rem 0;
+}
+
