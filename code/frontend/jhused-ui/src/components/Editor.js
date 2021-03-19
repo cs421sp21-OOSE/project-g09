@@ -52,8 +52,8 @@ const categories = {
 // Define enums for post categories
 const status = {
   SOLD: { value: "SOLD", label: "Sold" },
-  SALE: { value: "SALE", label: "Sale" },
-  DEALING: { value: "DEALING", label: "Dealing" },
+  SALE: { value: "SALE", label: "For Sale" },
+  DEALING: { value: "DEALING", label: "On Hold" },
 };
 
 /**
@@ -68,7 +68,7 @@ function Editor(props) {
     categories.DESK,
   ];
 
-  const statusOptions = [status.SOLD, status.SALE];
+  const statusOptions = [status.SOLD, status.DEALING];
 
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
