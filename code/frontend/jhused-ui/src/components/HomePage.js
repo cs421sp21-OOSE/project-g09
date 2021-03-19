@@ -64,7 +64,7 @@ const HomePage = () => {
   const handleUpdateBtnChange = () => {
     const postID = "000000000000000000000000000000000000";
     
-    const postData = axios.get("https://jhused-api-server.herokuapp.com/api/posts/" + postID)
+    const postData = axios.get("/api/posts/" + postID)
       .then((response) => 
         {
           console.log(response);
