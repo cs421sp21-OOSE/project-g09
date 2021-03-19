@@ -52,7 +52,7 @@ const HomePage = () => {
   useEffect(() => {
     setFilteredPosts(
       searchedPosts.filter((post) => {
-        if (post.saleState !== "SOLD") {
+        if (post.saleState === "SALE") {
           if (
             selectedCategory === "ALL" ||
             post.category === selectedCategory
