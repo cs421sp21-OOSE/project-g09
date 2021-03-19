@@ -14,7 +14,7 @@ const App = () => {
   return (
     <div className="App">
       <div className="jhused-header">
-      <img className="jhused-logo" src={logo} alt="logo"/>
+      <a href="/"><img className="jhused-logo" src={logo} alt="logo"/> </a>
       </div>
       <Switch location={background || location}>
         <Route exact path="/">
