@@ -5,6 +5,7 @@ import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import logo from "./images/logo.png";
+import Editor from "./components/Editor";
 
 const App = () => {
   const location = useLocation();

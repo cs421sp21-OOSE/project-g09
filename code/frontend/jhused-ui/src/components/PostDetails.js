@@ -46,7 +46,7 @@ const PostDetails = (props) => {
           <h1 className="post-title">{post.title}</h1>
           <h1 className="post-price">${post.price}</h1>
           <div className="post-content-left">
-            <Carousel images={post.imageUrls} />
+            <Carousel images={post.images} />
           </div>
           <div className="post-content-right">
             <Location location={post.location} size="s" />
