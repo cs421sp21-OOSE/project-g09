@@ -28,12 +28,14 @@ const HomePage = () => {
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
 
+  // get all posts
   useEffect(() => {
       axios.get("/api/posts").then((response) => {
           setPosts(response.data);
       });
   }, [])
 
+  // searching among all posts
   useEffect( () => {
       setSearchedPosts( posts.filter( (post) => {
           if (searchTerm === "") {
@@ -45,6 +47,7 @@ const HomePage = () => {
       }) );
   }, [posts, searchTerm])
 
+  // filtering among searched posts
   useEffect(() => {
       setFilteredPosts( searchedPosts.filter( (post) => {
           if (selectedCategory === "ALL") {
@@ -57,8 +60,18 @@ const HomePage = () => {
       }) );
   }, [searchedPosts, selectedCategory])
 
+  // sorting among searched&filtered posts
   useEffect(() => {
-    setSortedPosts(filteredPosts.filter((post)=>{return post}).sort(sortByPrice));
+    if (sortType === "Create Time") {
+      setSortedPosts(filteredPosts.filter((post)=>{return post}).sort(sortByCreateTime));
+    }
+    else if (sortType === "Update Time") {
+      setSortedPosts(filteredPosts.filter((post)=>{return post}).sort(sortByUpdateTime));
+    }
+    else if (sortType === "Price") {
+      setSortedPosts(filteredPosts.filter((post)=>{return post}).sort(sortByPrice));
+    }
+    else ;
   }, [filteredPosts, sortType, sortDirection])
 
   const sortByCreateTime = (a, b) => {
@@ -67,6 +80,10 @@ const HomePage = () => {
 
   const sortByPrice = (a, b) => {
     return (a.price - b.price) * (sortDirection === 'asc' ? 1 : -1)
+  }
+
+  const sortByUpdateTime = (a, b) => {
+    return (a.updateTime.seconds - b.updateTime.seconds) * (sortDirection === 'asc' ? 1 : -1)
   }
 
   // State for controlling the editor mode: update a post or create a post
@@ -125,30 +142,30 @@ const HomePage = () => {
           <img className="search-icon" src={SearchIcon} alt="search icon"/>
         </div>
 
-        <div className="category-filter"> {/*TODO: the categories are hard-coded for now*/}
+        <div className="dropdown"> {/*TODO: the categories are hard-coded for now*/}
           <select onChange={(event) => {
               setSelectedCategory(event.target.value);
           }}>
-            <option value="ALL">ALL</option>
-            <option value="FURNITURE">FURNITURE</option>
-            <option value="CAR">CAR</option>
-            <option value="TV">TV</option>
-            <option value="DESK">DESK</option>
+            <option>ALL</option>
+            <option>FURNITURE</option>
+            <option>CAR</option>
+            <option>TV</option>
+            <option>DESK</option>
           </select>
         </div>
 
-        <div className="sort-dropdown"> {/*TODO: the sorting options are hard-coded for now*/}
+        <div className="dropdown" id="sort-dropdown"> {/*TODO: the sorting options are hard-coded for now*/}
           <select onChange={(event) => {
             setSortType(event.target.value);
           }}>
-            <option value="price">Price</option>
-            <option value="create_time">Create Time</option>
-            <option value="update_time">Update Time</option>
+            <option>Create Time</option>
+            <option>Update Time</option>
+            <option>Price</option>
           </select>
-          <button className="sort-direction" onClick={
+          <button className="direction-button" onClick={
             () => {sortDirection === "asc" ? setSortDirection("desc") : setSortDirection("asc");}
             }>
-            <img src={sortDirection === "asc" ? UpArrow : DownArrow} alt="sort direction icon"/>
+            <img className="sort-direction" src={sortDirection === "asc" ? UpArrow : DownArrow} alt="sort direction icon"/>
           </button>
         </div>
       </div>

@@ -32,7 +32,17 @@
   width: 35px;
 }
 
-.category-filter {
+.sort-direction {
+  width: 20px;
+}
+
+.direction-button{
+  position: relative;
+  top: -40px;
+  left: 80px;
+}
+
+.dropdown {
   top: 40px;
   left: 50px;
   position: relative;
@@ -46,6 +56,13 @@
   padding-right: 75%;
   padding-top: 10px;
   padding-bottom: 50px;
+}
+
+#sort-dropdown {
+  position: absolute;
+  border: none;
+  top: 118px;
+  margin-left: 200px;
 }
 
 #update-button {
