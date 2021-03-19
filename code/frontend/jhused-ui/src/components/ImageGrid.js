@@ -7,8 +7,8 @@ const ImageGrid = (props) => {
   return (
     <div className="img-grid-container">
       <div className="img-grid">
-        {posts &&
-          posts.map((post) => (
+        {props.posts &&
+          props.posts.map((post) => (
             <PostPreview
               post={post}
               key={post.id}
