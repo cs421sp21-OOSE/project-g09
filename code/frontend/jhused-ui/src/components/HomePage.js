@@ -132,12 +132,6 @@ const HomePage = () => {
   // Only needed for building the update feature of the editor
   const [postData, setPostData] = useState({});
 
-  useEffect(() => {
-    axios.get("/api/posts").then((response) => {
-      setPosts(response.data);
-    });
-  });
-
   const handlePostBtnChange = () => {
     setEditorMode("create");
     setEditorLive(!editorLive);
