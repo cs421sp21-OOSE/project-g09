@@ -204,3 +204,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+
+### custom
+# use for tentative experiments
+src/main/java/experiment

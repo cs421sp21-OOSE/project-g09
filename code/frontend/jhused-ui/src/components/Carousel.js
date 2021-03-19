@@ -14,6 +14,7 @@ import PrevButton from "../images/carousel-button-prev.png";
 import NextButton from "../images/carousel-button-next.png";
 
 const Carousel = (props) => {
+  console.log(props.images);
   return (
     <div className="carousel-container">
       <CarouselProvider
@@ -24,7 +25,7 @@ const Carousel = (props) => {
         <Slider>
           {props.images.map((item, index) => (
             <Slide index={index} className="slide" key={index}>
-              <Image src={item} hasMasterSpinner={true} className="sliderimg" key={index} />
+              <Image src={item.url} hasMasterSpinner={true} className="sliderimg" key={index} />
             </Slide>
           ))}
         </Slider>

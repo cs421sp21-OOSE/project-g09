@@ -1,5 +1,5 @@
 .editor-panel {
-  padding: 7rem 0.5rem 0.5rem 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
 }
 
 .form-control {
@@ -55,4 +55,15 @@
   background-color: rgb(189, 27, 27);
   border-radius: 1rem;
   padding-inline: 1rem;
+}
+
+
+.status-select__control {
+  border: solid #002d72 !important;
+  border-radius: 1rem !important;
+}
+
+.status-select__placeholder {
+  color: rgb(189, 27, 27) !important;
+  font-size: 1.2rem;
 }

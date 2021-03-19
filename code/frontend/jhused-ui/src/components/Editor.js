@@ -11,11 +11,13 @@ import { ProgressBar, Image, Container, Alert } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
+import deleteIcon from "../images/delete.png";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Editor.css";
 
 const formReducer = function (state, action) {
-  if (action.name !== "imageUrls") {
+  if (action.name !== "images") {
     return {
       ...state,
       [action.name]: action.value,
@@ -23,16 +25,16 @@ const formReducer = function (state, action) {
   } else {
     return {
       ...state,
-      [action.name]: [...state.imageUrls, action.value],
+      [action.name]: [...state.images, action.value],
     };
   }
 };
 
 // Use for react-select components
 // The value prop is an object of label and value
-const createOption = (label) => ({
-  label: label,
-  value: label,
+const createOption = (obj) => ({
+  label: obj.hashtag,
+  value: obj.hashtag,
 });
 
 // Use for react-select components
@@ -47,10 +49,17 @@ const categories = {
   DESK: { value: "DESK", label: "Desk" },
 };
 
+// Define enums for post categories
+const status = {
+  SOLD: { value: "SOLD", label: "Sold" },
+  SALE: { value: "SALE", label: "For Sale" },
+  DEALING: { value: "DEALING", label: "On Hold" },
+};
+
 /**
  * Editor component for creatining/editing posts
  */
-function Editor() {
+function Editor(props) {
   // Define post category options for use in the react-select component
   const categoryOptions = [
     categories.FURNITURE,
@@ -59,18 +68,27 @@ function Editor() {
     categories.DESK,
   ];
 
+  const statusOptions = [status.SOLD, status.DEALING, status.SALE];
+
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
-  const [formData, setFormData] = useReducer(formReducer, {
-    uuid: "",
+  const emptyForm = {
+    id: "",
     userId: "",
     title: "",
-    price: null,
-    category: "",
-    hashtags: [],
+    price: 0,
+    saleState: "SALE",
     description: "",
-    imageUrls: [],
-  });
+    images: [],
+    hashtags: [],
+    category: "",
+    location: "",
+  };
+
+  const [formData, setFormData] = useReducer(
+    formReducer,
+    props.post ?? emptyForm
+  );
 
   // State for the submit button - used for controlling responses after a post is submitted
   const [submitted, setSubmitted] = useState(false);
@@ -81,7 +99,7 @@ function Editor() {
   const [tagInput, setTagInput] = useState("");
 
   // States related to image upload but not relevant to the form
-  const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
   /**
@@ -100,21 +118,36 @@ function Editor() {
 
   /**
    * Event handler for the submit button
-   * TODO: disable input components once the button is clicked
-   * TODO: show a success message (use a conditional component)
    */
   const handleSubmit = (event) => {
     event.preventDefault();
     setSubmitted(true);
-    axios
-      .post("https://jhused-api-server.herokuapp.com/api/posts", formData)
-      .then((response) => {
-        console.log(response);
-        setRequestStatus(response.status);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    switch (props.mode) {
+      case "create":
+        axios
+          .post("/api/posts", formData)
+          .then((response) => {
+            console.log(response);
+            setRequestStatus(response.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      case "update":
+        axios
+          .put("/api/posts/" + formData.id, formData)
+          .then((response) => {
+            console.log(response);
+            setRequestStatus(response.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      default:
+      // do nothing
+    }
   };
 
   /**
@@ -123,7 +156,7 @@ function Editor() {
   const handleImageChange = (event) => {
     if (event.target.files[0]) {
       // setImage(event.target.files[0]);
-      setImages(event.target.files);
+      setImageFiles(event.target.files);
     }
   };
 
@@ -132,7 +165,7 @@ function Editor() {
    * Perform the image upload and update the image url state
    */
   const handleImageUpload = () => {
-    Array.from(images).forEach((image) => {
+    Array.from(imageFiles).forEach((image) => {
       const uploadTask = storage.ref(`images/${image.name}`).put(image);
       uploadTask.on(
         "state_changed",
@@ -149,8 +182,12 @@ function Editor() {
           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             console.log("File available at ", downloadURL);
             setFormData({
-              name: "imageUrls",
-              value: downloadURL,
+              name: "images",
+              value: {
+                id: "",
+                postId: formData.id,
+                url: downloadURL,
+              },
             });
           });
         }
@@ -173,13 +210,20 @@ function Editor() {
     setTagInput(inputValue);
   };
 
+  const handleStatusChange = (statusData) => {
+    setFormData({
+      name: "saleState",
+      value: statusData.value,
+    });
+  };
+
   const handleTagKeyDown = (event) => {
     if (!tagInput) return;
     switch (event.key) {
       case "Enter":
         setFormData({
           name: "hashtags",
-          value: [...formData.hashtags, tagInput],
+          value: [...formData.hashtags, { hashtag: tagInput }],
         });
         setTagInput("");
         event.preventDefault();
@@ -188,11 +232,18 @@ function Editor() {
     }
   };
 
+  const handleCreatableChange = (values, actionMedia) => {
+    setFormData({
+      name: "hashtags",
+      value: values.map((obj) => ({ hashtag: obj.value })),
+    });
+  };
+
   return (
     <div className="editor-panel">
       <Form onSubmit={handleSubmit}>
         <Row>
-          <Col lg={10}>
+          <Col lg={9}>
             <Form.Group controlId="titleForm">
               <Form.Control
                 type="text"
@@ -204,7 +255,7 @@ function Editor() {
               />
             </Form.Group>
           </Col>
-          <Col lg={2}>
+          <Col lg={3}>
             <Form.Group controlId="priceForm">
               <Form.Control
                 type="number"
@@ -217,6 +268,31 @@ function Editor() {
             </Form.Group>
           </Col>
         </Row>
+
+        {props.mode === "update" ? (
+          <Row>
+            <Col lg={5}>
+              <Form.Group>
+                <Select
+                  className="status-select"
+                  classNamePrefix="status-select"
+                  label="status-select"
+                  name="status"
+                  value={
+                    formData.saleState === ""
+                      ? null
+                      : status[formData.saleState]
+                  }
+                  placeholder="Status"
+                  options={statusOptions}
+                  onChange={handleStatusChange}
+                  isDisabled={submitted}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+        ) : null}
+
         <Row>
           <Col>
             <Form.Group>
@@ -232,21 +308,26 @@ function Editor() {
           </Col>
         </Row>
         <Row>
-          <Col lg={3}>
+          <Col lg={5}>
             <Form.Group>
               <Select
                 className="category-select"
                 classNamePrefix="category-select"
                 label="category-select"
                 name="category"
-                placeholder="Select category"
+                value={
+                  formData.category === ""
+                    ? null
+                    : categories[formData.category]
+                }
+                placeholder="Category"
                 options={categoryOptions}
                 onChange={handleCategoryChange}
                 isDisabled={submitted}
               />
             </Form.Group>
           </Col>
-          <Col lg={9}>
+          <Col lg={7}>
             <Form.Group>
               <CreatableSelecet
                 className="hashtag-select"
@@ -258,9 +339,10 @@ function Editor() {
                 isClearable
                 isMulti
                 menuIsOpen={false}
-                placeholder="Type tags"
+                placeholder="Hashtags"
                 onInputChange={handleTagInputChange}
                 onKeyDown={handleTagKeyDown}
+                onChange={handleCreatableChange}
                 isDisabled={submitted}
               />
             </Form.Group>
@@ -268,10 +350,12 @@ function Editor() {
         </Row>
         <Form.Group>
           <Form.Control
+            className="description-area"
             as="textarea"
             size="lg"
+            rows={4}
             name="description"
-            placeholder="Write description"
+            placeholder="Description"
             value={formData.description || ""}
             onChange={handleOnChange}
             disabled={submitted}
@@ -280,7 +364,7 @@ function Editor() {
         <Form.Group>
           <Form.File
             onChange={handleImageChange}
-            label="Select images"
+            label="Images"
             multiple
             disabled={submitted}
           />
@@ -291,9 +375,9 @@ function Editor() {
           />
           <Container className="image-upload-container">
             <Row lg={6}>
-              {formData.imageUrls.map((img) => (
+              {formData.images.map((img) => (
                 <Col>
-                  <Image roundedCircle src={img} width={100} height={100} />
+                  <Image roundedCircle src={img.url} width={100} height={100} />
                 </Col>
               ))}
             </Row>
@@ -302,41 +386,43 @@ function Editor() {
         <Form.Group>
           <Row>
             <Col>
+              {props.mode === "update" ? (
+                <Image src={deleteIcon} width={40}></Image>
+              ) : null}
+            </Col>
+            <Col md={4}>
               <Button
-                className="float-left"
                 variant="upload"
                 onClick={handleImageUpload}
                 disabled={submitted}
               >
-                Upload Images
+                Upload
               </Button>
             </Col>
-            <Col>
-              <Button
-                className="float-right"
-                variant="submit"
-                type="submit"
-                disabled={submitted}
-              >
-                Submit
+            <Col md={4}>
+              <Button variant="submit" type="submit" disabled={submitted}>
+                {props.mode === "update" ? "Save" : "Submit"}
               </Button>
             </Col>
           </Row>
         </Form.Group>
       </Form>
       {submitted &&
-        (requestStatus === 201 ? (
-          <Alert variant="info">Post is submitted successfully</Alert>
+        (requestStatus === 201 || 200 ? (
+          <Alert variant="info">
+            Post is {props.mode === "update" ? "updated" : "submitted"}{" "}
+            successfully
+          </Alert>
         ) : (
-          <Alert variant="info">Post submission failed</Alert>
+          <Alert variant="info">
+            Post {props.mode === "update" ? "update" : "submission"} failed
+          </Alert>
         ))}
       {/* Conditional element below to display the form data in json
             Uncomment it  on for debugging use */}
-      {/* {submitted &&
-                <pre name="json-output">
-                    {JSON.stringify({...formData}, null, 2)}
-                </pre>
-            } */}
+      {/* <pre name="json-output">
+          {JSON.stringify({...formData}, null, 2)}
+      </pre> */}
     </div>
   );
 }

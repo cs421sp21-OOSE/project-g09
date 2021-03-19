@@ -16,11 +16,31 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ![](../assets/UML/UML-iteration1.png)
 
+
+
 # Wireframe & Use-case  
+
+### Browsing the homepage
+1. The user visits our web application using a web browser.
+2. The user will be presented with the homepage having sample posted items of different categories.
+3. The user can choose to only see items from certain category by choosing the drop down category.
+4. The user can choose the order of items listed by selecting in the sort drop style(most recent, least recent, price low to high, price hight to low).
 
 ![](../assets/Wireframe/Wireframe-home-iteration2.png)
 
+### Account page for user
+(After clicking on post on the account button)
+1. The user can visit an account page where the username, location, and items posted by the user will be displayed.
+2. The user can click on the home button to go back to the homepage where all posts are displayed.
+
 ![](../assets/Wireframe/Wireframe-myPosts-iteration2.png)
+
+### Editing a post
+(After clicking on post on the account page)
+1. The user will be able to visit the editing panel of a post after clicking on the post on the account page.
+2. The editing panel contains the same boxes for post title, price, location, category, description and options to upload image plus a sold button.
+3. The user can edit the information in the boxes, and once the button save is clicked, the post will be updated in the database.
+4. The user can mark the item as sold once the sold button is clicked, and the post would not appear under search anymore.
 
 ![](../assets/Wireframe/Wireframe-editPost-iteration2.png)
 
@@ -33,32 +53,30 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # Tasks  
 Post Editing
-- [ ] myPage of posts for editing (Sam)
-- [ ] Route for myPage + button to navigate there (Sam)
+- [x] myPage of posts for editing (Sam)
+- [x] Route for myPage + button to navigate there (Sam)
 - [x] Editing UI form (same as before, but with data populated) (Chu)
 
 Mark Item as Sold
-- [ ] Modify Database design (Qiao)
-- [ ] UI button for updating status - in post editor (Chu)
-- [ ] Homepage should only render unsold items - frontend job (Bohua)
+- [x] Modify Database design (Qiao)
+- [x] UI button for updating status - in post editor (Chu)
+- [x] Homepage should only render unsold items - frontend job (Bohua)
 
 Filter by Category
-- [ ] Button for category filtering (Junjie)
+- [x] Button for category filtering (Junjie)
 
 Sorting
 - [x] One route method w/ query params (Chu)
-- [ ] Frontend choose sort type (Bohua)
+- [x] Frontend choose sort type (Junjie)
 
 Search
-- [ ] Update backend search - description, location, title, tags (Louie)
-- [ ] Frontend UI search bar (Junjie)
+- [x] Update backend search - description, location, title, tags (Louie)
+- [x] Frontend UI search bar (Junjie)
 
 Backlog 
 - [x] Create post redirect to home page (Chu)
 - [x] Allow deletion of tags (Chu)
-- [ ] Make post detail popup not expand (Sam)
-- [ ] Show avaiable hashtags in the hastag select (Chu)
+- [x] Make post detail popup not expand (Sam)
 - [ ] Pagination (if we have time) - update API & frontend ui to show pages
-- [ ] Media queries for responsiveness :(
 
 # Retrospective  
