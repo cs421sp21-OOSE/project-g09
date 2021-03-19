@@ -7,11 +7,9 @@ import Location from "./Location";
 import axios from "../util/axios";
 import "./UserProfile.css";
 
-// notes - add edit button as children of the post card
-// - rewrite image grid to extract state info from it into home page, so
-// so imagegrid only deals with rendering
-// frontend will filter posts by user id, but would be ideal to like. do that in the backend eventually.
-
+/**
+ * Component for user profile page
+ */
 const UserProfile = (props) => {
   const params = useParams();
   const [createEditorLive, setCreateEditorLive] = useState(false);
@@ -19,10 +17,12 @@ const UserProfile = (props) => {
   const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState({});
 
+  // handles create post button
   const handlePostBtnChange = () => {
     setCreateEditorLive(!createEditorLive);
   };
 
+  // handles editting a post button
   const handleEditBtnChange = (post) => {
     if (updateEditorLive) {
       setSelectedPost({});
@@ -39,6 +39,7 @@ const UserProfile = (props) => {
     }
   };
 
+  // helper function for sorting items by status
   const compareByStatus = (a, b) => {
     if (a.saleState === b.saleState) {
       return 0;
