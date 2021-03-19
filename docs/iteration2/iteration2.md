@@ -52,8 +52,8 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # Tasks  
 Post Editing
-- [ ] myPage of posts for editing (Sam)
-- [ ] Route for myPage + button to navigate there (Sam)
+- [x] myPage of posts for editing (Sam)
+- [x] Route for myPage + button to navigate there (Sam)
 - [x] Editing UI form (same as before, but with data populated) (Chu)
 
 Mark Item as Sold
@@ -69,15 +69,14 @@ Sorting
 - [x] Frontend choose sort type (Junjie)
 
 Search
-- [X] Update backend search - description, location, title, tags (Louie)
+- [x] Update backend search - description, location, title, tags (Louie)
 - [x] Frontend UI search bar (Junjie)
 
 Backlog 
 - [x] Create post redirect to home page (Chu)
 - [x] Allow deletion of tags (Chu)
-- [ ] Make post detail popup not expand (Sam)
+- [x] Make post detail popup not expand (Sam)
 - [ ] Pagination (if we have time) - update API & frontend ui to show pages
-- [ ] Media queries for responsiveness :(
 
 # Retrospective  
 
