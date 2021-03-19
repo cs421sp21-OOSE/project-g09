@@ -70,14 +70,6 @@ public class Sql2oHashtagDaoTest {
   }
 
   @Test
-  void createNullIdThrowsDaoException() {
-    Hashtag newHashtag = new Hashtag(null, "test");
-    assertThrows(DaoException.class, () -> {
-      hashtagDao.create(newHashtag);
-    });
-  }
-
-  @Test
   void createNullContentThrowsDaoException() {
     Hashtag newHashtag = new Hashtag(UUID.randomUUID().toString(), null);
     assertThrows(DaoException.class, () -> {

@@ -9,6 +9,7 @@ import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Sql2oImageDao implements ImageDao {
   private final Sql2o sql2o;
@@ -25,6 +26,9 @@ public class Sql2oImageDao implements ImageDao {
         + ") SELECT * FROM inserted;";
 
     try (Connection conn = this.sql2o.open()) {
+      if (image != null && (image.getId() == null || image.getId() == "" || image.getId().length() != 36)) {
+        image.setId(UUID.randomUUID().toString());
+      }
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       return query.bind(image).executeAndFetchFirst(Image.class);
     } catch (Sql2oException | NullPointerException ex) {
@@ -35,12 +39,11 @@ public class Sql2oImageDao implements ImageDao {
   @Override
   public Image update(String id, Image image) throws DaoException {
     String sql = "WITH updated AS ("
-        + "UPDATE image SET post_id = :postId, url = :url WHERE id = :id RETURNING *"
+        + "UPDATE image SET url = :url WHERE id = :id RETURNING *"
         + ") SELECT * FROM updated;";
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      return query.addParameter("postId", image.getPostId())
-          .addParameter("url", image.getUrl())
+      return query.addParameter("url", image.getUrl())
           .addParameter("id", id)
           .executeAndFetchFirst(Image.class);
     } catch (Sql2oException | NullPointerException ex) {
@@ -65,10 +68,13 @@ public class Sql2oImageDao implements ImageDao {
         + "INSERT INTO image(id, post_id, url) "
         + "VALUES(:id, :postId, :url) "
         + "ON CONFLICT (id) DO UPDATE "
-        + "SET post_id = :postId, url = :url RETURNING *"
+        + "SET url = :url RETURNING *"
         + ") SELECT * FROM inserted;";
 
     try (Connection conn = this.sql2o.open()) {
+      if (image != null && (image.getId() == null || image.getId() == "" || image.getId().length() != 36)) {
+        image.setId(UUID.randomUUID().toString());
+      }
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
       return query.bind(image).executeAndFetchFirst(Image.class);
     } catch (Sql2oException | NullPointerException ex) {

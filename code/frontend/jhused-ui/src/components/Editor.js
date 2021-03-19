@@ -17,7 +17,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./Editor.css";
 
 const formReducer = function (state, action) {
-  if (action.name !== "imageUrls") {
+  if (action.name !== "images") {
     return {
       ...state,
       [action.name]: action.value,
@@ -25,16 +25,16 @@ const formReducer = function (state, action) {
   } else {
     return {
       ...state,
-      [action.name]: [...state.imageUrls, action.value],
+      [action.name]: [...state.images, action.value],
     };
   }
 };
 
 // Use for react-select components
 // The value prop is an object of label and value
-const createOption = (label) => ({
-  label: label,
-  value: label,
+const createOption = (obj) => ({
+  label: obj.hashtag,
+  value: obj.hashtag,
 });
 
 // Use for react-select components
@@ -64,15 +64,16 @@ function Editor(props) {
   // Reudcer to hold the states related to the form
   // Decide on useReducer instead of useState because of the input validation features to be implemented later
   const emptyForm = {
-    uuid: "",
+    id: "",
     userId: "",
     title: "",
     price: 0.,
-    location: "",
-    category: "",
-    hashtags: [],
+    saleState: "SALE",
     description: "",
-    imageUrls: [],
+    images: [],
+    hashtags: [],
+    category: "",
+    location: "",
   };
 
   const [formData, setFormData] = useReducer(formReducer, 
@@ -87,7 +88,7 @@ function Editor(props) {
   const [tagInput, setTagInput] = useState("");
 
   // States related to image upload but not relevant to the form
-  const [images, setImages] = useState([]);
+  const [imageFiles, setImageFiles] = useState([]);
   const [imageUploadProgress, setImageUploadProgress] = useState(0);
 
   /**
@@ -106,8 +107,6 @@ function Editor(props) {
 
   /**
    * Event handler for the submit button
-   * TODO: disable input components once the button is clicked
-   * TODO: show a success message (use a conditional component)
    */
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -115,7 +114,7 @@ function Editor(props) {
     switch (props.mode) {
       case "create":
         axios
-        .post("https://jhused-api-server.herokuapp.com/api/posts", formData)
+        .post("/api/posts", formData)
         .then((response) => {
           console.log(response);
           setRequestStatus(response.status);
@@ -126,7 +125,7 @@ function Editor(props) {
         break;
       case "update":
         axios
-        .put("https://jhused-api-server.herokuapp.com/api/posts/" + formData.uuid, formData)
+        .put("/api/posts/" + formData.id, formData)
         .then((response) => {
           console.log(response);
           setRequestStatus(response.status);
@@ -148,7 +147,7 @@ function Editor(props) {
   const handleImageChange = (event) => {
     if (event.target.files[0]) {
       // setImage(event.target.files[0]);
-      setImages(event.target.files);
+      setImageFiles(event.target.files);
     }
   };
 
@@ -157,7 +156,7 @@ function Editor(props) {
    * Perform the image upload and update the image url state
    */
   const handleImageUpload = () => {
-    Array.from(images).forEach((image) => {
+    Array.from(imageFiles).forEach((image) => {
       const uploadTask = storage.ref(`images/${image.name}`).put(image);
       uploadTask.on(
         "state_changed",
@@ -174,8 +173,12 @@ function Editor(props) {
           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             console.log("File available at ", downloadURL);
             setFormData({
-              name: "imageUrls",
-              value: downloadURL,
+              name: "images",
+              value: {
+                id: "", 
+                postId: formData.id,
+                url: downloadURL
+              }
             });
           });
         }
@@ -204,7 +207,7 @@ function Editor(props) {
       case "Enter":
         setFormData({
           name: "hashtags",
-          value: [...formData.hashtags, tagInput],
+          value: [...formData.hashtags, {hashtag: tagInput}],
         });
         setTagInput("");
         event.preventDefault();
@@ -213,10 +216,10 @@ function Editor(props) {
     }
   };
 
-  const handleCreatableChange = (value, actionMedia) => {
+  const handleCreatableChange = (values, actionMedia) => {
     setFormData({
       name: "hashtags",
-      value: value.map(obj => obj.value)
+      value: values.map(obj => ({hashtag: obj.value}))
     });
   };
 
@@ -329,9 +332,9 @@ function Editor(props) {
           />
           <Container className="image-upload-container">
             <Row lg={6}>
-              {formData.imageUrls.map((img) => (
+              {formData.images.map((img) => (
                 <Col>
-                  <Image roundedCircle src={img} width={100} height={100} />
+                  <Image roundedCircle src={img.url} width={100} height={100} />
                 </Col>
               ))}
             </Row>

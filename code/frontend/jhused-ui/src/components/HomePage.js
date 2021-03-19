@@ -21,7 +21,9 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
-      axios.get("/api/posts").then((response) => {
+      axios.get("/api/posts", {params:{
+        "sort":"update_time:desc"
+      }}).then((response) => {
           setPosts(response.data);
       });
   }, [])
@@ -64,7 +66,7 @@ const HomePage = () => {
   const handleUpdateBtnChange = () => {
     const postID = "000000000000000000000000000000000000";
     
-    const postData = axios.get("https://jhused-api-server.herokuapp.com/api/posts/" + postID)
+    const postData = axios.get("/api/posts/" + postID)
       .then((response) => 
         {
           console.log(response);
