@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ImageGrid from "./ImageGrid";
 import EditorPopup from "./EditorPopUp";
 import "./HomePage.css";
 import axios from "../util/axios";
 import SearchIcon from "../images/search.png";
+import Icon from "../images/icon.png";
+
+const userID = "4"; // dummy userID for now
 
 const HomePage = () => {
-  
   // State for controlling whether editor should show up
   const [editorLive, setEditorLive] = useState(false);
   // All the posts
@@ -21,23 +23,31 @@ const HomePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
 
   useEffect(() => {
-      axios.get("/api/posts", {params:{
-        "sort":"update_time:desc"
-      }}).then((response) => {
-          setPosts(response.data);
+    axios
+      .get("/api/posts", {
+        params: {
+          sort: "update_time:desc",
+        },
+      })
+      .then((response) => {
+        setPosts(response.data);
       });
-  }, [])
+  }, []);
 
-  useEffect( () => {
-      setSearchedPosts( posts.filter( (post) => {
-          if (searchTerm === "") {
-              return post;
-          } else if (post.title.toLowerCase().includes(searchTerm.toLowerCase())) { /*TODO: searching is only for title currently*/
-              return post;
-          }
-          else return null;
-      }) );
-  }, [posts, searchTerm])
+  useEffect(() => {
+    setSearchedPosts(
+      posts.filter((post) => {
+        if (searchTerm === "") {
+          return post;
+        } else if (
+          post.title.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          /*TODO: searching is only for title currently*/
+          return post;
+        } else return null;
+      })
+    );
+  }, [posts, searchTerm]);
 
   useEffect(() => {
     setFilteredPosts(
@@ -74,69 +84,62 @@ const HomePage = () => {
 
   const handleUpdateBtnChange = () => {
     const postID = "000000000000000000000000000000000000";
-    
-    const postData = axios.get("/api/posts/" + postID)
-      .then((response) => 
-        {
-          console.log(response);
-          setPostData(response.data);
-          setEditorMode("update");
-          setEditorLive(!editorLive);
-        });
 
-    
-  }
+    const postData = axios.get("/api/posts/" + postID).then((response) => {
+      console.log(response);
+      setPostData(response.data);
+      setEditorMode("update");
+      setEditorLive(!editorLive);
+    });
+  };
 
   return (
     <div className="home-page">
       <div className="home-page-header">
         {/* Button for setting up editor's post-updating feature only - delete later once my page is setup */}
-        <button
-          className="post-button"
-          id="update-button"
-          onClick={handleUpdateBtnChange}
-        >
-          Update
-        </button>
-        <button
-          className="post-button"
-          onClick={handlePostBtnChange}
-        >
+        <button className="post-button" onClick={handlePostBtnChange}>
           Post
         </button>
         <div className="search-bar">
-          <input className="search"
+          <input
+            className="search"
             type="text"
             placeholder="Search..."
             onChange={(event) => {
               setSearchTerm(event.target.value);
             }}
           />
-          <img className="search-icon" src={SearchIcon} alt="search icon"/>
+          <img className="search-icon" src={SearchIcon} alt="search icon" />
         </div>
-        <div className="category-filter"> {/*TODO: the categories are hard-coded for now*/}
-          <select onChange={(event) => {
+        <a href={`/user/${userID}`}>
+          <img className="home-user-icon" src={Icon} alt="icon" />
+        </a>
+        <div className="category-filter">
+          {" "}
+          {/*TODO: the categories are hard-coded for now*/}
+          <select
+            onChange={(event) => {
               setSelectedCategory(event.target.value);
-          }}>
-              <option value="ALL">ALL</option>
-              <option value="FURNITURE">FURNITURE</option>
-              <option value="CAR">CAR</option>
-              <option value="TV">TV</option>
-              <option value="DESK">DESK</option>
+            }}
+          >
+            <option value="ALL">ALL</option>
+            <option value="FURNITURE">FURNITURE</option>
+            <option value="CAR">CAR</option>
+            <option value="TV">TV</option>
+            <option value="DESK">DESK</option>
           </select>
         </div>
       </div>
 
-      {editorLive ? 
-        <EditorPopup 
-          toggle={handlePostBtnChange} 
+      {editorLive ? (
+        <EditorPopup
+          toggle={handlePostBtnChange}
           mode={editorMode}
-          post={editorMode==="update" ? postData : null}
-          /> : null}
+          post={editorMode === "update" ? postData : null}
+        />
+      ) : null}
       {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
-      <ImageGrid posts={filteredPosts}/>
-
-
+      <ImageGrid posts={filteredPosts} />
     </div>
   );
 };
