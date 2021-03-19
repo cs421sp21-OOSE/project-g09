@@ -4,6 +4,8 @@ import EditorPopup from "./EditorPopUp";
 import "./HomePage.css";
 import axios from "../util/axios";
 import SearchIcon from "../images/search.png";
+import DownArrow from "../images/down-arrow.png";
+import UpArrow from "../images/up-arrow.png";
 
 const HomePage = () => {
   
@@ -19,6 +21,10 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   // State of the category filter
   const [selectedCategory, setSelectedCategory] = useState("ALL");
+  // State of the sorting type
+  const [sortType, setSortType] = useState("Create Time")
+  // State of the sorting direction
+  const [sortDirection, setSortDirection] = useState("asc");
 
   useEffect(() => {
       axios.get("/api/posts").then((response) => {
@@ -113,6 +119,18 @@ const HomePage = () => {
               <option value="TV">TV</option>
               <option value="DESK">DESK</option>
           </select>
+        </div>
+        <div className="sort-dropdown">
+          <select onChange={(event) => {
+            setSortType(event.target.value);
+          }}>
+
+          </select>
+          <button className="sort-direction" onClick={
+            () => {sortDirection === "asc" ? setSortDirection("desc") : setSortDirection("asc")}
+          }>
+            <img src={sortDirection === "asc" ? UpArrow : DownArrow} alt="sort direction icon"/>
+          </button>
         </div>
       </div>
       {editorLive ? 
