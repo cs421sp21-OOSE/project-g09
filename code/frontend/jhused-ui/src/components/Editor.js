@@ -47,6 +47,7 @@ const categories = {
   CAR: { value: "CAR", label: "Car" },
   TV: { value: "TV", label: "TV" },
   DESK: { value: "DESK", label: "Desk" },
+  OTHER: { value: "OTHER", label: "Other"},
 };
 
 // Define enums for post categories
@@ -66,6 +67,7 @@ function Editor(props) {
     categories.CAR,
     categories.TV,
     categories.DESK,
+    categories.OTHER,
   ];
 
   const statusOptions = [status.SOLD, status.DEALING, status.SALE];
@@ -129,10 +131,12 @@ function Editor(props) {
           .then((response) => {
             console.log(response);
             setRequestStatus(response.status);
+            respondToStatus(response.status);
           })
           .catch((error) => {
             console.log(error);
           });
+        
         break;
       case "update":
         axios
@@ -140,6 +144,7 @@ function Editor(props) {
           .then((response) => {
             console.log(response);
             setRequestStatus(response.status);
+            respondToStatus(response.status);
           })
           .catch((error) => {
             console.log(error);
@@ -195,6 +200,16 @@ function Editor(props) {
     });
   };
 
+  // Utility function to response to HTTP response status
+  const respondToStatus = (status) => { // success -> close popup
+    if (status === 201 || status === 200) {
+      props.toggle();
+    }
+    else {
+      // Do nothing for now
+    }
+  }
+
   /**
    * Event handlers for react-select components
    * Could be refactored later into the handleChange
@@ -237,6 +252,21 @@ function Editor(props) {
       name: "hashtags",
       value: values.map((obj) => ({ hashtag: obj.value })),
     });
+  };
+
+  const handleClickDelete = (event) => {
+    console.log("Clicked delete button");
+    console.log(formData.id);
+    axios
+      .delete("/api/posts/" + formData.id)
+      .then((response) => {
+        console.log(response);
+        setRequestStatus(response.status);
+        respondToStatus(response.status);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -387,7 +417,10 @@ function Editor(props) {
           <Row>
             <Col>
               {props.mode === "update" ? (
-                <Image src={deleteIcon} width={40}></Image>
+                <Image 
+                  className="delete-icon"
+                  src={deleteIcon} width={40}
+                  onClick={handleClickDelete} />
               ) : null}
             </Col>
             <Col md={4}>
@@ -415,7 +448,7 @@ function Editor(props) {
           </Alert>
         ) : (
           <Alert variant="info">
-            Post {props.mode === "update" ? "update" : "submission"} failed
+            Post {props.mode === "update" ? "update" : "submission"} failed: code {requestStatus}
           </Alert>
         ))}
       {/* Conditional element below to display the form data in json

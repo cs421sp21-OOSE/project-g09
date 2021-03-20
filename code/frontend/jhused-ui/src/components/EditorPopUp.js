@@ -19,7 +19,11 @@ function EditorPopUp(props) {
                 </img>
             </div>
             <div className="editor-popup-content">
-                <Editor mode={props.mode} post={props.post}/>
+                <Editor 
+                    mode={props.mode} 
+                    post={props.post} 
+                    toggle={props.toggle}
+                />
             </div>
         </div>
     );
