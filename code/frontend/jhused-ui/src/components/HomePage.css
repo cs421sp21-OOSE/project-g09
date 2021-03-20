@@ -10,8 +10,8 @@
 
 .search-bar {
   position: absolute;
-  left: 350px;
-  top: 32px;
+  left: 400px;
+  top: 45px;
 }
 
 .search {
@@ -61,7 +61,7 @@
 #sort-dropdown {
   position: absolute;
   border: none;
-  top: 118px;
+  top: 154px;
   margin-left: 200px;
 }
 
