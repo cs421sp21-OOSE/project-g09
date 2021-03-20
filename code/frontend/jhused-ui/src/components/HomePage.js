@@ -27,7 +27,7 @@ const HomePage = () => {
   // State of the sorting type
   const [sortType, setSortType] = useState("Create Time")
   // State of the sorting direction
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortDirection, setSortDirection] = useState("desc");
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
 
@@ -167,8 +167,8 @@ const HomePage = () => {
           <select onChange={(event) => {
             setSortType(event.target.value);
           }}>
-            <option>Create Time</option>
             <option>Update Time</option>
+            <option>Create Time</option>
             <option>Price</option>
           </select>
           <button className="direction-button" onClick={
