@@ -131,10 +131,12 @@ function Editor(props) {
           .then((response) => {
             console.log(response);
             setRequestStatus(response.status);
+            respondToStatus(response.status);
           })
           .catch((error) => {
             console.log(error);
           });
+        
         break;
       case "update":
         axios
@@ -142,6 +144,7 @@ function Editor(props) {
           .then((response) => {
             console.log(response);
             setRequestStatus(response.status);
+            respondToStatus(response.status);
           })
           .catch((error) => {
             console.log(error);
@@ -197,6 +200,16 @@ function Editor(props) {
     });
   };
 
+  // Utility function to response to HTTP response status
+  const respondToStatus = (status) => { // success -> close popup
+    if (status === 201 || status === 200) {
+      props.toggle();
+    }
+    else {
+      // Do nothing for now
+    }
+  }
+
   /**
    * Event handlers for react-select components
    * Could be refactored later into the handleChange
@@ -249,6 +262,7 @@ function Editor(props) {
       .then((response) => {
         console.log(response);
         setRequestStatus(response.status);
+        respondToStatus(response.status);
       })
       .catch((error) => {
         console.log(error);
@@ -434,7 +448,7 @@ function Editor(props) {
           </Alert>
         ) : (
           <Alert variant="info">
-            Post {props.mode === "update" ? "update" : "submission"} failed
+            Post {props.mode === "update" ? "update" : "submission"} failed: code {requestStatus}
           </Alert>
         ))}
       {/* Conditional element below to display the form data in json

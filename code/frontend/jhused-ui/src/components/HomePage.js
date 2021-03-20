@@ -126,15 +126,7 @@ const HomePage = () => {
     );
   };
 
-  // State for controlling the editor mode: update a post or create a post
-  const [editorMode, setEditorMode] = useState("create");
-
-  // State of the post data which is to be fed into the post editor
-  // Only needed for building the update feature of the editor
-  const [postData, setPostData] = useState({});
-
   const handlePostBtnChange = () => {
-    setEditorMode("create");
     setEditorLive(!editorLive);
   };
 
@@ -210,8 +202,8 @@ const HomePage = () => {
       {editorLive ? (
         <EditorPopup
           toggle={handlePostBtnChange}
-          mode={editorMode}
-          post={editorMode === "update" ? postData : null}
+          mode={"create"}
+          post={null}
         />
       ) : null}
       {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
