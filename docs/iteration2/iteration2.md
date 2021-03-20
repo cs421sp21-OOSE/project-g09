@@ -62,15 +62,15 @@ Mark Item as Sold
 - [x] Homepage should only render unsold items - frontend job (Bohua)
 
 Filter by Category
-- [ ] Button for category filtering (Junjie)
+- [x] Button for category filtering (Junjie)
 
 Sorting
 - [x] One route method w/ query params (Chu)
-- [ ] Frontend choose sort type (Bohua)
+- [x] Frontend choose sort type (Junjie)
 
 Search
 - [X] Update backend search - description, location, title, tags (Louie)
-- [ ] Frontend UI search bar (Junjie)
+- [x] Frontend UI search bar (Junjie)
 
 Backlog 
 - [x] Create post redirect to home page (Chu)
