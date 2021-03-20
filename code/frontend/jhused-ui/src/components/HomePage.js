@@ -179,16 +179,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {editorLive ? 
-        <EditorPopup 
-          toggle={handlePostBtnChange} 
-          mode={editorMode}
-          post={editorMode==="update" ? postData : null}
-          /> : null}
-
-      {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
-      <ImageGrid posts={sortedPosts}/>
-
       {editorLive ? (
         <EditorPopup
           toggle={handlePostBtnChange}
