@@ -47,6 +47,7 @@ const categories = {
   CAR: { value: "CAR", label: "Car" },
   TV: { value: "TV", label: "TV" },
   DESK: { value: "DESK", label: "Desk" },
+  OTHER: { value: "OTHER", label: "Other"},
 };
 
 // Define enums for post categories
@@ -66,6 +67,7 @@ function Editor(props) {
     categories.CAR,
     categories.TV,
     categories.DESK,
+    categories.OTHER,
   ];
 
   const statusOptions = [status.SOLD, status.DEALING, status.SALE];
@@ -239,6 +241,20 @@ function Editor(props) {
     });
   };
 
+  const handleClickDelete = (event) => {
+    console.log("Clicked delete button");
+    console.log(formData.id);
+    axios
+      .delete("/api/posts/" + formData.id)
+      .then((response) => {
+        console.log(response);
+        setRequestStatus(response.status);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <div className="editor-panel">
       <Form onSubmit={handleSubmit}>
@@ -387,7 +403,10 @@ function Editor(props) {
           <Row>
             <Col>
               {props.mode === "update" ? (
-                <Image src={deleteIcon} width={40}></Image>
+                <Image 
+                  className="delete-icon"
+                  src={deleteIcon} width={40}
+                  onClick={handleClickDelete} />
               ) : null}
             </Col>
             <Col md={4}>

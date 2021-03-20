@@ -175,6 +175,7 @@ const HomePage = () => {
             <option>CAR</option>
             <option>TV</option>
             <option>DESK</option>
+            <option>OTHER</option>
           </select>
         </div>
 
