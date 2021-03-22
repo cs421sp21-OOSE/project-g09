@@ -5,7 +5,7 @@ import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import logo from "./images/logo.png";
-import Editor from "./components/Editor";
+import EditorFormik from "./components/EditorFormik";
 
 const App = () => {
   const location = useLocation();
@@ -21,7 +21,9 @@ const App = () => {
           <HomePage />
         </Route>
         <Route exact path="/user/:userID" component={UserProfile}/>
-
+        <Route exact path="/editor-new">
+          <EditorFormik />
+        </Route>
       </Switch>
 
       {background && <Route path="/post/:postID" children={<PostDetails />} />}
