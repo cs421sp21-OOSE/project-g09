@@ -37,7 +37,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 ### Chatting box
 1. The user can chat with other users in this box.
 
-![](..\assets\Wireframe\Wireframe-message-iteration3.png)
+![](../assets/Wireframe/Wireframe-message-iteration3.png)
 
 ### Reading a post
 (After clicking on a post)
@@ -57,9 +57,9 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. The user can start a chat when visiting other's account page by clicking a button.
 5. The user can click on a button to open an edit pop up to edit the user's information.
 
-![](..\assets\Wireframe\Wireframe-MyProfile-iteration3.png)
+![](../assets/Wireframe/Wireframe-MyProfile-iteration3.png)
 
-![](..\assets\Wireframe\Wireframe-otheruserprofile-iteration3.png)
+![](../assets/Wireframe/Wireframe-otheruserprofile-iteration3.png)
 
 ### Account information editing page
 
