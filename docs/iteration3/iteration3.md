@@ -30,9 +30,9 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 7. The user can logout by  clicking the "Logout" from the drop down menu of the account icon.
 8. The user can login by clicking the Login button and then redirect to JHU SSO to login, then redirect to information registration page, and then back to homepage with logged in status.
 
-![](../assets/Wireframe/Wireframe-homepageloggedin-iteration3.png)
+![](../assets/Wireframe/Wireframe-HomepageLoggedIn-iteration3.png)
 
-![](../assets/Wireframe/Wireframe-homepagenotloggedin-iteration3.png)
+![](../assets/Wireframe/Wireframe-HomePageNotLoggedIn-iteration3.png)
 
 ### Chatting box
 1. The user can chat with other users in this box.
@@ -59,7 +59,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ![](../assets/Wireframe/Wireframe-MyProfile-iteration3.png)
 
-![](../assets/Wireframe/Wireframe-otheruserprofile-iteration3.png)
+![](../assets/Wireframe/Wireframe-OtherUserProfile-iteration3.png)
 
 ### Account information editing page
 
