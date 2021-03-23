@@ -80,9 +80,6 @@ As a user, I want to sign up an account, so that I can log in
   - [ ] Handle Sessions (Bohua, Louie)
 - [ ] Login Frontend
   - [ ] Editing user information page (route to this page/pop up in account page (must login))
-    - [ ] Preferred email
-    - [ ] Preferred name
-    - [ ] Location
   - [ ] Handle user's login status
     - [ ] Check if user is logged in
     - [ ] Redirect to login backend api url if not
