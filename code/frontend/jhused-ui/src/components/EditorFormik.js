@@ -1,9 +1,10 @@
-import React from "react";
+import { React, useState } from "react";
 import { storage } from "./firebase";
 import axios from "axios";
-import { Formik, Form, useField } from 'formik';
+import { Formik, useField } from 'formik';
 import * as Yup from 'yup';
 import CreatableSelecet from "react-select";
+
 
 // Text input with built-in error message
 const StdTextInput = ({ ...props }) => {
@@ -16,6 +17,7 @@ const StdTextInput = ({ ...props }) => {
   );
 };
 
+// Text area input with built-in error message
 const StdTextArea = ({ ...props }) => {
   const [field, meta] = useField(props);
   return (
@@ -26,6 +28,7 @@ const StdTextArea = ({ ...props }) => {
   );
 };
 
+// Dropdown select with built-in error message
 const StdSelect = ({ ...props }) => {
   const [field, meta] = useField(props);
   return (
@@ -36,15 +39,169 @@ const StdSelect = ({ ...props }) => {
   );
 };
 
-const EditorFormik = () => {
+// Wrapper for react-select creatable component to be compatiable with Formik
+const CreatableWrapper = ({ ...props }) => {
+  const [tagInput, setTagInput] = useState(""); // State for tag input
+  
+  const handleTagInputChange = (inputValue) => {
+    setTagInput(inputValue);
+  };
+
+  const handleTagKeyDown = (event) => {
+    if (!tagInput) return;
+    switch (event.key) {
+      case "Enter":
+        props.onChange("hashtags", [...props.value, {hashtag: tagInput}])
+        setTagInput("");
+        event.preventDefault();
+        break;
+      default:
+    }
+  };
+
+  const handleCreatableChange = (values, actionMedia) => {
+    props.onChange("hashtags", values.map((obj) => ({hashtag: obj.value})))
+  };
+
+  const handleBlur = () => {
+    props.onBlur("hashtags", true);
+  };
+
+  return (
+    <div>
+      <CreatableSelecet
+            components={{ DropdownIndicator: null }}
+            inputValue={tagInput || ""}
+            value={props.value.map((val) => ({
+              label: "#" + val.hashtag,
+              value: val.hashtag
+            }))}
+            isClearable
+            isMulti
+            menuIsOpen={false}
+            placeholder="Hashtags"
+            onInputChange={handleTagInputChange}
+            onKeyDown={handleTagKeyDown}
+            onChange={handleCreatableChange}
+            onBlur={handleBlur}
+      />
+    </div>
+  );
+}
+
+// Image upload component
+const ImageUpload = ({ ...props }) => {
+
+  const [imageFiles, setImageFiles] = useState([]);
+  const [imageUploadProgress, setImageUploadProgress] = useState(0);
+
+  const handleImageChange = (event) => {
+    if (event.target.files[0]) {
+      setImageFiles(event.target.files);
+    }
+  };
+
+  const handleImageUpload = (event) => {
+    event.preventDefault();
+    const images = [];
+    Array.from(imageFiles).forEach((image) => {
+      const uploadTask = storage.ref(`images/${image.name}`).put(image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setImageUploadProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+            console.log("File available at ", downloadURL);
+            images.push({
+              id: "",
+              postId: "",
+              url: downloadURL
+            });
+          });
+        }
+      );
+    });
+    props.onChange("images", images);
+  };
+
+  return (
+    <div>
+      <div>
+        <input 
+          name="images"
+          type="file"
+          multiple
+          onChange={handleImageChange}
+          onBlur={() => props.onBlur("images", true)}
+        />
+      </div>
+      <div><progress
+          value={imageUploadProgress}
+          max={100}
+        />
+      </div>
+      {props.touched && props.error ? (<div>{props.error};</div>) : (null)}
+      <button onClick={handleImageUpload}>
+        Upload
+      </button>
+    </div>
+  );
+};
+
+
+const EditorFormik = (props) => {
+
+  const handleSubmit = (values, { setSubmitting }) => {
+    switch (props.mode) {
+      case "create":
+        axios
+          .post("/api/posts", values)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        
+        break;
+      case "update":
+        axios
+          .put("/api/posts/" + values.id, values)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        break;
+      default:
+      // do nothing
+    }
+    setSubmitting(false);
+  };
+
+
   return (
     <Formik
-      initialValues={{
+      initialValues={props.post || {
+        id: "",
+        userId: "",
         title: "",
         price: "",
-        location: "",
+        saleState: "SALE",
+        location: "", 
         category: "",
-        description: ""
+        description: "",
+        hashtags: [],
+        images: []
       }}
       validationSchema={Yup.object({
         title: Yup.string()
@@ -59,17 +216,14 @@ const EditorFormik = () => {
         category: Yup.string()
           .oneOf(["FURNITURE", "CAR", "DESK", "TV"], "Invalid a category")
           .required("Please select a category"),
-        description: Yup.string().required("Please provide a description")
+        description: Yup.string().required("Please provide a description"),
+        images: Yup.array()
+          .min(1, "Please provide at least one image")
       })}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
-      }}
+      onSubmit={handleSubmit}
     >
       {(formik) => (
-        <Form>
+        <form onSubmit={formik.handleSubmit}>
           <StdTextInput name="title" type="text" placeholder="Title" />
 
           <StdTextInput name="price" type="number" placeholder="Price" />
@@ -85,25 +239,29 @@ const EditorFormik = () => {
             <option value="OTHER">Other</option>
           </StdSelect>
 
-          <CreatableSelecet
+          <CreatableWrapper 
             name="hashtags"
-            components={{ DropdownIndicator: null }}
-            // inputValue={tagInput || ""}
-            // value={createOptionArray(formData.hashtags)}
-            isClearable
-            isMulti
-            menuIsOpen={false}
-            placeholder="Hashtags"
-            // onInputChange={handleTagInputChange}
-            // onKeyDown={handleTagKeyDown}
-            // onChange={handleCreatableChange}
-            // isDisabled={submitted}
+            value={formik.values.hashtags}
+            onChange={formik.setFieldValue}
+            onBlur={formik.setFieldTouched}
           />
 
-          <StdTextArea name="description" placeholder="Description" />
+          <StdTextArea 
+            name="description" 
+            placeholder="Description" 
+          />
 
-          <button type="submit">Submit</button>
-        </Form>
+          <ImageUpload 
+            name = "images"
+            value={formik.values.images}
+            onChange={formik.setFieldValue}
+            onBlur={formik.setFieldTouched}
+            touched={formik.touched.images}
+            error={formik.errors.images}
+          />
+
+          <button type="submit" disabled={formik.isSubmitting}>Submit</button>
+        </form>
       )}
     </Formik>
   );

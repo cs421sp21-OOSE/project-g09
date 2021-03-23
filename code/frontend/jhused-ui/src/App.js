@@ -22,7 +22,7 @@ const App = () => {
         </Route>
         <Route exact path="/user/:userID" component={UserProfile}/>
         <Route exact path="/editor-new">
-          <EditorFormik />
+          <EditorFormik mode="create"/>
         </Route>
       </Switch>
 
