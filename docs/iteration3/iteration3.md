@@ -101,7 +101,7 @@ As a user, I want to login into the platform using my JHED account to verify my 
   - [ ] Add chat box button in homepage and account page to allow user check his/her messages.
   - [ ] Add start chatting button in other user's account page to start conversation.
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
-  - [ ] Homepage
+  - [ ] Homepage (Sam)
   - [ ] post detail
   - [ ] post editing
   - [ ] account page
