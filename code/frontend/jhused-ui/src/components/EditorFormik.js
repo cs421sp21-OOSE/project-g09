@@ -4,7 +4,7 @@ import axios from "axios";
 import { Formik, useField } from 'formik';
 import * as Yup from 'yup';
 import CreatableSelecet from "react-select";
-import "./Editor.css";
+import "./EditorFormik.css";
 
 
 // Text input with built-in error message
@@ -12,7 +12,7 @@ const StdTextInput = ({ ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div>
-      <input {...props} {...field} />
+      <input className="focus:outline-none" {...props} {...field} />
       {meta.touched && meta.error ? <div>{meta.error}</div> : null}
     </div>
   );
@@ -201,81 +201,83 @@ const EditorFormik = (props) => {
   };
 
   return (
-    <Formik
-      initialValues={props.post || {
-        id: "",
-        userId: "",
-        title: "",
-        price: "",
-        saleState: "SALE",
-        location: "", 
-        category: "",
-        description: "",
-        hashtags: [],
-        images: []
-      }}
-      validationSchema={Yup.object({
-        title: Yup.string()
-          .max(60, "Must be 60 characters or less")
-          .required("Please give it a title"),
-        price: Yup.number()
-          .min(0, "Cannot be smaller than zero")
-          .required("Please give it a price"),
-        location: Yup.string()
-          .max(15, "Must be 30 characters or less")
-          .required("Please provide a location"),
-        category: Yup.string()
-          .oneOf(["FURNITURE", "CAR", "DESK", "TV"], "Invalid a category")
-          .required("Please select a category"),
-        description: Yup.string().required("Please provide a description"),
-        images: Yup.array()
-          .min(1, "Please provide at least one image")
-      })}
-      onSubmit={handleSubmit}
-    >
-      {(formik) => (
-        <form onSubmit={formik.handleSubmit}>
-          <StdTextInput name="title" type="text" placeholder="Title" />
+    <div>
+      <Formik
+        initialValues={props.post || {
+          id: "",
+          userId: "",
+          title: "",
+          price: "",
+          saleState: "SALE",
+          location: "", 
+          category: "",
+          description: "",
+          hashtags: [],
+          images: []
+        }}
+        validationSchema={Yup.object({
+          title: Yup.string()
+            .max(60, "Must be 60 characters or less")
+            .required("Please give it a title"),
+          price: Yup.number()
+            .min(0, "Cannot be smaller than zero")
+            .required("Please give it a price"),
+          location: Yup.string()
+            .max(15, "Must be 30 characters or less")
+            .required("Please provide a location"),
+          category: Yup.string()
+            .oneOf(["FURNITURE", "CAR", "DESK", "TV"], "Invalid a category")
+            .required("Please select a category"),
+          description: Yup.string().required("Please provide a description"),
+          images: Yup.array()
+            .min(1, "Please provide at least one image")
+        })}
+        onSubmit={handleSubmit}
+      >
+        {(formik) => (
+          <form onSubmit={formik.handleSubmit}>
+            <StdTextInput name="title" type="text" placeholder="Title" />
 
-          <StdTextInput name="price" type="number" placeholder="Price" />
+            <StdTextInput name="price" type="number" placeholder="Price" />
 
-          <StdTextInput name="location" type="text" placeholder="Location" />
+            <StdTextInput name="location" type="text" placeholder="Location" />
 
-          <StdSelect name="category" place="Category">
-            <option value="">Select a category</option>
-            <option value="FURNITURE">Furniture</option>
-            <option value="CAR">Car</option>
-            <option value="TV">TV</option>
-            <option value="DESK">Desk</option>
-            <option value="OTHER">Other</option>
-          </StdSelect>
+            <StdSelect name="category" place="Category">
+              <option value="">Select a category</option>
+              <option value="FURNITURE">Furniture</option>
+              <option value="CAR">Car</option>
+              <option value="TV">TV</option>
+              <option value="DESK">Desk</option>
+              <option value="OTHER">Other</option>
+            </StdSelect>
 
-          <CreatableWrapper 
-            name="hashtags"
-            value={formik.values.hashtags}
-            onChange={formik.setFieldValue}
-            onBlur={formik.setFieldTouched}
-          />
+            <CreatableWrapper 
+              name="hashtags"
+              value={formik.values.hashtags}
+              onChange={formik.setFieldValue}
+              onBlur={formik.setFieldTouched}
+            />
 
-          <StdTextArea 
-            name="description" 
-            placeholder="Description" 
-          />
+            <StdTextArea 
+              name="description" 
+              placeholder="Description" 
+            />
 
-          <ImageUpload 
-            name = "images"
-            value={formik.values.images}
-            postId={formik.values.id}
-            onChange={formik.setFieldValue}
-            onBlur={formik.setFieldTouched}
-            touched={formik.touched.images}
-            error={formik.errors.images}
-          />
+            <ImageUpload 
+              name = "images"
+              value={formik.values.images}
+              postId={formik.values.id}
+              onChange={formik.setFieldValue}
+              onBlur={formik.setFieldTouched}
+              touched={formik.touched.images}
+              error={formik.errors.images}
+            />
 
-          <button type="submit" disabled={formik.isSubmitting}>Submit</button>
-        </form>
-      )}
-    </Formik>
+            <button className="rounded-full py-3 px-6..." type="submit" disabled={formik.isSubmitting}>Submit</button>
+          </form>
+        )}
+      </Formik>
+    </div>
   );
 };
 
