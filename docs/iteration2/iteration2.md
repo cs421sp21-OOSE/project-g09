@@ -14,7 +14,9 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
 
-![](../assets/UML/UML-iteration2.png)
+![](../assets/UML/UML-iteration1.png)
+
+
 
 # Wireframe & Use-case  
 
@@ -42,7 +44,6 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ![](../assets/Wireframe/Wireframe-editPost-iteration2.png)
 
-
 # Iteration Backlog  
 * As a user, I want to post an item with tags for its category, so that a buyer can search through category  
 * As a user, I want to edit my posts after I post, so that I can update the post when I feel like to  
@@ -52,32 +53,44 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # Tasks  
 Post Editing
-- [ ] myPage of posts for editing (Sam)
-- [ ] Route for myPage + button to navigate there (Sam)
+- [x] myPage of posts for editing (Sam)
+- [x] Route for myPage + button to navigate there (Sam)
 - [x] Editing UI form (same as before, but with data populated) (Chu)
 
 Mark Item as Sold
-- [ ] Modify Database design (Qiao)
+- [x] Modify Database design (Qiao)
 - [x] UI button for updating status - in post editor (Chu)
-- [ ] Homepage should only render unsold items - frontend job (Bohua)
+- [x] Homepage should only render unsold items - frontend job (Bohua)
 
 Filter by Category
-- [ ] Button for category filtering (Junjie)
+- [x] Button for category filtering (Junjie)
 
 Sorting
 - [x] One route method w/ query params (Chu)
-- [ ] Frontend choose sort type (Bohua)
+- [x] Frontend choose sort type (Junjie)
 
 Search
-- [X] Update backend search - description, location, title, tags (Louie)
-- [ ] Frontend UI search bar (Junjie)
+- [x] Update backend search - description, location, title, tags (Louie)
+- [x] Frontend UI search bar (Junjie)
 
 Backlog 
 - [x] Create post redirect to home page (Chu)
 - [x] Allow deletion of tags (Chu)
-- [ ] Make post detail popup not expand (Sam)
+- [x] Make post detail popup not expand (Sam)
 - [ ] Pagination (if we have time) - update API & frontend ui to show pages
-- [ ] Media queries for responsiveness :(
 
 # Retrospective  
-
+This time, we started early to give ourselves more time to actually code; we made sure to 
+break down user stories into tasks and assign them early on, which was extremely helpful.
+We were able to complete all our user stories on time, so a user may sort items, filter by category,
+& visit a general profile page to edit posts. One thing we did have a discussion about
+was where sorting should be implemented; for now we've left it on the frontend but will likely be moving
+it to the backend in the future. In addition to this, we did not have time to implement pagniation for our
+app but will add that to our backlog. 
+One thing that came up was the UI. We have researched and ultimately settled on using a CSS framework
+and then borrowing design inspiration from similar websites, including Etsy and Depop. This will be a
+future issue to work through at the start of the next iteration. Thus the current version of the website
+that is deployed is using our old styling and is not browser repsonsive; this will be dealt with when we
+migrate our CSS.
+Moving forwards, we will try to coordinate more between members who are working on the same/similar features
+and also ensure that work gets distributed equally.

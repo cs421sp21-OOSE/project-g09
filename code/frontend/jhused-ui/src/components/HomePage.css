@@ -10,8 +10,8 @@
 
 .search-bar {
   position: absolute;
-  left: 350px;
-  top: 32px;
+  left: 400px;
+  top: 45px;
 }
 
 .search {
@@ -29,10 +29,20 @@
   position: relative;
   top: -5px;
   right: 50px;
-  width: 40px;
+  width: 35px;
 }
 
-.category-filter {
+.sort-direction {
+  width: 20px;
+}
+
+.direction-button{
+  position: relative;
+  top: -40px;
+  left: 80px;
+}
+
+.dropdown {
   top: 40px;
   left: 50px;
   position: relative;
@@ -48,6 +58,13 @@
   padding-bottom: 50px;
 }
 
+#sort-dropdown {
+  position: absolute;
+  border: none;
+  top: 154px;
+  margin-left: 200px;
+}
+
 #update-button {
   margin-right: 2rem;
 }
@@ -55,4 +72,9 @@
 .home-page-header {
   padding: 2rem 0;
   text-align: right;  
+}
+
+.home-user-icon {
+  width: 5rem;
+  height: 5rem;
 }
