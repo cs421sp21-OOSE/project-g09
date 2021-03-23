@@ -79,7 +79,7 @@ As a user, I want to login into the platform using my JHED account to verify my 
 - [ ] Login Backend
   - [ ]  Database Design, user table, user dao, user api (Qiao)
     - [ ]   Setup User table (JHID, image_url, preferred name, location, preferred email)
-    - [ ]   Setup User model
+    - [ ]   Setup User model（listOfPosts）
     - [ ]   User dao
     - [ ]   CRUD api for User
     - [ ]   Email user when post get sold api (nice to have)
@@ -89,21 +89,22 @@ As a user, I want to login into the platform using my JHED account to verify my 
     - [ ] Handle SSO encription and decription
   - [ ] Handle Sessions (Bohua, Louie)
 - [ ] Login Frontend
-  - [ ] Editing user information page (route to this page/pop up in account page (must login))
-  - [ ] Handle user's login status
+  - [ ] Editing user information page (route to this page/pop up in account page (must login)) (Chu)
+  - [ ] Handle user's login status (Junjie)
     - [ ] Check if user is logged in
     - [ ] Redirect to login backend api url if not
 - [ ] User frontend
   - [ ] Add user link in post detail to allow user to visit the post owner's user page. (Sam)
-  - [ ] Add user information editing button in his/her account page to open the "Editing user information page".
+  - [ ] Add user information editing button in his/her account page to open the "Editing user information page". (Sam)
 - [ ] Chatting box
-  - [ ] Add chat box button in homepage and account page to allow user check his/her messages.
-  - [ ] Add start chatting button in other user's account page to start conversation.
+  - [ ] Chat box component - firebase or other 3rd party lib (Junjie, Chu)
+  - [ ] Add chat box button in homepage and account page to allow user check his/her messages. (Bohua)
+  - [ ] Add start chatting button in other user's account page to start conversation. (Sam)
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
-  - [ ] Homepage
-  - [ ] post detail
-  - [ ] post editing
-  - [ ] account page
+  - [ ] Homepage (Sam)
+  - [ ] post detail (Sam)
+  - [ ] post editing (Chu)
+  - [ ] account page (Bohua)
 - [ ] Extend past activity functionalities (If we have time)
   - [ ] Implement my favorite posts (post detail have a heart, click then favorite it, show a list of favorites in account page)
   - [ ] Implement history of post creation, edition, view
