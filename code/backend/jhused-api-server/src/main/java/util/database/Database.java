@@ -1,6 +1,11 @@
 package util.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import model.*;
+import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.postgres.PostgresPlugin;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
@@ -69,6 +74,24 @@ public final class Database {
     return sql2o;
   }
 
+  public static Jdbi getJdbi() throws URISyntaxException {
+    String databaseUrl = getDatabaseUrl();
+    URI dbUri = new URI(databaseUrl);
+
+    PGSimpleDataSource ds = new PGSimpleDataSource();
+    ds.setServerNames(new String[]{dbUri.getHost() + ":" + dbUri.getPort()});
+    ds.setDatabaseName(dbUri.getPath().substring(1));
+    ds.setUser(dbUri.getUserInfo().split(":")[0]);
+    ds.setPassword(dbUri.getUserInfo().split(":")[1]);
+    ds.setLoadBalanceHosts(true);
+    if (!dbUri.getHost().contains("localhost"))
+      ds.setSslMode("require");
+    HikariConfig hc = new HikariConfig();
+    hc.setDataSource(ds);
+    hc.setMaximumPoolSize(6);
+    return Jdbi.create(new HikariDataSource(hc)).installPlugin(new PostgresPlugin());
+  }
+
   /**
    * Create post table schema and add sample posts to it.
    *
@@ -86,11 +109,11 @@ public final class Database {
       conn.createQuery("DROP TYPE IF EXISTS Category;").executeUpdate();
       conn.createQuery("DROP TYPE IF EXISTS SaleState;").executeUpdate();
       conn.createQuery("CREATE TYPE Category as enum (" +
-              getAllNamesGivenValues(Category.values())+
-              ");").executeUpdate();
+          getAllNamesGivenValues(Category.values()) +
+          ");").executeUpdate();
       conn.createQuery("CREATE TYPE SaleState as enum (" +
-              getAllNamesGivenValues(SaleState.values()) +
-              ");").executeUpdate();
+          getAllNamesGivenValues(SaleState.values()) +
+          ");").executeUpdate();
 
 
       // change naming rule to use underscores, as column names are case insensitive
@@ -246,7 +269,7 @@ public final class Database {
     try (Connection conn = sql2o.open()) {
       String sql = "INSERT INTO post(id, user_id, title, price, sale_state, description, category, location) "
           + "VALUES(:id, :userId, :title, :price, CAST(:saleState AS SaleState), " +
-              ":description, CAST(:category AS Category), :location);";
+          ":description, CAST(:category AS Category), :location);";
       conn.createQuery(sql).bind(post).executeUpdate();
       for (Image image : post.getImages()) {
         addImage(sql2o, image);
@@ -347,18 +370,17 @@ public final class Database {
 
   /**
    * return all names of a enum for creating enum type in database
+   *
    * @param values all the values of a enum, pass Enum.values() to this arg
-   * @param <T> The Enum type
+   * @param <T>    The Enum type
    * @return a string of enum names. For example: "'SALE', 'SOLD', 'DEALING'".
    */
-  private static <T extends Enum<T>> String getAllNamesGivenValues (T[] values)
-  {
+  private static <T extends Enum<T>> String getAllNamesGivenValues(T[] values) {
     String allNames = "";
-    for (T s: values)
-    {
-      allNames = allNames+"'"+s.name()+"', ";
+    for (T s : values) {
+      allNames = allNames + "'" + s.name() + "', ";
     }
-    allNames = allNames.substring(0,allNames.lastIndexOf(", "));
+    allNames = allNames.substring(0, allNames.lastIndexOf(", "));
     return allNames;
   }
 }
