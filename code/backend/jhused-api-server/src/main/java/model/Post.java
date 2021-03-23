@@ -29,6 +29,8 @@ public class Post {
   private Instant createTime;
   private Instant updateTime;
 
+  public Post(){}
+
   /**
    * Constructor for Post.
    * This constructor is made basically for testing.
@@ -155,14 +157,14 @@ public class Post {
     return Objects.hash(userId, title, price, description, images, hashtags, category, location);
   }
 
-  public void addImage(Image image) {
+  public void addImages(Image image) {
     if (images == null)
       images = new ArrayList<>();
     image.setPostId(this.id);
     images.add(image);
   }
 
-  public void addHashtag(Hashtag hashtag) {
+  public void addHashtags(Hashtag hashtag) {
     if (hashtags == null)
       hashtags = new ArrayList<>();
     hashtags.add(hashtag);
