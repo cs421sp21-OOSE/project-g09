@@ -4,6 +4,7 @@ import axios from "axios";
 import { Formik, useField } from 'formik';
 import * as Yup from 'yup';
 import CreatableSelecet from "react-select";
+import "./Editor.css";
 
 
 // Text input with built-in error message
@@ -51,7 +52,10 @@ const CreatableWrapper = ({ ...props }) => {
     if (!tagInput) return;
     switch (event.key) {
       case "Enter":
-        props.onChange("hashtags", [...props.value, {hashtag: tagInput}])
+        props.onChange("hashtags", [
+          ...props.value, 
+          {hashtag: removeHashtag(tagInput)}
+        ])
         setTagInput("");
         event.preventDefault();
         break;
@@ -65,6 +69,14 @@ const CreatableWrapper = ({ ...props }) => {
 
   const handleBlur = () => {
     props.onBlur("hashtags", true);
+  };
+
+  // Helper method to remove the preceding hashtags
+  const removeHashtag = (val) => {
+    if (val.startsWith('#')) {
+      val = val.slice(1, val.length)  
+    }
+    return val;
   };
 
   return (
@@ -122,14 +134,14 @@ const ImageUpload = ({ ...props }) => {
             console.log("File available at ", downloadURL);
             images.push({
               id: "",
-              postId: "",
+              postId: props.postId,
               url: downloadURL
             });
+            props.onChange("images", [...props.value, ...images]);
           });
         }
       );
     });
-    props.onChange("images", images);
   };
 
   return (
@@ -187,7 +199,6 @@ const EditorFormik = (props) => {
     }
     setSubmitting(false);
   };
-
 
   return (
     <Formik
@@ -254,6 +265,7 @@ const EditorFormik = (props) => {
           <ImageUpload 
             name = "images"
             value={formik.values.images}
+            postId={formik.values.id}
             onChange={formik.setFieldValue}
             onBlur={formik.setFieldTouched}
             touched={formik.touched.images}
