@@ -97,7 +97,6 @@ As a user, I want to login into the platform using my JHED account to verify my 
   - [ ] Add user link in post detail to allow user to visit the post owner's user page. (Sam)
   - [ ] Add user information editing button in his/her account page to open the "Editing user information page".
 - [ ] Chatting box
-  - [ ] Look into firebase to use their chatting plugin.
   - [ ] Add chat box button in homepage and account page to allow user check his/her messages.
   - [ ] Add start chatting button in other user's account page to start conversation.
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
