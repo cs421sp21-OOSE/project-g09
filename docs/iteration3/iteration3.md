@@ -63,8 +63,10 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ### Account information editing page
 
-1. The user can edit location, preferred email, and preferred user name in this editing page.  
+1. The user can edit location, preferred email,  preferred user name, and upload avatar (an image) in this editing page.  
 2. If it's the user's first login, this page contain no default information, other wise, it is filled with original values.  
+
+![](../assets/Wireframe/Wireframe-editUser-iteration3.png)
 
 # Iteration Backlog
 
