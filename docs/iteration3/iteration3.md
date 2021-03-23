@@ -78,7 +78,7 @@ As a user, I want to login into the platform using my JHED account to verify my 
 - [ ] Migrate to JDBI3 (Bohua)
 - [ ] Login Backend
   - [ ]  Database Design, user table, user dao, user api (Qiao)
-    - [ ]   Setup User table (JHID, preferred name, location, preferred email)
+    - [ ]   Setup User table (JHID, image_url, preferred name, location, preferred email)
     - [ ]   Setup User model
     - [ ]   User dao
     - [ ]   CRUD api for User
@@ -101,7 +101,7 @@ As a user, I want to login into the platform using my JHED account to verify my 
   - [ ] Add chat box button in homepage and account page to allow user check his/her messages.
   - [ ] Add start chatting button in other user's account page to start conversation.
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
-  - [ ] Homepage (Sam)
+  - [ ] Homepage
   - [ ] post detail
   - [ ] post editing
   - [ ] account page
