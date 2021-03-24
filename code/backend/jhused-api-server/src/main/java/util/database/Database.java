@@ -7,7 +7,6 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 import org.jdbi.v3.postgres.PostgresPlugin;
 import org.postgresql.ds.PGSimpleDataSource;
-import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 import org.sql2o.converters.Converter;
@@ -96,7 +95,7 @@ public final class Database {
   /**
    * Create post table schema and add sample posts to it.
    *
-   * @param sql2o   a Sql2o object connected to the database to be used in this application.
+   * @param jdbi    a Jdbi object connected to the database to be used in this application.
    * @param samples a list of sample posts.
    * @throws Sql2oException an generic exception thrown by Sql2o encapsulating anny issues with the Sql2o ORM.
    */
@@ -151,7 +150,7 @@ public final class Database {
   /**
    * Used for test, avoid creating table each time
    *
-   * @param sql2o   sql2o
+   * @param jdbi    a Jdbi object connected to the database to be used in this application.
    * @param samples samples of posts
    */
   public static void insertSampleData(Jdbi jdbi, List<Post> samples) {
@@ -166,7 +165,7 @@ public final class Database {
    * When the post that own this image get deleted, this image
    * will be automatically deleted.
    *
-   * @param sql2o sql2o
+   * @param jdbi a Jdbi object connected to the database to be used in this application.
    * @throws Sql2oException
    */
   public static void createImagesTable(Jdbi jdbi) throws Sql2oException {
@@ -192,7 +191,7 @@ public final class Database {
    * When deleting post or hashtag, corresponding row in this table will be automatically
    * deleted, thanks to ON DELETE CASCADE.
    *
-   * @param sql2o sql2o
+   * @param jdbi a Jdbi object connected to the database to be used in this application.
    * @throws Sql2oException
    */
   public static void createPostsHashtagsTable(Jdbi jdbi) throws Sql2oException {
@@ -217,7 +216,7 @@ public final class Database {
    * Create table: hashtag
    * hashtag store hashtag id and hashtag (the content)
    *
-   * @param sql2o
+   * @param jdbi a Jdbi object connected to the database to be used in this application.
    * @throws Sql2oException
    */
   public static void createHashtagsTable(Jdbi jdbi) {
@@ -260,8 +259,8 @@ public final class Database {
   /**
    * Add Post to the database connected to the conn object.
    *
-   * @param sql2o
-   * @param post  the to be add Post object
+   * @param jdbi a Jdbi object connected to the database to be used in this application.
+   * @param post the to be add Post object
    * @throws Sql2oException
    */
   private static void addPostsWithInnerObjects(Jdbi jdbi, Post post) {
@@ -279,7 +278,7 @@ public final class Database {
   /**
    * Add image instances to image table.
    *
-   * @param jdbi   jdbi
+   * @param jdbi   a Jdbi object connected to the database to be used in this application.
    * @param images a list of image instances
    * @throws Sql2oException
    */
@@ -301,8 +300,8 @@ public final class Database {
    * If insert a hashtag that already in the table (eigher primary key duplicate
    * or hashtag (the column) duplicate), the database will raise exception.
    *
-   * @param sql2o   sql2o
-   * @param hashtag hashtag instance
+   * @param jdbi     a Jdbi object connected to the database to be used in this application.
+   * @param hashtags a list of hashtag instances
    * @throws Sql2oException
    */
   private static void addHashtags(Jdbi jdbi, List<Hashtag> hashtags) {
@@ -320,9 +319,9 @@ public final class Database {
   /**
    * Add post to hashtag relationship to post_hashtag table.
    *
-   * @param sql2o   sql2o
-   * @param post    the post that relates to hashtag
-   * @param hashtag the hashtag that relates to post
+   * @param jdbi     a Jdbi object connected to the database to be used in this application.
+   * @param post     the post that relates to hashtag
+   * @param hashtags a list of the hashtag that relates to post
    * @throws Sql2oException
    */
   private static void addOnePostManyHashtags(Jdbi jdbi, Post post, List<Hashtag> hashtags) {
@@ -340,7 +339,7 @@ public final class Database {
   /**
    * Create a function in database to automatically
    *
-   * @param sql2o sql2o
+   * @param jdbi a Jdbi object connected to the database to be used in this application.
    * @return FUNC_NAME the name of the function
    */
   private static void createAutoUpdateTimestampDBFunc(Jdbi jdbi) throws Sql2oException {
@@ -359,7 +358,7 @@ public final class Database {
    * Create a trigger on TABLE_NAME to automatically update the "update_time" column
    * to CURRENT_TIMESTAMP.
    *
-   * @param sql2o      sql2o
+   * @param jdbi       a Jdbi object connected to the database to be used in this application.
    * @param TABLE_NAME the table's name
    * @return
    * @throws Sql2oException
