@@ -76,22 +76,22 @@ public interface PostDao {
    */
   Post delete(String id) throws DaoException;
 
-  /**
-   * This will search for all posts that have any element relating to the
-   * passed query. Any and all text within the post will be searched.
-   * @param searchQuery A search term.
-   * @return All Posts retrieved.
-   */
-  List<Post> searchAll(String searchQuery);
-
-  /**
-   * This will search for the query within all posts within the specified
-   * category. Any and all text within the post will be searched.
-   * @param searchQuery A search term.
-   * @param specified category to be searched in
-   * @return All Posts retrieved.
-   */
-  List<Post> searchCategory(String searchQuery, Category specified);
+//  /**
+//   * This will search for all posts that have any element relating to the
+//   * passed query. Any and all text within the post will be searched.
+//   * @param searchQuery A search term.
+//   * @return All Posts retrieved.
+//   */
+//  List<Post> searchAll(String searchQuery);
+//
+//  /**
+//   * This will search for the query within all posts within the specified
+//   * category. Any and all text within the post will be searched.
+//   * @param searchQuery A search term.
+//   * @param specified category to be searched in
+//   * @return All Posts retrieved.
+//   */
+//  List<Post> searchCategory(String searchQuery, Category specified);
 
   /**
    * This will get all the posts within the specified category.

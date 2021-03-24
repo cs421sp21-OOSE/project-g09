@@ -4,6 +4,7 @@ import dao.HashtagDao;
 import exceptions.DaoException;
 import model.Hashtag;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,9 +20,9 @@ public class jdbiHashtagDao implements HashtagDao {
   public Hashtag create(Hashtag hashtag) throws DaoException {
     String sql = "WITH inserted AS ("
         + "INSERT INTO hashtag(id, hashtag) "
-        + "VALUES(:id, :hashtag) RETURNING *"
+        + "VALUES(:id, :hashtag) ON CONFLICT DO NOTHING RETURNING *"
         + ") SELECT * FROM inserted;";
-    if (hashtag != null && (hashtag.getId() == null || hashtag.getId() == "" || hashtag.getId().length() != 36)) {
+    if (hashtag != null && (hashtag.getId() == null || hashtag.getId().length() != 36)) {
       hashtag.setId(UUID.randomUUID().toString());
     }
 
@@ -30,6 +31,29 @@ public class jdbiHashtagDao implements HashtagDao {
           handle.createQuery(sql).bindBean(hashtag).mapToBean(Hashtag.class).one());
     } catch (IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to create the hashtag: " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
+  public List<Hashtag> create(List<Hashtag> hashtags) throws DaoException {
+    String sql = "WITH inserted AS ("
+        + "INSERT INTO hashtag(id, hashtag) "
+        + "VALUES(:id, :hashtag) ON CONFLICT DO NOTHING RETURNING *"
+        + ") SELECT * FROM inserted;";
+
+    try {
+      return jdbi.inTransaction(handle -> {
+        PreparedBatch batch = handle.prepareBatch(sql);
+        for (Hashtag hashtag : hashtags) {
+          if (hashtag != null && (hashtag.getId() == null || hashtag.getId().length() != 36)) {
+            hashtag.setId(UUID.randomUUID().toString());
+          }
+          batch.bindBean(hashtag).add();
+        }
+        return batch.mapToBean(Hashtag.class).list();
+      });
+    } catch (IllegalStateException | NullPointerException ex) {
+      throw new DaoException("Unable to create the hashtags: " + ex.getMessage(), ex);
     }
   }
 

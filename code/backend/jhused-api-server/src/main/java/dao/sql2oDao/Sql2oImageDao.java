@@ -37,6 +37,12 @@ public class Sql2oImageDao implements ImageDao {
   }
 
   @Override
+  public List<Image> create(List<Image> images) throws DaoException {
+    // stud
+    return null;
+  }
+
+  @Override
   public Image update(String id, Image image) throws DaoException {
     String sql = "WITH updated AS ("
         + "UPDATE image SET url = :url WHERE id = :id RETURNING *"

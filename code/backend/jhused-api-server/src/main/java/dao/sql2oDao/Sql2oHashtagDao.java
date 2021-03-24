@@ -37,6 +37,12 @@ public class Sql2oHashtagDao implements HashtagDao {
   }
 
   @Override
+  public List<Hashtag> create(List<Hashtag> hashtags) throws DaoException {
+    // stud
+    return null;
+  }
+
+  @Override
   public Hashtag read(String id) throws DaoException {
     try (Connection conn = sql2o.open()) {
       Query query = conn.createQuery("SELECT * FROM hashtag WHERE id = :id;").setAutoDeriveColumnNames(true);

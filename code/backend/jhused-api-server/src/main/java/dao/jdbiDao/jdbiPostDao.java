@@ -5,34 +5,52 @@ import dao.ImageDao;
 import dao.PostDao;
 import dao.PostHashtagDao;
 import exceptions.DaoException;
-import model.*;
+import model.Category;
+import model.Hashtag;
+import model.Image;
+import model.Post;
 import org.jdbi.v3.core.Jdbi;
-import org.postgresql.jdbc.PgArray;
+import org.jdbi.v3.core.statement.Query;
+import util.jdbiResultSetHandler.ResultSetLinkedHashMapAccumulatorProvider;
 
-import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 public class jdbiPostDao implements PostDao {
 
-  private static final String SELECT_ALL_POSTS = "";
   private final Jdbi jdbi;
   private final ImageDao imageDao;
   private final HashtagDao hashtagDao;
   private final PostHashtagDao postHashtagDao;
+  private final ResultSetLinkedHashMapAccumulatorProvider<Post> postAccumulator;
+  private final String SELECT_POST_BASE =
+      "SELECT post.*, "
+          + "image.id as images_id, "
+          + "image.url as images_url,"
+          + "image.post_id as images_post_id, "
+          + "hashtag.id as hashtags_id, "
+          + "hashtag.hashtag as hashtags_hashtag "
+          + "FROM post "
+          + "LEFT JOIN image ON image.post_id = post.id "
+          + "LEFT JOIN post_hashtag ON post_hashtag.post_id = post.id "
+          + "LEFT JOIN hashtag ON hashtag.id = post_hashtag.hashtag_id ";
+  private final String SELECT_POST_GIVEN_ID = SELECT_POST_BASE + "WHERE post.id = :id;";
+  private final String SELECT_POSTS = SELECT_POST_BASE + "ORDER BY post.id;";
 
   /**
    * Construct JdbiPostDao.
    *
    * @param jdbi A Jdbi object is injected as a dependency;
-   *              it is assumed jdbi is connected to a database that  contains a table called
-   *              "Posts" with two columns: "id" and "title".
+   *             it is assumed jdbi is connected to a database that  contains a table called
+   *             "Posts" with two columns: "id" and "title".
    */
   public jdbiPostDao(Jdbi jdbi) {
     this.jdbi = jdbi;
     imageDao = new jdbiImageDao(jdbi);
     hashtagDao = new jdbiHashtagDao(jdbi);
     postHashtagDao = new jdbiPostHashtagDao(jdbi);
+    postAccumulator = new ResultSetLinkedHashMapAccumulatorProvider<>(Post.class);
   }
 
   /**
@@ -52,71 +70,51 @@ public class jdbiPostDao implements PostDao {
    */
   @Override
   public Post create(Post post) throws DaoException {
-    String insertPostSql = "WITH posts AS (INSERT INTO post(" +
+    String insertPostSql = "INSERT INTO post(" +
         "id, user_id, title, price, sale_state, description, category, location) " +
         "VALUES(:id, :userId, :title, :price, CAST(:saleState AS SaleState), " +
-        ":description, CAST(:category AS Category), :location)" +
-        "RETURNING *) SELECT * FROM posts;";
+        ":description, CAST(:category AS Category), :location);";
 
-    try (Connection conn = this.jdbi.open()) {
-      // will catch NullPointerException
-      if (post != null && (post.getId() == null || post.getId().isEmpty()) || post.getId().length() != 36) {
-        post.setId(UUID.randomUUID().toString());
-      }
+    if (post != null && (post.getId() == null || post.getId().length() != 36)) {
+      post.setId(UUID.randomUUID().toString());
+    }
 
-      // first insert the post
-      Post createdPost =
-          conn.createQuery(insertPostSql).setAutoDeriveColumnNames(true).bind(post).executeAndFetchFirst(Post.class);
-
-      if (post != null) {
-        // then insert image and store created images
-        List<Image> createdImages = new ArrayList<>();
+    try {
+      return jdbi.inTransaction(handle -> {
+        handle.createUpdate(insertPostSql).bindBean(post);
         if (!post.getImages().isEmpty()) {
-          for (Image image : post.getImages()) {
-            image.setPostId(post.getId());
-            createdImages.add(imageDao.create(image));
-          }
+          imageDao.create(post.getImages());
         }
 
-        // then insert hashtag and post_hashtag, and store created hashtags
-        List<Hashtag> createdHashtags = new ArrayList<>();
         if (!post.getHashtags().isEmpty()) {
-          for (Hashtag hashtag : post.getHashtags()) {
-            // check if the hashtag already exists, using exact search (though case insensitive)
-            List<Hashtag> existingHashtag = hashtagDao.readAllExactCaseInsensitive(hashtag.getHashtag());
-            if (existingHashtag.isEmpty()) {
-              createdHashtags.add(hashtagDao.create(hashtag));
-              postHashtagDao.create(post.getId(), hashtag.getId());
-            } else {
-              createdHashtags.add(hashtag);
-              postHashtagDao.create(post.getId(), existingHashtag.get(0).getId());
-            }
+          List<Hashtag> createdHashtags = hashtagDao.create(post.getHashtags());
+          List<String> hashtagIds = new ArrayList<>();
+          List<String> postIds = new ArrayList<>();
+          for (Hashtag hashtag : createdHashtags) {
+            hashtagIds.add(hashtag.getId());
+            postIds.add(post.getId());
           }
+          postHashtagDao.create(postIds, hashtagIds);
         }
-
-        // add images and hashtags to post
-        createdPost.setImages(createdImages);
-        createdPost.setHashtags(createdHashtags);
-      }
-      return createdPost;
-    } catch (JdbiException | NullPointerException ex) {
+        return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID).bind("id", post.getId())
+            .reduceResultSet(new LinkedHashMap<>(),
+                postAccumulator).values()).get(0);
+      });
+    } catch (IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
 
   @Override
   public Post read(String id) throws DaoException {
-    try (Connection conn = jdbi.open()) {
-      Post post = conn.createQuery("SELECT * FROM post WHERE post.id=:id")
-          .setAutoDeriveColumnNames(true)
-          .addParameter("id", id)
-          .executeAndFetchFirst(Post.class);
-      if (post != null) {
-        post.setImages(imageDao.getImagesOfPost(post.getId()));
-        post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-      }
-      return post;
-    } catch (JdbiException | NullPointerException ex) {
+    try {
+      return jdbi.inTransaction(handle -> new ArrayList<>(handle.
+          createQuery(SELECT_POST_GIVEN_ID)
+          .bind("id", id)
+          .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+          .values())
+          .get(0));
+    } catch (IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
   }
@@ -130,18 +128,12 @@ public class jdbiPostDao implements PostDao {
    */
   @Override
   public List<Post> readAll() throws DaoException {
-    try (Connection conn = jdbi.open()) {
-      List<Post> posts = conn.createQuery("SELECT * FROM post")
-          .setAutoDeriveColumnNames(true)
-          .executeAndFetch(Post.class);
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-        }
-      }
-      return posts;
-    } catch (JdbiException ex) {
+    try {
+      return jdbi.inTransaction(handle -> new ArrayList<>(handle
+          .createQuery(SELECT_POSTS)
+          .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+          .values()));
+    } catch (IllegalStateException ex) {
       throw new DaoException("Unable to read posts from the database", ex);
     }
   }
@@ -149,26 +141,21 @@ public class jdbiPostDao implements PostDao {
   @Deprecated
   @Override
   public List<Post> readAll(String titleQuery) throws DaoException {
-    try (Connection conn = jdbi.open()) {
-      String sql = "SELECT * FROM post WHERE post.title ILIKE :partial;";
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      List<Post> posts = query.addParameter("partial", "%" + titleQuery + "%").executeAndFetch(Post.class);
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-        }
-      }
-      return posts;
-    } catch (JdbiException | NullPointerException ex) {
+    String sql = SELECT_POST_BASE + "WHERE post.title ILIKE :partial;";
+    try {
+      return jdbi.inTransaction(handle -> new ArrayList<>(handle.createQuery(sql)
+          .bind("partial", "%" + titleQuery + "%")
+          .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+          .values()));
+    } catch (IllegalStateException ex) {
       throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
     }
   }
 
   @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
-    try (Connection conn = jdbi.open()) {
-      String sql = "SELECT * FROM post";
+    try {
+      String sql = SELECT_POSTS;
       // Handle category query parameter
       // Adapted from searchCategory
       Category category = null;
@@ -202,29 +189,22 @@ public class jdbiPostDao implements PostDao {
       }
 
       // Build query
-      Query query = conn.createQuery(sql);
-      if (specified != null) {
-        query.addParameter("specifiedCategory", category);
-      }
-      if (searchQuery != null) {
-        query.addParameter("partialTitle", "%" + searchQuery + "%")
-            .addParameter("partialDescription", "%" + searchQuery + "%")
-            .addParameter("partialLocation", "%" + searchQuery + "%");
-      }
-
-      // Submit query to db and fetch posts
-      List<Post> posts = query.setAutoDeriveColumnNames(true)
-          .executeAndFetch(Post.class);
-
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
+      String finalSql = sql;
+      Category finalCategory = category;
+      return jdbi.inTransaction(handle -> {
+        Query query = handle.createQuery(finalSql);
+        if (specified != null) {
+          query.bind("specifiedCategory", finalCategory);
         }
-      }
-      return posts;
+        if (searchQuery != null) {
+          query.bind("partialTitle", "%" + searchQuery + "%")
+              .bind("partialDescription", "%" + searchQuery + "%")
+              .bind("partialLocation", "%" + searchQuery + "%");
+        }
+        return new ArrayList<>(query.reduceResultSet(new LinkedHashMap<>(), postAccumulator).values());
+      });
 
-    } catch (JdbiException | NullPointerException ex) {
+    } catch (IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read post with the query parameters", ex);
     }
 
@@ -241,11 +221,7 @@ public class jdbiPostDao implements PostDao {
      * change.
      */
 
-    /**
-     * TODO not necessary, but using the ARRAY cast spews out the same
-     *  strange error as the delete function.
-     */
-    String updateSql = "WITH updated AS (UPDATE post SET " +
+    String updateSql = "UPDATE post SET " +
         "user_id = :userId, " +
         "title = :title, " +
         "price = :price, " +
@@ -253,10 +229,10 @@ public class jdbiPostDao implements PostDao {
         "description = :description, " +
         "category = CAST(:category AS Category), " +
         "location = :location " +
-        "WHERE id = :id RETURNING *) SELECT * FROM updated;";
+        "WHERE id = :id;";
 
     //attempt to open connection and perform sql string.
-    try (Connection conn = jdbi.open()) {
+    try {
       //make placer-holder variables for fields that might be null.
 
       //check each from passed post to ensure no errors occur.
@@ -266,28 +242,51 @@ public class jdbiPostDao implements PostDao {
       if (post.getImages() == null) {
         post.setImages(new ArrayList<>());
       }
-
       if (post.getHashtags() == null) {
         post.setHashtags(new ArrayList<>());
       }
-      Post updatedPost = conn.createQuery(updateSql).setAutoDeriveColumnNames(true)
-          .bind(post).addParameter("id", id).executeAndFetchFirst(Post.class);
-      if (updatedPost != null) {
+
+      return jdbi.inTransaction(handle -> {
+        handle.createUpdate(updateSql)
+            .bindBean(post).bind("id", id).execute();
         List<Image> toBeUpdatedImages = new ArrayList<>();
         List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
+        List<String> toBeUpdatedHashtagsIds = new ArrayList<>();
+        List<Image> deleteImages = imageDao.getImagesOfPost(post.getId());
+        List<String> deleteImagesIds = new ArrayList<>();
+        List<Hashtag> deleteHashtags = hashtagDao.getHashtagsOfPost(post.getId());
+        List<String> deleteHashtagsIds = new ArrayList<>();
         for (Image image : post.getImages()) {
           image.setPostId(post.getId());
-          toBeUpdatedImages.add(imageDao.createOrUpdate(image.getId(), image));
+          // if existing images contain yet, updated version doesn't
+          if (deleteImages.contains(image) && !post.getImages().contains(image)) {
+            deleteImagesIds.add(image.getId());
+            // add new image
+          } else if (!deleteImages.contains(image) && post.getImages().contains(image)) {
+            toBeUpdatedImages.add(image);
+          }
         }
-        for (Hashtag hashtag : post.getHashtags()) {
-          toBeUpdatedHashtags.add(hashtagDao.createOrUpdate(hashtag.getId(), hashtag));
-        }
-        updatedPost.setImages(toBeUpdatedImages);
-        updatedPost.setHashtags(toBeUpdatedHashtags);
-      }
+        imageDao.delete(deleteImagesIds);
+        imageDao.create(toBeUpdatedImages);
 
-      return updatedPost;
-    } catch (JdbiException | NullPointerException ex) { //otherwise, fail
+        for (Hashtag hashtag : post.getHashtags()) {
+          if (deleteHashtags.contains(hashtag) && !post.getHashtags().contains(hashtag)) {
+            deleteHashtagsIds.add(hashtag.getId());
+          } else if (!deleteHashtags.contains(hashtag) && post.getHashtags().contains(hashtag)) {
+            toBeUpdatedHashtags.add(hashtag);
+            toBeUpdatedHashtagsIds.add(hashtag.getId());
+          }
+        }
+        postHashtagDao.delete(post.getId(), deleteHashtagsIds);
+        hashtagDao.create(toBeUpdatedHashtags);
+        postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
+
+        return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID)
+            .bind("id", post.getId())
+            .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+            .values()).get(0);
+      });
+    } catch (IllegalStateException | NullPointerException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post! Check if missing fields.", ex);
     }
   }
@@ -304,156 +303,36 @@ public class jdbiPostDao implements PostDao {
         + ") SELECT * FROM deleted;";
 
     //attempt to open connection and perform sql string.
-    try (Connection conn = jdbi.open()) {
+    try {
       List<Image> images = imageDao.getImagesOfPost(id);
       List<Hashtag> hashtags = hashtagDao.getHashtagsOfPost(id);
-      Post post = conn.createQuery(sql).setAutoDeriveColumnNames(true)
-          .addParameter("id", id).executeAndFetchFirst(Post.class);
-      if (post != null) {
-        post.setImages(images);
-        post.setHashtags(hashtags);
-      }
-      return post;
-    } catch (JdbiException ex) { //otherwise, fail
+      return jdbi.inTransaction(handle -> {
+        Post post = handle.createQuery(sql).bind("id", id).mapToBean(Post.class).one();
+        if (post != null) {
+          post.setImages(images);
+          post.setHashtags(hashtags);
+        }
+        return post;
+      });
+    } catch (IllegalStateException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
     }
 
   }
 
   @Override
-  @Deprecated
-  public List<Post> searchAll(String searchQuery) {
-    String sql = "SELECT * FROM post WHERE " +
-        "post.title ILIKE :partialTitle OR " +
-        "post.description ILIKE :partialDescription OR " +
-        "post.location ILIKE :partialLocation;";
-
-    try (Connection conn = jdbi.open()) {
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      List<Post> posts = query
-          .addParameter("partialTitle", "%" + searchQuery + "%")
-          .addParameter("partialDescription", "%" + searchQuery + "%")
-          .addParameter("partialLocation", "%" + searchQuery + "%")
-          .executeAndFetch(Post.class);
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-        }
-      }
-      return posts;
-    } catch (JdbiException | NullPointerException ex) {
-      throw new DaoException("Unable to read a post with matching items: " +
-          searchQuery, ex);
-    }
-  }
-
-  @Override
-  @Deprecated
-  public List<Post> searchCategory(String searchQuery, Category specified) {
-    String sql = "SELECT * FROM post WHERE " +
-        "post.category = CAST(:specifiedCategory AS Category) AND " +
-        "(post.title ILIKE :partialTitle OR " +
-        "post.description ILIKE :partialDescription OR " +
-        "post.location ILIKE :partialLocation);";
-
-    try (Connection conn = jdbi.open()) {
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      List<Post> posts = query
-          .addParameter("specifiedCategory", specified)
-          .addParameter("partialTitle", "%" + searchQuery + "%")
-          .addParameter("partialDescription", "%" + searchQuery + "%")
-          .addParameter("partialLocation", "%" + searchQuery + "%")
-          .executeAndFetch(Post.class);
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-        }
-      }
-      return posts;
-    } catch (JdbiException | NullPointerException ex) {
-      throw new DaoException("Unable to read a post with matching items: " +
-          searchQuery, ex);
-    }
-  }
-
-  @Override
   public List<Post> getCategory(Category specified) {
-    String sql = "SELECT * FROM post WHERE post.category = CAST(:specifiedCategory AS Category);";
+    String sql = SELECT_POST_BASE + " WHERE post.category = CAST(:specifiedCategory AS Category);";
 
-    try (Connection conn = jdbi.open()) {
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      List<Post> posts = query
-          .addParameter("specifiedCategory", specified)
-          .executeAndFetch(Post.class);
-      if (!posts.isEmpty()) {
-        for (Post post : posts) {
-          post.setImages(imageDao.getImagesOfPost(post.getId()));
-          post.setHashtags(hashtagDao.getHashtagsOfPost(post.getId()));
-        }
-      }
-      return posts;
-    } catch (JdbiException | NullPointerException ex) {
+    try {
+      return jdbi.inTransaction(handle ->
+          new ArrayList<>(handle.createQuery(sql)
+              .bind("specifiedCategory", specified)
+              .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+              .values()));
+    } catch (IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with Category " + specified, ex);
     }
 
-  }
-
-  /**
-   * Convert a list of maps returned by jdbi to a List of Post.
-   *
-   * @param postMaps a list of maps returned by jdbi.
-   * @return the converted list of Posts.
-   * @throws SQLException
-   */
-  private List<Post> mapToPosts(List<Map<String, Object>> postMaps) throws SQLException {
-    List<Post> posts = new ArrayList<>();
-    for (Map<String, Object> post : postMaps) {
-      posts.add(mapToPost(post));
-    }
-    return posts;
-  }
-
-  /**
-   * Convert a list of maps returned by jdbi to a List of Post.
-   *
-   * @param postMaps a list of maps returned by jdbi.
-   * @return the first returned Post
-   * @throws SQLException
-   */
-  private Post mapToPostsGetFirst(List<Map<String, Object>> postMaps) throws SQLException {
-    List<Post> posts = new ArrayList<>();
-    for (Map<String, Object> post : postMaps) {
-      posts.add(mapToPost(post));
-    }
-    if (posts.isEmpty())
-      posts.add(null);
-    return posts.get(0);
-  }
-
-  /**
-   * Convert a Map returned by jdbi to Post.
-   *
-   * @param post a Map returned by jdbi.
-   * @return the converted Post.
-   * @throws SQLException
-   */
-  private Post mapToPost(Map<String, Object> post) throws SQLException {
-    // Note "imageurls" and "userid" must be in small case!!!
-    // Database is not case sensitive to column name!
-    // Might need refactor in the future.
-    Post convertedPost;
-    convertedPost = new Post((String) post.get("uuid"),
-        (String) post.get("userid"),
-        (String) post.get("title"),
-        ((BigDecimal) post.get("price")).doubleValue(),
-        SaleState.valueOf((String) post.get("sale_sate")),
-        (String) post.get("description"),
-        new ArrayList<Image>(Arrays.asList((Image[]) (((PgArray) post.get("imageurls")).getArray()))),
-        new ArrayList<Hashtag>(Arrays.asList((Hashtag[]) (((PgArray) post.get("hashtags")).getArray()))),
-        Category.valueOf((String) post.get("category")),
-        (String) post.get("location"));
-    return convertedPost;
   }
 }

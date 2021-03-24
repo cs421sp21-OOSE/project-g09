@@ -36,6 +36,29 @@ public class jdbiImageDao implements ImageDao {
   }
 
   @Override
+  public List<Image> create(List<Image> images) throws DaoException {
+    String sql = "WITH inserted AS ("
+        + "INSERT INTO image(id, post_id, url) "
+        + "VALUES(:id, :postId, :url) RETURNING *"
+        + ") SELECT * FROM inserted;";
+
+    try {
+      return jdbi.inTransaction(handle -> {
+        PreparedBatch batch = handle.prepareBatch(sql);
+        for (Image image : images) {
+          if (image != null && (image.getId() == null || image.getId().length() != 36)) {
+            image.setId(UUID.randomUUID().toString());
+          }
+          batch.bindBean(image).add();
+        }
+        return batch.mapToBean(Image.class).list();
+      });
+    } catch (IllegalStateException ex) {
+      throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
   public Image update(String id, Image image) throws DaoException {
     String sql = "WITH updated AS ("
         + "UPDATE image SET url = :url WHERE id = :id RETURNING *"

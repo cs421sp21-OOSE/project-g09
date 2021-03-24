@@ -20,6 +20,14 @@ public interface ImageDao {
   Image create(Image image) throws DaoException;
 
   /**
+   * Create a list of Image.
+   * @param images A list of Image items to be created
+   * @return A list of Image objects created.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Image> create(List<Image> images) throws DaoException;
+
+  /**
    * No need to implement yet.
    * Read a Image provided its id.
    *

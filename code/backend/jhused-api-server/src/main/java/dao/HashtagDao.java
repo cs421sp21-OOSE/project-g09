@@ -19,6 +19,14 @@ public interface HashtagDao {
   Hashtag create(Hashtag hashtag) throws DaoException;
 
   /**
+   * Create a list of Hashtag items.
+   * @param hashtags A list of Hashtag items to be created
+   * @return A list of Hashtag objects created.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Hashtag> create(List<Hashtag> hashtags) throws DaoException;
+
+  /**
    * Read a Hashtag provided its id.
    *
    * @param id The Hashtag id
