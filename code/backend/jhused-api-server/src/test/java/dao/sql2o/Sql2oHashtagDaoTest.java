@@ -1,5 +1,6 @@
-package dao;
+package dao.sql2o;
 
+import dao.HashtagDao;
 import dao.sql2oDao.Sql2oHashtagDao;
 import exceptions.DaoException;
 import model.Hashtag;
@@ -81,7 +82,7 @@ public class Sql2oHashtagDaoTest {
   @Test
   void createNullHashtagThrowsDaoException() {
     assertThrows(DaoException.class, () -> {
-      hashtagDao.create(null);
+      hashtagDao.create((Hashtag) null);
     });
   }
 

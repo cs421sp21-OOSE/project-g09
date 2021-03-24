@@ -1,5 +1,6 @@
-package dao;
+package dao.sql2o;
 
+import dao.ImageDao;
 import dao.sql2oDao.Sql2oImageDao;
 import exceptions.DaoException;
 import model.Image;
@@ -90,7 +91,7 @@ public class Sql2oImageDaoTest {
   @Test
   void createImageWithNullImage() {
     assertThrows(DaoException.class, () -> {
-      imageDao.create(null);
+      imageDao.create((Image)null);
     });
   }
 

@@ -321,7 +321,17 @@ public class jdbiPostDao implements PostDao {
   }
 
   @Override
-  public List<Post> getCategory(Category specified) {
+  public List<Post> searchAll(String searchQuery) throws DaoException{
+    throw new DaoException("Not implemented!", null);
+  }
+
+  @Override
+  public List<Post> searchCategory(String searchQuery, Category specified) throws DaoException{
+    throw new DaoException("Not implemented!", null);
+  }
+
+  @Override
+  public List<Post> getCategory(Category specified) throws DaoException{
     String sql = SELECT_POST_BASE + " WHERE post.category = CAST(:specifiedCategory AS Category);";
 
     try {

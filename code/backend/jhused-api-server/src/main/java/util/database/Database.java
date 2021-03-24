@@ -331,8 +331,9 @@ public final class Database {
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
       for (Hashtag hashtag : hashtags) {
-        batch.bind("post_id", post_id).bind("hashtag_id", hashtag.getId());
+        batch.bind("postId", post_id).bind("hashtagId", hashtag.getId()).add();
       }
+      batch.execute();
     });
   }
 

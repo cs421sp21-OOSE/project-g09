@@ -1,5 +1,6 @@
-package dao;
+package dao.sql2o;
 
+import dao.PostHashtagDao;
 import dao.sql2oDao.Sql2oPostHashtagDao;
 import exceptions.DaoException;
 import model.Post;
@@ -83,7 +84,7 @@ public class Sql2oPostHashtagDaoTest {
   void createPostHashtagNullHashtagThrowsException() {
     Map<String, String> postHashtag = Map.of("postId", "0".repeat(36));
     assertThrows(DaoException.class, () -> {
-      posthashtagDao.create(postHashtag.get("postId"), null);
+      posthashtagDao.create(postHashtag.get("postId"), (String)null);
     });
   }
 }
