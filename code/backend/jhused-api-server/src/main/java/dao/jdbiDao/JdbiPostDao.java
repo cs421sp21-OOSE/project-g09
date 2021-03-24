@@ -11,13 +11,12 @@ import model.Image;
 import model.Post;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.Query;
+import org.jdbi.v3.core.statement.StatementException;
 import util.jdbiResultSetHandler.ResultSetLinkedHashMapAccumulatorProvider;
 
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
-
-public class jdbiPostDao implements PostDao {
+public class JdbiPostDao implements PostDao {
 
   private final Jdbi jdbi;
   private final ImageDao imageDao;
@@ -45,11 +44,11 @@ public class jdbiPostDao implements PostDao {
    *             it is assumed jdbi is connected to a database that  contains a table called
    *             "Posts" with two columns: "id" and "title".
    */
-  public jdbiPostDao(Jdbi jdbi) {
+  public JdbiPostDao(Jdbi jdbi) {
     this.jdbi = jdbi;
-    imageDao = new jdbiImageDao(jdbi);
-    hashtagDao = new jdbiHashtagDao(jdbi);
-    postHashtagDao = new jdbiPostHashtagDao(jdbi);
+    imageDao = new JdbiImageDao(jdbi);
+    hashtagDao = new JdbiHashtagDao(jdbi);
+    postHashtagDao = new JdbiPostHashtagDao(jdbi);
     postAccumulator = new ResultSetLinkedHashMapAccumulatorProvider<>(Post.class);
   }
 
@@ -87,20 +86,17 @@ public class jdbiPostDao implements PostDao {
         }
 
         if (!post.getHashtags().isEmpty()) {
-          List<Hashtag> createdHashtags = hashtagDao.create(post.getHashtags());
           List<String> hashtagIds = new ArrayList<>();
-          List<String> postIds = new ArrayList<>();
-          for (Hashtag hashtag : createdHashtags) {
-            hashtagIds.add(hashtag.getId());
-            postIds.add(post.getId());
+          for (Hashtag hashtag : post.getHashtags()) {
+            hashtagIds.add(hashtagDao.createIfNotExist(hashtag).getId());
           }
-          postHashtagDao.create(postIds, hashtagIds);
+          postHashtagDao.create(post.getId(), hashtagIds);
         }
         return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID).bind("id", post.getId())
             .reduceResultSet(new LinkedHashMap<>(),
                 postAccumulator).values()).get(0);
       });
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -114,7 +110,7 @@ public class jdbiPostDao implements PostDao {
           .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
           .values())
           .get(0));
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
   }
@@ -133,7 +129,7 @@ public class jdbiPostDao implements PostDao {
           .createQuery(SELECT_POSTS)
           .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
           .values()));
-    } catch (IllegalStateException ex) {
+    } catch (StatementException | IllegalStateException ex) {
       throw new DaoException("Unable to read posts from the database", ex);
     }
   }
@@ -147,7 +143,7 @@ public class jdbiPostDao implements PostDao {
           .bind("partial", "%" + titleQuery + "%")
           .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
           .values()));
-    } catch (IllegalStateException ex) {
+    } catch (StatementException | IllegalStateException ex) {
       throw new DaoException("Unable to read a post with partialTitle " + titleQuery, ex);
     }
   }
@@ -204,7 +200,7 @@ public class jdbiPostDao implements PostDao {
         return new ArrayList<>(query.reduceResultSet(new LinkedHashMap<>(), postAccumulator).values());
       });
 
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read post with the query parameters", ex);
     }
 
@@ -286,7 +282,7 @@ public class jdbiPostDao implements PostDao {
             .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
             .values()).get(0);
       });
-    } catch (IllegalStateException | NullPointerException ex) { //otherwise, fail
+    } catch (StatementException | IllegalStateException | NullPointerException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post! Check if missing fields.", ex);
     }
   }
@@ -307,31 +303,31 @@ public class jdbiPostDao implements PostDao {
       List<Image> images = imageDao.getImagesOfPost(id);
       List<Hashtag> hashtags = hashtagDao.getHashtagsOfPost(id);
       return jdbi.inTransaction(handle -> {
-        Post post = handle.createQuery(sql).bind("id", id).mapToBean(Post.class).one();
+        Post post = handle.createQuery(sql).bind("id", id).mapToBean(Post.class).findOne().orElse(null);
         if (post != null) {
           post.setImages(images);
           post.setHashtags(hashtags);
         }
         return post;
       });
-    } catch (IllegalStateException ex) { //otherwise, fail
+    } catch (StatementException | IllegalStateException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this post!", ex);
     }
 
   }
 
   @Override
-  public List<Post> searchAll(String searchQuery) throws DaoException{
+  public List<Post> searchAll(String searchQuery) throws DaoException {
     throw new DaoException("Not implemented!", null);
   }
 
   @Override
-  public List<Post> searchCategory(String searchQuery, Category specified) throws DaoException{
+  public List<Post> searchCategory(String searchQuery, Category specified) throws DaoException {
     throw new DaoException("Not implemented!", null);
   }
 
   @Override
-  public List<Post> getCategory(Category specified) throws DaoException{
+  public List<Post> getCategory(Category specified) throws DaoException {
     String sql = SELECT_POST_BASE + " WHERE post.category = CAST(:specifiedCategory AS Category);";
 
     try {
@@ -340,7 +336,7 @@ public class jdbiPostDao implements PostDao {
               .bind("specifiedCategory", specified)
               .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
               .values()));
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with Category " + specified, ex);
     }
 

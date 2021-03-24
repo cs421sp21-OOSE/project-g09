@@ -4,14 +4,15 @@ import dao.PostHashtagDao;
 import exceptions.DaoException;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
+import org.jdbi.v3.core.statement.StatementException;
 
 import java.util.List;
 import java.util.Map;
 
-public class jdbiPostHashtagDao implements PostHashtagDao {
+public class JdbiPostHashtagDao implements PostHashtagDao {
   private final Jdbi jdbi;
 
-  public jdbiPostHashtagDao(Jdbi jdbi) {
+  public JdbiPostHashtagDao(Jdbi jdbi) {
     this.jdbi = jdbi;
   }
 
@@ -20,18 +21,16 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
     String sql = "WITH inserted AS ("
         + "INSERT INTO post_hashtag(post_id, hashtag_id) "
         + "VALUES(:postId, :hashtagId) RETURNING *"
-        + ") SELECT * FROM inserted;";
+        + ") SELECT inserted.post_id as \"postId\", inserted.hashtag_id as \"hashtagId\" FROM inserted;";
 
     try {
-      Map<String, Object> resultSet = jdbi.inTransaction(handle ->
+      return jdbi.inTransaction(handle ->
           handle.createQuery(sql)
               .bind("postId", postId)
               .bind("hashtagId", hashtagId)
-              .mapToMap()
-              .one());
-      return Map.of("postId", (String) resultSet.get("post_id"),
-          "hashtagId", (String) resultSet.get("hashtag_id"));
-    } catch (IllegalStateException | NullPointerException ex) {
+              .mapToMap(String.class)
+              .findOne()).orElse(null);
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -41,7 +40,7 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
     String sql = "WITH inserted AS ("
         + "INSERT INTO post_hashtag(post_id, hashtag_id) "
         + "VALUES(:postId, :hashtagId) RETURNING *"
-        + ") SELECT * FROM inserted;";
+        + ") SELECT inserted.post_id as \"postId\", inserted.hashtag_id as \"hashtagId\" FROM inserted;";
     return getMaps(postIds, hashtagIds, sql);
   }
 
@@ -50,7 +49,7 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
     String sql = "WITH inserted AS ("
         + "INSERT INTO post_hashtag(post_id, hashtag_id) "
         + "VALUES(:postId, :hashtagId) RETURNING *"
-        + ") SELECT * FROM inserted;";
+        + ") SELECT inserted.post_id as \"postId\", inserted.hashtag_id as \"hashtagId\" FROM inserted;";
     return getMaps(postId, hashtagIds, sql);
   }
 
@@ -60,7 +59,7 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
         + "DELETE FROM post_hashtag "
         + "WHERE post_hashtag.post_id = :postId "
         + "AND post_hashtag.hashtag_id = :hashtagId) "
-        + "SELECT * FROM deleted;";
+        + ") SELECT deleted.post_id as \"postId\", deleted.hashtag_id as \"hashtagId\" FROM deleted;";
     return getMaps(postIds, hashtagIds, sql);
   }
 
@@ -70,7 +69,7 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
         + "DELETE FROM post_hashtag "
         + "WHERE post_hashtag.post_id = :postId "
         + "AND post_hashtag.hashtag_id = :hashtagId) "
-        + "SELECT * FROM deleted;";
+        + ") SELECT deleted.post_id as \"postId\", deleted.hashtag_id as \"hashtagId\" FROM deleted;";
     return getMaps(postId, hashtagIds, sql);
   }
 
@@ -83,7 +82,7 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
         }
         return batch.mapToMap(String.class).list();
       });
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
@@ -99,7 +98,7 @@ public class jdbiPostHashtagDao implements PostHashtagDao {
         }
         return batch.mapToMap(String.class).list();
       });
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }

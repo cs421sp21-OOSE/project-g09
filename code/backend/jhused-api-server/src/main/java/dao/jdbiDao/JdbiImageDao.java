@@ -5,14 +5,15 @@ import exceptions.DaoException;
 import model.Image;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
+import org.jdbi.v3.core.statement.StatementException;
 
 import java.util.List;
 import java.util.UUID;
 
-public class jdbiImageDao implements ImageDao {
+public class JdbiImageDao implements ImageDao {
   private final Jdbi jdbi;
 
-  public jdbiImageDao(Jdbi jdbi) {
+  public JdbiImageDao(Jdbi jdbi) {
     this.jdbi = jdbi;
   }
 
@@ -23,14 +24,13 @@ public class jdbiImageDao implements ImageDao {
         + "VALUES(:id, :postId, :url) RETURNING *"
         + ") SELECT * FROM inserted;";
 
-    if (image != null && (image.getId() == null || image.getId() == "" || image.getId().length() != 36)) {
+    if (image != null && (image.getId() == null || image.getId().length() != 36)) {
       image.setId(UUID.randomUUID().toString());
     }
     try {
       return jdbi.inTransaction(handle ->
-          handle.createQuery(sql).bindBean(image).mapToBean(Image.class).one()
-      );
-    } catch (IllegalStateException ex) {
+          handle.createQuery(sql).bindBean(image).mapToBean(Image.class).findOne()).orElse(null);
+    } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
     }
   }
@@ -53,7 +53,7 @@ public class jdbiImageDao implements ImageDao {
         }
         return batch.mapToBean(Image.class).list();
       });
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
     }
   }
@@ -69,8 +69,8 @@ public class jdbiImageDao implements ImageDao {
               .bind("url", image.getUrl())
               .bind("id", id)
               .mapToBean(Image.class)
-              .one());
-    } catch (IllegalStateException ex) {
+              .findOne()).orElse(null);
+    } catch (IllegalStateException | StatementException | NullPointerException ex) {
       throw new DaoException("Unable to update the image: " + ex.getMessage(), ex);
     }
   }
@@ -82,8 +82,8 @@ public class jdbiImageDao implements ImageDao {
         + "SELECT * FROM deleted;";
     try {
       return jdbi.inTransaction(handle ->
-          handle.createQuery(sql).bind("id", id).mapToBean(Image.class).one());
-    } catch (IllegalStateException ex) {
+          handle.createQuery(sql).bind("id", id).mapToBean(Image.class).findOne()).orElse(null);
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to delete the image with id: " + id
           + " error message: " + ex.getMessage(), ex);
     }
@@ -103,7 +103,7 @@ public class jdbiImageDao implements ImageDao {
         return batch.mapToBean(Image.class).list();
       });
 
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to delete the images: "
           + " error message: " + ex.getMessage(), ex);
     }
@@ -113,8 +113,8 @@ public class jdbiImageDao implements ImageDao {
   public List<Image> getImagesOfPost(String postId) throws DaoException {
     String sql = "SELECT * FROM image WHERE image.post_id=:postId;";
     try {
-      return jdbi.inTransaction(handle -> handle.select(sql).mapToBean(Image.class).list());
-    } catch (IllegalStateException ex) {
+      return jdbi.inTransaction(handle -> handle.select(sql).bind("postId", postId).mapToBean(Image.class).list());
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read hashtags given postId from the database: " + ex.getMessage(), ex);
     }
   }
@@ -137,9 +137,9 @@ public class jdbiImageDao implements ImageDao {
             .bind("id", id)
             .bind("post_id", image.getPostId())
             .bind("url", image.getUrl())
-            .mapToBean(Image.class).one();
-      });
-    } catch (IllegalStateException | NullPointerException ex) {
+            .mapToBean(Image.class).findOne();
+      }).orElse(null);
+    } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }

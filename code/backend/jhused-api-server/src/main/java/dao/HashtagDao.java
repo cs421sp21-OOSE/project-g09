@@ -2,8 +2,8 @@ package dao;
 
 import exceptions.DaoException;
 import java.util.List;
+
 import model.Hashtag;
-import model.Image;
 
 /**
  * Data Access Object for Hashtag.
@@ -91,4 +91,12 @@ public interface HashtagDao {
    * @throws DaoException A generic exception for CRUD operations.
    */
   Hashtag createOrUpdate(String id, Hashtag hashtag) throws DaoException;
+
+  /**
+   * Create a Hashtag if not exist.
+   * @param hashtag The Hashtag item to be created
+   * @return The Hashtag object created.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  Hashtag createIfNotExist(Hashtag hashtag) throws DaoException;
 }

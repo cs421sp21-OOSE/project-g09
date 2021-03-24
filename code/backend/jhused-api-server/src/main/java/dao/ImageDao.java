@@ -1,10 +1,9 @@
 package dao;
 
 import exceptions.DaoException;
-import java.util.List;
-
-import model.Hashtag;
 import model.Image;
+
+import java.util.List;
 
 /**
  * Data Access Object for Image.
@@ -13,6 +12,7 @@ public interface ImageDao {
 
   /**
    * Create a Image.
+   *
    * @param image The Image item to be created
    * @return The Image object created.
    * @throws DaoException A generic exception for CRUD operations.
@@ -21,6 +21,7 @@ public interface ImageDao {
 
   /**
    * Create a list of Image.
+   *
    * @param images A list of Image items to be created
    * @return A list of Image objects created.
    * @throws DaoException A generic exception for CRUD operations.

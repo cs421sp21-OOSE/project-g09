@@ -5,14 +5,15 @@ import exceptions.DaoException;
 import model.Hashtag;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
+import org.jdbi.v3.core.statement.StatementException;
 
 import java.util.List;
 import java.util.UUID;
 
-public class jdbiHashtagDao implements HashtagDao {
+public class JdbiHashtagDao implements HashtagDao {
   private final Jdbi jdbi;
 
-  public jdbiHashtagDao(Jdbi jdbi) {
+  public JdbiHashtagDao(Jdbi jdbi) {
     this.jdbi = jdbi;
   }
 
@@ -20,7 +21,7 @@ public class jdbiHashtagDao implements HashtagDao {
   public Hashtag create(Hashtag hashtag) throws DaoException {
     String sql = "WITH inserted AS ("
         + "INSERT INTO hashtag(id, hashtag) "
-        + "VALUES(:id, :hashtag) ON CONFLICT DO NOTHING RETURNING *"
+        + "VALUES(:id, :hashtag) RETURNING *"
         + ") SELECT * FROM inserted;";
     if (hashtag != null && (hashtag.getId() == null || hashtag.getId().length() != 36)) {
       hashtag.setId(UUID.randomUUID().toString());
@@ -28,8 +29,8 @@ public class jdbiHashtagDao implements HashtagDao {
 
     try {
       return jdbi.inTransaction(handle ->
-          handle.createQuery(sql).bindBean(hashtag).mapToBean(Hashtag.class).one());
-    } catch (IllegalStateException | NullPointerException ex) {
+          handle.createQuery(sql).bindBean(hashtag).mapToBean(Hashtag.class).findOne()).orElse(null);
+    } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException("Unable to create the hashtag: " + ex.getMessage(), ex);
     }
   }
@@ -38,7 +39,7 @@ public class jdbiHashtagDao implements HashtagDao {
   public List<Hashtag> create(List<Hashtag> hashtags) throws DaoException {
     String sql = "WITH inserted AS ("
         + "INSERT INTO hashtag(id, hashtag) "
-        + "VALUES(:id, :hashtag) ON CONFLICT DO NOTHING RETURNING *"
+        + "VALUES(:id, :hashtag) RETURNING *"
         + ") SELECT * FROM inserted;";
 
     try {
@@ -52,7 +53,7 @@ public class jdbiHashtagDao implements HashtagDao {
         }
         return batch.mapToBean(Hashtag.class).list();
       });
-    } catch (IllegalStateException | NullPointerException ex) {
+    } catch (IllegalStateException | StatementException | NullPointerException ex) {
       throw new DaoException("Unable to create the hashtags: " + ex.getMessage(), ex);
     }
   }
@@ -64,8 +65,8 @@ public class jdbiHashtagDao implements HashtagDao {
           handle.createQuery("SELECT * FROM hashtag WHERE id = :id;")
               .bind("id", id)
               .mapToBean(Hashtag.class)
-              .one());
-    } catch (IllegalStateException ex) {
+              .findOne()).orElse(null);
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read a hashtags with id " + id
           + ": " + ex.getMessage(), ex);
     }
@@ -76,7 +77,7 @@ public class jdbiHashtagDao implements HashtagDao {
     try {
       return jdbi.inTransaction(handle ->
           handle.createQuery("SELECT * FROM hashtag;").mapToBean(Hashtag.class).list());
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read hashtags from the database: " + ex.getMessage(), ex);
     }
   }
@@ -87,7 +88,7 @@ public class jdbiHashtagDao implements HashtagDao {
       return jdbi.inTransaction(handle ->
           handle.createQuery("SELECT * FROM hashtag WHERE hashtag.hashtag ILIKE :hashtagQuery;")
               .bind("hashtagQuery", hashtagQuery).mapToBean(Hashtag.class).list());
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read hashtags from the database: " + ex.getMessage(), ex);
     }
   }
@@ -107,8 +108,8 @@ public class jdbiHashtagDao implements HashtagDao {
           handle.createQuery(sql)
               .bind("id", id)
               .bind("hashtag", hashtag.getHashtag())
-              .mapToBean(Hashtag.class).one());
-    } catch (IllegalStateException | NullPointerException ex) {
+              .mapToBean(Hashtag.class).findOne()).orElse(null);
+    } catch (IllegalStateException | StatementException | NullPointerException ex) {
       throw new DaoException("Unable to update the hashtag: " + ex.getMessage(), ex);
     }
   }
@@ -124,7 +125,7 @@ public class jdbiHashtagDao implements HashtagDao {
               .bind("postId", postId)
               .mapToBean(Hashtag.class)
               .list());
-    } catch (IllegalStateException ex) {
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read hashtags given postId from the database", ex);
     }
   }
@@ -145,9 +146,35 @@ public class jdbiHashtagDao implements HashtagDao {
           handle.createQuery(sql)
               .bindBean(hashtag)
               .mapToBean(Hashtag.class)
-              .one());
-    } catch (IllegalStateException ex) {
+              .findOne()).orElse(null);
+    } catch (IllegalStateException | StatementException ex) {
       throw new DaoException(ex.getMessage(), ex);
+    }
+  }
+
+  @Override
+  public Hashtag createIfNotExist(Hashtag hashtag) throws DaoException {
+    String sql = "WITH inserted AS ("
+        + "INSERT INTO hashtag(id, hashtag) "
+        + "VALUES(:id, :hashtag) RETURNING *"
+        + ") SELECT * FROM inserted;";
+    if (hashtag != null && (hashtag.getId() == null || hashtag.getId().length() != 36)) {
+      hashtag.setId(UUID.randomUUID().toString());
+    }
+
+    try {
+      return jdbi.inTransaction(handle -> {
+        List<Hashtag> existingHashtags = handle.createQuery("SELECT * FROM hashtag WHERE hashtag.hashtag ILIKE "
+            + ":hashtagQuery;")
+            .bind("hashtagQuery", hashtag.getHashtag()).mapToBean(Hashtag.class).list();
+        if (existingHashtags.isEmpty()) {
+          return handle.createQuery(sql).bindBean(hashtag).mapToBean(Hashtag.class).findOne().orElse(null);
+        } else {
+          return existingHashtags.get(0);
+        }
+      });
+    } catch (IllegalStateException | NullPointerException | StatementException ex) {
+      throw new DaoException("Unable to create the hashtag: " + ex.getMessage(), ex);
     }
   }
 }

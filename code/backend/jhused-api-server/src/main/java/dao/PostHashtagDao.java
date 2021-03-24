@@ -9,7 +9,8 @@ public interface PostHashtagDao {
 
   /**
    * Create a post_hashtag item in database.
-   * @param postId Id of the post
+   *
+   * @param postId    Id of the post
    * @param hashtagId Id of the hashtag
    * @return
    * @throws DaoException
@@ -18,7 +19,8 @@ public interface PostHashtagDao {
 
   /**
    * Create post_hashtag items in database.
-   * @param postIds Ids of the post
+   *
+   * @param postIds    Ids of the post
    * @param hashtagIds Ids of the hashtag
    * @return
    * @throws DaoException
@@ -27,7 +29,8 @@ public interface PostHashtagDao {
 
   /**
    * Create post_hashtag items in database.
-   * @param postId Id of the post
+   *
+   * @param postId     Id of the post
    * @param hashtagIds Ids of the hashtag
    * @return
    * @throws DaoException
@@ -36,7 +39,8 @@ public interface PostHashtagDao {
 
   /**
    * Delete a list of post's relationship with a list of hashtags.
-   * @param postIds  a list of post id
+   *
+   * @param postIds    a list of post id
    * @param hashtagIds a list of hashtag ids
    * @return deleted pairs
    * @throws DaoException
@@ -45,7 +49,8 @@ public interface PostHashtagDao {
 
   /**
    * Delete a post's relationship with a list of hashtags.
-   * @param postId post id
+   *
+   * @param postId     post id
    * @param hashtagIds a list of hashtag ids
    * @return deleted pairs
    * @throws DaoException

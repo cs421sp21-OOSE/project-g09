@@ -26,7 +26,7 @@ public class Sql2oHashtagDao implements HashtagDao {
         + ") SELECT * FROM inserted;";
 
     try (Connection conn = this.sql2o.open()) {
-      if (hashtag != null && (hashtag.getId() == null || hashtag.getId() == "" || hashtag.getId().length() != 36)) {
+      if (hashtag != null && (hashtag.getId() == null || hashtag.getId().length() != 36)) {
         hashtag.setId(UUID.randomUUID().toString());
       }
       Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
@@ -124,5 +124,10 @@ public class Sql2oHashtagDao implements HashtagDao {
     } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
+  }
+
+  @Override
+  public Hashtag createIfNotExist(Hashtag hashtag) throws DaoException {
+    throw new DaoException("Not implemented", null);
   }
 }
