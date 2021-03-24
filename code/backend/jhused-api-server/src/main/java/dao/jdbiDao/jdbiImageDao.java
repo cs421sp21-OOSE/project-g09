@@ -4,6 +4,7 @@ import dao.ImageDao;
 import exceptions.DaoException;
 import model.Image;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.core.statement.PreparedBatch;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,6 +49,40 @@ public class jdbiImageDao implements ImageDao {
               .one());
     } catch (IllegalStateException ex) {
       throw new DaoException("Unable to update the image: " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
+  public Image delete(String id) throws DaoException {
+    String sql = "WITH deleted AS ("
+        + "DELETE FROM image WHERE image.id=:id RETURNING *)"
+        + "SELECT * FROM deleted;";
+    try {
+      return jdbi.inTransaction(handle ->
+          handle.createQuery(sql).bind("id", id).mapToBean(Image.class).one());
+    } catch (IllegalStateException ex) {
+      throw new DaoException("Unable to delete the image with id: " + id
+          + " error message: " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
+  public List<Image> delete(List<String> ids) throws DaoException {
+    String sql = "WITH deleted AS ("
+        + "DELETE FROM image WHERE image.id=:id RETURNING *)"
+        + "SELECT * FROM deleted;";
+    try {
+      return jdbi.inTransaction(handle -> {
+        PreparedBatch batch = handle.prepareBatch(sql);
+        for (String id : ids) {
+          batch.bind("id", id).add();
+        }
+        return batch.mapToBean(Image.class).list();
+      });
+
+    } catch (IllegalStateException ex) {
+      throw new DaoException("Unable to delete the images: "
+          + " error message: " + ex.getMessage(), ex);
     }
   }
 

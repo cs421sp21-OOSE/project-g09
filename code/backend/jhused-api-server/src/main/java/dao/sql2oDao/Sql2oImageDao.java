@@ -52,6 +52,18 @@ public class Sql2oImageDao implements ImageDao {
   }
 
   @Override
+  public Image delete(String id) throws DaoException {
+    // stud
+    return null;
+  }
+
+  @Override
+  public List<Image> delete(List<String> ids) throws DaoException {
+    // stud
+    return null;
+  }
+
+  @Override
   public List<Image> getImagesOfPost(String postId) throws DaoException {
     try (Connection conn = sql2o.open()) {
       String sql = "SELECT * FROM image WHERE image.post_id=:postId;";

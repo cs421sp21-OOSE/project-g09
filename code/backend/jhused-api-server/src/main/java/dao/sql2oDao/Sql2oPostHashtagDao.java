@@ -1,19 +1,16 @@
-package dao.sql2oDao;
+package dao.jdbiDao;
 
 import dao.PostHashtagDao;
 import exceptions.DaoException;
-import org.sql2o.Connection;
-import org.sql2o.Query;
-import org.sql2o.Sql2o;
-import org.sql2o.Sql2oException;
+import org.jdbi.v3.core.Jdbi;
 
 import java.util.Map;
 
-public class Sql2oPostHashtagDao implements PostHashtagDao {
-  private final Sql2o sql2o;
+public class JdbiPostHashtagDao implements PostHashtagDao {
+  private final Jdbi jdbi;
 
-  public Sql2oPostHashtagDao(Sql2o sql2o) {
-    this.sql2o = sql2o;
+  public JdbiPostHashtagDao(Jdbi jdbi) {
+    this.jdbi = jdbi;
   }
 
   @Override
@@ -23,15 +20,17 @@ public class Sql2oPostHashtagDao implements PostHashtagDao {
         + "VALUES(:postId, :hashtagId) RETURNING *"
         + ") SELECT * FROM inserted;";
 
-    try (Connection conn = this.sql2o.open()) {
-      Query query = conn.createQuery(sql).setAutoDeriveColumnNames(true);
-      Map<String, Object> resultSet =
-          query.addParameter("postId", postId)
-              .addParameter("hashtagId", hashtagId)
-              .executeAndFetchTable().asList().get(0);
+    try {
+
+      Map<String, Object> resultSet = jdbi.inTransaction(handle ->
+          handle.createQuery(sql)
+      .bind("postId", postId)
+      .bind("hashtagId", hashtagId)
+      .mapToMap()
+      .one());
       return Map.of("postId", (String)resultSet.get("post_id"),
           "hashtagId", (String)resultSet.get("hashtag_id"));
-    } catch (Sql2oException | NullPointerException ex) {
+    } catch (IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
   }

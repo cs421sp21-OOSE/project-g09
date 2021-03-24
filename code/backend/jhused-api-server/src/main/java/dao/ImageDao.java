@@ -62,11 +62,21 @@ public interface ImageDao {
    * This should never be called, as deleting post will automatically
    * delete its images.
    *
-   * @param postId The Image id.
+   * @param id The Image id.
    * @return The Image object deleted from the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
-//  Image delete(String id) throws DaoException;
+  Image delete(String id) throws DaoException;
+
+  /**
+   * Delete a a list of Images provided their ids.
+   *
+   * @param ids a list of image ids.
+   * @return The Image object deleted from the data source.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Image> delete(List<String> ids) throws DaoException;
+
   List<Image> getImagesOfPost(String postId) throws DaoException;
 
   /**
