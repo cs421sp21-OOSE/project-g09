@@ -1,10 +1,13 @@
-import React from "react";
+
+import React, {useContext} from "react";
 import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import logo from "./images/logo.png";
 import EditorFormik from "./components/EditorFormik";
+import Header from "./components/Header";
+
 
 const App = () => {
   const location = useLocation();
@@ -12,9 +15,8 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* <div className="jhused-header">
-        <a href="/"><img className="jhused-logo" src={logo} alt="logo"/> </a>
-      </div> */}
+      <div className="jhused-header">
+      </div>
       <Switch location={background || location}>
         <Route exact path="/">
           <HomePage />
@@ -22,6 +24,8 @@ const App = () => {
         <Route exact path="/user/:userID" component={UserProfile}/>
         <Route exact path="/editor-new">
           <EditorFormik mode="create"/>
+        <Route exact path="/test">
+          <Header />
         </Route>
       </Switch>
 

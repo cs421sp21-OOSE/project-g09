@@ -1,7 +1,8 @@
 # JHUsed
 
- This is a web application for JHU affiliated people to post, browse, and buy second hand items and services.
- https://jhused-ui.herokuapp.com/
+ This is a web application for JHU affiliated people to post, browse, and buy second hand items and services.   
+ Frontend: https://jhused-ui.herokuapp.com/  
+ Backend: https://jhused-api-server.herokuapp.com/
 
 **Advisors** 
 
@@ -136,18 +137,18 @@ Make sure you check out the branch you want to deploy first. The command "git su
 
 We use [SemVer](http://semver.org/) for versioning. 
 
-## Configuration
+<!--## Configuration-->
 
-Here you should write what are all of the configurations a user can enter when using the project.
+<!--Here you should write what are all of the configurations a user can enter when using the project.-->
 
-## Tests
+<!--## Tests-->
 
-Describe and show how to run the tests with code examples.
-Explain what these tests test and why.
+<!--Describe and show how to run the tests with code examples.-->
+<!--Explain what these tests test and why.-->
 
-```shell
-Give an example
-```
+<!--```shell-->
+<!--Give an example-->
+<!--```-->
 
 ## Style guide
 
@@ -158,7 +159,8 @@ https://airbnb.io/javascript/react/
 
 ## Api Reference
 
-The api are internal use only.  
+API server: https://jhused-api-server.herokuapp.com/  
+[Postman API documentation](https://documenter.getpostman.com/view/14357023/Tz5i8zkB)  
 
 ## Database
 
