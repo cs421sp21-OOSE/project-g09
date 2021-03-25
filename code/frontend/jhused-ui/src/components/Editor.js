@@ -123,6 +123,13 @@ function Editor(props) {
    */
   const handleSubmit = (event) => {
     event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
     setSubmitted(true);
     switch (props.mode) {
       case "create":
@@ -134,6 +141,7 @@ function Editor(props) {
             respondToStatus(response.status);
           })
           .catch((error) => {
+            setRequestStatus(500);
             console.log(error);
           });
         
@@ -269,13 +277,16 @@ function Editor(props) {
       });
   };
 
+  const [validated, setValidated] = useState(false);
+
   return (
     <div className="editor-panel">
-      <Form onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Row>
           <Col lg={9}>
             <Form.Group controlId="titleForm">
               <Form.Control
+                required
                 type="text"
                 name="title"
                 placeholder="Title"
@@ -288,6 +299,7 @@ function Editor(props) {
           <Col lg={3}>
             <Form.Group controlId="priceForm">
               <Form.Control
+                required
                 type="number"
                 name="price"
                 placeholder="Price"
@@ -304,6 +316,7 @@ function Editor(props) {
             <Col lg={5}>
               <Form.Group>
                 <Select
+                  required
                   className="status-select"
                   classNamePrefix="status-select"
                   label="status-select"
@@ -327,6 +340,7 @@ function Editor(props) {
           <Col>
             <Form.Group>
               <Form.Control
+                required
                 type="text"
                 name="location"
                 placeholder="Location"
@@ -334,6 +348,9 @@ function Editor(props) {
                 onChange={handleOnChange}
                 disabled={submitted}
               />
+              <Form.Control.Feedback type="invalid">
+                Please provide location
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -341,6 +358,7 @@ function Editor(props) {
           <Col lg={5}>
             <Form.Group>
               <Select
+                required
                 className="category-select"
                 classNamePrefix="category-select"
                 label="category-select"
@@ -380,6 +398,7 @@ function Editor(props) {
         </Row>
         <Form.Group>
           <Form.Control
+            required
             className="description-area"
             as="textarea"
             size="lg"
@@ -394,7 +413,7 @@ function Editor(props) {
         <Form.Group>
           <Form.File
             onChange={handleImageChange}
-            label="Images"
+            label="Select images"
             multiple
             disabled={submitted}
           />
@@ -441,21 +460,17 @@ function Editor(props) {
         </Form.Group>
       </Form>
       {submitted &&
-        (requestStatus === 201 || 200 ? (
+        ((requestStatus === 200) || (requestStatus === 201)? (
           <Alert variant="info">
             Post is {props.mode === "update" ? "updated" : "submitted"}{" "}
             successfully
           </Alert>
-        ) : (
+        ) 
+        : (
           <Alert variant="info">
             Post {props.mode === "update" ? "update" : "submission"} failed: code {requestStatus}
           </Alert>
         ))}
-      {/* Conditional element below to display the form data in json
-            Uncomment it  on for debugging use */}
-      {/* <pre name="json-output">
-          {JSON.stringify({...formData}, null, 2)}
-      </pre> */}
     </div>
   );
 }
