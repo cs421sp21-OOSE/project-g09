@@ -1,14 +1,15 @@
-package dao;
+package dao.jdbi;
 
-import dao.sql2oDao.Sql2oHashtagDao;
+import dao.HashtagDao;
+import dao.jdbiDao.JdbiHashtagDao;
 import exceptions.DaoException;
 import model.Hashtag;
 import model.Post;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sql2o.Sql2o;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -18,23 +19,23 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Sql2oHashtagDaoTest {
+public class JdbiHashtagDaoTest {
   private static final List<Post> samplePosts = DataStore.samplePosts();
-  private static Sql2o sql2o;
+  private static Jdbi jdbi;
   private HashtagDao hashtagDao;
 
   @BeforeAll
   static void connectToDatabase() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // use test dataset
     Database.main(null); // reset dataset and add samples
-    sql2o = Database.getSql2o();
+    jdbi = Database.getJdbi();
   }
 
   @BeforeEach
   void injectDependency() throws URISyntaxException {
-    Database.truncateTables(sql2o);
-    Database.insertSampleData(sql2o, samplePosts);
-    hashtagDao = new Sql2oHashtagDao(Database.getSql2o());
+    Database.truncateTables(jdbi);
+    Database.insertSampleData(jdbi, samplePosts);
+    hashtagDao = new JdbiHashtagDao(jdbi);
   }
 
   @AfterAll
@@ -80,7 +81,7 @@ public class Sql2oHashtagDaoTest {
   @Test
   void createNullHashtagThrowsDaoException() {
     assertThrows(DaoException.class, () -> {
-      hashtagDao.create(null);
+      hashtagDao.create((Hashtag) null);
     });
   }
 
@@ -96,7 +97,7 @@ public class Sql2oHashtagDaoTest {
   }
 
   @Test
-  void readNonExistingHashtagReturnNull() {
+  void readNonExistingHashtagThrows() {
     assertNull(hashtagDao.read("744789".repeat(6)));
   }
 
@@ -160,19 +161,18 @@ public class Sql2oHashtagDaoTest {
 
   @Test
   void getHashtagsGivenPostIdWork() {
-    for (Post post: samplePosts)
-    {
+    for (Post post : samplePosts) {
       assertEquals(post.getHashtags(), hashtagDao.getHashtagsOfPost(post.getId()));
     }
   }
 
   @Test
   void getHashtagsGivenInvalidPostIdReturnEmpty() {
-    assertEquals(0,hashtagDao.getHashtagsOfPost("999771".repeat(6)).size());
+    assertEquals(0, hashtagDao.getHashtagsOfPost("999771".repeat(6)).size());
   }
 
   @Test
   void getHashtagsGivenNullPostIdReturnEmpty() {
-    assertEquals(0,hashtagDao.getHashtagsOfPost(null).size());
+    assertEquals(0, hashtagDao.getHashtagsOfPost(null).size());
   }
 }

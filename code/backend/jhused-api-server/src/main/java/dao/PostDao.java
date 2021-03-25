@@ -1,11 +1,11 @@
 package dao;
 
 import exceptions.DaoException;
+import model.Category;
+import model.Post;
+
 import java.util.List;
 import java.util.Map;
-import model.Category;
-
-import model.Post;
 
 /**
  * Data Access Object for Post.
@@ -14,6 +14,7 @@ public interface PostDao {
 
   /**
    * Create a Post.
+   *
    * @param post The Post item to be created
    * @return The Post object created.
    * @throws DaoException A generic exception for CRUD operations.
@@ -48,19 +49,20 @@ public interface PostDao {
 
   /**
    * Get all method which can handle all query parameters
-   * @param specified category to be searched in
+   *
+   * @param specified   category to be searched in
    * @param searchQuery A search term.
-   * @param sortParams map of sort keys and sort orders
-   * @throws DaoException A generic exception for CRUD operations.
+   * @param sortParams  map of sort keys and sort orders
    * @return list of matching posts with the sorted order
+   * @throws DaoException A generic exception for CRUD operations.
    */
   List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams)
-          throws DaoException;
+      throws DaoException;
 
   /**
    * Update the title of a Posts provided its id.
    *
-   * @param id The Post alphanumeric code.
+   * @param id   The Post alphanumeric code.
    * @param post The Post.
    * @return The updated Post object.
    * @throws DaoException A generic exception for CRUD operations.
@@ -79,6 +81,7 @@ public interface PostDao {
   /**
    * This will search for all posts that have any element relating to the
    * passed query. Any and all text within the post will be searched.
+   *
    * @param searchQuery A search term.
    * @return All Posts retrieved.
    */
@@ -87,19 +90,20 @@ public interface PostDao {
   /**
    * This will search for the query within all posts within the specified
    * category. Any and all text within the post will be searched.
+   *
    * @param searchQuery A search term.
-   * @param specified category to be searched in
+   * @param specified   category to be searched in
    * @return All Posts retrieved.
    */
   List<Post> searchCategory(String searchQuery, Category specified);
 
   /**
    * This will get all the posts within the specified category.
+   *
    * @param specified category to be returned.
    * @return All Posts retrieved.
    */
   List<Post> getCategory(Category specified);
-
 
 
 }

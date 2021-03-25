@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ImageGrid from "./ImageGrid";
-import EditorPopUp from "./EditorPopUp";
 import { useParams } from "react-router-dom";
 import Icon from "../images/icon.png";
 import Location from "./Location";
@@ -83,7 +82,8 @@ const UserProfile = (props) => {
         </button>
       </div>
 
-      {createEditorLive ? (
+      
+      {/* {createEditorLive ? (
         <EditorPopUp toggle={handlePostBtnChange} mode={"create"} post={null} />
       ) : null}
       {updateEditorLive ? (
@@ -92,7 +92,7 @@ const UserProfile = (props) => {
           mode={"update"}
           post={selectedPost}
         />
-      ) : null}
+      ) : null} */}
       <div className="user-profile-body">
         <div className="user-info">
           <img className="user-icon" src={Icon} alt="icon" />
