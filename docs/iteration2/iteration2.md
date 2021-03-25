@@ -14,7 +14,9 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
 
-![](../assets/UML/UML-iteration2.png)
+![](../assets/UML/UML-iteration1.png)
+
+
 
 # Wireframe & Use-case  
 
@@ -41,7 +43,6 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. The user can mark the item as sold once the sold button is clicked, and the post would not appear under search anymore.
 
 ![](../assets/Wireframe/Wireframe-editPost-iteration2.png)
-
 
 # Iteration Backlog  
 * As a user, I want to post an item with tags for its category, so that a buyer can search through category  
