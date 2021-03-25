@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
@@ -13,9 +12,9 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="jhused-header">
-      <a href="/"><img className="jhused-logo" src={logo} alt="logo"/> </a>
-      </div>
+      {/* <div className="jhused-header">
+        <a href="/"><img className="jhused-logo" src={logo} alt="logo"/> </a>
+      </div> */}
       <Switch location={background || location}>
         <Route exact path="/">
           <HomePage />
