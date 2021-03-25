@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ImageGrid from "./ImageGrid";
-import EditorPopup from "./EditorPopUp";
-import "./HomePage.css";
 import axios from "../util/axios";
+import { Link } from 'react-router-dom';
+import "./HomePage.css";
 import SearchIcon from "../images/search.png";
 import DownArrow from "../images/down-arrow.png";
 import UpArrow from "../images/up-arrow.png";
@@ -133,9 +133,12 @@ const HomePage = () => {
     <div className="home-page">
       <div className="home-page-header">
         {/* Button for setting up editor's post-updating feature only - delete later once my page is setup */}
-        <button className="post-button" onClick={handlePostBtnChange}>
-          Post
-        </button>
+        <Link to="/editor-create">
+          <button className="post-button">
+            Post
+          </button>
+        </Link>
+        
 
         <div className="search-bar">
           <input
@@ -198,13 +201,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {editorLive ? (
-        <EditorPopup
-          toggle={handlePostBtnChange}
-          mode={"create"}
-          post={null}
-        />
-      ) : null}
       {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
       <ImageGrid posts={sortedPosts} />
     </div>

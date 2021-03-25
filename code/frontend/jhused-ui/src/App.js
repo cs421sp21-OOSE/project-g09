@@ -21,10 +21,17 @@ const App = () => {
         <Route exact path="/">
           <HomePage />
         </Route>
+        
         <Route exact path="/user/:userID" component={UserProfile}/>
-        <Route exact path="/editor-new">
+
+        <Route exact path="/editor-create">
           <EditorFormik mode="create"/>
         </Route>
+
+        <Route exact path="/editor-update">
+          <EditorFormik mode="update"/>
+        </Route>
+
         <Route exact path="/test">
           <Header />
         </Route>
