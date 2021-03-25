@@ -68,9 +68,9 @@ const SelectWraper = ({...props}) => {
         placeholder={props.placeholder}
         options={Object.values(props.options)}
         onChange={(obj, actionMedia) => {
-          props.onChange("category", obj.value)
+          props.onChange(props.name, obj.value)
         }}
-        onBlur={() => props.onBlur("category", true)}
+        onBlur={() => props.onBlur(props.name, true)}
         styles={customStyles}
       />
       {props.touched && props.error ? (<div className={errorMsgStyle}>{props.error}</div>) : (null)}
@@ -90,7 +90,7 @@ const CreatableWrapper = ({ ...props }) => {
     if (!tagInput) return;
     switch (event.key) {
       case "Enter":
-        props.onChange("hashtags", [
+        props.onChange(props.name, [
           ...props.value, 
           {hashtag: removeHashtag(tagInput)}
         ])
@@ -102,7 +102,7 @@ const CreatableWrapper = ({ ...props }) => {
   };
 
   const handleCreatableChange = (values, actionMedia) => {
-    props.onChange("hashtags", values.map((obj) => ({hashtag: obj.value})))
+    props.onChange(props.name, values.map((obj) => ({hashtag: obj.value})))
   };
 
   // Helper method to remove the preceding hashtags
@@ -173,7 +173,7 @@ const ImageUpload = ({ ...props }) => {
               postId: props.postId,
               url: downloadURL
             });
-            props.onChange("images", [...props.value, ...images]);
+            props.onChange(props.name, [...props.value, ...images]);
           });
         }
       );
@@ -184,11 +184,10 @@ const ImageUpload = ({ ...props }) => {
     <div className={props.className}>
       <div>
         <input 
-          name="images"
           type="file"
           multiple
           onChange={handleImageChange}
-          onBlur={() => props.onBlur("images", true)}
+          onBlur={() => props.onBlur(props.name, true)}
         />
       </div>
       <div><progress
