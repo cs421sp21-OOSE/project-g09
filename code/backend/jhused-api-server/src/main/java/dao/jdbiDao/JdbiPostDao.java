@@ -80,7 +80,7 @@ public class JdbiPostDao implements PostDao {
 
     try {
       return jdbi.inTransaction(handle -> {
-        handle.createUpdate(insertPostSql).bindBean(post);
+        handle.createUpdate(insertPostSql).bindBean(post).execute();
         if (!post.getImages().isEmpty()) {
           imageDao.create(post.getImages());
         }
@@ -109,7 +109,7 @@ public class JdbiPostDao implements PostDao {
           .bind("id", id)
           .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
           .values())
-          .get(0));
+          .stream().findFirst().orElse(null));
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with id " + id, ex);
     }
@@ -151,7 +151,7 @@ public class JdbiPostDao implements PostDao {
   @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
     try {
-      String sql = SELECT_POSTS;
+      String sql = SELECT_POST_BASE;
       // Handle category query parameter
       // Adapted from searchCategory
       Category category = null;
@@ -217,15 +217,16 @@ public class JdbiPostDao implements PostDao {
      * change.
      */
 
-    String updateSql = "UPDATE post SET " +
-        "user_id = :userId, " +
-        "title = :title, " +
-        "price = :price, " +
-        "sale_state = CAST(:saleState AS SaleState)," +
-        "description = :description, " +
-        "category = CAST(:category AS Category), " +
-        "location = :location " +
-        "WHERE id = :id;";
+    String updateSql = "WITH updated AS (UPDATE post SET "
+        + "user_id = :userId, "
+        + "title = :title, "
+        + "price = :price, "
+        + "sale_state = CAST(:saleState AS SaleState),"
+        + "description = :description, "
+        + "category = CAST(:category AS Category), "
+        + "location = :location "
+        + "WHERE id = :id RETURNING *)"
+        + "SELECT * FROM updated;";
 
     //attempt to open connection and perform sql string.
     try {
@@ -243,44 +244,47 @@ public class JdbiPostDao implements PostDao {
       }
 
       return jdbi.inTransaction(handle -> {
-        handle.createUpdate(updateSql)
-            .bindBean(post).bind("id", id).execute();
-        List<Image> toBeUpdatedImages = new ArrayList<>();
-        List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
-        List<String> toBeUpdatedHashtagsIds = new ArrayList<>();
-        List<Image> deleteImages = imageDao.getImagesOfPost(post.getId());
-        List<String> deleteImagesIds = new ArrayList<>();
-        List<Hashtag> deleteHashtags = hashtagDao.getHashtagsOfPost(post.getId());
-        List<String> deleteHashtagsIds = new ArrayList<>();
-        for (Image image : post.getImages()) {
-          image.setPostId(post.getId());
-          // if existing images contain yet, updated version doesn't
-          if (deleteImages.contains(image) && !post.getImages().contains(image)) {
-            deleteImagesIds.add(image.getId());
-            // add new image
-          } else if (!deleteImages.contains(image) && post.getImages().contains(image)) {
-            toBeUpdatedImages.add(image);
+        Post updatedPost = handle.createQuery(updateSql)
+            .bindBean(post).bind("id", id).mapToBean(Post.class).findFirst().orElse(null);
+        if (updatedPost != null) {
+          List<Image> toBeUpdatedImages = new ArrayList<>();
+          List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
+          List<String> toBeUpdatedHashtagsIds = new ArrayList<>();
+          List<Image> deleteImages = imageDao.getImagesOfPost(post.getId());
+          List<String> deleteImagesIds = new ArrayList<>();
+          deleteImages.forEach(k -> deleteImagesIds.add(k.getId()));
+          List<Hashtag> deleteHashtags = hashtagDao.getHashtagsOfPost(post.getId());
+          List<String> deleteHashtagsIds = new ArrayList<>();
+          deleteHashtags.forEach(k -> deleteHashtagsIds.add(k.getId()));
+          for (Image image : post.getImages()) {
+            image.setPostId(post.getId());
+            // if existing images contain yet, updated version doesn't
+            if (deleteImages.contains(image)) {
+              deleteImagesIds.remove(image.getId());
+              // add new image
+            } else if (!deleteImages.contains(image)) {
+              toBeUpdatedImages.add(image);
+            }
           }
-        }
-        imageDao.delete(deleteImagesIds);
-        imageDao.create(toBeUpdatedImages);
+          imageDao.delete(deleteImagesIds);
+          imageDao.create(toBeUpdatedImages);
 
-        for (Hashtag hashtag : post.getHashtags()) {
-          if (deleteHashtags.contains(hashtag) && !post.getHashtags().contains(hashtag)) {
-            deleteHashtagsIds.add(hashtag.getId());
-          } else if (!deleteHashtags.contains(hashtag) && post.getHashtags().contains(hashtag)) {
-            toBeUpdatedHashtags.add(hashtag);
-            toBeUpdatedHashtagsIds.add(hashtag.getId());
+          for (Hashtag hashtag : post.getHashtags()) {
+            if (deleteHashtags.contains(hashtag)) {
+              deleteHashtagsIds.remove(hashtag.getId());
+            } else if (!deleteHashtags.contains(hashtag)) {
+              toBeUpdatedHashtags.add(hashtag);
+              toBeUpdatedHashtagsIds.add(hashtag.getId());
+            }
           }
+          postHashtagDao.delete(post.getId(), deleteHashtagsIds);
+          hashtagDao.create(toBeUpdatedHashtags);
+          postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
         }
-        postHashtagDao.delete(post.getId(), deleteHashtagsIds);
-        hashtagDao.create(toBeUpdatedHashtags);
-        postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
-
         return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID)
             .bind("id", post.getId())
             .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
-            .values()).get(0);
+            .values()).stream().findFirst().orElse(null);
       });
     } catch (StatementException | IllegalStateException | NullPointerException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post! Check if missing fields.", ex);

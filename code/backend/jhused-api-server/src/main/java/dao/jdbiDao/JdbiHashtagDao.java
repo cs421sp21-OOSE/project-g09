@@ -51,7 +51,7 @@ public class JdbiHashtagDao implements HashtagDao {
           }
           batch.bindBean(hashtag).add();
         }
-        return batch.mapToBean(Hashtag.class).list();
+        return batch.executeAndReturnGeneratedKeys().mapToBean(Hashtag.class).list();
       });
     } catch (IllegalStateException | StatementException | NullPointerException ex) {
       throw new DaoException("Unable to create the hashtags: " + ex.getMessage(), ex);

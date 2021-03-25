@@ -14,7 +14,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -116,18 +118,22 @@ public class ResultSetLinkedHashMapAccumulatorProvider<T> implements ResultSetAc
       object = clazz.getDeclaredConstructor().newInstance();
     }
     Field[] fields = clazz.getDeclaredFields();
-    for (Field field : fields) {
-      String fieldName = field.getName();
-      if (!isMappingSupport(field)) {
-        throw new ResultSetMapAccumulatorException("Mapping not supported: fieldName: " + fieldName + " fieldType: " + field.getType());
-      }
-      if (isNewObject) {
+    // first map simple fields, then map complex ones.
+    if (isNewObject) {
+      for (Field field : fields) {
+        String fieldName = field.getName();
+        if (!isMappingSupport(field)) {
+          throw new ResultSetMapAccumulatorException("Mapping not supported: fieldName: " + fieldName + " fieldType: "
+              + field.getType());
+        }
         mapSimpleField(rs, clazz, field, object, prefix);
       }
+    }
+    for (Field field : fields) {
       mapComplexField(rs, clazz, field, object, prefix, ctx);
     }
     if (accumulator != null && isNewObject)
-      accumulator.put(clazz.getDeclaredMethod("getId").invoke(object), new ChildParent(object, new HashSet<>()));
+      accumulator.put(clazz.getDeclaredMethod("getId").invoke(object), new ChildParent(object, new LinkedHashMap<>()));
     return object;
   }
 
@@ -234,7 +240,6 @@ public class ResultSetLinkedHashMapAccumulatorProvider<T> implements ResultSetAc
             invoke(object, Enum.valueOf((Class<Enum>) field.getType(),
                 rs.getString(objectColumnLabel)));
       }
-
     }
   }
 
@@ -279,7 +284,7 @@ public class ResultSetLinkedHashMapAccumulatorProvider<T> implements ResultSetAc
         }
         fieldObject = setFields(rs, ctx, map, itemType, prefix + camelToUnderscore(fieldName) + "_");
         ChildParent childParent = map.get(fieldObject.getClass().getDeclaredMethod("getId").invoke(fieldObject));
-        childParent.getParents().add(object);
+        childParent.getParents().put(objectClass.getDeclaredMethod("getId").invoke(object), object);
       }
       if (rs.isLast()) {
         reduceComplexField(objectClass, field, map);
@@ -309,8 +314,8 @@ public class ResultSetLinkedHashMapAccumulatorProvider<T> implements ResultSetAc
     }
     for (Map.Entry<Object, ChildParent> objectChildParentEntry : map.entrySet()) {
       ChildParent cp = objectChildParentEntry.getValue();
-      for (Object parent : cp.getParents()) {
-        mapMethod.invoke(parent, cp.getChild());
+      for (Map.Entry<Object, Object> parent : cp.getParents().entrySet()) {
+        mapMethod.invoke(parent.getValue(), cp.getChild());
       }
     }
   }
@@ -319,13 +324,13 @@ public class ResultSetLinkedHashMapAccumulatorProvider<T> implements ResultSetAc
 @Data
 class ChildParent {
   Object child;
-  Set<Object> parents;
+  LinkedHashMap<Object, Object> parents;
 
   public ChildParent() {
-    parents = new HashSet<>();
+    parents = new LinkedHashMap<>();
   }
 
-  public ChildParent(Object child, HashSet<Object> parents) {
+  public ChildParent(Object child, LinkedHashMap<Object, Object> parents) {
     this.child = child;
     this.parents = parents;
   }

@@ -6,6 +6,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 import org.jdbi.v3.core.statement.StatementException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -75,12 +76,14 @@ public class JdbiPostHashtagDao implements PostHashtagDao {
 
   private List<Map<String, String>> getMaps(String postId, List<String> hashtagIds, String sql) throws DaoException {
     try {
+      if (postId == null || hashtagIds.isEmpty())
+        return new ArrayList<>();
       return jdbi.inTransaction(handle -> {
         PreparedBatch batch = handle.prepareBatch(sql);
         for (int i = 0; i < hashtagIds.size(); ++i) {
           batch.bind("postId", postId).bind("hashtagId", hashtagIds.get(i)).add();
         }
-        return batch.mapToMap(String.class).list();
+        return batch.executeAndReturnGeneratedKeys().mapToMap(String.class).list();
       });
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
@@ -89,6 +92,8 @@ public class JdbiPostHashtagDao implements PostHashtagDao {
 
   private List<Map<String, String>> getMaps(List<String> postIds, List<String> hashtagIds, String sql) throws DaoException {
     try {
+      if (postIds.isEmpty() || hashtagIds.isEmpty())
+        return new ArrayList<>();
       return jdbi.inTransaction(handle -> {
         PreparedBatch batch = handle.prepareBatch(sql);
         if (postIds.size() != hashtagIds.size())
@@ -96,7 +101,7 @@ public class JdbiPostHashtagDao implements PostHashtagDao {
         for (int i = 0; i < postIds.size(); ++i) {
           batch.bind("postId", postIds.get(i)).bind("hashtagId", hashtagIds.get(i)).add();
         }
-        return batch.mapToMap(String.class).list();
+        return batch.executeAndReturnGeneratedKeys().mapToMap(String.class).list();
       });
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);

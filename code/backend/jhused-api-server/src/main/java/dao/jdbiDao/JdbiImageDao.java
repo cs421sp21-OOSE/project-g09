@@ -7,6 +7,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
 import org.jdbi.v3.core.statement.StatementException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,21 +38,25 @@ public class JdbiImageDao implements ImageDao {
 
   @Override
   public List<Image> create(List<Image> images) throws DaoException {
-    String sql = "WITH inserted AS ("
-        + "INSERT INTO image(id, post_id, url) "
-        + "VALUES(:id, :postId, :url) RETURNING *"
-        + ") SELECT * FROM inserted;";
+    String sql = "INSERT INTO image(id, post_id, url) "
+        + "VALUES(:id, :postId, :url);";
 
     try {
       return jdbi.inTransaction(handle -> {
-        PreparedBatch batch = handle.prepareBatch(sql);
-        for (Image image : images) {
-          if (image != null && (image.getId() == null || image.getId().length() != 36)) {
-            image.setId(UUID.randomUUID().toString());
+        List<Image> res;
+        if (images.isEmpty()) {
+          res = new ArrayList<>();
+        } else {
+          PreparedBatch batch = handle.prepareBatch(sql);
+          for (Image image : images) {
+            if (image != null && (image.getId() == null || image.getId().length() != 36)) {
+              image.setId(UUID.randomUUID().toString());
+            }
+            batch.bindBean(image).add();
           }
-          batch.bindBean(image).add();
+          res = batch.executeAndReturnGeneratedKeys().mapToBean(Image.class).list();
         }
-        return batch.mapToBean(Image.class).list();
+        return res;
       });
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
@@ -91,16 +96,20 @@ public class JdbiImageDao implements ImageDao {
 
   @Override
   public List<Image> delete(List<String> ids) throws DaoException {
-    String sql = "WITH deleted AS ("
-        + "DELETE FROM image WHERE image.id=:id RETURNING *)"
-        + "SELECT * FROM deleted;";
+    String sql = "DELETE FROM image WHERE image.id=:id;";
     try {
       return jdbi.inTransaction(handle -> {
-        PreparedBatch batch = handle.prepareBatch(sql);
-        for (String id : ids) {
-          batch.bind("id", id).add();
+        List<Image> res;
+        if (ids.isEmpty()) {
+          res = new ArrayList<>();
+        } else {
+          PreparedBatch batch = handle.prepareBatch(sql);
+          for (String id : ids) {
+            batch.bind("id", id).add();
+          }
+          res = batch.executeAndReturnGeneratedKeys().mapToBean(Image.class).list();
         }
-        return batch.mapToBean(Image.class).list();
+        return res;
       });
 
     } catch (IllegalStateException | StatementException ex) {
@@ -132,13 +141,11 @@ public class JdbiImageDao implements ImageDao {
     }
     try {
       return jdbi.inTransaction(handle ->
-      {
-        return handle.createQuery(sql)
-            .bind("id", id)
-            .bind("post_id", image.getPostId())
-            .bind("url", image.getUrl())
-            .mapToBean(Image.class).findOne();
-      }).orElse(null);
+          handle.createQuery(sql)
+              .bind("id", id)
+              .bind("post_id", image.getPostId())
+              .bind("url", image.getUrl())
+              .mapToBean(Image.class).findOne()).orElse(null);
     } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }
