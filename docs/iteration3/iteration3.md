@@ -30,14 +30,14 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 7. The user can logout by  clicking the "Logout" from the drop down menu of the account icon.
 8. The user can login by clicking the Login button and then redirect to JHU SSO to login, then redirect to information registration page, and then back to homepage with logged in status.
 
-![](../assets/Wireframe/Wireframe-homepageloggedin-iteration3.png)
+![](../assets/Wireframe/Wireframe-HomepageLoggedIn-iteration3.png)
 
-![](../assets/Wireframe/Wireframe-homepagenotloggedin-iteration3.png)
+![](../assets/Wireframe/Wireframe-HomePageNotLoggedIn-iteration3.png)
 
 ### Chatting box
 1. The user can chat with other users in this box.
 
-![](..\assets\Wireframe\Wireframe-message-iteration3.png)
+![](../assets/Wireframe/Wireframe-message-iteration3.png)
 
 ### Reading a post
 (After clicking on a post)
@@ -57,14 +57,16 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. The user can start a chat when visiting other's account page by clicking a button.
 5. The user can click on a button to open an edit pop up to edit the user's information.
 
-![](..\assets\Wireframe\Wireframe-MyProfile-iteration3.png)
+![](../assets/Wireframe/Wireframe-MyProfile-iteration3.png)
 
-![](..\assets\Wireframe\Wireframe-otheruserprofile-iteration3.png)
+![](../assets/Wireframe/Wireframe-OtherUserProfile-iteration3.png)
 
 ### Account information editing page
 
-1. The user can edit location, preferred email, and preferred user name in this editing page.  
+1. The user can edit location, preferred email,  preferred user name, and upload avatar (an image) in this editing page.  
 2. If it's the user's first login, this page contain no default information, other wise, it is filled with original values.  
+
+![](../assets/Wireframe/Wireframe-editUser-iteration3.png)
 
 # Iteration Backlog
 
@@ -78,8 +80,8 @@ As a user, I want to login into the platform using my JHED account to verify my 
 - [ ] Migrate to JDBI3 (Bohua)
 - [ ] Login Backend
   - [ ]  Database Design, user table, user dao, user api (Qiao)
-    - [ ]   Setup User table (JHID, preferred name, location, preferred email)
-    - [ ]   Setup User model
+    - [ ]   Setup User table (JHID, image_url, preferred name, location, preferred email)
+    - [ ]   Setup User model（listOfPosts）
     - [ ]   User dao
     - [ ]   CRUD api for User
     - [ ]   Email user when post get sold api (nice to have)
@@ -89,22 +91,22 @@ As a user, I want to login into the platform using my JHED account to verify my 
     - [ ] Handle SSO encription and decription
   - [ ] Handle Sessions (Bohua, Louie)
 - [ ] Login Frontend
-  - [ ] Editing user information page (route to this page/pop up in account page (must login))
-  - [ ] Handle user's login status
+  - [ ] Editing user information page (route to this page/pop up in account page (must login)) (Chu)
+  - [ ] Handle user's login status (Junjie)
     - [ ] Check if user is logged in
     - [ ] Redirect to login backend api url if not
 - [ ] User frontend
   - [ ] Add user link in post detail to allow user to visit the post owner's user page. (Sam)
-  - [ ] Add user information editing button in his/her account page to open the "Editing user information page".
+  - [ ] Add user information editing button in his/her account page to open the "Editing user information page". (Sam)
 - [ ] Chatting box
-  - [ ] Look into firebase to use their chatting plugin.
-  - [ ] Add chat box button in homepage and account page to allow user check his/her messages.
-  - [ ] Add start chatting button in other user's account page to start conversation.
+  - [ ] Chat box component - firebase or other 3rd party lib (Junjie, Chu)
+  - [ ] Add chat box button in homepage and account page to allow user check his/her messages. (Bohua)
+  - [ ] Add start chatting button in other user's account page to start conversation. (Sam)
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
-  - [ ] Homepage
-  - [ ] post detail
-  - [ ] post editing
-  - [ ] account page
+  - [ ] Homepage (Sam)
+  - [ ] post detail (Sam)
+  - [ ] post editing (Chu)
+  - [ ] account page (Bohua)
 - [ ] Extend past activity functionalities (If we have time)
   - [ ] Implement my favorite posts (post detail have a heart, click then favorite it, show a list of favorites in account page)
   - [ ] Implement history of post creation, edition, view

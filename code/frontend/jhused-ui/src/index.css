@@ -1,4 +1,9 @@
-@font-face {
+/* ./src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* @font-face {
   font-family: OpenSans;
   src: url("./styles/OpenSans/OpenSans-Bold.ttf");
 }
@@ -15,4 +20,9 @@ body, #root, html {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+} */
+
+.jhused-logo {
+  width: 35%;
+  float: left;
 }
