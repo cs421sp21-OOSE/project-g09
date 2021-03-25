@@ -37,6 +37,12 @@ public class Sql2oImageDao implements ImageDao {
   }
 
   @Override
+  public List<Image> create(List<Image> images) throws DaoException {
+    // stud
+    return null;
+  }
+
+  @Override
   public Image update(String id, Image image) throws DaoException {
     String sql = "WITH updated AS ("
         + "UPDATE image SET url = :url WHERE id = :id RETURNING *"
@@ -49,6 +55,18 @@ public class Sql2oImageDao implements ImageDao {
     } catch (Sql2oException | NullPointerException ex) {
       throw new DaoException("Unable to update the image: " + ex.getMessage(), ex);
     }
+  }
+
+  @Override
+  public Image delete(String id) throws DaoException {
+    // stud
+    return null;
+  }
+
+  @Override
+  public List<Image> delete(List<String> ids) throws DaoException {
+    // stud
+    return null;
   }
 
   @Override

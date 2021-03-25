@@ -1,13 +1,14 @@
-package dao;
+package dao.jdbi;
 
-import dao.sql2oDao.Sql2oPostHashtagDao;
+import dao.PostHashtagDao;
+import dao.jdbiDao.JdbiPostHashtagDao;
 import exceptions.DaoException;
 import model.Post;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sql2o.Sql2o;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -18,23 +19,23 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class Sql2oPostHashtagDaoTest {
+public class JdbiPostHashtagDaoTest {
   private static final List<Post> samplePosts = DataStore.samplePosts();
-  private static Sql2o sql2o;
+  private static Jdbi jdbi;
   private PostHashtagDao posthashtagDao;
 
   @BeforeAll
   static void connectToDatabase() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // use test dataset
     Database.main(null); // reset dataset and add samples
-    sql2o = Database.getSql2o();
+    jdbi = Database.getJdbi();
   }
 
   @BeforeEach
   void injectDependency() throws URISyntaxException {
-    Database.truncateTables(sql2o);
-    Database.insertSampleData(sql2o, samplePosts);
-    posthashtagDao = new Sql2oPostHashtagDao(Database.getSql2o());
+    Database.truncateTables(jdbi);
+    Database.insertSampleData(jdbi, samplePosts);
+    posthashtagDao = new JdbiPostHashtagDao(jdbi);
   }
 
   @AfterAll
@@ -49,7 +50,9 @@ public class Sql2oPostHashtagDaoTest {
   @Test
   void createPostHashtag() {
     Map<String, String> postHashtag = Map.of("postId", "0".repeat(36), "hashtagId", "1".repeat(36));
-    assertEquals(postHashtag, posthashtagDao.create(postHashtag.get("postId"), postHashtag.get("hashtagId")));
+    Map<String, String> resultPostHashtag = posthashtagDao.create(postHashtag.get("postId"), postHashtag.get("hashtagId"));
+    assertEquals(postHashtag.get("postId"), resultPostHashtag.get("postid"));
+    assertEquals(postHashtag.get("hashtagId"), resultPostHashtag.get("hashtagid"));
   }
 
   @Test
@@ -80,7 +83,7 @@ public class Sql2oPostHashtagDaoTest {
   void createPostHashtagNullHashtagThrowsException() {
     Map<String, String> postHashtag = Map.of("postId", "0".repeat(36));
     assertThrows(DaoException.class, () -> {
-      posthashtagDao.create(postHashtag.get("postId"), null);
+      posthashtagDao.create(postHashtag.get("postId"), (String) null);
     });
   }
 }

@@ -1,9 +1,12 @@
-package dao;
+package dao.jdbi;
 
+import dao.ImageDao;
+import dao.jdbiDao.JdbiImageDao;
 import dao.sql2oDao.Sql2oImageDao;
 import exceptions.DaoException;
 import model.Image;
 import model.Post;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,23 +21,23 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Sql2oImageDaoTest {
+public class JdbiImageDaoTest {
   private static final List<Post> samplePosts = DataStore.samplePosts();
-  private static Sql2o sql2o;
+  private static Jdbi jdbi;
   private ImageDao imageDao;
 
   @BeforeAll
   static void connectToDatabase() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // use test dataset
     Database.main(null); // reset dataset and add samples
-    sql2o = Database.getSql2o();
+    jdbi = Database.getJdbi();
   }
 
   @BeforeEach
   void injectDependency() throws URISyntaxException {
-    Database.truncateTables(sql2o);
-    Database.insertSampleData(sql2o, samplePosts);
-    imageDao = new Sql2oImageDao(Database.getSql2o());
+    Database.truncateTables(jdbi);
+    Database.insertSampleData(jdbi, samplePosts);
+    imageDao = new JdbiImageDao(jdbi);
   }
 
   @AfterAll
@@ -87,7 +90,7 @@ public class Sql2oImageDaoTest {
   @Test
   void createImageWithNullImage() {
     assertThrows(DaoException.class, () -> {
-      imageDao.create(null);
+      imageDao.create((Image)null);
     });
   }
 

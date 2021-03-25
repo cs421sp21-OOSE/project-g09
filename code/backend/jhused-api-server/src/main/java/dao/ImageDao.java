@@ -1,10 +1,9 @@
 package dao;
 
 import exceptions.DaoException;
-import java.util.List;
-
-import model.Hashtag;
 import model.Image;
+
+import java.util.List;
 
 /**
  * Data Access Object for Image.
@@ -13,11 +12,21 @@ public interface ImageDao {
 
   /**
    * Create a Image.
+   *
    * @param image The Image item to be created
    * @return The Image object created.
    * @throws DaoException A generic exception for CRUD operations.
    */
   Image create(Image image) throws DaoException;
+
+  /**
+   * Create a list of Image.
+   *
+   * @param images A list of Image items to be created
+   * @return A list of Image objects created.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Image> create(List<Image> images) throws DaoException;
 
   /**
    * No need to implement yet.
@@ -62,11 +71,21 @@ public interface ImageDao {
    * This should never be called, as deleting post will automatically
    * delete its images.
    *
-   * @param postId The Image id.
+   * @param id The Image id.
    * @return The Image object deleted from the data source.
    * @throws DaoException A generic exception for CRUD operations.
    */
-//  Image delete(String id) throws DaoException;
+  Image delete(String id) throws DaoException;
+
+  /**
+   * Delete a a list of Images provided their ids.
+   *
+   * @param ids a list of image ids.
+   * @return The Image object deleted from the data source.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Image> delete(List<String> ids) throws DaoException;
+
   List<Image> getImagesOfPost(String postId) throws DaoException;
 
   /**

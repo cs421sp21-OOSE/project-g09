@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import dao.PostDao;
+import dao.jdbiDao.JdbiPostDao;
 import dao.sql2oDao.Sql2oPostDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
@@ -36,10 +37,12 @@ public class ApiServer {
   }
 
   private static PostDao getPostDao() throws URISyntaxException {
-    Sql2o sql2o = Database.getSql2o();
-    return new Sql2oPostDao(sql2o);
+    return new JdbiPostDao(Database.getJdbi());
   }
 
+  /**
+   * set access control request headers
+   */
   public static void setAccessControlRequestHeaders(){
     options("/*",
         (request, response) -> {
