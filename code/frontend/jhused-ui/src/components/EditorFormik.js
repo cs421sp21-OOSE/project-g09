@@ -20,7 +20,7 @@ const StdTextInput = ({ ...props }) => {
       </label>
       <input 
         className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-3 py-1 block relative w-full" 
-        type={props.type}
+        type="text"
         placeholder={props.placeholder}
         {...field} 
       />
@@ -28,6 +28,32 @@ const StdTextInput = ({ ...props }) => {
     </div>
   );
 };
+
+const StdNumInput = ({ ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <div className={props.className}>
+      <label className={fieldLabelStyle}>
+        {props.label}
+      </label>
+      <div className="relative">
+        <div className="z-40 absolute flex inset-y-0 left-0 items-center pl-2">
+          <span className="text-gray-500 text-md">$</span>
+        </div>
+        <input 
+          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-4 py-1 block relative w-full" 
+          type="number"
+          placeholder={props.placeholder}
+          {...field} 
+        />
+      </div>
+      
+      
+      {meta.touched && meta.error ? <div className={errorMsgStyle}>{meta.error}</div> : null}
+    </div>
+  );
+};
+
 
 // Text area input with built-in error message
 const StdTextArea = ({ ...props }) => {
@@ -285,15 +311,13 @@ const EditorFormik = (props) => {
 
                 <StdTextInput 
                   name="location" 
-                  type="text" 
                   label="Location" 
                   placeholder="Marylander"
                   className="col-span-8"
                 />
 
-                <StdTextInput 
+                <StdNumInput 
                   name="price" 
-                  type="number" 
                   label="Price" 
                   placeholder="29.50"
                   className="col-span-4"
