@@ -20,7 +20,7 @@ const StdTextInput = ({ ...props }) => {
       </label>
       <input 
         className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-3 py-1 block relative w-full" 
-        type={props.type}
+        type="text"
         placeholder={props.placeholder}
         {...field} 
       />
@@ -28,6 +28,32 @@ const StdTextInput = ({ ...props }) => {
     </div>
   );
 };
+
+const StdNumInput = ({ ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <div className={props.className}>
+      <label className={fieldLabelStyle}>
+        {props.label}
+      </label>
+      <div className="relative">
+        <div className="z-40 absolute flex inset-y-0 left-0 items-center pl-2">
+          <span className="text-gray-500 text-md">$</span>
+        </div>
+        <input 
+          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-4 py-1 block relative w-full" 
+          type="number"
+          placeholder={props.placeholder}
+          {...field} 
+        />
+      </div>
+      
+      
+      {meta.touched && meta.error ? <div className={errorMsgStyle}>{meta.error}</div> : null}
+    </div>
+  );
+};
+
 
 // Text area input with built-in error message
 const StdTextArea = ({ ...props }) => {
@@ -68,9 +94,9 @@ const SelectWraper = ({...props}) => {
         placeholder={props.placeholder}
         options={Object.values(props.options)}
         onChange={(obj, actionMedia) => {
-          props.onChange("category", obj.value)
+          props.onChange(props.name, obj.value)
         }}
-        onBlur={() => props.onBlur("category", true)}
+        onBlur={() => props.onBlur(props.name, true)}
         styles={customStyles}
       />
       {props.touched && props.error ? (<div className={errorMsgStyle}>{props.error}</div>) : (null)}
@@ -90,7 +116,7 @@ const CreatableWrapper = ({ ...props }) => {
     if (!tagInput) return;
     switch (event.key) {
       case "Enter":
-        props.onChange("hashtags", [
+        props.onChange(props.name, [
           ...props.value, 
           {hashtag: removeHashtag(tagInput)}
         ])
@@ -102,7 +128,7 @@ const CreatableWrapper = ({ ...props }) => {
   };
 
   const handleCreatableChange = (values, actionMedia) => {
-    props.onChange("hashtags", values.map((obj) => ({hashtag: obj.value})))
+    props.onChange(props.name, values.map((obj) => ({hashtag: obj.value})))
   };
 
   // Helper method to remove the preceding hashtags
@@ -173,7 +199,7 @@ const ImageUpload = ({ ...props }) => {
               postId: props.postId,
               url: downloadURL
             });
-            props.onChange("images", [...props.value, ...images]);
+            props.onChange(props.name, [...props.value, ...images]);
           });
         }
       );
@@ -184,11 +210,10 @@ const ImageUpload = ({ ...props }) => {
     <div className={props.className}>
       <div>
         <input 
-          name="images"
           type="file"
           multiple
           onChange={handleImageChange}
-          onBlur={() => props.onBlur("images", true)}
+          onBlur={() => props.onBlur(props.name, true)}
         />
       </div>
       <div><progress
@@ -286,15 +311,13 @@ const EditorFormik = (props) => {
 
                 <StdTextInput 
                   name="location" 
-                  type="text" 
                   label="Location" 
                   placeholder="Marylander"
                   className="col-span-8"
                 />
 
-                <StdTextInput 
+                <StdNumInput 
                   name="price" 
-                  type="number" 
                   label="Price" 
                   placeholder="29.50"
                   className="col-span-4"
