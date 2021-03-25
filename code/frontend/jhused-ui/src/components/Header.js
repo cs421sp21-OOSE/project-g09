@@ -9,7 +9,7 @@ const Header = (props) => {
     <div className="header">
       <img src={Logo} alt="logo" />
       <div className="search-bar">{context.user.name}</div>
-      <div className="post"> Post</div>
+      {context.user ? <button className="post" onClick={() => {}}> Post</button> : <button className="post"> Login</button>}
     </div>
   );
 };
