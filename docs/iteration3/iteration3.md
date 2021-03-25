@@ -10,7 +10,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Server (controller): processing HTTP requests and sending responses
   * Post (model): model representation of posts created by users in the app
   * PostDao: dact access object interface for the model class to provide DB operations
-  * Sql2oPostDao: concrete implementation of the PostDao interface 
+  * JdbiPostDao: concrete implementation of the PostDao interface 
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
 
@@ -74,9 +74,10 @@ As a user, I want to have the chatting feature, so that I can coordinate with th
 As a user, I want to login into the platform, so that I can access my past activities  
 As a user, I want to sign up an account, so that I can log in  
 As a user, I want to login into the platform using my JHED account to verify my identity, so that sign up and login will be easy  
+As a user, I want to make a wish list, so that I can show people what things I am looking for
 
 # Tasks
-
+- [ ] Implement wish list feature (Louie)
 - [ ] Migrate to JDBI3 (Bohua)
 - [ ] Login Backend
   - [ ]  Database Design, user table, user dao, user api (Qiao)
