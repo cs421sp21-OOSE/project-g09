@@ -23,22 +23,33 @@
 
 ## Installing / Getting started
 
+### Run frontend locally:
 Set the current directory to code/frontend/jhused-ui. Then type the following in the terminal to install all the front end dependencies
 
 ```shell
 npm install
 ```
-Type the following to start the app on the localhost:3000
+Type the following to start the app on the [localhost:3000](http://localhost:3000)
 ```shell
 npm start
 ```
+### Run backend locally
+```shell
+Open Intellj
+Open Project in code/backend/jhused-api-server
+Refresh Gradle
+Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: awesomeexpressshop@gmail.com Pass: Johnshopkins6!).
+Run api/ApiServer
+```
+Then the server should be running on the [localhost:4567](http://localhost:4567)
 
 ## Developing
 
 ### Built With
 #### Backend
 ##### Framework:
-SparkJava 2.9.3  
+SparkJava 2.9.3 for api server  
+Jdbi3 3.16.0 for database interaction
 
 ##### Build Tool & Package Manager:
 Gradle 6.7  
@@ -80,7 +91,8 @@ visit http://localhost:4567
 # to setup frontend
 got to code/frontend/jhused-ui
 Open a terminal
-Install denpendencies in #Prerequisites
+# Install denpendencies in Prerequisites by running:
+npm install
 Open a editor, vscode for example
 Edit what you want
 # Once you are done, run
@@ -97,7 +109,8 @@ project after some code changes, state them here. for example:
 
 ```shell
 # for backend
-just refresh gradle
+just refresh gradle if add additional dependencies
+use idea to build and run if code changes
 
 # for frontend
 npm start
@@ -164,4 +177,9 @@ API server: https://jhused-api-server.herokuapp.com/
 
 ## Database
 
-PostgreSQL heroku supplied  
+PostgreSQL, heroku supplied, for all of the data except images.  
+[Firebase](https://firebase.google.com/products/storage) for storing images.  
+
+## Database framework
+We originally used sql2o 1.6.0 to interact with the database until iteration 3.  
+From iteration 3, we are using Jdbi3 3.16.0, as it supports customized join SQLs, for nested inner objects (or lists of objects).
