@@ -9,11 +9,10 @@ const Header = (props) => {
     <nav className="relative bg-white">
       <div className="w-screen mx-auto">
         <div className="flex justify-between items-center border-b-2 border-gray-100 py-2 px-7 md:justify-start md:space-x-10 m-0 ">
-          <div className="relative flex items-center justify-between h-16">
-            <div className="flex-1 flex items-center justify-center">
-              <div className="logo flex-shrink-0 flex items-center">
-                <img src={Logo} alt="logo" className="w-48 h-auto" />
-              </div>
+          <div className="w-full relative flex items-center justify-between h-16">
+            <div className="flex-1 flex justify-between items-center ">
+              <img src={Logo} alt="logo" className="w-48 h-auto" />
+
               <input type="text" placeholder="Search for anything" />
               {context.user ? (
                 <div className="flex">
@@ -22,7 +21,7 @@ const Header = (props) => {
                   </button>
 
                   <div className="ml-3 relative flex">
-                    <div> 
+                    <div className="flex justify-center items-center">
                       <img
                         className="h-12 w-12 rounded-full"
                         src={context.user.profilePic.url}
@@ -41,7 +40,7 @@ const Header = (props) => {
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
-                          className="w-6"
+                          className="w-6 justify-center"
                         >
                           <path
                             strokeLinecap="round"
@@ -53,7 +52,7 @@ const Header = (props) => {
                       </button>
                     </div>
                     <div
-                      className="origin-top-right absolute right-0 top-16 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                      className="origin-top-right absolute right-0 top-10 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
                       role="menu"
                       aria-orientation="vertical"
                       aria-labelledby="user-menu"
