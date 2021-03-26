@@ -188,6 +188,12 @@ public class ApiServer {
       }
     });
 
+    //for SSO Login
+    get("/jhu/login",(req, res) -> {
+      throw new ApiError("Resource not found", 404);
+    });
+
+
     after((req, res) -> res.type("application/json"));
   }
 }
