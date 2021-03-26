@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ImageGrid from "./ImageGrid";
-import { useParams, useHistory, Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Icon from "../images/icon.png";
 import Location from "./Location";
 import axios from "../util/axios";
@@ -10,41 +10,22 @@ import "./UserProfile.css";
  * Component for user profile page
  */
 const UserProfile = (props) => {
-  const params = useParams();
-  const history = useHistory();
-  const [createEditorLive, setCreateEditorLive] = useState(false);
-  const [updateEditorLive, setUpdateEditorLive] = useState(false);
+  const history = useHistory(); // for redirecting from profile page to editor page
   const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState({});
 
   // handles create post button
   const handlePostBtnChange = () => {
-    setCreateEditorLive(!createEditorLive);
+    history.push("/editor-create");
   };
 
   // handles editting a post button
   const handleEditBtnChange = (post) => {
-    if (updateEditorLive) {
-      setSelectedPost({});
-    } else {
-      setSelectedPost(post);
-    }
-
-    setUpdateEditorLive(!updateEditorLive);
-
-    if (updateEditorLive) {
-      setPosts((posts) => {
-        posts.sort(compareByStatus);
-      });
-    }
-
     history.push({
       pathname: "/editor-update",
       state: {
         data: post
       }
     });
-
   };
 
   // helper function for sorting items by status

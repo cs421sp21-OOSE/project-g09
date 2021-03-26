@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import "./ImageGrid.css";
 import PostPreview from "./PostPreview";

@@ -30,6 +30,7 @@ const StdTextInput = ({ ...props }) => {
   );
 };
 
+// Number input component with built-in error message
 const StdNumInput = ({ ...props }) => {
   const [field, meta] = useField(props);
   return (
@@ -232,7 +233,7 @@ const ImageUpload = ({ ...props }) => {
   );
 };
 
-
+// Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
 
   const location = useLocation();
