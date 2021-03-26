@@ -10,4 +10,5 @@ public class Hashtag {
     this.id = id;
     this.hashtag = hashtag;
   }
+  public Hashtag(){}
 }

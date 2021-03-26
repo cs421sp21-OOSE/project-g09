@@ -8,6 +8,7 @@ import kong.unirest.UnirestException;
 import model.Category;
 import model.Post;
 import model.SaleState;
+import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +18,7 @@ import util.database.Database;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,19 +26,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ServerTest {
 
+  private static final List<Post> samplePosts = DataStore.samplePosts();
   private final static String BASE_URL = "http://localhost:4567";
   private static final Gson gson = new Gson();
+  private static Jdbi jdbi;
 
   @BeforeAll
   static void runApiServer() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; //use test dataset
     ApiServer.main(null); // run the server
+    Database.main(null); // reset dataset and add samples
+    jdbi = Database.getJdbi();
   }
 
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // make sure using test dataset
-    Database.main(null); // reset dataset and add samples.
+    Database.truncateTables(jdbi);
+    Database.insertSampleData(jdbi, samplePosts);
   }
 
   @AfterAll

@@ -323,7 +323,7 @@ public class Sql2oPostDao implements PostDao {
 
   }
 
-  @Override
+//  @Override
   @Deprecated
   public List<Post> searchAll(String searchQuery) {
     String sql = "SELECT * FROM post WHERE " +
@@ -351,7 +351,7 @@ public class Sql2oPostDao implements PostDao {
     }
   }
 
-  @Override
+//  @Override
   @Deprecated
   public List<Post> searchCategory(String searchQuery, Category specified) {
     String sql = "SELECT * FROM post WHERE " +
