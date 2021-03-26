@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.jdbi:jdbi3-postgres:3.16.0'
     implementation 'com.zaxxer:HikariCP:4.0.3'
     testImplementation 'org.hamcrest:hamcrest:2.2'
+    implementation 'org.pac4:pac4j-saml:4.0.0'
 }
 
 test {
