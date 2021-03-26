@@ -5,6 +5,7 @@ import { Formik, useField } from 'formik';
 import * as Yup from 'yup';
 import Select from "react-select";
 import CreatableSelecet from "react-select";
+import { useLocation } from "react-router";
 
 const fieldLabelStyle = "text-md font-medium text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
@@ -90,7 +91,7 @@ const SelectWraper = ({...props}) => {
         {props.label}
       </label>
       <Select
-        value={props.value.length === 0 ? (null) : (props.options[props])}
+        value={props.value.length === 0 ? (null) : (props.options[props.value])}
         placeholder={props.placeholder}
         options={Object.values(props.options)}
         onChange={(obj, actionMedia) => {
@@ -234,6 +235,8 @@ const ImageUpload = ({ ...props }) => {
 
 const EditorFormik = (props) => {
 
+  const location = useLocation();
+
   const handleSubmit = (values, { setSubmitting }) => {
     switch (props.mode) {
       case "create":
@@ -267,18 +270,20 @@ const EditorFormik = (props) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
         <Formik
-          initialValues={props.post || {
-            id: "",
-            userId: "",
-            title: "",
-            price: "",
-            saleState: "SALE",
-            location: "", 
-            category: "",
-            description: "",
-            hashtags: [],
-            images: []
-          }}
+          initialValues={(props.mode === "update" 
+            && location.state.hasOwnProperty("data")) ? 
+            (location.state.data) : ({
+              id: "",
+              userId: "",
+              title: "",
+              price: "",
+              saleState: "SALE",
+              location: "", 
+              category: "",
+              description: "",
+              hashtags: [],
+              images: []
+            })}
           validationSchema={Yup.object({
             title: Yup.string()
               .max(60, "Must be 60 characters or less")
@@ -290,7 +295,7 @@ const EditorFormik = (props) => {
               .max(15, "Must be 30 characters or less")
               .required("Please provide a location"),
             category: Yup.string()
-              .oneOf(["FURNITURE", "CAR", "DESK", "TV"], "Invalid a category")
+              .oneOf(["FURNITURE", "CAR", "DESK", "TV", "OTHER"], "Invalid a category")
               .required("Please select a category"),
             description: Yup.string().required("Please provide a description"),
             images: Yup.array()
@@ -375,7 +380,7 @@ const EditorFormik = (props) => {
                     type="submit" 
                     disabled={formik.isSubmitting}
                   >
-                    Submit
+                    {(props.mode === "create") ? ("Submit") : ("Update")}
                   </button>
                 </div>
                 

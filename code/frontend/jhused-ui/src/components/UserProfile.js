@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ImageGrid from "./ImageGrid";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory, Redirect } from "react-router-dom";
 import Icon from "../images/icon.png";
 import Location from "./Location";
 import axios from "../util/axios";
@@ -11,6 +11,7 @@ import "./UserProfile.css";
  */
 const UserProfile = (props) => {
   const params = useParams();
+  const history = useHistory();
   const [createEditorLive, setCreateEditorLive] = useState(false);
   const [updateEditorLive, setUpdateEditorLive] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -36,6 +37,14 @@ const UserProfile = (props) => {
         posts.sort(compareByStatus);
       });
     }
+
+    history.push({
+      pathname: "/editor-update",
+      state: {
+        data: post
+      }
+    });
+
   };
 
   // helper function for sorting items by status
