@@ -190,6 +190,7 @@ public class ApiServer {
 
     //for SSO Login
     get("/jhu/login",(req, res) -> {
+      //redirect to SSO login.
       throw new ApiError("Resource not found", 404);
     });
 
