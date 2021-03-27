@@ -21,23 +21,23 @@ public final class DataStore {
    * @return a list of sample Users.
    */
   public static List<User> sampleUsers() {
-    User user1 = new User("001"+"1".repeat(33), "abc001", "Arya", "abc1@yahoo.com", "abc001", "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", getPostForUser("001"+"1".repeat(33)));
-    User user2 = new User("002"+"1".repeat(33), "abc002", "Tyrion", "abc2@yahoo.com", "abc002", "http://pix2.tvzhe.com/thumb/character/184/535/405x540.jpg", "Freshman quad", getPostForUser("002"+"1".repeat(33)));
-    User user3 = new User("003"+"1".repeat(33), "abc003", "Danny", "abc3@yahoo.com", "abc003", "https://img.cvtvcn.com/group1/default/20191022/13/45/1/1571723140170.jpg", "Wyman quad", getPostForUser("003"+"1".repeat(33)));
-    User user4 = new User("004"+"1".repeat(33), "abc004", "Jon", "abc4@yahoo.com", "abc004", "https://cw1.tw/CW/images/article/201708/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004"+"1".repeat(33)));
-    User user5 = new User("005"+"1".repeat(33), "abc005", "Cersi", "abc5@yahoo.com", "abc005", "https://lh3.googleusercontent.com/proxy/e2_kH0ynbEij4oqX-Qu0NzBHcCLC8V-fcSrzSWIaBrlnEY_XbCuwTktpYo5koHt7m9qkxRWTce4sM94ZZBT0w081psrECWhNzONZ", "hodson hall", getPostForUser("005"+"1".repeat(33)));
-    User user6 = new User("005"+"2".repeat(33), "abc006", "Shae", "abc6@yahoo.com", "abc006", "https://static.wikia.nocookie.net/asoiaf/images/3/3d/Shae_HBO.jpg/revision/latest/scale-to-width-down/300?cb=20120205045225&path-prefix=zh", "the beach", getPostForUser("005"+"2".repeat(33)));
-    User user7 = new User("007"+"1".repeat(33), "abc007", "NightKing", "abc7@yahoo.com", "abc007", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1QwaGlXQD0Ov_7ekfNe5d1kJtMmulrFQUpw&usqp=CAU", "the beach", getPostForUser("empty"));
+    User user1 = new User("001"+"1".repeat(33),  "Arya", "abc1@yahoo.com",  "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", getPostForUser("001"+"1".repeat(33)));
+    User user2 = new User("002"+"1".repeat(33),  "Tyrion", "abc2@yahoo.com",  "http://pix2.tvzhe.com/thumb/character/184/535/405x540.jpg", "Freshman quad", getPostForUser("002"+"1".repeat(33)));
+    User user3 = new User("003"+"1".repeat(33),  "Danny", "abc3@yahoo.com",  "https://img.cvtvcn.com/group1/default/20191022/13/45/1/1571723140170.jpg", "Wyman quad", getPostForUser("003"+"1".repeat(33)));
+    User user4 = new User("004"+"1".repeat(33),  "Jon", "abc4@yahoo.com",  "https://cw1.tw/CW/images/article/201708/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004"+"1".repeat(33)));
+    User user5 = new User("005"+"1".repeat(33),  "Cersi", "abc5@yahoo.com",  "https://lh3.googleusercontent.com/proxy/e2_kH0ynbEij4oqX-Qu0NzBHcCLC8V-fcSrzSWIaBrlnEY_XbCuwTktpYo5koHt7m9qkxRWTce4sM94ZZBT0w081psrECWhNzONZ", "hodson hall", getPostForUser("005"+"1".repeat(33)));
+    User user6 = new User("005"+"2".repeat(33),  "Shae", "abc6@yahoo.com",  "https://static.wikia.nocookie.net/asoiaf/images/3/3d/Shae_HBO.jpg/revision/latest/scale-to-width-down/300?cb=20120205045225&path-prefix=zh", "the beach", getPostForUser("005"+"2".repeat(33)));
+    User user7 = new User("007"+"1".repeat(33),  "NightKing", "abc7@yahoo.com",  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1QwaGlXQD0Ov_7ekfNe5d1kJtMmulrFQUpw&usqp=CAU", "the beach", getPostForUser("empty"));
     List<User> samples = new ArrayList<>(Arrays.asList(user1, user2, user3, user4, user5, user6, user7));
 
     return samples;
   }
 
-  public static List<Post> getPostForUser(String userId) {
+  public static List<Post> getPostForUser(String id) {
     List<Post> allPosts = DataStore.samplePosts();
     List<Post> userPosts = new ArrayList<>();
     for(Post post: allPosts) {
-      if (post.getUserId().equals(userId)) {
+      if (post.getUserId().equals(id)) {
         userPosts.add(post);
       }
     }
@@ -51,7 +51,6 @@ public final class DataStore {
    * @return a list of sample CS courses.
    */
   public static List<Post> samplePosts() {
-    List<Post> samples = new ArrayList<>();
     Post p1 = new Post("0".repeat(36), "001"+"1".repeat(33),
         "Brown Coffee Table", 99.99D, SaleState.SALE,
         "Sleek modern looking, almost new",
@@ -116,6 +115,7 @@ public final class DataStore {
             Category.TV,
             "Towson"
     );
+    List<Post> samples = new ArrayList<>(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8));
     return samples;
   }
 

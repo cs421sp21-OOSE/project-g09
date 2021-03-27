@@ -24,7 +24,7 @@ import java.util.Map;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = false;
+  public static boolean USE_TEST_DATABASE = true;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -44,8 +44,9 @@ public final class Database {
   public static void main(String[] args) throws URISyntaxException {
     Jdbi jdbi = getJdbi();
     createAutoUpdateTimestampDBFunc(jdbi);
-    createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
+    drop(jdbi);
     createUsersTableWithSampleData(jdbi, DataStore.sampleUsers());
+    createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
   }
 
   /**
@@ -100,20 +101,28 @@ public final class Database {
    * @param samples a list of sample users.
    */
   public static void createUsersTableWithSampleData(Jdbi jdbi, List<User> samples) {
-    String sql = "CREATE TABLE IF NOT EXISTS user("
-        + "id CHAR(36) NOT NULL PRIMARY KEY,"
-        + "jh_id VARCHAR(15) NOT NULL,"
-        + "user_name VARCHAR(15) NOT NULL,"
+    String sql = "CREATE TABLE IF NOT EXISTS jhused_user("
+        + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
+        + "name VARCHAR(15) NOT NULL,"
         + "email VARCHAR(30) NOT NULL,"
-        + "password CHAR(36) NOT NULL,"
-        + "profile_image VARCHAR(50),"
+        + "profile_image VARCHAR(200),"
         + "location VARCHAR(100)"
         + ");";
     jdbi.useTransaction(handle -> {
-      handle.execute("DROP TABLE IF EXISTS user;");
       handle.execute(sql);
     });
     insertSampleUsers(jdbi, samples);
+  }
+
+  public static void drop(Jdbi jdbi) {
+    jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS post_hashtag;");
+      handle.execute("DROP TABLE IF EXISTS image;");
+      handle.execute("DROP TABLE IF EXISTS hashtag;");
+      handle.execute("DROP TABLE IF EXISTS post;");
+      handle.execute("DROP TYPE IF EXISTS Category;");
+      handle.execute("DROP TYPE IF EXISTS SaleState;");
+      handle.execute("DROP TABLE IF EXISTS jhused_user;");});
   }
 
   /**
@@ -123,8 +132,8 @@ public final class Database {
    * @param samples samples of users
    */
   public static void insertSampleUsers(Jdbi jdbi, List<User> samples) {
-    String sql = "INSERT INTO user(id, jh_id, user_name, email, pass_word, profile_image, location) "
-        + "VALUES(:id, :jhId, :userName, :email, passWord, profileImage," +
+    String sql = "INSERT INTO jhused_user(id, name, email, profile_image, location) "
+        + "VALUES(:id, :name, :email, :profileImage," +
         ":location);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
@@ -146,7 +155,7 @@ public final class Database {
     // Must drop image and hashtag before post, to avoid foreign key dependency error
     String sql = "CREATE TABLE IF NOT EXISTS post("
         + "id CHAR(36) NOT NULL PRIMARY KEY,"
-        + "user_id CHAR(36),"   // make this foreign key in future iterations
+        + "user_id VARCHAR(36),"   // make this foreign key in future iterations
         + "title VARCHAR(50) NOT NULL,"
         + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
         // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale
@@ -156,16 +165,12 @@ public final class Database {
         + "category Category NOT NULL,"
         + "location VARCHAR(100) NOT NULL,"
         + "create_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,"
-        + "update_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP"
+        + "update_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,"
+        + "FOREIGN KEY (user_id) " // Note: no comma here
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE"
         + ");";
     jdbi.useTransaction(handle -> {
-      handle.execute("DROP TABLE IF EXISTS post_hashtag;");
-      handle.execute("DROP TABLE IF EXISTS image;");
-      handle.execute("DROP TABLE IF EXISTS hashtag;");
-      handle.execute("DROP TABLE IF EXISTS post;");
-      handle.execute("DROP TABLE IF EXISTS user;");
-      handle.execute("DROP TYPE IF EXISTS Category;");
-      handle.execute("DROP TYPE IF EXISTS SaleState;");
       handle.execute("CREATE TYPE Category as enum (" +
           getAllNamesGivenValues(Category.values()) +
           ");");
@@ -177,8 +182,8 @@ public final class Database {
       createHashtagsTable(jdbi);
       createPostsHashtagsTable(jdbi);
       createImagesTable(jdbi);
-      insertSampleData(jdbi, samples);
     });
+    insertSampleData(jdbi, samples);
   }
 
   public static void truncateTables(Jdbi jdbi) throws Sql2oException {
