@@ -128,7 +128,7 @@ public class ApiServer {
 
         String keyword = req.queryParams("keyword"); // use keyword for search
         String sort = req.queryParams("sort");
-
+        System.out.println(sort);
         Map<String, String> sortParams = new LinkedHashMap<>(); // need to preserve parameter order
         if (sort != null) {
           // Remove spaces and break into multiple sort queries
