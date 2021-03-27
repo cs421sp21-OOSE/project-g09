@@ -19,6 +19,6 @@ public class CustomAuthorizer extends ProfileAuthorizer<CommonProfile> {
         if (profile == null) {
             return false;
         }
-        return true;//StringUtils.startsWith(profile.getUsername(), "jle");
+        return true;
     }
 }

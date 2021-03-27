@@ -34,7 +34,7 @@ public class SSOConfigFactory implements ConfigFactory {
     //TODO figure out this authorizer stuff
     final Config config = new Config(clients);
 //        config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
-    config.addAuthorizer("custom", new CustomAuthorizer());
+//    config.addAuthorizer("custom", new CustomAuthorizer());
     config.setHttpActionAdapter(new HttpActionAdapter());
     return config;
   }
