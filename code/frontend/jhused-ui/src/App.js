@@ -5,6 +5,7 @@ import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
+import RedirectPage from "./components/RedirectPage";
 
 const App = () => {
   const location = useLocation();
@@ -22,6 +23,10 @@ const App = () => {
 
         <Route exact path="/editor-update">
           <EditorFormik mode="update" />
+        </Route>
+
+        <Route exact path="/editor/redirect">
+          <RedirectPage />
         </Route>
 
         <Route exact path="/test">

@@ -245,6 +245,7 @@ const EditorFormik = (props) => {
           .post("/api/posts", values)
           .then((response) => {
             console.log(response);
+            //Redirect to antoher page
           })
           .catch((error) => {
             console.log(error);
@@ -256,6 +257,7 @@ const EditorFormik = (props) => {
           .put("/api/posts/" + values.id, values)
           .then((response) => {
             console.log(response);
+            // Redirecet to another page
           })
           .catch((error) => {
             console.log(error);

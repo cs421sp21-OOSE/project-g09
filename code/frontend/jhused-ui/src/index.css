@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://rsms.me/inter/inter.css");
+
 /* @font-face {
   font-family: OpenSans;
   src: url("./styles/OpenSans/OpenSans-Bold.ttf");
@@ -16,13 +18,4 @@ body, #root, html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-} */
-
-.jhused-logo {
-  width: 35%;
-  float: left;
-}
+ */
