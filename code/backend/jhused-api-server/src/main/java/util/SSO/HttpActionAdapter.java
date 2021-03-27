@@ -1,21 +1,20 @@
 package util.SSO;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.exception.TechnicalException;
 import org.pac4j.core.exception.http.HttpAction;
 import org.pac4j.sparkjava.SparkHttpActionAdapter;
 import org.pac4j.sparkjava.SparkWebContext;
-import spark.ModelAndView;
-import spark.TemplateEngine;
 
 import java.util.HashMap;
 
 public class HttpActionAdapter extends SparkHttpActionAdapter {
 
-    private final TemplateEngine templateEngine;
-
-    public HttpActionAdapter(final TemplateEngine templateEngine) {
-        this.templateEngine = templateEngine;
+  private final Gson gson;
+    public HttpActionAdapter() {
+      gson = new GsonBuilder().disableHtmlEscaping().create();
     }
 
     @Override
@@ -23,9 +22,9 @@ public class HttpActionAdapter extends SparkHttpActionAdapter {
         if (action != null) {
             final int code = action.getCode();
             if (code == HttpConstants.UNAUTHORIZED) {
-                stop(401, templateEngine.render(new ModelAndView(new HashMap<>(), "error401.mustache")));
+                stop(401, gson.toJson("Forbidden, please sign in."));
             } else if (code == HttpConstants.FORBIDDEN) {
-                stop(403, templateEngine.render(new ModelAndView(new HashMap<>(), "error403.mustache")));
+                stop(403, gson.toJson("Unauthorized."));
             } else {
                 return super.adapt(action, context);
             }
