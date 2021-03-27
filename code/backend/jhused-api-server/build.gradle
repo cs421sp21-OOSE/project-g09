@@ -27,8 +27,14 @@ dependencies {
     implementation 'org.jdbi:jdbi3-postgres:3.16.0'
     implementation 'com.zaxxer:HikariCP:4.0.3'
     testImplementation 'org.hamcrest:hamcrest:2.2'
+
+    //SSO
+    implementation 'org.pac4j:pac4j-core:4.0.0'
     implementation 'org.pac4j:pac4j-saml:4.0.0'
     implementation 'org.pac4j:spark-pac4j:4.0.0'
+
+    //unsure if these are needed. adding just in case.
+    //implementation 'com.sparkjava:spark-template-mustache:2.7.1'
 }
 
 test {
