@@ -8,6 +8,8 @@ import org.pac4j.saml.config.SAML2Configuration;
 
 public class SSOConfigFactory implements ConfigFactory {
 
+  private final String JHU_SSO_IDP = "https://idp.jh.edu/idp/shibboleth";
+
   public SSOConfigFactory() {
   }
 
@@ -21,15 +23,15 @@ public class SSOConfigFactory implements ConfigFactory {
             "resource:samlKeystore.jks",
             "k-d1bf-i4s7*sd5fj",
             "k-d1bf-i4s7*sd5fj",
-            "https://idp.jh.edu/idp/shibboleth");
+            "resource:metadata-okta.xml");
 
     cfg.setMaximumAuthenticationLifetime(3600);
-    cfg.setServiceProviderEntityId("https://jhused-api-server.herokuapp.com/callback?client_name=SAML2Client");
+    cfg.setServiceProviderEntityId("http://localhost:8080/callback?client_name=SAML2Client");
     cfg.setServiceProviderMetadataPath("sp-metadata.xml");
     final SAML2Client saml2Client = new SAML2Client(cfg);
 
     //only Saml2 client.
-    final Clients clients = new Clients("http://localhost:4567/callback", saml2Client);
+    final Clients clients = new Clients("http://localhost:8080/callback", saml2Client);
 
     //TODO figure out this authorizer stuff
     final Config config = new Config(clients);

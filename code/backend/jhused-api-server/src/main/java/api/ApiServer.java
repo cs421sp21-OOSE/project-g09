@@ -49,7 +49,7 @@ public class ApiServer {
       return Integer.parseInt(herokuPort);
     }
     //return default port if heroku-port isn't set (i.e. on localhost)
-    return 4567;
+    return 8080;
   }
 
   private static PostDao getPostDao() throws URISyntaxException {
@@ -238,8 +238,6 @@ public class ApiServer {
      */
     get("/jhu/login", (req, res) -> {
 //      throw new ApiError("Resource not found", 404);
-      final Map map = new HashMap();
-      map.put("profiles", getProfiles(req,res));
       res.redirect("https://jhused-ui.herokuapp.com/",301);
       return null;
     });
@@ -251,11 +249,14 @@ public class ApiServer {
     get("/callback", callback);
     post("/callback", callback);
 
-    exception(Exception.class, (e, request, response) -> {
-      response.body(templateEngine.render(new ModelAndView(new HashMap<>(), "error500.mustache")));
+    get("/api/users", (req, res)->{
+      final Map map = new HashMap();
+      map.put("profiles", getProfiles(req,res));
+      return gson.toJson(map);
     });
 
     after((req, res) -> res.type("application/json"));
+
   }
 
 
