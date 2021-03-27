@@ -9,8 +9,14 @@ import dao.sql2oDao.Sql2oPostDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
 import model.Post;
+import org.pac4j.core.config.Config;
+import org.pac4j.sparkjava.SecurityFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2o;
 import spark.Spark;
+import spark.template.mustache.MustacheTemplateEngine;
+import util.SSO.SSOConfigFactory;
 import util.database.Database;
 
 import java.net.URISyntaxException;
@@ -25,6 +31,18 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
+
+  //SSO stuff
+  private final static String JWT_SALT = "12345678901234567890123456789012";
+
+  private final static MustacheTemplateEngine templateEngine = new MustacheTemplateEngine();
+
+  /* Not sure if we need this.
+  private final static Logger logger = LoggerFactory.getLogger(SparkPac4jDemo.class);
+  */
+
+  //end SSO stuff
+
 
   private static int getHerokuAssignedPort() {
     // Heroku stores port number as an environment variable
@@ -66,6 +84,7 @@ public class ApiServer {
 
     before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
   }
+
   /**
    * Stop the server.
    */
@@ -73,11 +92,18 @@ public class ApiServer {
     Spark.stop();
   }
 
+  /**
+   * Main Method
+   * @param args
+   * @throws URISyntaxException
+   */
   public static void main(String[] args) throws URISyntaxException {
     port(getHerokuAssignedPort());
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     PostDao postDao = getPostDao();
+    final Config config =
+            new SSOConfigFactory(JWT_SALT, templateEngine).build();
 
     exception(ApiError.class, (ex, req, res) -> {
       // Handle the exception here
@@ -187,6 +213,11 @@ public class ApiServer {
         throw new ApiError(ex.getMessage(), 500);
       }
     });
+
+
+    //TODO SSO redirection and session baton pass.
+
+    before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
     //for SSO Login
     get("/jhu/login",(req, res) -> {
