@@ -15,6 +15,7 @@ import org.pac4j.sparkjava.SecurityFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2o;
+import spark.ModelAndView;
 import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 import util.SSO.SSOConfigFactory;
@@ -243,6 +244,10 @@ public class ApiServer {
     centralLogout.setCentralLogout(true);
     centralLogout.setDestroySession(true);
     get("/centralLogout", centralLogout);
+
+    exception(Exception.class, (e, request, response) -> {
+      response.body(templateEngine.render(new ModelAndView(new HashMap<>(), "error500.mustache")));
+    });
 
 
     after((req, res) -> res.type("application/json"));
