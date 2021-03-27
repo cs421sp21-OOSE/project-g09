@@ -45,6 +45,7 @@ public final class Database {
     Jdbi jdbi = getJdbi();
     createAutoUpdateTimestampDBFunc(jdbi);
     createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
+    createUsersTableWithSampleData(jdbi, DataStore.sampleUsers());
   }
 
   /**
@@ -93,6 +94,48 @@ public final class Database {
   }
 
   /**
+   * Create user table schema and add sample users to it.
+   *
+   * @param jdbi    a Jdbi object connected to the database to be used in this application.
+   * @param samples a list of sample users.
+   */
+  public static void createUsersTableWithSampleData(Jdbi jdbi, List<User> samples) {
+    String sql = "CREATE TABLE IF NOT EXISTS user("
+        + "id CHAR(36) NOT NULL PRIMARY KEY,"
+        + "jh_id VARCHAR(15) NOT NULL,"
+        + "user_name VARCHAR(15) NOT NULL,"
+        + "email VARCHAR(30) NOT NULL,"
+        + "password CHAR(36) NOT NULL,"
+        + "profile_image VARCHAR(50),"
+        + "location VARCHAR(100)"
+        + ");";
+    jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS user;");
+      handle.execute(sql);
+    });
+    insertSampleUsers(jdbi, samples);
+  }
+
+  /**
+   * Used for inserting the sample users
+   *
+   * @param jdbi a Jdbi object connected to the database to be used in this application.
+   * @param samples samples of users
+   */
+  public static void insertSampleUsers(Jdbi jdbi, List<User> samples) {
+    String sql = "INSERT INTO user(id, jh_id, user_name, email, pass_word, profile_image, location) "
+        + "VALUES(:id, :jhId, :userName, :email, passWord, profileImage," +
+        ":location);";
+    jdbi.useTransaction(handle -> {
+      PreparedBatch batch = handle.prepareBatch(sql);
+      for (User user: samples) {
+        batch.bindBean(user).add();
+      }
+      batch.execute();
+    });
+  }
+
+  /**
    * Create post table schema and add sample posts to it.
    *
    * @param jdbi    a Jdbi object connected to the database to be used in this application.
@@ -120,6 +163,7 @@ public final class Database {
       handle.execute("DROP TABLE IF EXISTS image;");
       handle.execute("DROP TABLE IF EXISTS hashtag;");
       handle.execute("DROP TABLE IF EXISTS post;");
+      handle.execute("DROP TABLE IF EXISTS user;");
       handle.execute("DROP TYPE IF EXISTS Category;");
       handle.execute("DROP TYPE IF EXISTS SaleState;");
       handle.execute("CREATE TYPE Category as enum (" +
@@ -133,7 +177,6 @@ public final class Database {
       createHashtagsTable(jdbi);
       createPostsHashtagsTable(jdbi);
       createImagesTable(jdbi);
-
       insertSampleData(jdbi, samples);
     });
   }
@@ -229,6 +272,7 @@ public final class Database {
       handle.execute(sql);
     });
   }
+
 
   // Get either the test or the production Database URL
 

@@ -10,16 +10,17 @@ public class User {
 	private String userName;
 	private String email;
 	private String passWord;
-	private String profileUrl;
+	private String profileImage;
 	private String location;
 	private List<Post> postList;
 
-	public User(String id, String jhId, String userName, String email, String passWord, String profileUrl, String location, List<Post> postList) {
+	public User(String id, String jhId, String userName, String email, String passWord, String profileImage, String location, List<Post> postList) {
+		this.id = id;
 		this.jhId = jhId;
 		this.userName = userName;
 		this.email = email;
 		this.passWord = passWord;
-		this.profileUrl = profileUrl;
+		this.profileImage = profileImage;
 		this.location = location;
 		this.postList = postList;
 	}
