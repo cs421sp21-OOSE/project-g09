@@ -9,16 +9,24 @@ import dao.sql2oDao.Sql2oPostDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
 import model.Post;
+import org.pac4j.core.client.Client;
 import org.pac4j.core.config.Config;
-import org.pac4j.sparkjava.LogoutRoute;
-import org.pac4j.sparkjava.SecurityFilter;
+import org.pac4j.core.exception.http.HttpAction;
+import org.pac4j.core.profile.CommonProfile;
+import org.pac4j.core.profile.ProfileManager;
+import org.pac4j.core.util.Pac4jConstants;
+import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.sparkjava.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Sql2o;
 import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
 import spark.Spark;
 import spark.template.mustache.MustacheTemplateEngine;
 import util.SSO.SSOConfigFactory;
+import util.SSO.SSOInterface;
 import util.database.Database;
 
 import java.net.URISyntaxException;
@@ -36,13 +44,7 @@ public class ApiServer {
 
   //Begin SSO stuff
   private final static String JWT_SALT = "12345678901234567890123456789012";
-
   private final static MustacheTemplateEngine templateEngine = new MustacheTemplateEngine();
-
-  /* Not sure if we need this.
-  private final static Logger logger = LoggerFactory.getLogger(SparkPac4jDemo.class);
-  */
-
   //end SSO stuff
 
 
@@ -245,11 +247,40 @@ public class ApiServer {
     centralLogout.setDestroySession(true);
     get("/centralLogout", centralLogout);
 
+
+    //TODO update this GET method and the callback to interact with DB
+    get("/", ApiServer::index, templateEngine);
+
+    final CallbackRoute callback = new CallbackRoute(config, null, true);
+    //callback.setRenewSession(false);
+    get("/callback", callback);
+    post("/callback", callback);
+
     exception(Exception.class, (e, request, response) -> {
       response.body(templateEngine.render(new ModelAndView(new HashMap<>(), "error500.mustache")));
     });
 
-
     after((req, res) -> res.type("application/json"));
   }
+
+
+  //Can be moved into SSOInterface inside of util.SSO if you want.
+
+  private static ModelAndView index(final Request request, final Response response) {
+    final Map map = new HashMap();
+    map.put("profiles", getProfiles(request, response));
+    final SparkWebContext ctx = new SparkWebContext(request, response);
+    map.put("sessionId", ctx.getSessionStore().getOrCreateSessionId(ctx));
+    return new ModelAndView(map, "index.mustache");
+  }
+
+  private static List<CommonProfile> getProfiles(final Request request, final Response response) {
+    final SparkWebContext context = new SparkWebContext(request, response);
+    final ProfileManager manager = new ProfileManager(context);
+    return manager.getAll(true);
+  }
+
+
+
+
 }
