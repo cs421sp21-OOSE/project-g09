@@ -10,6 +10,7 @@ import exceptions.ApiError;
 import exceptions.DaoException;
 import model.Post;
 import org.pac4j.core.config.Config;
+import org.pac4j.sparkjava.LogoutRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class ApiServer {
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
 
-  //SSO stuff
+  //Begin SSO stuff
   private final static String JWT_SALT = "12345678901234567890123456789012";
 
   private final static MustacheTemplateEngine templateEngine = new MustacheTemplateEngine();
@@ -102,8 +103,6 @@ public class ApiServer {
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     PostDao postDao = getPostDao();
-    final Config config =
-            new SSOConfigFactory(JWT_SALT, templateEngine).build();
 
     exception(ApiError.class, (ex, req, res) -> {
       // Handle the exception here
@@ -214,8 +213,11 @@ public class ApiServer {
       }
     });
 
-
     //TODO SSO redirection and session baton pass.
+
+    //SSO filter
+    final Config config =
+            new SSOConfigFactory(JWT_SALT, templateEngine).build();
 
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
@@ -224,6 +226,23 @@ public class ApiServer {
       //redirect to SSO login.
       throw new ApiError("Resource not found", 404);
     });
+
+    // account logout. Redirects to homepage with all posts.
+    // TODO Not sure what the default url for line 232 should be.
+    final LogoutRoute localLogout = new LogoutRoute(config, "/");
+    localLogout.setDestroySession(true);
+    get("/logout", localLogout);
+
+    //centralLogout. Not sure what the differences are so i put them both
+    // here just in case.
+    //TODO figure out defaultURLs
+    final LogoutRoute centralLogout = new LogoutRoute(config);
+    centralLogout.setDefaultUrl("https://jhused-ui.herokuapp.com/");
+    centralLogout.setLogoutUrlPattern("https://jhused-ui.herokuapp.com.*");
+    centralLogout.setLocalLogout(false);
+    centralLogout.setCentralLogout(true);
+    centralLogout.setDestroySession(true);
+    get("/centralLogout", centralLogout);
 
 
     after((req, res) -> res.type("application/json"));
