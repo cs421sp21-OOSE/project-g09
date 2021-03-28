@@ -144,7 +144,8 @@ git subtree push --prefix code/frontend/jhused-ui heroku-ui master
 
 And again you'd need to tell what the previous code actually does.
 Make sure you check out the branch you want to deploy first. The command "git subtree push ..." will deploy the HEAD branch to heroku. 
-
+#### Special note for frontend deploy
+For the frontend deploy, you need to go to package.json. Under "script", change start: "craco start" to start: "node server.js". See more information about it [here](https://github.com/gsoft-inc/craco/issues/233#issuecomment-757575452).
 
 ## Versioning
 
