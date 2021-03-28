@@ -246,17 +246,11 @@ const EditorFormik = (props) => {
           .post("/api/posts", values)
           .then((response) => {
             console.log(response);
-            history.push({
-              pathname: "/editor/redirect",
-              success: false
-            });
+            history.push("/editor/redirect/post-success");
           })
           .catch((error) => {
             console.log(error);
-            history.push({
-              pathname: "/editor/redirect",
-              success: false
-            });
+            history.push("/editor/redirect/post-failure");
           });
         
         break;
@@ -265,17 +259,11 @@ const EditorFormik = (props) => {
           .put("/api/posts/" + values.id, values)
           .then((response) => {
             console.log(response);
-            history.push({
-              pathname: "/editor/redirect",
-              success: false
-            });
+            history.push("/editor/redirect/update-success");
           })
           .catch((error) => {
             console.log(error);
-            history.push({
-              pathname: "/editor/redirect",
-              success: false
-            });
+            history.push("/editor/redirect/update-failure");
           });
         break;
       default:
