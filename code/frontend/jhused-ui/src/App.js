@@ -6,6 +6,7 @@ import UserProfile from "./components/UserProfile";
 import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
+import NotFoundPage from "./components/NotFoundPage";
 
 const App = () => {
   const location = useLocation();
@@ -25,8 +26,16 @@ const App = () => {
           <EditorFormik mode="update" />
         </Route>
 
-        <Route exact path="/editor/redirect">
-          <RedirectPage />
+        <Route exact path="/editor/redirect/success">
+          <RedirectPage isSuccess={true}/>
+        </Route>
+
+        <Route exact path="/editor/redirect/failure">
+          <RedirectPage isSuccess={false}/>
+        </Route>
+
+        <Route exact path="/404">
+          <NotFoundPage />
         </Route>
 
         <Route exact path="/test">
