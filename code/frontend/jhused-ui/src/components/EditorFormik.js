@@ -5,7 +5,7 @@ import { Formik, useField } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
-import { useLocation } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import Header from "./Header";
 
 const fieldLabelStyle = "text-md font-medium text-gray-700 block mb-1";
@@ -235,7 +235,9 @@ const ImageUpload = ({ ...props }) => {
 
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
-  const location = useLocation();
+
+  const history = useHistory(); // for redirecting to other pages
+  const location = useLocation(); // for retreiving data passed by other pages
 
   const handleSubmit = (values, { setSubmitting }) => {
     switch (props.mode) {
@@ -244,9 +246,11 @@ const EditorFormik = (props) => {
           .post("/api/posts", values)
           .then((response) => {
             console.log(response);
+            history.push("/editor/redirect/post-success");
           })
           .catch((error) => {
             console.log(error);
+            history.push("/editor/redirect/post-failure");
           });
 
         break;
@@ -255,9 +259,11 @@ const EditorFormik = (props) => {
           .put("/api/posts/" + values.id, values)
           .then((response) => {
             console.log(response);
+            history.push("/editor/redirect/update-success");
           })
           .catch((error) => {
             console.log(error);
+            history.push("/editor/redirect/update-failure");
           });
         break;
       default:

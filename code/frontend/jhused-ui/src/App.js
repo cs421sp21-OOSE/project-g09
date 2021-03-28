@@ -5,6 +5,8 @@ import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
+import RedirectPage from "./components/RedirectPage";
+import NotFoundPage from "./components/NotFoundPage";
 
 const App = () => {
   const location = useLocation();
@@ -22,6 +24,34 @@ const App = () => {
 
         <Route exact path="/editor-update">
           <EditorFormik mode="update" />
+        </Route>
+
+        <Route exact path="/editor/redirect/post-success">
+          <RedirectPage type="submitSuccess" />
+        </Route>
+
+        <Route exact path="/editor/redirect/post-failure">
+          <RedirectPage type="submitFailure" />
+        </Route>
+
+        <Route exact path="/editor/redirect/update-success">
+          <RedirectPage type="updateSuccess" />
+        </Route>
+
+        <Route exact path="/editor/redirect/update-failure">
+          <RedirectPage type="updateFailure" />
+        </Route>
+
+        <Route exact path="/editor/redirect/delete-success">
+          <RedirectPage type="deleteSuccess" />
+        </Route>
+
+        <Route exact path="/editor/redirect/delete-failure">
+          <RedirectPage type="deleteFailure" />
+        </Route>
+
+        <Route exact path="/404">
+          <NotFoundPage />
         </Route>
 
         <Route exact path="/test">
