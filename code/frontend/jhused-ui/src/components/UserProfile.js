@@ -5,7 +5,7 @@ import Icon from "../images/icon.png";
 import Location from "./Location";
 import axios from "../util/axios";
 import "./UserProfile.css";
-
+import Header from "./Header";
 /**
  * Component for user profile page
  */
@@ -62,6 +62,7 @@ const UserProfile = (props) => {
 
   return (
     <div className="user-profile">
+      <Header />
       <div className="user-profile-header">
         <button
           className="create-button"
