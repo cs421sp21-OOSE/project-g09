@@ -3,6 +3,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: OpenSans;
+    font-weight: 600;
+    src: url(./styles/OpenSans/OpenSans-SemiBold.ttf) format("OpenSans");
+  }
+  @font-face {
+    font-family: OpenSans;
+    font-weight: 700;
+    src: url(./styles/OpenSans/OpenSans-Bold.ttf) format("OpenSans");
+  }
+}
+
+
 /* @font-face {
   font-family: OpenSans;
   src: url("./styles/OpenSans/OpenSans-Bold.ttf");
@@ -22,7 +36,3 @@ code {
     monospace;
 } */
 
-.jhused-logo {
-  width: 35%;
-  float: left;
-}
