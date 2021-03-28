@@ -7,6 +7,7 @@ import SearchIcon from "../images/search.png";
 import DownArrow from "../images/down-arrow.png";
 import UpArrow from "../images/up-arrow.png";
 import Icon from "../images/icon.png";
+import Header from "./Header";
 
 const userID = "4"; // dummy userID for now
 
@@ -131,6 +132,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
+      <Header />
       <div className="home-page-header">
         {/* Button for setting up editor's post-updating feature only - delete later once my page is setup */}
         <Link to="/editor-create">
