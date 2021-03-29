@@ -7,8 +7,9 @@ import Select from "react-select";
 import CreatableSelecet from "react-select";
 import { useHistory, useLocation } from "react-router";
 import Header from "./Header";
+import DropAndView from "./DropAndView";
 
-const fieldLabelStyle = "text-md font-medium text-gray-700 block mb-1";
+const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
 const btnStyle =
   "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
@@ -313,7 +314,7 @@ const EditorFormik = (props) => {
               description: Yup.string().required(
                 "Please provide a description"
               ),
-              images: Yup.array().min(1, "Please provide at least one image"),
+              images: Yup.array().min(1, "Please upload least one image"),
             })}
             onSubmit={handleSubmit}
           >
@@ -377,7 +378,18 @@ const EditorFormik = (props) => {
                     className="col-span-full"
                   />
 
-                  <ImageUpload
+                  {/* <ImageUpload
+                    name="images"
+                    value={formik.values.images}
+                    postId={formik.values.id}
+                    onChange={formik.setFieldValue}
+                    onBlur={formik.setFieldTouched}
+                    touched={formik.touched.images}
+                    error={formik.errors.images}
+                    className="col-span-full"
+                  /> */}
+
+                  <DropAndView 
                     name="images"
                     value={formik.values.images}
                     postId={formik.values.id}

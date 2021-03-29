@@ -8,7 +8,12 @@ module.exports = {
     extend: {},
     fontFamily: {
       sans: ['OpenSans','Open Sans', 'sans-serif', ...defaultTheme.fontFamily.sans]
+    },
+    minHeight: {
+      ...defaultTheme.minHeight,
+      "20": "5rem",
     }
+
   },
   variants: {
     extend: {},
