@@ -7,6 +7,7 @@ import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
+import ChatPage from "./components/ChatPage";
 
 const App = () => {
   const location = useLocation();
@@ -60,6 +61,10 @@ const App = () => {
 
         <Route exact path="/">
           <HomePage />
+        </Route>
+
+        <Route exact path="/chat/:userID">
+          <ChatPage />
         </Route>
       </Switch>
 
