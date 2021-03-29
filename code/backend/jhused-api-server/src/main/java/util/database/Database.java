@@ -104,7 +104,7 @@ public final class Database {
     String sql = "CREATE TABLE IF NOT EXISTS jhused_user("
         + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
         + "name VARCHAR(15) NOT NULL,"
-        + "email VARCHAR(30) NOT NULL,"
+        + "email VARCHAR(30) NOT NULL UNIQUE ,"
         + "profile_image VARCHAR(200),"
         + "location VARCHAR(100)"
         + ");";

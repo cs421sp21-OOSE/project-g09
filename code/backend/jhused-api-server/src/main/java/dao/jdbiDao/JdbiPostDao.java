@@ -149,6 +149,19 @@ public class JdbiPostDao implements PostDao {
   }
 
   @Override
+  public List<Post> readAllFromUser(String userId) throws DaoException {
+    String sql = SELECT_POST_BASE + "WHERE post.user_id = :userId;";
+    try {
+      return jdbi.inTransaction(handle -> new ArrayList<>(handle.createQuery(sql)
+          .bind("userId", userId)
+          .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+          .values()));
+    } catch (StatementException | IllegalStateException ex) {
+      throw new DaoException("Unable to read a post for userId" + userId, ex);
+    }
+  }
+
+  @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
     try {
       String sql = SELECT_POST_BASE;

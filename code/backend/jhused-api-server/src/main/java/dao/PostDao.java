@@ -48,6 +48,14 @@ public interface PostDao {
   List<Post> readAll(String titleQuery) throws DaoException;
 
   /**
+   * Read all Posts from the database with userId.
+   *
+   * @param userId A search term.
+   * @return All Posts retrieved.
+   * @throws DaoException A generic exception for CRUD operations.
+   */
+  List<Post> readAllFromUser(String userId) throws DaoException;
+  /**
    * Get all method which can handle all query parameters
    *
    * @param specified   category to be searched in
