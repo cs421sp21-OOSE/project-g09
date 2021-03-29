@@ -1,8 +1,17 @@
+import { useContacts } from "../../state/ContactsProvider";
+import { ListGroup } from "react-bootstrap";
+
 const Contacts = () => {
+  const { contacts } = useContacts()
+
   return (
-    <div>
-      Contacts
-    </div>
+    <ListGroup variant="flush">
+      {contacts.map(contact => (
+        <ListGroup.Item key={contact.id}>
+          {contact.name}
+        </ListGroup.Item>
+      ))}
+    </ListGroup>
   );
 };
 

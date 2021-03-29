@@ -13,7 +13,7 @@ import { UserContext } from "./state";
 const App = () => {
   const location = useLocation();
   const background = location.state && location.state.background;
-  const user = useContext(UserContext.Context).user;
+  const { user } = useContext(UserContext.Context);
 
   return (
     <div className="App">
