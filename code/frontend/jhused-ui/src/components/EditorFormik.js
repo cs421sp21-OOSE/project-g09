@@ -314,7 +314,7 @@ const EditorFormik = (props) => {
               description: Yup.string().required(
                 "Please provide a description"
               ),
-              images: Yup.array().min(1, "Please provide at least one image"),
+              images: Yup.array().min(1, "Please upload least one image"),
             })}
             onSubmit={handleSubmit}
           >

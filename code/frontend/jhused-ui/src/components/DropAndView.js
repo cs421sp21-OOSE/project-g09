@@ -135,6 +135,9 @@ const DropAndView = (props) => {
           </div>
         )}
       </Dropzone>
+      {props.touched && props.error ? (
+        <div className="block text-sm text-red-500">{props.error};</div>
+      ) : null}
     </div>
   );
 };
