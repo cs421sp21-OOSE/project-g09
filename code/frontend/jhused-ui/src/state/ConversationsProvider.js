@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import useLocalStorage from "../components/hooks/useLocalStorage";
+import useLocalStorage from "../hooks/useLocalStorage";
 import {useContacts} from "./ContactsProvider";
 
 const ConversationsContext = React.createContext();
