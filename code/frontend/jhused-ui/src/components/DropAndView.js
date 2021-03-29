@@ -80,8 +80,8 @@ const DropAndView = (props) => {
           const curProgress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          updatedProgress = {...progress, [index]: curProgress};
-          setProgress(updatedProgress);
+          updatedProgress = {...updatedProgress, [index]: curProgress};
+          setProgress({...progress, ...updatedProgress});
         },
         (error) => {
           console.log(error);
@@ -97,7 +97,6 @@ const DropAndView = (props) => {
             if (props.onChange) {
               props.onChange(props.name, [...props.value, ...images]);
             }
-            
           });
         }
       );
@@ -116,7 +115,7 @@ const DropAndView = (props) => {
     <div className={props.className}>
       <Dropzone accept="image/*" onDrop={handleOnDrop}>
         {({getRootProps, getInputProps}) => (
-          <div {...getRootProps()} className="relative p-2 w-full h-full border-2 border-gray-300 border-dashed">
+          <div {...getRootProps()} className="flex relative p-2 w-full border-2 border-gray-300 border-dashed">
             <input 
               {...getInputProps()} 
               onBlur={() => props.onBlur(props.name, true)}
