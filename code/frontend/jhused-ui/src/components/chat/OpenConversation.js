@@ -24,8 +24,8 @@ const OpenConversation = () => {
             return (
               <div
                 key={index}
-                className="my-1 d-flex flex-column"
-              >
+                className={`my-1 d-flex flex-column ${
+                  message.fromMe ? 'align-self-end' : ''}`}>
                 <div className={`rounded px-2 py-1 ${
                   message.fromMe ? 'bg-primary text-white' : 'border'}`}>
                   {message.text}
