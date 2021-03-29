@@ -14,35 +14,42 @@ const Header = (props) => {
   return (
     <nav className="relative bg-white">
       <div className="w-screen mx-auto">
-        <div className="flex justify-between items-center border-b-2 border-gray-100 py-2 px-7 md:justify-start md:space-x-10 m-0 ">
-          <div className="w-full relative flex items-center justify-between h-16">
+        <div className="flex justify-between items-center border-b-2 border-gray-100 py-2 px-3 sm:px-7 md:justify-start md:space-x-10 m-0 ">
+          <div className="w-full h-10 relative flex items-center justify-between sm:h-16">
             <div className="flex-1 flex justify-between items-center ">
               <a href="/">
-                <img src={Logo} alt="logo" className="w-48 h-auto" />{" "}
+                <img src={Logo} alt="logo" className="w-36 sm:w-48 h-auto" />{" "}
               </a>
               <form
-                className="relative w-3/5 h-10 text-gray-300"
-                onSubmit={() => {
-                  history.push(`/?search=${searchTerm}`);
+                className="justify-content content-center relative w-3/5 h-7 sm:h-10 text-gray-300"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (searchTerm) {
+                    history.push(`?search=${searchTerm}`);
+                  } else {
+                    history.push("/");
+                  }
                 }}
               >
                 <input
-                  className="w-full h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4"
+                  className="w-full h-7 sm:h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4 text-gray-900"
                   type="text"
-                  placeholder="Search for anything"
+                  placeholder="Search"
                   value={searchTerm}
-                  onChange={(e) => {setSearchTerm(e.target.value)}}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
                 />
                 <button
                   type="submit"
-                  className="absolute w-8 z-50 origin-top-right absolute right-4 top-1"
+                  className="absolute w-5 sm:w-8 z-50 origin-top-right absolute right-2 sm:right-4 top-1 focus:outline-none"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    className=""
+                    className="focus:outline-none"
                   >
                     <path
                       strokeLinecap="round"
@@ -56,17 +63,17 @@ const Header = (props) => {
               {context.user ? (
                 <div className="flex">
                   <button
-                    className="text-2xl font-bold mx-3 focus:outline-none"
+                    className="text-xl sm:text-2xl font-bold mx-1 sm:mx-3 focus:outline-none"
                     href="/"
                     onClick={() => history.push("/editor-create")}
                   >
                     Post
                   </button>
 
-                  <div className="ml-3 relative flex">
+                  <div className="ml-2 sm:ml-3 relative flex">
                     <div className="flex justify-center items-center">
                       <img
-                        className="h-12 w-12 rounded-full"
+                        className="h-6 w-6 sm:h-12 sm:w-12 rounded-full"
                         src={context.user.profilePic.url}
                         alt=""
                       />
@@ -86,7 +93,7 @@ const Header = (props) => {
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
-                          className="w-6 justify-center"
+                          className="w-4 sm:w-6 justify-center"
                         >
                           <path
                             strokeLinecap="round"
@@ -98,7 +105,7 @@ const Header = (props) => {
                       </button>
                     </div>
                     <div
-                      className={`user-menu origin-top-right absolute right-0 top-10 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none ${
+                      className={`z-50 user-menu origin-top-right absolute right-0 top-10 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none ${
                         isOpen ? "open" : "closed"
                       }`}
                       id="user-menu"
@@ -139,7 +146,7 @@ const Header = (props) => {
                   </div>
                 </div>
               ) : (
-                <button className="text-2xl font-bold mx-3 focus:outline-none">
+                <button className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none">
                   {" "}
                   Login
                 </button>
