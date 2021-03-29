@@ -1,5 +1,4 @@
-import React from "react";
-import 'b'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const ChatPage = () => {
   return (

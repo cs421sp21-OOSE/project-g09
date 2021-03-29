@@ -8,10 +8,12 @@ import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/ChatPage";
+import { UserContext } from "./state";
 
 const App = () => {
   const location = useLocation();
   const background = location.state && location.state.background;
+  const user = useContext(UserContext.Context).user;
 
   return (
     <div className="App">
@@ -64,7 +66,7 @@ const App = () => {
         </Route>
 
         <Route exact path="/chat/:userID">
-          <ChatPage />
+          {user !== null ? <ChatPage /> : "Not Logged in"}
         </Route>
       </Switch>
 
