@@ -324,7 +324,7 @@ const EditorFormik = (props) => {
                   <StdTextInput
                     name="title"
                     type="text"
-                    label="Titile"
+                    label="Title"
                     placeholder="Used things to sell"
                     className="col-span-full"
                   />
