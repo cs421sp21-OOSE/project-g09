@@ -7,7 +7,7 @@ import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
-import ChatPage from "./components/ChatPage";
+import ChatPage from "./components/chat/ChatPage";
 import { UserContext } from "./state";
 
 const App = () => {
@@ -66,7 +66,7 @@ const App = () => {
         </Route>
 
         <Route exact path="/chat/:userID">
-          {user !== null ? <ChatPage /> : "Not Logged in"}
+          {user !== null ? <ChatPage user={user}/> : "Not Logged in"}
         </Route>
       </Switch>
 
