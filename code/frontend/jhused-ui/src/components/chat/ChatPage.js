@@ -6,7 +6,7 @@ import {ConversationsProvider} from "../../state/ConversationsProvider";
 const ChatPage = ({ user }) => {
   const dashboard = (
     <ContactsProvider>
-      <ConversationsProvider>
+      <ConversationsProvider user={user}>
         <DashBoard user={user} />
       </ConversationsProvider>
     </ContactsProvider>

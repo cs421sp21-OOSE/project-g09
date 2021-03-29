@@ -8,7 +8,7 @@ const useConversations = () => {
   return useContext(ConversationsContext)
 };
 
-const ConversationsProvider = ({ children }) => {
+const ConversationsProvider = ({ user, children }) => {
   const [conversations, setConversations] = useLocalStorage('conversations', []);
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const { contacts } = useContacts()
@@ -17,6 +17,39 @@ const ConversationsProvider = ({ children }) => {
     setConversations(prevConversations => {
       return [...prevConversations, { recipients, message: [] }]
     });
+  };
+
+  const addMessageToConversation = ( {recipients, text, sender} ) => {
+    setConversations(prevConversations => {
+      let madeChange = false;
+      const newMessage = { sender, text };
+      const newConversations = prevConversations.map(
+        conversation => {
+          if (arrayEquality(conversation.recipients, recipients))
+          {
+            madeChange = true;
+            return {
+              ...conversation,
+              messages: [...conversation.messages, newMessage]
+            };
+          }
+
+          return conversation;
+      })
+
+      if (madeChange) {
+        return newConversations
+      } else {
+        return [
+          ...prevConversations,
+          { recipients, message: [newMessage] }
+        ]
+      }
+    });
+  };
+
+  const sendMessage = (recipients, text) => {
+    addMessageToConversation({recipients, text, sender:user.id})
   };
 
   const formattedConversations = conversations.map((conversation, index) => {
@@ -35,14 +68,26 @@ const ConversationsProvider = ({ children }) => {
     conversations: formattedConversations,
     createConversation,
     selectConversationIndex: setSelectedConversationIndex,
-    selectedConversation: formattedConversations[selectedConversationIndex]
+    selectedConversation: formattedConversations[selectedConversationIndex],
+    sendMessage
   }
 
   return (
-    <ConversationsContext.Provider value={{ conversations: formattedConversations, createConversation, selectConversationIndex: setSelectedConversationIndex }}>
+    <ConversationsContext.Provider value={value}>
       {children}
     </ConversationsContext.Provider>
   );
+};
+
+const arrayEquality = (a, b) => {
+  if (a.length !== b.length) return false;
+
+  a.sort();
+  b.sort();
+
+  return a.every((element, index) => {
+    return element === b[index]
+  });
 };
 
 export {ConversationsProvider, useConversations};
