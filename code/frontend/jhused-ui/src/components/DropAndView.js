@@ -30,7 +30,7 @@ const Thumb = (props) => {
       </div>
       {(props.progress === undefined) ? (null) : (
         <div className="mt-2">
-          <div className="overflow-hidden h-2 w-20 text-xs flex rounded bg-blue-200">
+          <div className="overflow-hidden h-2 w-full text-xs flex rounded bg-blue-200">
             <div style={{ width: props.progress+"%" }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
           </div>
         </div>
@@ -41,7 +41,7 @@ const Thumb = (props) => {
 
 const ThumbGrid = (props) => {
   return (
-    <div className="grid grid-flow-col auto-cols-min gap-3 justify-items-center outline-none focus:ring-2 focus:ring-blue-700">
+    <div className="flex flex-wrap gap-3 justify-items-center outline-none focus:ring-2 focus:ring-blue-700">
       {props.urls.map((url, index) => (<Thumb key={index} url={url} index={index} onDelete={props.onDelete} progress={props.progress[index]}/>))}
     </div>
   );
@@ -115,10 +115,11 @@ const DropAndView = (props) => {
     <div className={props.className}>
       <Dropzone accept="image/*" onDrop={handleOnDrop}>
         {({getRootProps, getInputProps}) => (
-          <div {...getRootProps()} className="flex relative p-2 w-full border-2 border-gray-300 border-dashed">
+          <div {...getRootProps()} className="flex relative p-2 w-full min-h-20 border-2 border-gray-300 border-dashed focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-4"
+          onBlur={() => props.onBlur(props.name, true)}
+          >
             <input 
               {...getInputProps()} 
-              onBlur={() => props.onBlur(props.name, true)}
             />
             {
               (imageFiles.length > 0) ? 
