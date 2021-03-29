@@ -3,12 +3,11 @@ package dao.jdbiDao;
 import dao.PostDao;
 import dao.UserDao;
 import exceptions.DaoException;
-import model.Hashtag;
-import model.Image;
 import model.Post;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.StatementException;
+import util.jdbiResultSetHandler.ResultSetLinkedHashMapAccumulatorProvider;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -17,11 +16,14 @@ import java.util.List;
 public class JdbiUserDao implements UserDao {
   private final Jdbi jdbi;
   private final PostDao postDao;
+  private final ResultSetLinkedHashMapAccumulatorProvider<User> userAccumulator;
+
   private final String defaultProfileImage = "https://i.redd.it/v2h2px8w5piz.png";
 
   public JdbiUserDao(Jdbi jdbi) {
     this.jdbi = jdbi;
     this.postDao = new JdbiPostDao(jdbi);
+    this.userAccumulator = new ResultSetLinkedHashMapAccumulatorProvider<>(User.class);
   }
 
   @Override
@@ -35,21 +37,31 @@ public class JdbiUserDao implements UserDao {
       user.setProfileImage(defaultProfileImage);
     }
     try {
-      return jdbi.inTransaction(handle ->
-          handle.createQuery(sql).bindBean(user).mapToBean(User.class).findOne()).orElse(null);
+      return jdbi.inTransaction(handle -> {
+        handle.createQuery(sql).bindBean(user).mapToBean(User.class).findOne().orElse(null);
+        if (!user.getPostList().isEmpty()) {
+          for (Post post : user.getPostList())
+            postDao.create(post);
+        }
+        return read(user.getId());
+      });
     } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
     }
   }
 
   @Override
-  public User get(String userId) throws DaoException {
-    String sql = "SElECT jhused_user.* FROM jhused_user "
-        + "LEFT JOIN post on jhused_user.id = post.user_id "
+  public User read(String userId) throws DaoException {
+    String sql = "SElECT * FROM jhused_user "
+        + "LEFT JOIN post on post.user_id = jhused_user.id "
         + "WHERE jhused_user.id = :userId";
     try {
-      return jdbi.inTransaction(handle -> handle.select(sql).bind("userId", userId).mapToBean(User.class)
-          .findOne()).orElse(null);
+      return jdbi.inTransaction(handle -> new ArrayList<>(handle.
+          createQuery(sql)
+          .bind("userId", userId)
+          .reduceResultSet(new LinkedHashMap<>(), userAccumulator)
+          .values())
+          .stream().findFirst().orElse(null));
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read user given postId from the database: " + ex.getMessage(), ex);
     }
@@ -95,7 +107,7 @@ public class JdbiUserDao implements UserDao {
             postDao.create(post);
           }
         }
-        return get(userId);
+        return read(userId);
       });
 
     } catch (IllegalStateException | StatementException | NullPointerException ex) {
@@ -109,7 +121,6 @@ public class JdbiUserDao implements UserDao {
         + "DELETE FROM jhused_user WHERE id = :id RETURNING *"
         + ") SELECT * FROM deleted;";
 
-    //attempt to open connection and perform sql string.
     try {
       List<Post> posts = postDao.readAllFromUser(id);
       return jdbi.inTransaction(handle -> {

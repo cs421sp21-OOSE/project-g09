@@ -190,7 +190,7 @@ public final class Database {
     // no need to truncate images and post_hashtag, as they will be deleted automatically when
     // foreign key table get truncated.
     jdbi.useTransaction(handle -> {
-      handle.execute("TRUNCATE TABLE post CASCADE");
+      handle.execute("TRUNCATE TABLE jhused_user CASCADE");
       handle.execute("TRUNCATE TABLE hashtag CASCADE");
     });
   }
