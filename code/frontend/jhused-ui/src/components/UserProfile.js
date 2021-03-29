@@ -13,21 +13,6 @@ const UserProfile = (props) => {
   const history = useHistory(); // for redirecting from profile page to editor page
   const [posts, setPosts] = useState([]);
 
-  // handles create post button
-  const handlePostBtnChange = () => {
-    history.push("/editor-create");
-  };
-
-  // handles editting a post button
-  const handleEditBtnChange = (post) => {
-    history.push({
-      pathname: "/editor-update",
-      state: {
-        data: post
-      }
-    });
-  };
-
   // helper function for sorting items by status
   const compareByStatus = (a, b) => {
     if (a.saleState === b.saleState) {
@@ -63,27 +48,6 @@ const UserProfile = (props) => {
   return (
     <div className="user-profile">
       <Header />
-      <div className="user-profile-header">
-        <button
-          className="create-button"
-          // onClick={(event) => (window.location.href = "/editor")}
-          onClick={handlePostBtnChange}
-        >
-          Post
-        </button>
-      </div>
-
-      
-      {/* {createEditorLive ? (
-        <EditorPopUp toggle={handlePostBtnChange} mode={"create"} post={null} />
-      ) : null}
-      {updateEditorLive ? (
-        <EditorPopUp
-          toggle={handleEditBtnChange}
-          mode={"update"}
-          post={selectedPost}
-        />
-      ) : null} */}
       <div className="user-profile-body">
         <div className="user-info">
           <img className="user-icon" src={Icon} alt="icon" />
@@ -97,7 +61,6 @@ const UserProfile = (props) => {
           <ImageGrid
             posts={posts}
             displayEdit={true}
-            onEdit={handleEditBtnChange}
           />
         </div>
       </div>

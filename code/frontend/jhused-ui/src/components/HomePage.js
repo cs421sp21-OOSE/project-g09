@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import ImageGrid from "./ImageGrid";
 import axios from "../util/axios";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import "./HomePage.css";
-import SearchIcon from "../images/search.png";
 import DownArrow from "../images/down-arrow.png";
 import UpArrow from "../images/up-arrow.png";
-import Icon from "../images/icon.png";
 import Header from "./Header";
 
 const userID = "4"; // dummy userID for now
@@ -30,6 +28,10 @@ const HomePage = () => {
   const [sortDirection, setSortDirection] = useState("desc");
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
+
+  const location = useLocation();
+
+  const parseSearchParam = () => {}
 
   // get all posts
   useEffect(() => {
@@ -134,30 +136,6 @@ const HomePage = () => {
     <div className="home-page">
       <Header />
       <div className="home-page-header">
-        {/* Button for setting up editor's post-updating feature only - delete later once my page is setup */}
-        <Link to="/editor-create">
-          <button className="post-button">
-            Post
-          </button>
-        </Link>
-        
-
-        <div className="search-bar">
-          <input
-            className="search"
-            type="text"
-            placeholder="Search..."
-            onChange={(event) => {
-              setSearchTerm(event.target.value);
-            }}
-          />
-          <img className="search-icon" src={SearchIcon} alt="search icon" />
-        </div>
-
-        <a href={`/user/${userID}`}>
-          <img className="home-user-icon" src={Icon} alt="icon" />
-        </a>
-
         <div className="dropdown">
           {" "}
           {/*TODO: the categories are hard-coded for now*/}

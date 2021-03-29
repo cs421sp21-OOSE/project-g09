@@ -27,7 +27,7 @@ const Header = (props) => {
                 }}
               >
                 <input
-                  className="w-full h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4"
+                  className="w-full h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4 text-gray-900"
                   type="text"
                   placeholder="Search for anything"
                   value={searchTerm}
