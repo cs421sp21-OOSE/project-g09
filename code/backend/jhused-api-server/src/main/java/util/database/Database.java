@@ -155,7 +155,7 @@ public final class Database {
     // Must drop image and hashtag before post, to avoid foreign key dependency error
     String sql = "CREATE TABLE IF NOT EXISTS post("
         + "id CHAR(36) NOT NULL PRIMARY KEY,"
-        + "user_id VARCHAR(36),"   // make this foreign key in future iterations
+        + "user_id VARCHAR(50),"   // make this foreign key in future iterations
         + "title VARCHAR(50) NOT NULL,"
         + "price NUMERIC(12, 2) NOT NULL,"  //NUMERIC(precision, scale) precision: valid numbers, 25.3213's precision
         // is 6 because it has 6 digital numbers. scale: for 25.3213, it's scale

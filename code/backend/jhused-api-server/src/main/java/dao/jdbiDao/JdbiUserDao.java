@@ -17,7 +17,29 @@ public class JdbiUserDao implements UserDao {
   private final Jdbi jdbi;
   private final PostDao postDao;
   private final ResultSetLinkedHashMapAccumulatorProvider<User> userAccumulator;
-
+  private final String SELECT_USER_GIVEN_ID =
+      "SElECT jhused_user.*,"
+      + "post.id as posts_id, "
+      + "post.user_id as posts_user_id, "
+      + "post.title as posts_title, "
+      + "post.price as posts_price, "
+      + "post.sale_state as posts_sale_state, "
+      + "post.description as posts_description, "
+      + "post.category as posts_category, "
+      + "post.location as posts_location, "
+      + "post.create_time as posts_create_time, "
+      + "post.update_time as posts_update_time, "
+      + "image.id as posts_images_id, "
+      + "image.url as posts_images_url,"
+      + "image.post_id as posts_images_post_id, "
+      + "hashtag.id as posts_hashtags_id, "
+      + "hashtag.hashtag as posts_hashtags_hashtag "
+      + "FROM jhused_user "
+      + "LEFT JOIN post ON jhused_user.id = post.user_id "
+      + "LEFT JOIN image ON image.post_id = post.id "
+      + "LEFT JOIN post_hashtag ON post_hashtag.post_id = post.id "
+      + "LEFT JOIN hashtag ON hashtag.id = post_hashtag.hashtag_id "
+      + "WHERE jhused_user.id = :userId;";
   private final String defaultProfileImage = "https://i.redd.it/v2h2px8w5piz.png";
 
   public JdbiUserDao(Jdbi jdbi) {
@@ -29,22 +51,24 @@ public class JdbiUserDao implements UserDao {
   @Override
   public User create(User user) throws DaoException {
 
-    String sql = "WITH inserted AS ("
-        + "INSERT INTO jhused_user(id, name, email, profile_image, location) "
-        + "VALUES(:id, :name, :email, :profileImage, :location) RETURNING *"
-        + ")SELECT * FROM inserted;";
+    String sql = "INSERT INTO jhused_user(id, name, email, profile_image, location) "
+        + "VALUES(:id, :name, :email, :profileImage, :location);";
     if (user.getProfileImage() == null || user.getProfileImage().isEmpty()) {
       user.setProfileImage(defaultProfileImage);
     }
+    if (user.getPosts() == null) {
+      user.setPosts(new ArrayList<>());
+    }
     try {
       return jdbi.inTransaction(handle -> {
-        handle.createQuery(sql).bindBean(user).mapToBean(User.class).findOne().orElse(null);
-        if (!user.getPostList().isEmpty()) {
-          for (Post post : user.getPostList())
+        handle.createUpdate(sql).bindBean(user).execute();
+        if (!user.getPosts().isEmpty()) {
+          for (Post post : user.getPosts())
             postDao.create(post);
         }
-        return read(user.getId());
-      });
+        return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
+            .reduceResultSet(new LinkedHashMap<>(),
+                userAccumulator).values()).get(0);});
     } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
     }
@@ -52,9 +76,7 @@ public class JdbiUserDao implements UserDao {
 
   @Override
   public User read(String userId) throws DaoException {
-    String sql = "SElECT * FROM jhused_user "
-        + "LEFT JOIN post on post.user_id = jhused_user.id "
-        + "WHERE jhused_user.id = :userId";
+    String sql = SELECT_USER_GIVEN_ID;
     try {
       return jdbi.inTransaction(handle -> new ArrayList<>(handle.
           createQuery(sql)
@@ -63,7 +85,7 @@ public class JdbiUserDao implements UserDao {
           .values())
           .stream().findFirst().orElse(null));
     } catch (IllegalStateException | StatementException ex) {
-      throw new DaoException("Unable to read user given postId from the database: " + ex.getMessage(), ex);
+      throw new DaoException("Unable to read user given userId from the database: " + ex.getMessage(), ex);
     }
   }
 
@@ -77,12 +99,12 @@ public class JdbiUserDao implements UserDao {
         + "WHERE id = :userId RETURNING *) "
         + "SELECT * FROM updated;";
     try {
-      if (user.getPostList() == null) {
-        user.setPostList(new ArrayList<>());
+      if (user.getPosts() == null) {
+        user.setPosts(new ArrayList<>());
       }
       return jdbi.inTransaction(handle -> {
         User updatedUser = handle.createQuery(sql)
-            .bind("id", userId)
+            .bind("userId", userId)
             .bind("name", user.getName())
             .bind("email", user.getEmail())
             .bind("profileImage", user.getProfileImage())
@@ -93,7 +115,7 @@ public class JdbiUserDao implements UserDao {
           List<String> toDeletePostIds = new ArrayList<>();
           toDeletePost.forEach(p -> toDeletePostIds.add(p.getId()));
           List<Post> toAddPost = new ArrayList<>();
-          for (Post post : user.getPostList()) {
+          for (Post post : user.getPosts()) {
             if (toDeletePost.contains(post.getId())) {
               toDeletePostIds.remove(post.getId());
             } else {
@@ -107,7 +129,9 @@ public class JdbiUserDao implements UserDao {
             postDao.create(post);
           }
         }
-        return read(userId);
+        return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
+            .reduceResultSet(new LinkedHashMap<>(),
+                userAccumulator).values()).get(0);
       });
 
     } catch (IllegalStateException | StatementException | NullPointerException ex) {
@@ -126,7 +150,7 @@ public class JdbiUserDao implements UserDao {
       return jdbi.inTransaction(handle -> {
         User user = handle.createQuery(sql).bind("id", id).mapToBean(User.class).findOne().orElse(null);
         if (user != null) {
-          user.setPostList(posts);
+          user.setPosts(posts);
         }
         return user;
       });
