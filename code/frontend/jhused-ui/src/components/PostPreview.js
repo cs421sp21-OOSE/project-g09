@@ -7,7 +7,7 @@ const PostPreview = (props) => {
   const location = useLocation();
 
   return (
-    <div className="font-semibold relative ">
+    <div className="text-xl relative">
       {/* Comment by CD (delete later): a button should be added in this class for updating post. The button is alive in mypage only. The callback should pass post object to the editor pop up class */}
       <div className="group">
         <Link

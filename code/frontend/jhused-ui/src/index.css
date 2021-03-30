@@ -7,7 +7,7 @@
   @font-face {
     font-family: OpenSans;
     font-weight: 600;
-    src: url(./styles/OpenSans/OpenSans-SemiBold.ttf) format("OpenSans");
+    src: url(./styles/OpenSans/OpenSans-Regular.ttf) format("OpenSans");
   }
   @font-face {
     font-family: OpenSans;
