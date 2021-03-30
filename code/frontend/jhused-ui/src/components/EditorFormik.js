@@ -44,7 +44,7 @@ const StdNumInput = ({ ...props }) => {
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input
-          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-4 py-1 block relative w-full"
+          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-5 py-1 block relative w-full"
           type="number"
           placeholder={props.placeholder}
           {...field}
@@ -307,6 +307,7 @@ const EditorFormik = (props) => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
           <Formik
+            enableReinitialize={true}
             initialValues={initialPostData}
             validationSchema={Yup.object({
               title: Yup.string()
