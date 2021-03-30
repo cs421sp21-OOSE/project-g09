@@ -104,7 +104,7 @@ As a user, I want to make a wish list, so that I can show people what things I a
   - [ ] Add chat box button in homepage and account page to allow user check his/her messages. (Bohua)
   - [ ] Add start chatting button in other user's account page to start conversation. (Sam)
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
-  - [ ] Homepage (Sam)
+  - [X] Homepage (Sam)
   - [ ] post detail (Sam)
   - [ ] post editing (Chu)
   - [ ] account page (Bohua)
