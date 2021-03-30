@@ -3,7 +3,8 @@ import ExitPng from "../images/x.png";
 import Location from "./Location";
 import Carousel from "./Carousel";
 import axios from "../util/axios";
-import "./PostDetails.css";
+import Header from "./Header";
+
 import { useParams, useHistory } from "react-router-dom";
 
 const PostDetails = (props) => {
@@ -31,34 +32,23 @@ const PostDetails = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  }, [post]);
+  }, []);
 
   if (post) {
     return (
-      <div className="post-container">
-        <div className="post-body">
-          <img
-            src={ExitPng}
-            alt="x"
-            className="exit"
-            onClick={closeModal}
-          ></img>{" "}
-          <h1 className="post-title">{post.title}</h1>
-          <h1 className="post-price">${post.price}</h1>
-          <div className="post-content-left">
-            <Carousel images={post.images} />
-          </div>
-          <div className="post-content-right">
-            <Location location={post.location} size="s" />
-            <div className="post-description">
-              <p>{post.description} </p>
+      <div>
+        <Header />
+        <div className="fw-full h-full justify-center align-center">
+          <div className=" flex w-3/4 h-4/5 shadow-md bg-white m-0">
+            <div className="w-3/5 h-full">
+              <Carousel images={post.images} />
             </div>
           </div>
         </div>
       </div>
     );
   } else {
-    return "";
+    return "this is garbage";
   }
 };
 
