@@ -24,7 +24,7 @@ import java.util.Map;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = true;
+  public static boolean USE_TEST_DATABASE = false;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
