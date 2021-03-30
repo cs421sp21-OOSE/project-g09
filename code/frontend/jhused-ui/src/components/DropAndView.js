@@ -58,6 +58,8 @@ function reducer(prevState, action) {
   else if (action.type === "remove") {
     let curState = {...prevState};
     URL.revokeObjectURL(prevState[action.uid].dataUrl); // remove data URL to avoid memory leak
+    // Need to remove web url if it exists
+    // TODO: set up useContext to access DropAndView value prop
     delete curState[action.uid];
     return curState;
   }
@@ -92,8 +94,6 @@ const DropAndView = (props) => {
   })
 
   const handleOnDrop = (acceptedFiles) => {
-    // Not great to have two sources of images here but setStates are called sync
-    // Refactor this when formik it is hooked up with formik
     acceptedFiles.forEach((curFile) => {
       dispatch({
         type: "add", 
