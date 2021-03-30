@@ -169,6 +169,12 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  public List<Post> readAllFromUser(String userId) throws DaoException {
+    return null;
+  }
+
+
+    @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
     try (Connection conn = sql2o.open()) {
       String sql = "SELECT * FROM post";

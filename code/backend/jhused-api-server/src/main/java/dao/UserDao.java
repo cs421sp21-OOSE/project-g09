@@ -20,7 +20,7 @@ public interface UserDao {
    * @return The user matching the userId
    * @throws DaoException
    */
-  User get(String userId) throws DaoException;
+  User read(String userId) throws DaoException;
   
   /**
    * Update the title of a Users provided its id.
