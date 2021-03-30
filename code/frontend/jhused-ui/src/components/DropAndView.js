@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import Dropzone from "react-dropzone";
 import { storage } from "./firebase";
-
-const converToUrls = (files) => {
-  const imageUrls = [];
-  files.forEach((file) => {
-    imageUrls.push(URL.createObjectURL(file));
-  });
-  return imageUrls;
-}
+import { nanoid } from 'nanoid';
 
 const Thumb = (props) => {
   const handleOnClik = (event) => {
     event.stopPropagation();
-    props.onDelete(props.index);
+    props.onDelete({type: "remove", uid: props.uid});
   }
   return (
     <div>
@@ -42,46 +35,90 @@ const Thumb = (props) => {
 const ThumbGrid = (props) => {
   return (
     <div className="flex flex-wrap gap-3 justify-items-center outline-none focus:ring-2 focus:ring-blue-700">
-      {props.urls.map((url, index) => (<Thumb key={index} url={url} index={index} onDelete={props.onDelete} progress={props.progress[index]}/>))}
+      {Object.keys(props.data).map((uid)=> (
+        <Thumb 
+          key={uid} 
+          uid={uid} 
+          url={props.data[uid].dataUrl || props.data[uid].webUrl}
+          progress={props.data[uid].progress || 0}
+          onDelete={props.onDelete}
+        />
+      ))}
     </div>
   );
 }
 
-const DropAndView = (props) => { 
+function reducer(prevState, action) {
+  if (action.type === "add") {
+    let curState ={...prevState, 
+      [action.uid]: {...action.data}
+    };
+    return curState;
+  }
+  else if (action.type === "remove") {
+    let curState = {...prevState};
+    URL.revokeObjectURL(prevState[action.uid].dataUrl); // remove data URL to avoid memory leak
+    delete curState[action.uid];
+    return curState;
+  }
+  else if (action.type === "progress") {
+    let curState = {...prevState, 
+      [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
+    };
+    return curState;
+  }
+  else if (action.type === "upload") {
+    let curState = {...prevState, 
+      [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
+    };
+    return curState;
+  }
+  else {
+    throw new Error("Invalid action type");
+  }
 
-  const [imageFiles, setImageFiles] = useState([]); 
-  const [imageUrls, setImageUlrs] = useState([]);
-  const [progress, setProgress] = useState({});
+}
+
+const DropAndView = (props) => {
+  
+  // model object {..., {uid}: {file:..., dataUrl:..., webUrl:..., progress:...}}
+  const [model, dispatch] = useReducer(reducer, {});
 
   // Clean up URL convert to avoid memory leak
   useEffect(() => {
     return (
-      () => imageUrls.forEach((url) => URL.revokeObjectURL(url))
+      () => Object.keys(model).forEach((uid) => URL.revokeObjectURL(model[uid].dataUrl))
     );
   })
 
   const handleOnDrop = (acceptedFiles) => {
     // Not great to have two sources of images here but setStates are called sync
     // Refactor this when formik it is hooked up with formik
-    setImageFiles([...imageFiles, ...acceptedFiles]);
-    setImageUlrs([...imageUrls, ...converToUrls(acceptedFiles)]);
+    acceptedFiles.forEach((curFile) => {
+      dispatch({
+        type: "add", 
+        uid:nanoid(),
+        data: {
+          file: curFile, 
+          dataUrl: URL.createObjectURL(curFile),
+        }
+      })
+    });
   };
 
   const handleUpload = (event) => {
     event.stopPropagation()
     event.preventDefault();
     let images = [];
-    let updatedProgress = {};
-    Array.from(imageFiles).forEach((image, index) => {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
+    Array.from(Object.keys(model)).forEach(key => {
+      const uploadTask = storage.ref(`images/${model[key].file.name}`).put(model[key].file);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const curProgress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          updatedProgress = {...updatedProgress, [index]: curProgress};
-          setProgress({...progress, ...updatedProgress});
+          dispatch({type: "progress", uid: key, data: {progress: curProgress}});
         },
         (error) => {
           console.log(error);
@@ -90,10 +127,11 @@ const DropAndView = (props) => {
           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             console.log("File available at ", downloadURL);
             images.push({
-              id: "",
+              id: {key},
               postId: "",
               url: downloadURL,
             });
+            dispatch({type: "upload", uid: key, data: {webUrl: downloadURL}});
             if (props.onChange) {
               props.onChange(props.name, [...props.value, ...images]);
             }
@@ -102,13 +140,6 @@ const DropAndView = (props) => {
       );
     });
     console.log(images);
-  };
-
-  const handleDelete = (index) => {
-    const curImageFiles = [...imageFiles];
-    curImageFiles.splice(index, 1);
-    setImageFiles(curImageFiles);
-    setImageUlrs([...converToUrls(curImageFiles)]);
   };
 
   return (
@@ -122,8 +153,8 @@ const DropAndView = (props) => {
               {...getInputProps()} 
             />
             {
-              (imageFiles.length > 0) ? 
-                (<ThumbGrid urls={imageUrls} onDelete={handleDelete} progress={progress}/>) : 
+              (Object.keys(model).length > 0) ? 
+                (<ThumbGrid data={model} onDelete={dispatch} />) : 
                 ("Drag and drop your images here")
             }
             <button 
