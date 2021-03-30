@@ -1,11 +1,11 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { storage } from "./firebase";
 import axios from "axios";
 import { Formik, useField } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
-import { useHistory, useLocation } from "react-router";
+import { useHistory, useParams } from "react-router";
 import Header from "./Header";
 import DropAndView from "./DropAndView";
 
@@ -237,8 +237,36 @@ const ImageUpload = ({ ...props }) => {
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
 
+  const { postID } = useParams();
+  const [initialPostData, setInitialPostData] = useState({
+    id: "",
+    userId: "",
+    title: "",
+    price: "",
+    saleState: "SALE",
+    location: "",
+    category: "",
+    description: "",
+    hashtags: [],
+    images: [],
+  });
+  
+  useEffect(() => {
+    if (props.mode === "update") {
+      axios
+        .get("/api/posts/" + postID)
+        .then((response) => {
+          console.log(response);
+          setInitialPostData(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+          history.push("/404");
+        });
+    }
+  }, []);
+
   const history = useHistory(); // for redirecting to other pages
-  const location = useLocation(); // for retreiving data passed by other pages
 
   const handleSubmit = (values, { setSubmitting }) => {
     switch (props.mode) {
@@ -279,22 +307,7 @@ const EditorFormik = (props) => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
           <Formik
-            initialValues={
-              props.mode === "update" && location.state.hasOwnProperty("data")
-                ? location.state.data
-                : {
-                    id: "",
-                    userId: "",
-                    title: "",
-                    price: "",
-                    saleState: "SALE",
-                    location: "",
-                    category: "",
-                    description: "",
-                    hashtags: [],
-                    images: [],
-                  }
-            }
+            initialValues={initialPostData}
             validationSchema={Yup.object({
               title: Yup.string()
                 .max(60, "Must be 60 characters or less")
@@ -377,17 +390,6 @@ const EditorFormik = (props) => {
                     placeholder="Write a description"
                     className="col-span-full"
                   />
-
-                  {/* <ImageUpload
-                    name="images"
-                    value={formik.values.images}
-                    postId={formik.values.id}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    touched={formik.touched.images}
-                    error={formik.errors.images}
-                    className="col-span-full"
-                  /> */}
 
                   <DropAndView 
                     name="images"

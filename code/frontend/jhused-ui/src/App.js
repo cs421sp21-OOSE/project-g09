@@ -7,7 +7,6 @@ import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
-import DropAndView from "./components/DropAndView";
 
 const App = () => {
   const location = useLocation();
@@ -23,7 +22,7 @@ const App = () => {
           <EditorFormik mode="create" />
         </Route>
 
-        <Route exact path="/editor-update">
+        <Route exact path="/editor/:postID">
           <EditorFormik mode="update" />
         </Route>
 
@@ -49,10 +48,6 @@ const App = () => {
 
         <Route exact path="/editor/redirect/delete-failure">
           <RedirectPage type="deleteFailure" />
-        </Route>
-
-        <Route exact path="/editor/drop-and-view">
-          <DropAndView />
         </Route>
 
         <Route exact path="/404">
