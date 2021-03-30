@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import Dropzone from "react-dropzone";
 import { storage } from "./firebase";
 import { nanoid } from 'nanoid';
@@ -6,7 +6,11 @@ import { nanoid } from 'nanoid';
 const Thumb = (props) => {
   const handleOnClik = (event) => {
     event.stopPropagation();
-    props.onDelete({type: "remove", uid: props.uid});
+    props.onDelete({
+      type: "remove", 
+      uid: props.uid, 
+      form: props.form
+    });
   }
   return (
     <div>
@@ -42,6 +46,7 @@ const ThumbGrid = (props) => {
           url={props.data[uid].dataUrl || props.data[uid].webUrl}
           progress={props.data[uid].progress || 0}
           onDelete={props.onDelete}
+          form={props.form}
         />
       ))}
     </div>
@@ -58,8 +63,15 @@ function reducer(prevState, action) {
   else if (action.type === "remove") {
     let curState = {...prevState};
     URL.revokeObjectURL(prevState[action.uid].dataUrl); // remove data URL to avoid memory leak
-    // Need to remove web url if it exists
-    // TODO: set up useContext to access DropAndView value prop
+    // Remove web url if it exists
+    if (action.form && prevState[action.uid].webUrl) {
+      let newValues = action.form.values;
+      let indexRemoval = newValues.findIndex((image) => (image.id === action.uid));
+      if (indexRemoval >= 0) {
+        newValues.splice(indexRemoval, 1)
+      }
+      action.form.setValue(newValues);
+    }
     delete curState[action.uid];
     return curState;
   }
@@ -75,6 +87,10 @@ function reducer(prevState, action) {
     };
     return curState;
   }
+  else if (action.type === "upload-complete") {
+    // Update the form data once all uploads are complete
+    action.form.setValue(Object.values(prevState).map(val => val.webUrl));
+  }
   else {
     throw new Error("Invalid action type");
   }
@@ -83,7 +99,7 @@ function reducer(prevState, action) {
 
 const DropAndView = (props) => {
   
-  // model object {..., {uid}: {file:..., dataUrl:..., webUrl:..., progress:...}}
+  // Model object {..., {uid}: {file:..., dataUrl:..., webUrl:..., progress:...}}
   const [model, dispatch] = useReducer(reducer, {});
 
   // Clean up URL convert to avoid memory leak
@@ -110,15 +126,21 @@ const DropAndView = (props) => {
     event.stopPropagation()
     event.preventDefault();
     let images = [];
-    Array.from(Object.keys(model)).forEach(key => {
-      const uploadTask = storage.ref(`images/${model[key].file.name}`).put(model[key].file);
+
+    Array.from(Object.keys(model)).forEach(uid => {
+
+      if (model[uid].webUrl) { // do not upload if url has already been uploaded
+        return;
+      }
+
+      const uploadTask = storage.ref(`images/${model[uid].file.name}`).put(model[uid].file);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
           const curProgress = Math.round(
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100
           );
-          dispatch({type: "progress", uid: key, data: {progress: curProgress}});
+          dispatch({type: "progress", uid: uid, data: {progress: curProgress}});
         },
         (error) => {
           console.log(error);
@@ -127,11 +149,15 @@ const DropAndView = (props) => {
           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
             console.log("File available at ", downloadURL);
             images.push({
-              id: {key},
+              id: uid,
               postId: "",
               url: downloadURL,
             });
-            dispatch({type: "upload", uid: key, data: {webUrl: downloadURL}});
+            dispatch({
+              type: "upload",
+              uid: uid,
+              data: {webUrl: downloadURL}
+            });
             if (props.onChange) {
               props.onChange(props.name, [...props.value, ...images]);
             }
@@ -139,6 +165,16 @@ const DropAndView = (props) => {
         }
       );
     });
+
+    // dispatch({
+    //   type: "upload-complete",
+    //   form: {
+    //     setValue: (newValue) => props.onChange(props.name, newValue)
+    //   }
+    // });
+
+
+    // props.onChange(props.name, [...images]);
     console.log(images);
   };
 
@@ -154,7 +190,14 @@ const DropAndView = (props) => {
             />
             {
               (Object.keys(model).length > 0) ? 
-                (<ThumbGrid data={model} onDelete={dispatch} />) : 
+                (<ThumbGrid 
+                  data={model} 
+                  onDelete={dispatch} 
+                  form={{
+                    values: props.value, 
+                    setValue: (newValue) => props.onChange(props.name, newValue),
+                  }}
+                />) : 
                 ("Drag and drop your images here")
             }
             <button 
