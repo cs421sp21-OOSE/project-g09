@@ -166,78 +166,10 @@ const CreatableWrapper = ({ ...props }) => {
   );
 };
 
-// Image upload component
-const ImageUpload = ({ ...props }) => {
-  const [imageFiles, setImageFiles] = useState([]);
-  const [imageUploadProgress, setImageUploadProgress] = useState(0);
-
-  const handleImageChange = (event) => {
-    if (event.target.files[0]) {
-      setImageFiles(event.target.files);
-    }
-  };
-
-  const handleImageUpload = (event) => {
-    event.preventDefault();
-    const images = [];
-    Array.from(imageFiles).forEach((image) => {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setImageUploadProgress(progress);
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            console.log("File available at ", downloadURL);
-            images.push({
-              id: "",
-              postId: props.postId,
-              url: downloadURL,
-            });
-            props.onChange(props.name, [...props.value, ...images]);
-          });
-        }
-      );
-    });
-  };
-
-  return (
-    <div className={props.className}>
-      <div>
-        <input
-          type="file"
-          multiple
-          onChange={handleImageChange}
-          onBlur={() => props.onBlur(props.name, true)}
-        />
-      </div>
-      <div>
-        <progress value={imageUploadProgress} max={100} />
-      </div>
-      {props.touched && props.error ? (
-        <div className={errorMsgStyle}>{props.error};</div>
-      ) : null}
-      <button
-        className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3"
-        onClick={handleImageUpload}
-      >
-        Upload
-      </button>
-    </div>
-  );
-};
-
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
 
-  const { postID } = useParams();
+  const { postID } = useParams(); // for loading post id from url address
   const [initialPostData, setInitialPostData] = useState({
     id: "",
     userId: "",
@@ -264,7 +196,7 @@ const EditorFormik = (props) => {
           history.push("/404");
         });
     }
-  }, []);
+  }, []); // passing empty array ensures sending request only once
 
   const history = useHistory(); // for redirecting to other pages
 
