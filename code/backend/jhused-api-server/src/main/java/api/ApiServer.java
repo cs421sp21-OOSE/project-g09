@@ -53,7 +53,7 @@ public class ApiServer {
       return Integer.parseInt(herokuPort);
     }
     //return default port if heroku-port isn't set (i.e. on localhost)
-    return 8080;
+    return 4567;
   }
 
   private static PostDao getPostDao() throws URISyntaxException {
@@ -118,12 +118,6 @@ public class ApiServer {
     Spark.stop();
   }
 
-  /**
-   * Main Method
-   *
-   * @param args
-   * @throws URISyntaxException
-   */
   public static void main(String[] args) throws URISyntaxException {
     port(getHerokuAssignedPort());
     setAccessControlRequestHeaders();
@@ -240,8 +234,6 @@ public class ApiServer {
       }
     });
 
-    //TODO SSO redirection and session baton pass.
-
     //SSO filter
     final Config config = new OktaSSOConfigFactory().build();
 
@@ -281,9 +273,9 @@ public class ApiServer {
 //            throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
 //          }
           // TODO set this to create new user page.
-          res.redirect(FRONTEND_URL+"/user/settings/" + userProfile.getId(), 302);
+          res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getId(), 302);
         } else {
-          res.redirect(FRONTEND_URL+"/user/settings/" + userProfile.getId(), 302);
+          res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getId(), 302);
         }
       } catch (NullPointerException ex) {
         throw new ApiError(ex.getMessage(), 500);
@@ -372,11 +364,7 @@ public class ApiServer {
     });
 
     after((req, res) -> res.type("application/json"));
-
   }
-
-
-  //Can be moved into SSOInterface inside of util.SSO if you want.
 
   private static List<CommonProfile> getProfiles(final Request request, final Response response) {
     final SparkWebContext context = new SparkWebContext(request, response);

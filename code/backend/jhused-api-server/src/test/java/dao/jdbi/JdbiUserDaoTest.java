@@ -13,8 +13,6 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +40,7 @@ class JdbiUserDaoTest {
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
     Database.insertSampleUsers(jdbi, sampleUsers);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSamplePosts(jdbi, samplePosts);
     userDao = new JdbiUserDao(jdbi);
   }
 

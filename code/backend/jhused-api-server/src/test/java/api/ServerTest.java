@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ServerTest {
 
   private static final List<Post> samplePosts = DataStore.samplePosts();
-  private final static String BASE_URL = "http://localhost:8080";
+  private final static String BASE_URL = "http://localhost:4567";
   private static final Gson gson = new Gson();
   private static Jdbi jdbi;
 
@@ -43,7 +43,7 @@ class ServerTest {
   void injectDependency() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // make sure using test dataset
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSamplePosts(jdbi, samplePosts);
   }
 
   @AfterAll
@@ -51,11 +51,6 @@ class ServerTest {
     ApiServer.stop();
     Database.USE_TEST_DATABASE = false; //use production dataset
   }
-
-  @Test
-  public void doNothing () throws UnirestException {
-  }
-
 
   @Test
   public void getPostsWorks() throws UnirestException {

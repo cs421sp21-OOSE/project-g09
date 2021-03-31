@@ -1,7 +1,5 @@
 package util.database;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import model.*;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -88,10 +86,10 @@ public final class Database {
     ds.setLoadBalanceHosts(true);
     if (!dbUri.getHost().contains("localhost"))
       ds.setSslMode("require");
-    HikariConfig hc = new HikariConfig();
-    hc.setDataSource(ds);
-    hc.setMaximumPoolSize(6);
-    return Jdbi.create(new HikariDataSource(hc)).installPlugin(new PostgresPlugin());
+//    HikariConfig hc = new HikariConfig();
+//    hc.setDataSource(ds);
+//    hc.setMaximumPoolSize(6);
+    return Jdbi.create(ds).installPlugin(new PostgresPlugin());
   }
 
   /**
@@ -183,7 +181,7 @@ public final class Database {
       createPostsHashtagsTable(jdbi);
       createImagesTable(jdbi);
     });
-    insertSampleData(jdbi, samples);
+    insertSamplePosts(jdbi, samples);
   }
 
   public static void truncateTables(Jdbi jdbi) throws Sql2oException {
@@ -201,7 +199,7 @@ public final class Database {
    * @param jdbi    a Jdbi object connected to the database to be used in this application.
    * @param samples samples of posts
    */
-  public static void insertSampleData(Jdbi jdbi, List<Post> samples) {
+  public static void insertSamplePosts(Jdbi jdbi, List<Post> samples) {
     for (Post post : samples) {
       addPostsWithInnerObjects(jdbi, post);
     }
