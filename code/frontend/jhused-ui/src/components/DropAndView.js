@@ -201,7 +201,7 @@ const DropAndView = (props) => {
                 ("Drag and drop your images here")
             }
             <button 
-              className="absolute bottom-0 right-0 text-sm text-gray-700 font-medium bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 focus:bg-gray-50 font-bold py-0.5 px-1 m-2"
+              className="absolute bottom-0 right-0 text-sm text-gray-700 font-medium bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 focus:bg-gray-50 font-bold py-0.5 px-1 m-2"
               onClick={handleUpload}
             >
               Upload

@@ -1,5 +1,4 @@
 import { React, useEffect, useState } from "react";
-import { storage } from "./firebase";
 import axios from "axios";
 import { Formik, useField } from "formik";
 import * as Yup from "yup";
@@ -204,6 +203,20 @@ const EditorFormik = (props) => {
 
   const history = useHistory(); // for redirecting to other pages
 
+  const handleDelete = (postID) => ((event) => {
+    event.preventDefault();
+    axios
+      .delete("/api/posts/" + postID)
+      .then((response) => {
+        console.log(response);
+        history.push("/editor/redirect/delete-success");
+      })
+      .catch((error) => {
+        console.log(error);
+        history.push("/editor/redirect/delete-failure");
+      });
+  });
+
   const handleSubmit = (values, { setSubmitting }) => {
     switch (props.mode) {
       case "create":
@@ -217,7 +230,6 @@ const EditorFormik = (props) => {
             console.log(error);
             history.push("/editor/redirect/post-failure");
           });
-
         break;
       case "update":
         axios
@@ -340,6 +352,16 @@ const EditorFormik = (props) => {
                     className="col-span-full"
                   />
 
+                  {(props.mode === "update") && 
+                  <div className="col-start-1 col-span-3 flex justify-start">
+                    <button
+                      className="bg-red-500 rounded-lg hover:bg-red-700 text-white font-bold py-2 px-3"
+                      onClick={handleDelete(formik.values.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>}
+
                   <div className="col-end-13 flex justify-end">
                     <button
                       className={btnStyle}
@@ -349,6 +371,9 @@ const EditorFormik = (props) => {
                       {props.mode === "create" ? "Submit" : "Update"}
                     </button>
                   </div>
+                  
+
+
                 </div>
               </form>
             )}
