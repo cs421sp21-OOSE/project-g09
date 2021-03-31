@@ -106,7 +106,7 @@ As a user, I want to make a wish list, so that I can show people what things I a
 - [ ] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
   - [X] Homepage (Sam)
   - [ ] post detail (Sam)
-  - [ ] post editing (Chu)
+  - [x] post editing (Chu)
   - [ ] account page (Bohua)
 - [ ] Extend past activity functionalities (If we have time)
   - [ ] Implement my favorite posts (post detail have a heart, click then favorite it, show a list of favorites in account page)
