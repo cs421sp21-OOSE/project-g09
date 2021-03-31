@@ -3,6 +3,8 @@ package dao;
 import exceptions.DaoException;
 import model.User;
 
+import java.util.List;
+
 public interface UserDao {
 
   /**
@@ -41,4 +43,6 @@ public interface UserDao {
    * @throws DaoException A generic exception for CRUD operations.
    */
   User delete(String id) throws DaoException;
+
+  List<User> readAll() throws DaoException;
 }
