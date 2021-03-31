@@ -29,28 +29,8 @@ const App = () => {
           <EditorFormik mode="update" />
         </Route>
 
-        <Route exact path="/editor/redirect/post-success">
-          <RedirectPage type="submitSuccess" />
-        </Route>
-
-        <Route exact path="/editor/redirect/post-failure">
-          <RedirectPage type="submitFailure" />
-        </Route>
-
-        <Route exact path="/editor/redirect/update-success">
-          <RedirectPage type="updateSuccess" />
-        </Route>
-
-        <Route exact path="/editor/redirect/update-failure">
-          <RedirectPage type="updateFailure" />
-        </Route>
-
-        <Route exact path="/editor/redirect/delete-success">
-          <RedirectPage type="deleteSuccess" />
-        </Route>
-
-        <Route exact path="/editor/redirect/delete-failure">
-          <RedirectPage type="deleteFailure" />
+        <Route exact path="/editor/redirect/:requestStatus">
+          <RedirectPage />
         </Route>
 
         <Route exact path="/404">
