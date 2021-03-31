@@ -53,6 +53,7 @@ const ThumbGrid = (props) => {
   );
 }
 
+// Complete action {type: ..., uid: ..., data: {same as model} }
 function reducer(prevState, action) {
   if (action.type === "add") {
     let curState ={...prevState, 
@@ -102,12 +103,21 @@ const DropAndView = (props) => {
   // Model object {..., {uid}: {file:..., dataUrl:..., webUrl:..., progress:...}}
   const [model, dispatch] = useReducer(reducer, {});
 
+  // Populate form values into the dropzone
+  useEffect(() => {
+    props.value.forEach(image => dispatch({
+      type: "add",
+      uid: image.id,
+      data: {webUrl: image.url, progress:100}
+    }));
+  }, [props.isLoaded]);
+
   // Clean up URL convert to avoid memory leak
   useEffect(() => {
     return (
       () => Object.keys(model).forEach((uid) => URL.revokeObjectURL(model[uid].dataUrl))
     );
-  })
+  }, [])
 
   const handleOnDrop = (acceptedFiles) => {
     acceptedFiles.forEach((curFile) => {
@@ -165,16 +175,6 @@ const DropAndView = (props) => {
         }
       );
     });
-
-    // dispatch({
-    //   type: "upload-complete",
-    //   form: {
-    //     setValue: (newValue) => props.onChange(props.name, newValue)
-    //   }
-    // });
-
-
-    // props.onChange(props.name, [...images]);
     console.log(images);
   };
 

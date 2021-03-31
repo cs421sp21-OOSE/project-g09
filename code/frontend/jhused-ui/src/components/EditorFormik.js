@@ -182,6 +182,9 @@ const EditorFormik = (props) => {
     hashtags: [],
     images: [],
   });
+
+  // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does. 
+  const [isLoaded, setIsLoaded] = useState(false); 
   
   useEffect(() => {
     if (props.mode === "update") {
@@ -190,6 +193,7 @@ const EditorFormik = (props) => {
         .then((response) => {
           console.log(response);
           setInitialPostData(response.data);
+          setIsLoaded(true);
         })
         .catch((error) => {
           console.log(error);
@@ -332,6 +336,7 @@ const EditorFormik = (props) => {
                     onBlur={formik.setFieldTouched}
                     touched={formik.touched.images}
                     error={formik.errors.images}
+                    isLoaded={isLoaded}
                     className="col-span-full"
                   />
 
