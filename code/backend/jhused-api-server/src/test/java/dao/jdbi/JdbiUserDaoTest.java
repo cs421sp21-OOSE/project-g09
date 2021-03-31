@@ -2,15 +2,13 @@ package dao.jdbi;
 
 import dao.UserDao;
 import dao.jdbiDao.JdbiUserDao;
+import exceptions.DaoException;
 import model.Category;
 import model.Post;
 import model.SaleState;
 import model.User;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -53,43 +51,84 @@ class JdbiUserDaoTest {
     Database.USE_TEST_DATABASE = false; // use production dataset
   }
 
-//  @Test
-//  void doNothing() {}
+  @Test
+  void doNothing() {}
 
-//  @Test
-//  void createNewUser() {
-//    Post postNew = new Post("9".repeat(36), "008"+"1".repeat(33),
-//        "2008 Toyota car", 7100D, SaleState.SOLD,
-//        "It still works",
-//        DataStore.sampleImages(Category.CAR),
-//        DataStore.sampleHashtags(Category.CAR),
-//        Category.CAR,
-//        "Towson");
-//    User userNew = new User("008"+"1".repeat(33),  "Ed", "abc8@yahoo.com",  "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", new ArrayList<>(Arrays.asList(postNew)));
-//    assertEquals(userNew, userDao.create(userNew));
-//  }
-//
-//  @Test
-//  void read() {
-//    for (User user2: sampleUsers) {
-//      assertEquals(user2, userDao.read(user2.getId()));
-//    }
-//  }
+  @Test
+  void createNewUser() {
+    User userNew = DataStore.getNewUserForTest();
+    assertEquals(userNew, userDao.create(userNew));
+  }
 
-//  @Test
-//  void updateAddPost() {
-//    Post postNew = new Post("9".repeat(36), "",
-//        "2008 Toyota car", 7100D, SaleState.SOLD,
-//        "It still works",
-//        DataStore.sampleImages(Category.CAR),
-//        DataStore.sampleHashtags(Category.CAR),
-//        Category.CAR,
-//        "Towson");
-//    String cersiId = "005111111111111111111111111111111111";
-//    User userCersi = userDao.read(cersiId);
-//    userCersi.addPosts(postNew);
-//    assertEquals(userCersi, userDao.update(cersiId, userCersi));
-//  }
+  @Test
+  void createNewUserDuplicateException() {
+    User user1 = sampleUsers.get(0);
+    assertThrows(DaoException.class, ()-> userDao.create(user1));
+  }
+
+  @Test
+  void createNewUserIncompleteData() {
+    User noName = DataStore.getNewUserForTest();
+    noName.setName(null);
+    assertThrows(DaoException.class, ()-> userDao.create(noName));
+    User noId = DataStore.getNewUserForTest();
+    noId.setId(null);
+    assertThrows(DaoException.class, ()-> userDao.create(noId));
+    User noEmail = DataStore.getNewUserForTest();
+    noEmail.setEmail(null);
+    assertThrows(DaoException.class, ()-> userDao.create(noId));
+  }
+
+
+
+  @Test
+  void read() {
+    for (User user2: sampleUsers) {
+      assertEquals(user2, userDao.read(user2.getId()));
+    }
+  }
+
+
+  @Test
+  void readInvalid() {
+    assertNull(userDao.read("0"));
+  }
+
+  @Test
+  void updateAddPost() {
+    Post postNew = new Post("9".repeat(36), "",
+        "2008 Toyota car", 7100D, SaleState.SOLD,
+        "It still works",
+        DataStore.sampleImages(Category.CAR),
+        DataStore.sampleHashtags(Category.CAR),
+        Category.CAR,
+        "Towson");
+    String cersiId = "005111111111111111111111111111111111";
+    User userCersi = userDao.read(cersiId);
+    userCersi.addPosts(postNew);
+    assertEquals(userCersi, userDao.update(cersiId, userCersi));
+  }
+
+  @Test
+  void updateDeletePost() {
+    String cersiId = "005111111111111111111111111111111111";
+    User userCersi = userDao.read(cersiId);
+    List<Post> postList = userCersi.getPosts();
+    postList.remove(0);
+    assertEquals(userCersi, userDao.update(cersiId, userCersi));
+  }
+
+
+  @Test
+  void updateEmailProfileNameLocation() {
+    User user = sampleUsers.get(0);
+    user.setEmail("testInvalid");
+    user.setProfileImage("cat.img");
+    user.setName("noman");
+    user.setLocation("seatac");
+    User ret = userDao.update(user.getId(), user);
+    assertEquals(user, ret);
+  }
 
   @Test
   void delete() {
@@ -98,4 +137,17 @@ class JdbiUserDaoTest {
     assertEquals(cersi , userDao.delete(cersiId));
     assertNull(userDao.read(cersiId));
   }
+
+  @Test
+  @DisplayName("delete returns null for non existing user")
+  void deleteThrowsExceptionNoMatchData() {
+    assertNull(userDao.delete("25"));
+  }
+
+  @Test
+  @DisplayName("delete returns null for invalid input")
+  void deleteThrowsExceptionIncompleteData() {
+    assertNull(userDao.delete(null));
+  }
+
 }
