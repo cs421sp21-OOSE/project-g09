@@ -7,7 +7,7 @@ const PostPreview = (props) => {
   const location = useLocation();
 
   return (
-    <div className="font-semibold relative ">
+    <div className="text-xl relative">
       <div className="group">
         <Link
           to={{

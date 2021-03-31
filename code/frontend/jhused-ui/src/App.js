@@ -7,10 +7,14 @@ import EditorFormik from "./components/EditorFormik";
 import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
+import ChatPage from "./components/chat/ChatPage";
+import { UserContext } from "./state";
+import DropAndView from "./components/DropAndView";
 
 const App = () => {
   const location = useLocation();
   const background = location.state && location.state.background;
+  const { user } = useContext(UserContext.Context);
 
   return (
     <div className="App">
@@ -60,6 +64,10 @@ const App = () => {
 
         <Route exact path="/">
           <HomePage />
+        </Route>
+
+        <Route exact path="/chat/:userID">
+          {user !== null ? <ChatPage user={user}/> : "Not Logged in"}
         </Route>
       </Switch>
 
