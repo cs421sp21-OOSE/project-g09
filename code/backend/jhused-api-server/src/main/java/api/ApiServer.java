@@ -20,8 +20,7 @@ import org.pac4j.sparkjava.SparkWebContext;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
-import spark.template.mustache.MustacheTemplateEngine;
-import util.SSO.SSOConfigFactory;
+import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
 
 import java.net.URISyntaxException;
@@ -36,11 +35,6 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
-
-  //Begin SSO stuff
-  private final static String JWT_SALT = "12345678901234567890123456789012";
-  private final static MustacheTemplateEngine templateEngine = new MustacheTemplateEngine();
-  //end SSO stuff
 
 
   private static int getHerokuAssignedPort() {
@@ -219,7 +213,7 @@ public class ApiServer {
     //TODO SSO redirection and session baton pass.
 
     //SSO filter
-    final Config config = new SSOConfigFactory().build();
+    final Config config = new OktaSSOConfigFactory().build();
 
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
@@ -243,7 +237,8 @@ public class ApiServer {
      */
     get("/jhu/login", (req, res) -> {
 //      throw new ApiError("Resource not found", 404);
-      res.redirect("https://jhused-ui.herokuapp.com/", 301);
+//      res.redirect("https://jhused-ui.herokuapp.com/", 301);
+      res.redirect("http://localhost:3000/", 302);
       return null;
     });
 

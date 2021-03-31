@@ -6,11 +6,9 @@ import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 
-public class SSOConfigFactory implements ConfigFactory {
+public class OktaSSOConfigFactory implements ConfigFactory {
 
-  private final String JHU_SSO_IDP = "https://idp.jh.edu/idp/shibboleth";
-
-  public SSOConfigFactory() {
+  public OktaSSOConfigFactory() {
   }
 
 
