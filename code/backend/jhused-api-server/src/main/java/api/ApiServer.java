@@ -38,6 +38,7 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
+  private static final String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
 
   private static Jdbi jdbi;
 
@@ -280,9 +281,9 @@ public class ApiServer {
 //            throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
 //          }
           // TODO set this to create new user page.
-          res.redirect("http://localhost:3000/user/settings/" + userProfile.getId(), 302);
+          res.redirect(FRONTEND_URL+"/user/settings/" + userProfile.getId(), 302);
         } else {
-          res.redirect("http://localhost:3000/user/settings/" + userProfile.getId(), 302);
+          res.redirect(FRONTEND_URL+"/user/settings/" + userProfile.getId(), 302);
         }
       } catch (NullPointerException ex) {
         throw new ApiError(ex.getMessage(), 500);
