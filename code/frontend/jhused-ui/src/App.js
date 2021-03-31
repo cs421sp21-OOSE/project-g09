@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
@@ -26,7 +26,7 @@ const App = () => {
           <EditorFormik mode="create" />
         </Route>
 
-        <Route exact path="/editor-update">
+        <Route exact path="/editor/:postID">
           <EditorFormik mode="update" />
         </Route>
 
@@ -52,10 +52,6 @@ const App = () => {
 
         <Route exact path="/editor/redirect/delete-failure">
           <RedirectPage type="deleteFailure" />
-        </Route>
-
-        <Route exact path="/editor/drop-and-view">
-          <DropAndView />
         </Route>
 
         <Route exact path="/404">

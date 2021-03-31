@@ -1,11 +1,11 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { storage } from "./firebase";
 import axios from "axios";
 import { Formik, useField } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
-import { useHistory, useLocation } from "react-router";
+import { useHistory, useParams } from "react-router";
 import Header from "./Header";
 import DropAndView from "./DropAndView";
 
@@ -44,7 +44,7 @@ const StdNumInput = ({ ...props }) => {
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input
-          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-4 py-1 block relative w-full"
+          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-5 py-1 block relative w-full"
           type="number"
           placeholder={props.placeholder}
           {...field}
@@ -166,79 +166,43 @@ const CreatableWrapper = ({ ...props }) => {
   );
 };
 
-// Image upload component
-const ImageUpload = ({ ...props }) => {
-  const [imageFiles, setImageFiles] = useState([]);
-  const [imageUploadProgress, setImageUploadProgress] = useState(0);
-
-  const handleImageChange = (event) => {
-    if (event.target.files[0]) {
-      setImageFiles(event.target.files);
-    }
-  };
-
-  const handleImageUpload = (event) => {
-    event.preventDefault();
-    const images = [];
-    Array.from(imageFiles).forEach((image) => {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setImageUploadProgress(progress);
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            console.log("File available at ", downloadURL);
-            images.push({
-              id: "",
-              postId: props.postId,
-              url: downloadURL,
-            });
-            props.onChange(props.name, [...props.value, ...images]);
-          });
-        }
-      );
-    });
-  };
-
-  return (
-    <div className={props.className}>
-      <div>
-        <input
-          type="file"
-          multiple
-          onChange={handleImageChange}
-          onBlur={() => props.onBlur(props.name, true)}
-        />
-      </div>
-      <div>
-        <progress value={imageUploadProgress} max={100} />
-      </div>
-      {props.touched && props.error ? (
-        <div className={errorMsgStyle}>{props.error};</div>
-      ) : null}
-      <button
-        className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3"
-        onClick={handleImageUpload}
-      >
-        Upload
-      </button>
-    </div>
-  );
-};
-
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
 
+  const { postID } = useParams(); // for loading post id from url address
+  const [initialPostData, setInitialPostData] = useState({
+    id: "",
+    userId: "",
+    title: "",
+    price: "",
+    saleState: "SALE",
+    location: "",
+    category: "",
+    description: "",
+    hashtags: [],
+    images: [],
+  });
+
+  // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does. 
+  const [isLoaded, setIsLoaded] = useState(false); 
+  
+  useEffect(() => {
+    if (props.mode === "update") {
+      axios
+        .get("/api/posts/" + postID)
+        .then((response) => {
+          console.log(response);
+          setInitialPostData(response.data);
+          setIsLoaded(true);
+        })
+        .catch((error) => {
+          console.log(error);
+          history.push("/404");
+        });
+    }
+  }, []); // passing empty array ensures sending request only once
+
   const history = useHistory(); // for redirecting to other pages
-  const location = useLocation(); // for retreiving data passed by other pages
 
   const handleSubmit = (values, { setSubmitting }) => {
     switch (props.mode) {
@@ -279,22 +243,8 @@ const EditorFormik = (props) => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
           <Formik
-            initialValues={
-              props.mode === "update" && location.state.hasOwnProperty("data")
-                ? location.state.data
-                : {
-                    id: "",
-                    userId: "",
-                    title: "",
-                    price: "",
-                    saleState: "SALE",
-                    location: "",
-                    category: "",
-                    description: "",
-                    hashtags: [],
-                    images: [],
-                  }
-            }
+            enableReinitialize={true}
+            initialValues={initialPostData}
             validationSchema={Yup.object({
               title: Yup.string()
                 .max(60, "Must be 60 characters or less")
@@ -378,17 +328,6 @@ const EditorFormik = (props) => {
                     className="col-span-full"
                   />
 
-                  {/* <ImageUpload
-                    name="images"
-                    value={formik.values.images}
-                    postId={formik.values.id}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    touched={formik.touched.images}
-                    error={formik.errors.images}
-                    className="col-span-full"
-                  /> */}
-
                   <DropAndView 
                     name="images"
                     value={formik.values.images}
@@ -397,6 +336,7 @@ const EditorFormik = (props) => {
                     onBlur={formik.setFieldTouched}
                     touched={formik.touched.images}
                     error={formik.errors.images}
+                    isLoaded={isLoaded}
                     className="col-span-full"
                   />
 
