@@ -43,7 +43,7 @@ class ServerTest {
   void injectDependency() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // make sure using test dataset
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSamplePosts(jdbi, samplePosts);
   }
 
   @AfterAll

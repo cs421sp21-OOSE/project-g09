@@ -4,6 +4,7 @@ import dao.PostHashtagDao;
 import dao.jdbiDao.JdbiPostHashtagDao;
 import exceptions.DaoException;
 import model.Post;
+import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JdbiPostHashtagDaoTest {
   private static final List<Post> samplePosts = DataStore.samplePosts();
+  private static final List<User> sampleUsers = DataStore.sampleUsers();
   private static Jdbi jdbi;
   private PostHashtagDao posthashtagDao;
 
@@ -34,7 +36,8 @@ public class JdbiPostHashtagDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSampleUsers(jdbi, sampleUsers);
+    Database.insertSamplePosts(jdbi, samplePosts);
     posthashtagDao = new JdbiPostHashtagDao(jdbi);
   }
 
