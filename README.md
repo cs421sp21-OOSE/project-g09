@@ -132,6 +132,7 @@ heroku login
 # These set up two different heroku remote
 heroku git:remote --remote heroku-api -a jhused-api-server
 heroku git:remote --remote heroku-ui -a jhused-ui
+heroku git:remote --remote heroku-chat-server -a jhused-chat-server
 
 # to upload backend to heroku:
 back to /projectg09
@@ -139,6 +140,9 @@ git subtree push --prefix code/backend/jhused-api-server heroku-api master
 
 # to upload frontend to heroku
 git subtree push --prefix code/frontend/jhused-ui heroku-ui master
+
+# to upload chat server to heroku
+git subtree push --prefix code/backend/jhused-chat-server heroku-chat-server master
 ```
 
 

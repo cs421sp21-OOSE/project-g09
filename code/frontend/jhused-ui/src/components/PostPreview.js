@@ -7,8 +7,7 @@ const PostPreview = (props) => {
   const location = useLocation();
 
   return (
-    <div className="font-semibold relative ">
-      {/* Comment by CD (delete later): a button should be added in this class for updating post. The button is alive in mypage only. The callback should pass post object to the editor pop up class */}
+    <div className="text-xl relative">
       <div className="group">
         <Link
           to={{
@@ -18,7 +17,7 @@ const PostPreview = (props) => {
         >
           <div className="flex h-60">
             <img
-              className="group-hover:text-red-700 my-2 w-full object-scale-down"
+              className="group-hover:text-red-700 my-2 w-full object-cover"
               src={props.post.images[0].url}
               alt="item preview"
             />
@@ -33,7 +32,7 @@ const PostPreview = (props) => {
 
       {props.displayEdit ? (
         <Link
-          to={`/editor-update`}
+          to={`/editor/${props.post.id}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

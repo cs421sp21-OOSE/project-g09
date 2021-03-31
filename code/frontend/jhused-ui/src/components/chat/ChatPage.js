@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
+//import 'bootstrap/dist/css/bootstrap.min.css'
 
 import DashBoard from './DashBoard'
 import {ContactsProvider} from "../../state/ContactsProvider";

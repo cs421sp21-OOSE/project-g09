@@ -4,12 +4,11 @@ import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import EditorFormik from "./components/EditorFormik";
-import Header from "./components/Header";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/chat/ChatPage";
 import { UserContext } from "./state";
-import DropAndView from "./components/DropAndView";
+
 
 const App = () => {
   const location = useLocation();
@@ -19,51 +18,23 @@ const App = () => {
   return (
     <div className="App">
       <div className="jhused-header"></div>
-      <Switch location={background || location}>
+      <Switch>
         <Route exact path="/user/:userID" component={UserProfile} />
 
-        <Route exact path="/editor-create">
+        <Route exact path="/editor/create">
           <EditorFormik mode="create" />
         </Route>
 
-        <Route exact path="/editor-update">
+        <Route exact path="/editor/:postID">
           <EditorFormik mode="update" />
         </Route>
 
-        <Route exact path="/editor/redirect/post-success">
-          <RedirectPage type="submitSuccess" />
-        </Route>
-
-        <Route exact path="/editor/redirect/post-failure">
-          <RedirectPage type="submitFailure" />
-        </Route>
-
-        <Route exact path="/editor/redirect/update-success">
-          <RedirectPage type="updateSuccess" />
-        </Route>
-
-        <Route exact path="/editor/redirect/update-failure">
-          <RedirectPage type="updateFailure" />
-        </Route>
-
-        <Route exact path="/editor/redirect/delete-success">
-          <RedirectPage type="deleteSuccess" />
-        </Route>
-
-        <Route exact path="/editor/redirect/delete-failure">
-          <RedirectPage type="deleteFailure" />
-        </Route>
-
-        <Route exact path="/editor/drop-and-view">
-          <DropAndView />
+        <Route exact path="/editor/redirect/:requestStatus">
+          <RedirectPage />
         </Route>
 
         <Route exact path="/404">
           <NotFoundPage />
-        </Route>
-
-        <Route exact path="/test">
-          <Header />
         </Route>
 
         <Route exact path="/">
@@ -71,11 +42,12 @@ const App = () => {
         </Route>
 
         <Route exact path="/chat/:userID">
-          {user !== null ? <ChatPage user={user}/> : "Not Logged in"}
+          {user !== null ? <ChatPage user={user} /> : "Not Logged in"}
         </Route>
+        <Route exact path="/post/:postID" children={<PostDetails />} />
       </Switch>
 
-      {background && <Route path="/post/:postID" children={<PostDetails />} />}
+      {/**background && <Route path="/post/:postID" children={<PostDetails />} /> */}
     </div>
   );
 };

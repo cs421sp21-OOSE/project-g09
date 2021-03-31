@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory, Link } from 'react-router-dom';
+import { useHistory, Link, useParams } from 'react-router-dom';
 
 // Icon for successful operation
 const ICON_SUCCCESS = (
@@ -21,42 +21,43 @@ const ICON_FAILURE = (
 
 // Aggregated messages to be shown in the redirect page
 const MESSAGES = {
-  submitSuccess: {
+  "post-success": {
     title: "Post submitted",
     text: "",
     icon: ICON_SUCCCESS
   },
-  submitFailure: {
+  "post-failure": {
     title: "Submission failed",
     text: "There is a problem with the server. Please try again later.",
     icon: ICON_FAILURE
   },
-  updateSuccess: {
+  "update-success": {
     title: "Post updated",
     text: "",
     icon: ICON_SUCCCESS
   },
-  updateFailure: {
+  "update-failure": {
     title: "Update failed",
     text: "There is a problem with the server. Please try again later.",
     icon: ICON_FAILURE
   },
-  deleteSuccess: {
+  "delete-success": {
     title: "Post deleted",
     text: "",
     icon: ICON_SUCCCESS
   },
-  deleteFailure: {
+  "delete-failure": {
     title: "Deletion failed",
     text: "There is a problem with the server. Please try again later.",
     icon: ICON_FAILURE
   }
 };
 
-const RedirectPage = (props) => {
+const RedirectPage = () => {
   
   const [countDown, setCountDown] = useState(20); // for maintaing count down seconds
   const history = useHistory(); // for redirecting to home page
+  const { requestStatus } = useParams(); // for getting request status from the url   
 
   useEffect(() => {
     if (countDown > 0) {
@@ -73,13 +74,13 @@ const RedirectPage = (props) => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="max-w-md bg-white shadow-md rounded-lg pt-4 pb-6 px-6">
         <div className="flex justify-center">
-          {MESSAGES[props.type].icon}
+          {MESSAGES[requestStatus].icon}
         </div>
         <div className="text-center text-lg font-medium">
-          {MESSAGES[props.type].title}
+          {MESSAGES[requestStatus].title}
         </div>
         <div className="pb-4 pt-2">
-          {MESSAGES[props.type].text} Redirecting to the homepage in {countDown} seconds.
+          {MESSAGES[requestStatus].text} Redirecting to the homepage in {countDown} seconds.
         </div>
         <Link to="/">
           <button className="w-full bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-medium py-1 px-3">
