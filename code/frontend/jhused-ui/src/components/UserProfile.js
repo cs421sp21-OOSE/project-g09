@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ImageGrid from "./ImageGrid";
-import { useHistory } from "react-router-dom";
 import Icon from "../images/icon.png";
 import Location from "./Location";
 import axios from "../util/axios";
@@ -10,7 +9,6 @@ import Header from "./Header";
  * Component for user profile page
  */
 const UserProfile = (props) => {
-  const history = useHistory(); // for redirecting from profile page to editor page
   const [posts, setPosts] = useState([]);
 
   // helper function for sorting items by status

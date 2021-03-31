@@ -8,7 +8,6 @@ const PostPreview = (props) => {
 
   return (
     <div className="text-xl relative">
-      {/* Comment by CD (delete later): a button should be added in this class for updating post. The button is alive in mypage only. The callback should pass post object to the editor pop up class */}
       <div className="group">
         <Link
           to={{
@@ -33,7 +32,7 @@ const PostPreview = (props) => {
 
       {props.displayEdit ? (
         <Link
-          to={`/editor-update`}
+          to={`/editor/${props.post.id}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
