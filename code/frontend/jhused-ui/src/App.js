@@ -21,7 +21,7 @@ const App = () => {
       <Switch location={background || location}>
         <Route exact path="/user/:userID" component={UserProfile} />
 
-        <Route exact path="/editor-create">
+        <Route exact path="/editor/create">
           <EditorFormik mode="create" />
         </Route>
 
