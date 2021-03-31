@@ -88,10 +88,10 @@ public final class Database {
     ds.setLoadBalanceHosts(true);
     if (!dbUri.getHost().contains("localhost"))
       ds.setSslMode("require");
-//    HikariConfig hc = new HikariConfig();
-//    hc.setDataSource(ds);
-//    hc.setMaximumPoolSize(6);
-    return Jdbi.create(ds);
+    HikariConfig hc = new HikariConfig();
+    hc.setDataSource(ds);
+    hc.setMaximumPoolSize(6);
+    return Jdbi.create(new HikariDataSource(hc)).installPlugin(new PostgresPlugin());
   }
 
   /**

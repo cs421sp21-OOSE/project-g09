@@ -116,7 +116,8 @@ public class JdbiPostDao implements PostDao {
   }
 
   /**
-   * Read all posts
+   * This will be very slow if we have lots of posts.
+   * TODO: Need to refactor.
    *
    * @return A list of posts
    * @throws DaoException
