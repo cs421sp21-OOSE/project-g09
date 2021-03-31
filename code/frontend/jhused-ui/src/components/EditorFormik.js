@@ -20,7 +20,7 @@ const StdTextInput = ({ ...props }) => {
     <div className={props.className}>
       <label className={fieldLabelStyle}>{props.label}</label>
       <input
-        className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-3 py-1 block relative w-full"
+        className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
         type="text"
         placeholder={props.placeholder}
         {...field}
@@ -43,7 +43,7 @@ const StdNumInput = ({ ...props }) => {
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input
-          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-5 py-1 block relative w-full"
+          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
           type="number"
           placeholder={props.placeholder}
           {...field}
@@ -64,7 +64,7 @@ const StdTextArea = ({ ...props }) => {
     <div className={props.className}>
       <label className={fieldLabelStyle}>{props.label}</label>
       <textarea
-        className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 px-3 py-1 w-full h-32 block"
+        className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 w-full h-32 block"
         placeholder={props.placeholder}
         {...field}
       />

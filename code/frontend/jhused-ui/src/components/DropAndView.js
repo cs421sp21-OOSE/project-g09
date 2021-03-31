@@ -14,7 +14,7 @@ const Thumb = (props) => {
   }
   return (
     <div>
-      <div className="flex items-center w-20 h-20 rounded-xl border border-gray-300 overflow-hidden relative">
+      <div className="flex items-center w-20 h-20 rounded-xl border border-gray-300 overflow-hidden relative hover:shadow-md hover:border-gray-400">
         <img src={props.url} alt="" className="w-full h-full object-cover" />
         <div 
           className="bg-white absolute top-0 right-0 w-4 h-4 rounded-full"
@@ -182,7 +182,7 @@ const DropAndView = (props) => {
     <div className={props.className}>
       <Dropzone accept="image/*" onDrop={handleOnDrop}>
         {({getRootProps, getInputProps}) => (
-          <div {...getRootProps()} className="flex relative p-2 w-full min-h-20 border-2 border-gray-300 border-dashed focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-4"
+          <div {...getRootProps()} className="flex relative p-2 w-full min-h-20 border-2 border-gray-300 border-dashed focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-4 hover:border-gray-400"
           onBlur={() => props.onBlur(props.name, true)}
           >
             <input 
