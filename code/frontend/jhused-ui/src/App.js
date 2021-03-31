@@ -7,6 +7,7 @@ import EditorFormik from "./components/EditorFormik";
 import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/chat/ChatPage";
+import UserSettings from "./components/UserSettings"
 import { UserContext } from "./state";
 
 
@@ -20,6 +21,8 @@ const App = () => {
       <div className="jhused-header"></div>
       <Switch>
         <Route exact path="/user/:userID" component={UserProfile} />
+
+        <Route exact path="/user/settings/:userID/" > <UserSettings /></Route>
 
         <Route exact path="/editor/create">
           <EditorFormik mode="create" />

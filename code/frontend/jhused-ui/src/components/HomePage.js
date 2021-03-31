@@ -196,9 +196,10 @@ const HomePage = () => {
           </select>
         </div>
       </div>
-
-      {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
-      <ImageGrid posts={sortedPosts} />
+      <div className="mx-12">
+        {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
+        <ImageGrid posts={sortedPosts} />
+      </div>
     </div>
   );
 };
