@@ -1,23 +1,19 @@
-import React, { useState, useEffect } from "react";
-import ExitPng from "../images/x.png";
+import React, { useState, useEffect, useContext } from "react";
 import Location from "./Location";
 import Carousel from "./Carousel";
 import axios from "../util/axios";
-import "./PostDetails.css";
+import Header from "./Header";
+import { UserContext } from "../state";
 import { useParams, useHistory } from "react-router-dom";
 
+// TODO: set up getting user info of post
 const PostDetails = (props) => {
   const params = useParams();
   console.log(params.postID);
+  const context = useContext(UserContext.Context);
 
   const [post, setPost] = useState(null);
-
-  const history = useHistory();
-
-  const closeModal = (e) => {
-    e.stopPropagation();
-    history.goBack();
-  };
+  const [postUser, setPostUser] = useState(null);
 
   useEffect(() => {
     const path = "/api/posts/" + params.postID;
@@ -31,34 +27,74 @@ const PostDetails = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  }, [post]);
+  }, []);
+  /*
+  useEffect = (() => {
+    axios
+      .get(`/api/users/${post.userId}`)
+      .then((response) => {
+        console.log(response.data);
+        setPostUser(response.data);
+        console.log(post);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [post]) */
 
   if (post) {
     return (
-      <div className="post-container">
-        <div className="post-body">
-          <img
-            src={ExitPng}
-            alt="x"
-            className="exit"
-            onClick={closeModal}
-          ></img>{" "}
-          <h1 className="post-title">{post.title}</h1>
-          <h1 className="post-price">${post.price}</h1>
-          <div className="post-content-left">
-            <Carousel images={post.images} />
-          </div>
-          <div className="post-content-right">
-            <Location location={post.location} size="s" />
-            <div className="post-description">
-              <p>{post.description} </p>
+      <div>
+        <Header />
+        <div className="flex w-full justify-center align-center">
+          <div className="my-8 block md:flex justify-center align-center w-full sm:w-11/12 bg-white ">
+            <div className=" w-full md:w-3/5">
+              <Carousel images={post.images} />
+            </div>
+            <div className="block mx-4 w-11/12 md:w-1/4 divide-y divide-gray-200">
+              <div className="flex">
+                <img
+                  src={context.user.profilePic.url}
+                  alt=""
+                  className="w-12 h-12 mr-2"
+                />
+                <div className="sellerInfo">
+                  <div>
+                    {" "}
+                    Sold By{" "}
+                    <a
+                      href={`/user/${context.user.id}`}
+                      className="hover:text-red-600"
+                    >
+                      {context.user.name}
+                    </a>
+                  </div>
+                  <Location location={context.user.location} />
+                </div>
+              </div>
+              <div className="block my-2">
+                <div className="text-2xl mt-3 space-y-2">
+                  <h1 className="font-semibold">{post.title}</h1>
+                  <h1 className="font-semibold">${post.price}</h1>
+                  <p className="text-xl">{post.description} </p>
+                </div>
+                <div className="block my-3 space-y-3">
+                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
+                    Message Sellar
+                  </button>
+                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
+                    {" "}
+                    Buy Now
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     );
   } else {
-    return "";
+    return "this is garbage";
   }
 };
 

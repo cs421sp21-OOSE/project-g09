@@ -32,7 +32,7 @@ const Header = (props) => {
                 }}
               >
                 <input
-                  className="w-full h-7 sm:h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4 text-gray-900"
+                  className="w-full h-7 sm:h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4 "
                   type="text"
                   placeholder="Search"
                   value={searchTerm}
@@ -42,7 +42,7 @@ const Header = (props) => {
                 />
                 <button
                   type="submit"
-                  className="absolute w-5 sm:w-8 z-50 origin-top-right absolute right-2 sm:right-4 top-1 focus:outline-none"
+                  className="absolute w-5 sm:w-8 z-50 origin-top-right absolute right-2 sm:right-4 top-1 focus:outline-none hover:text-red-600"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@ const Header = (props) => {
               {context.user ? (
                 <div className="flex">
                   <button
-                    className="text-xl sm:text-2xl font-bold mx-1 sm:mx-3 focus:outline-none"
+                    className="text-xl sm:text-2xl font-bold mx-1 sm:mx-3 focus:outline-none hover:text-red-600"
                     href="/"
                     onClick={() => history.push("/editor/create")}
                   >
@@ -146,7 +146,7 @@ const Header = (props) => {
                   </div>
                 </div>
               ) : (
-                <button className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none">
+                <button className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none hover:text-red-600">
                   {" "}
                   Login
                 </button>

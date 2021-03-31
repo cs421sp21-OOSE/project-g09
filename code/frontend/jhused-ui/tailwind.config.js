@@ -6,9 +6,6 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
-    fontFamily: {
-      sans: ['OpenSans','Open Sans', 'sans-serif', ...defaultTheme.fontFamily.sans]
-    },
     minHeight: {
       ...defaultTheme.minHeight,
       "20": "5rem",
