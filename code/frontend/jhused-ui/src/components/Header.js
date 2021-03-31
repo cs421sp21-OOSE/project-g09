@@ -65,7 +65,7 @@ const Header = (props) => {
                   <button
                     className="text-xl sm:text-2xl font-bold mx-1 sm:mx-3 focus:outline-none"
                     href="/"
-                    onClick={() => history.push("/editor-create")}
+                    onClick={() => history.push("/editor/create")}
                   >
                     Post
                   </button>
