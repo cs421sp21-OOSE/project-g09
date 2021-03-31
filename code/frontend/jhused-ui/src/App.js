@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import HomePage from "./components/HomePage";
 import { Switch, Route, useLocation } from "react-router-dom";
 import PostDetails from "./components/PostDetails";
@@ -9,7 +9,6 @@ import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/chat/ChatPage";
 import { UserContext } from "./state";
-import DropAndView from "./components/DropAndView";
 
 const App = () => {
   const location = useLocation();
