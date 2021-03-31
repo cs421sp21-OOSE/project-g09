@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { UserContext } from "./state";
 
 ReactDOM.render(
-  <BrowserRouter>
+  <BrowserRouter  forceRefresh={true}>
     <UserContext.Provider>
       <App />
     </UserContext.Provider>

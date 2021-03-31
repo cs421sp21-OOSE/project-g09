@@ -4,18 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import dao.PostDao;
+import dao.UserDao;
 import dao.jdbiDao.JdbiPostDao;
+import dao.jdbiDao.JdbiUserDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
 import model.Post;
+import model.User;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.sparkjava.CallbackRoute;
-import org.pac4j.sparkjava.LogoutRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
-import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
@@ -54,6 +55,10 @@ public class ApiServer {
 
   private static PostDao getPostDao() throws URISyntaxException {
     return new JdbiPostDao(Database.getJdbi());
+  }
+
+  private static UserDao getUserDao() throws URISyntaxException {
+    return new JdbiUserDao(Database.getJdbi());
   }
 
   /**
@@ -101,7 +106,7 @@ public class ApiServer {
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     PostDao postDao = getPostDao();
-
+    UserDao userDao = getUserDao();
     exception(ApiError.class, (ex, req, res) -> {
       // Handle the exception here
       Map<String, String> map = Map.of("status", ex.getStatus() + "",
@@ -238,7 +243,7 @@ public class ApiServer {
      */
     get("/jhu/login", (req, res) -> {
 //      throw new ApiError("Resource not found", 404);
-      res.redirect("https://jhused-ui.herokuapp.com/",301);
+      res.redirect("https://jhused-ui.herokuapp.com/", 301);
       return null;
     });
 
@@ -249,10 +254,67 @@ public class ApiServer {
     get("/callback", callback);
     post("/callback", callback);
 
-    get("/api/users", (req, res)->{
+    get("/api/users", (req, res) -> {
       final Map map = new HashMap();
-      map.put("profiles", getProfiles(req,res));
+      map.put("profiles", getProfiles(req, res));
       return gson.toJson(map);
+    });
+
+    get("/api/users/:userId", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        User user = userDao.read(userId);
+        if (user == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(user);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    post("/api/users", (req, res) -> {
+      try {
+        User user = gson.fromJson(req.body(), User.class);
+        userDao.create(user);
+        res.status(201);
+        return gson.toJson(user);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    put("/api/users/:userId", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        User user = gson.fromJson(req.body(), User.class);
+        if (user.getId() == null) {
+          throw new ApiError("Incomplete data", 500);
+        }
+        if (!user.getId().equals(userId)) {
+          throw new ApiError("userId does not match the resource identifier", 400);
+        }
+        user = userDao.update(user.getId(), user);
+        if (user == null) {
+          throw new ApiError("Resource not found", 404);
+        }
+        return gson.toJson(user);
+      } catch (DaoException | JsonSyntaxException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    delete("/api/users/:userId", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        User user = userDao.delete(userId);
+        if (user == null) {
+          throw new ApiError("Resource not found", 404);   // No matching user
+        }
+        return gson.toJson(user);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
     });
 
     after((req, res) -> res.type("application/json"));
