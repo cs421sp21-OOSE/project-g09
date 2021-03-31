@@ -11,6 +11,7 @@ import exceptions.ApiError;
 import exceptions.DaoException;
 import model.Post;
 import model.User;
+import org.jdbi.v3.core.Jdbi;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
@@ -29,6 +30,8 @@ import java.util.*;
 import static spark.Spark.*;
 
 public class ApiServer {
+
+
   // Admissible query parameters for sorting
   private static final Set<String> COLUMN_KEYS = Set.of("title", "price",
       "create_time", "update_time", "location");
@@ -36,6 +39,11 @@ public class ApiServer {
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
 
+  private static Jdbi jdbi;
+
+  private static void setJdbi() throws URISyntaxException {
+    jdbi = Database.getJdbi();
+  }
 
   private static int getHerokuAssignedPort() {
     // Heroku stores port number as an environment variable
@@ -48,11 +56,11 @@ public class ApiServer {
   }
 
   private static PostDao getPostDao() throws URISyntaxException {
-    return new JdbiPostDao(Database.getJdbi());
+    return new JdbiPostDao(jdbi);
   }
 
   private static UserDao getUserDao() throws URISyntaxException {
-    return new JdbiUserDao(Database.getJdbi());
+    return new JdbiUserDao(jdbi);
   }
 
   /**
@@ -69,17 +77,37 @@ public class ApiServer {
                 accessControlRequestHeaders);
           }
 
-          String accessControlRequestMethod = request
-              .headers("Access-Control-Request-Method");
-          if (accessControlRequestMethod != null) {
-            response.header("Access-Control-Allow-Methods",
-                accessControlRequestMethod);
+          String originRequestHeaders = request.headers("Origin");
+          if (originRequestHeaders != null) {
+            switch (originRequestHeaders) {
+              case "http://localhost:3000":
+              case "https://localhost:3000":
+              case "https://jhused-ui.herokuapp.com":
+              case "http://jhused-ui.herokuapp.com":
+                response.header("Access-Control-Allow-Origin", originRequestHeaders);
+                response.header("Vary", "Origin");
+                break;
+            }
           }
-
           return "OK";
         });
 
-    before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+    before(((request, response) -> {
+      String originRequestHeaders = request.headers("Origin");
+      if (originRequestHeaders != null) {
+        switch (originRequestHeaders) {
+          case "http://localhost:3000":
+          case "https://localhost:3000":
+          case "https://jhused-ui.herokuapp.com":
+          case "http://jhused-ui.herokuapp.com":
+            response.header("Access-Control-Allow-Origin", originRequestHeaders);
+            response.header("Vary", "Origin");
+            break;
+        }
+      }
+    }));
+    before((request, response) -> response.header("Access-Control-Allow-Headers", "Origin, Content-Type"));
+    before((request, response) -> response.header("Access-Control-Allow-Credentials", "true"));
   }
 
   /**
@@ -99,6 +127,7 @@ public class ApiServer {
     port(getHerokuAssignedPort());
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+    setJdbi();
     PostDao postDao = getPostDao();
     UserDao userDao = getUserDao();
     exception(ApiError.class, (ex, req, res) -> {
@@ -127,7 +156,7 @@ public class ApiServer {
 
         String keyword = req.queryParams("keyword"); // use keyword for search
         String sort = req.queryParams("sort");
-        System.out.println(sort);
+//        System.out.println(sort);
         Map<String, String> sortParams = new LinkedHashMap<>(); // need to preserve parameter order
         if (sort != null) {
           // Remove spaces and break into multiple sort queries
@@ -218,7 +247,6 @@ public class ApiServer {
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
     /**
-     * TODO Louie, check this out
      * Frontend should redirect user to backend, to this address
      * When the user tries to visit this address, security filter will
      * kick in and check if the user has already signed in.
@@ -236,23 +264,53 @@ public class ApiServer {
      * It seems that session stuff is handled by pac4j (the default callbacklogic)
      */
     get("/jhu/login", (req, res) -> {
-//      throw new ApiError("Resource not found", 404);
-//      res.redirect("https://jhused-ui.herokuapp.com/", 301);
-      res.redirect("http://localhost:3000/", 302);
+      List<CommonProfile> userProfiles = getProfiles(req, res);
+      try {
+        if (userProfiles.size() != 1) {
+          throw new ApiError("Got multiple user profiles, unexpected.", 500);
+        }
+        CommonProfile userProfile = userProfiles.get(0);
+        User user = userDao.read(userProfile.getId());
+        if (user == null) {
+          //TODO decide if create user in backend.
+//          user = new User(userProfile.getId(), userProfile.getUsername() == null ? "What's your name?" :
+//              userProfile.getUsername(), userProfile.getEmail() == null ? "What's your email?" :
+//              userProfile.getEmail(), "", "");
+//          if (userDao.create(user) == null) {
+//            throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
+//          }
+          // TODO set this to create new user page.
+          res.redirect("http://localhost:3000/user/settings/" + userProfile.getId(), 302);
+        } else {
+          res.redirect("http://localhost:3000/user/settings/" + userProfile.getId(), 302);
+        }
+      } catch (NullPointerException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
       return null;
     });
-
-    //TODO update this GET method and the callback to interact with DB
 
     final CallbackRoute callback = new CallbackRoute(config, null, true);
     //callback.setRenewSession(false);
     get("/callback", callback);
     post("/callback", callback);
 
-    get("/api/users", (req, res) -> {
+    /**
+     * returns the user's profile (it's a SSO thing, not the one in our database)
+     * returns empty [] if user is not signed in.
+     */
+    get("/api/userProfile", (req, res) -> {
       final Map map = new HashMap();
       map.put("profiles", getProfiles(req, res));
       return gson.toJson(map);
+    });
+
+    get("/api/users", (req, res) -> {
+      try {
+        return gson.toJson(userDao.readAll());
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
     });
 
     get("/api/users/:userId", (req, res) -> {

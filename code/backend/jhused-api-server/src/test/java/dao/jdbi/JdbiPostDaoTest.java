@@ -56,6 +56,15 @@ class JdbiPostDaoTest {
   }
 
   @Test
+  void loadTest() throws DaoException {
+    for (int i=0;i<1000;++i)
+    {
+      List<Post> posts = postDao.readAll();
+      assertIterableEquals(samples, posts);
+    }
+  }
+
+  @Test
   @DisplayName("create works for valid input")
   void createNewPost() throws DaoException {
     Post c1 = new Post(UUID.randomUUID().toString(), "001"+"1".repeat(33),
