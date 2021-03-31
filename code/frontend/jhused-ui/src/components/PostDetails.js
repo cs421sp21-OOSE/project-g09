@@ -4,7 +4,6 @@ import Carousel from "./Carousel";
 import axios from "../util/axios";
 import Header from "./Header";
 import { UserContext } from "../state";
-import "./PostDetails.css";
 import { useParams, useHistory } from "react-router-dom";
 
 // TODO: set up getting user info of post
@@ -48,11 +47,11 @@ const PostDetails = (props) => {
       <div>
         <Header />
         <div className="flex w-full justify-center align-center">
-          <div className="my-8 flex justify-center align-center w-11/12 bg-white ">
-            <div className="w-3/5">
+          <div className="my-8 block md:flex justify-center align-center w-full sm:w-11/12 bg-white ">
+            <div className=" w-full md:w-3/5">
               <Carousel images={post.images} />
             </div>
-            <div className="block mx-4 w-1/4 divide-y divide-gray-200">
+            <div className="block mx-4 w-11/12 md:w-1/4 divide-y divide-gray-200">
               <div className="flex">
                 <img
                   src={context.user.profilePic.url}
@@ -75,15 +74,15 @@ const PostDetails = (props) => {
               </div>
               <div className="block my-2">
                 <div className="text-2xl mt-3 space-y-2">
-                  <h1 className="font-bold">{post.title}</h1>
-                  <h1 className="font-bold">${post.price}</h1>
+                  <h1 className="font-semibold">{post.title}</h1>
+                  <h1 className="font-semibold">${post.price}</h1>
                   <p className="text-xl">{post.description} </p>
                 </div>
                 <div className="block my-3 space-y-3">
-                  <button className="w-full bg-red-600 text-2xl text-white py-1 focus:outline-none font-semibold">
+                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
                     Message Sellar
                   </button>
-                  <button className="w-full bg-red-600 text-2xl text-white py-1 focus:outline-none font-semibold">
+                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
                     {" "}
                     Buy Now
                   </button>
