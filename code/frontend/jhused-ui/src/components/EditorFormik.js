@@ -13,158 +13,6 @@ const errorMsgStyle = "block text-sm text-red-500";
 const btnStyle =
   "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
 
-// Text input with built-in error message
-const StdTextInput = ({ ...props }) => {
-  const [field, meta] = useField(props);
-  return (
-    <div className={props.className}>
-      <label className={fieldLabelStyle}>{props.label}</label>
-      <input
-        className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
-        type="text"
-        placeholder={props.placeholder}
-        {...field}
-      />
-      {meta.touched && meta.error ? (
-        <div className={errorMsgStyle}>{meta.error}</div>
-      ) : null}
-    </div>
-  );
-};
-
-// Number input component with built-in error message
-const StdNumInput = ({ ...props }) => {
-  const [field, meta] = useField(props);
-  return (
-    <div className={props.className}>
-      <label className={fieldLabelStyle}>{props.label}</label>
-      <div className="relative">
-        <div className="z-40 absolute flex inset-y-0 left-0 items-center pl-2">
-          <span className="text-gray-500 text-md">$</span>
-        </div>
-        <input
-          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
-          type="number"
-          placeholder={props.placeholder}
-          {...field}
-        />
-      </div>
-
-      {meta.touched && meta.error ? (
-        <div className={errorMsgStyle}>{meta.error}</div>
-      ) : null}
-    </div>
-  );
-};
-
-// Text area input with built-in error message
-const StdTextArea = ({ ...props }) => {
-  const [field, meta] = useField(props);
-  return (
-    <div className={props.className}>
-      <label className={fieldLabelStyle}>{props.label}</label>
-      <textarea
-        className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 w-full h-32 block"
-        placeholder={props.placeholder}
-        {...field}
-      />
-      {meta.touched && meta.error ? (
-        <div className={errorMsgStyle}>{meta.error}</div>
-      ) : null}
-    </div>
-  );
-};
-
-// Wrapper for react-select single select component to be compatible with Formik
-const SelectWraper = ({ ...props }) => {
-  const customStyles = {
-    singleValue: (provided, state) => ({
-      ...provided,
-      padding: 0,
-      margin: "0px 0px",
-    }),
-  };
-
-  return (
-    <div className={props.className}>
-      <label className={fieldLabelStyle}>{props.label}</label>
-      <Select
-        value={props.value.length === 0 ? null : props.options[props.value]}
-        placeholder={props.placeholder}
-        options={Object.values(props.options)}
-        onChange={(obj, actionMedia) => {
-          props.onChange(props.name, obj.value);
-        }}
-        onBlur={() => props.onBlur(props.name, true)}
-        styles={customStyles}
-      />
-      {props.touched && props.error ? (
-        <div className={errorMsgStyle}>{props.error}</div>
-      ) : null}
-    </div>
-  );
-};
-
-// Wrapper for react-select creatable component to be compatiable with Formik
-const CreatableWrapper = ({ ...props }) => {
-  const [tagInput, setTagInput] = useState(""); // State for tag input
-
-  const handleTagInputChange = (inputValue) => {
-    setTagInput(inputValue);
-  };
-
-  const handleTagKeyDown = (event) => {
-    if (!tagInput) return;
-    switch (event.key) {
-      case "Enter":
-        props.onChange(props.name, [
-          ...props.value,
-          { hashtag: removeHashtag(tagInput) },
-        ]);
-        setTagInput("");
-        event.preventDefault();
-        break;
-      default:
-    }
-  };
-
-  const handleCreatableChange = (values, actionMedia) => {
-    props.onChange(
-      props.name,
-      values.map((obj) => ({ hashtag: obj.value }))
-    );
-  };
-
-  // Helper method to remove the preceding hashtags
-  const removeHashtag = (val) => {
-    if (val.startsWith("#")) {
-      val = val.slice(1, val.length);
-    }
-    return val;
-  };
-
-  return (
-    <div className={props.className}>
-      <laebl className={fieldLabelStyle}>{props.label}</laebl>
-      <CreatableSelecet
-        components={{ DropdownIndicator: null }}
-        inputValue={tagInput || ""}
-        value={props.value.map((val) => ({
-          label: "#" + val.hashtag,
-          value: val.hashtag,
-        }))}
-        isClearable
-        isMulti
-        menuIsOpen={false}
-        placeholder="#GreatValue"
-        onInputChange={handleTagInputChange}
-        onKeyDown={handleTagKeyDown}
-        onChange={handleCreatableChange}
-      />
-    </div>
-  );
-};
-
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
 
@@ -385,3 +233,156 @@ const EditorFormik = (props) => {
 };
 
 export default EditorFormik;
+
+// Text input with built-in error message
+const StdTextInput = ({ ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <div className={props.className}>
+      <label className={fieldLabelStyle}>{props.label}</label>
+      <input
+        className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
+        type="text"
+        placeholder={props.placeholder}
+        {...field}
+      />
+      {meta.touched && meta.error ? (
+        <div className={errorMsgStyle}>{meta.error}</div>
+      ) : null}
+    </div>
+  );
+};
+
+// Number input component with built-in error message
+const StdNumInput = ({ ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <div className={props.className}>
+      <label className={fieldLabelStyle}>{props.label}</label>
+      <div className="relative">
+        <div className="z-40 absolute flex inset-y-0 left-0 items-center pl-2">
+          <span className="text-gray-500 text-md">$</span>
+        </div>
+        <input
+          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
+          type="number"
+          placeholder={props.placeholder}
+          {...field}
+        />
+      </div>
+
+      {meta.touched && meta.error ? (
+        <div className={errorMsgStyle}>{meta.error}</div>
+      ) : null}
+    </div>
+  );
+};
+
+// Text area input with built-in error message
+const StdTextArea = ({ ...props }) => {
+  const [field, meta] = useField(props);
+  return (
+    <div className={props.className}>
+      <label className={fieldLabelStyle}>{props.label}</label>
+      <textarea
+        className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 w-full h-32 block"
+        placeholder={props.placeholder}
+        {...field}
+      />
+      {meta.touched && meta.error ? (
+        <div className={errorMsgStyle}>{meta.error}</div>
+      ) : null}
+    </div>
+  );
+};
+
+// Wrapper for react-select single select component to be compatible with Formik
+const SelectWraper = ({ ...props }) => {
+  const customStyles = {
+    singleValue: (provided, state) => ({
+      ...provided,
+      padding: 0,
+      margin: "0px 0px",
+    }),
+  };
+
+  return (
+    <div className={props.className}>
+      <label className={fieldLabelStyle}>{props.label}</label>
+      <Select
+        value={props.value.length === 0 ? null : props.options[props.value]}
+        placeholder={props.placeholder}
+        options={Object.values(props.options)}
+        onChange={(obj, actionMedia) => {
+          props.onChange(props.name, obj.value);
+        }}
+        onBlur={() => props.onBlur(props.name, true)}
+        styles={customStyles}
+      />
+      {props.touched && props.error ? (
+        <div className={errorMsgStyle}>{props.error}</div>
+      ) : null}
+    </div>
+  );
+};
+
+// Wrapper for react-select creatable component to be compatiable with Formik
+const CreatableWrapper = ({ ...props }) => {
+  const [tagInput, setTagInput] = useState(""); // State for tag input
+
+  const handleTagInputChange = (inputValue) => {
+    setTagInput(inputValue);
+  };
+
+  const handleTagKeyDown = (event) => {
+    if (!tagInput) return;
+    switch (event.key) {
+      case "Enter":
+        props.onChange(props.name, [
+          ...props.value,
+          { hashtag: removeHashtag(tagInput) },
+        ]);
+        setTagInput("");
+        event.preventDefault();
+        break;
+      default:
+    }
+  };
+
+  const handleCreatableChange = (values, actionMedia) => {
+    props.onChange(
+      props.name,
+      values.map((obj) => ({ hashtag: obj.value }))
+    );
+  };
+
+  // Helper method to remove the preceding hashtags
+  const removeHashtag = (val) => {
+    if (val.startsWith("#")) {
+      val = val.slice(1, val.length);
+    }
+    return val;
+  };
+
+  return (
+    <div className={props.className}>
+      <laebl className={fieldLabelStyle}>{props.label}</laebl>
+      <CreatableSelecet
+        components={{ DropdownIndicator: null }}
+        inputValue={tagInput || ""}
+        value={props.value.map((val) => ({
+          label: "#" + val.hashtag,
+          value: val.hashtag,
+        }))}
+        isClearable
+        isMulti
+        menuIsOpen={false}
+        placeholder="#GreatValue"
+        onInputChange={handleTagInputChange}
+        onKeyDown={handleTagKeyDown}
+        onChange={handleCreatableChange}
+      />
+    </div>
+  );
+};
+
