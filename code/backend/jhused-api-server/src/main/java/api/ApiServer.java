@@ -21,6 +21,7 @@ import org.pac4j.sparkjava.SparkWebContext;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
+import util.SSO.JHUSSOConfigFactory;
 import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
 
@@ -235,7 +236,8 @@ public class ApiServer {
     });
 
     //SSO filter
-    final Config config = new OktaSSOConfigFactory().build();
+//    final Config config = new OktaSSOConfigFactory().build();
+    final Config config = new JHUSSOConfigFactory().build();
 
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
