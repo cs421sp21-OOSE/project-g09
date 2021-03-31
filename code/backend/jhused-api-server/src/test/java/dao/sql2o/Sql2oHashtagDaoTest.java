@@ -10,7 +10,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sql2o.Sql2o;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -35,7 +34,7 @@ public class Sql2oHashtagDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSamplePosts(jdbi, samplePosts);
     hashtagDao = new Sql2oHashtagDao(Database.getSql2o());
   }
 

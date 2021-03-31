@@ -2,16 +2,15 @@ package dao.jdbi;
 
 import dao.ImageDao;
 import dao.jdbiDao.JdbiImageDao;
-import dao.sql2oDao.Sql2oImageDao;
 import exceptions.DaoException;
 import model.Image;
 import model.Post;
+import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sql2o.Sql2o;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -23,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbiImageDaoTest {
   private static final List<Post> samplePosts = DataStore.samplePosts();
+  private static final List<User> sampleUsers = DataStore.sampleUsers();
   private static Jdbi jdbi;
   private ImageDao imageDao;
 
@@ -36,7 +36,8 @@ public class JdbiImageDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSampleUsers(jdbi, sampleUsers);
+    Database.insertSamplePosts(jdbi, samplePosts);
     imageDao = new JdbiImageDao(jdbi);
   }
 
