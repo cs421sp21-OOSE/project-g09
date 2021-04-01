@@ -39,9 +39,18 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
         }
     }
 
+    //TODO need help here
     @Override
     public List<Post> readAllWishlistEntries(String userId) throws DaoException {
-        return null;
+        String sql = "SELECT FROM wishlist_post WHERE wishlist_post.user_id = :userId;";
+        try {
+            return jdbi.inTransaction(handle -> new ArrayList<>(handle.createQuery(sql)
+                    .bind("userId", userId)
+                    .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
+                    .values()));
+        } catch (StatementException | IllegalStateException ex) {
+            throw new DaoException("Unable to read a post for userId" + userId, ex);
+        }
     }
 
     @Override
