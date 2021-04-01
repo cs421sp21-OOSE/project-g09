@@ -17,29 +17,34 @@ public class JdbiUserDao implements UserDao {
   private final Jdbi jdbi;
   private final PostDao postDao;
   private final ResultSetLinkedHashMapAccumulatorProvider<User> userAccumulator;
-  private final String SELECT_USER_GIVEN_ID =
+  private final String SELECT_USER_BASIC =
       "SElECT jhused_user.*,"
-      + "post.id as posts_id, "
-      + "post.user_id as posts_user_id, "
-      + "post.title as posts_title, "
-      + "post.price as posts_price, "
-      + "post.sale_state as posts_sale_state, "
-      + "post.description as posts_description, "
-      + "post.category as posts_category, "
-      + "post.location as posts_location, "
-      + "post.create_time as posts_create_time, "
-      + "post.update_time as posts_update_time, "
-      + "image.id as posts_images_id, "
-      + "image.url as posts_images_url,"
-      + "image.post_id as posts_images_post_id, "
-      + "hashtag.id as posts_hashtags_id, "
-      + "hashtag.hashtag as posts_hashtags_hashtag "
-      + "FROM jhused_user "
-      + "LEFT JOIN post ON jhused_user.id = post.user_id "
-      + "LEFT JOIN image ON image.post_id = post.id "
-      + "LEFT JOIN post_hashtag ON post_hashtag.post_id = post.id "
-      + "LEFT JOIN hashtag ON hashtag.id = post_hashtag.hashtag_id "
+          + "post.id as posts_id, "
+          + "post.user_id as posts_user_id, "
+          + "post.title as posts_title, "
+          + "post.price as posts_price, "
+          + "post.sale_state as posts_sale_state, "
+          + "post.description as posts_description, "
+          + "post.category as posts_category, "
+          + "post.location as posts_location, "
+          + "post.create_time as posts_create_time, "
+          + "post.update_time as posts_update_time, "
+          + "image.id as posts_images_id, "
+          + "image.url as posts_images_url,"
+          + "image.post_id as posts_images_post_id, "
+          + "hashtag.id as posts_hashtags_id, "
+          + "hashtag.hashtag as posts_hashtags_hashtag "
+          + "FROM jhused_user "
+          + "LEFT JOIN post ON jhused_user.id = post.user_id "
+          + "LEFT JOIN image ON image.post_id = post.id "
+          + "LEFT JOIN post_hashtag ON post_hashtag.post_id = post.id "
+          + "LEFT JOIN hashtag ON hashtag.id = post_hashtag.hashtag_id ";
+
+  private final String SELECT_USER_GIVEN_ID = SELECT_USER_BASIC
       + "WHERE jhused_user.id = :userId;";
+
+  private final String SELECT_ALL_USERS = SELECT_USER_BASIC;
+
   private final String defaultProfileImage = "https://i.redd.it/v2h2px8w5piz.png";
 
   public JdbiUserDao(Jdbi jdbi) {
@@ -68,7 +73,8 @@ public class JdbiUserDao implements UserDao {
         }
         return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
             .reduceResultSet(new LinkedHashMap<>(),
-                userAccumulator).values()).get(0);});
+                userAccumulator).values()).get(0);
+      });
     } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
     }
@@ -157,6 +163,16 @@ public class JdbiUserDao implements UserDao {
       });
     } catch (StatementException | IllegalStateException ex) { //otherwise, fail
       throw new DaoException("Unable to delete this user!", ex);
+    }
+  }
+
+  @Override
+  public List<User> readAll() throws DaoException {
+    try {
+      return jdbi.inTransaction(handle -> (List<User>) new ArrayList<User>(handle.createQuery(SELECT_ALL_USERS).reduceResultSet(new LinkedHashMap<>()
+          , userAccumulator).values()));
+    } catch (StatementException | IllegalStateException ex) {
+      throw new DaoException("Unable to read all users", ex);
     }
   }
 }

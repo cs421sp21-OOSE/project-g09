@@ -101,10 +101,10 @@ public final class Database {
   public static void createUsersTableWithSampleData(Jdbi jdbi, List<User> samples) {
     String sql = "CREATE TABLE IF NOT EXISTS jhused_user("
         + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
-        + "name VARCHAR(15) NOT NULL,"
-        + "email VARCHAR(30) NOT NULL UNIQUE ,"
+        + "name VARCHAR(100) NOT NULL,"
+        + "email VARCHAR(100) NOT NULL,"
         + "profile_image VARCHAR(200),"
-        + "location VARCHAR(100)"
+        + "location VARCHAR(500)"
         + ");";
     jdbi.useTransaction(handle -> {
       handle.execute(sql);
