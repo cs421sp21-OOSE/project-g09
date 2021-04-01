@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'java'
     id "io.freefair.lombok" version "4.1.6"
 }
@@ -9,7 +10,7 @@ version '0.0.1'
 repositories {
     mavenCentral()
     // comment this line and line 42, the jar works
-//    maven { url "https://repository.mulesoft.org/nexus/content/repositories/public/" }
+    maven { url "https://repository.mulesoft.org/nexus/content/repositories/public/" }
 }
 
 dependencies {
@@ -37,9 +38,10 @@ dependencies {
     implementation 'org.pac4j:pac4j-core:4.0.0'
     implementation 'org.pac4j:pac4j-http:4.0.0'
     implementation 'org.pac4j:spark-pac4j:4.0.0'
+    implementation 'org.pac4j:pac4j-saml-opensamlv3:4.0.0'
 
     // comment this line and line 12, the jar works
-//    implementation 'org.pac4j:pac4j-saml:4.0.0'
+    implementation 'org.pac4j:pac4j-saml:4.0.0'
 
     //JavaSpark
     implementation 'com.sparkjava:spark-core:2.9.3'
@@ -64,11 +66,12 @@ jar {
     manifest {
         attributes('Main-Class': 'api.ApiServer')
     }
-    from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+//    from {
+//        configurations.externalLibs.collect { it.isDirectory() ? it : zipTree(it) }
+////        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+//    }
 }
 
+tasks.build.dependsOn tasks.shadowJar
 task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
