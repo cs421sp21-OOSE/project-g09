@@ -74,8 +74,6 @@ shadowJar {
     mergeServiceFiles()
 }
 
-//tasks.build.dependsOn tasks.shadowJar
-//task stage(dependsOn: ['build', 'clean'])
-task stage(dependsOn: ['tasks.shadowJar', 'clean'])
-//build.mustRunAfter clean
-tasks.shadowJar.mustRunAfter clean
+tasks.assemble.dependsOn tasks.shadowJar
+task stage(dependsOn: ['build', 'clean'])
+build.mustRunAfter clean
