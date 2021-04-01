@@ -37,7 +37,7 @@ public class Sql2oPostHashtagDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSamplePosts(jdbi, samplePosts);
     posthashtagDao = new Sql2oPostHashtagDao(Database.getSql2o());
   }
 

@@ -1,7 +1,6 @@
 package dao.sql2o;
 
 import dao.PostDao;
-import dao.sql2oDao.Sql2oImageDao;
 import dao.sql2oDao.Sql2oPostDao;
 import exceptions.DaoException;
 import model.Category;
@@ -10,11 +9,9 @@ import model.SaleState;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 import org.sql2o.Sql2o;
-import spark.utils.Assert;
 import util.database.DataStore;
 import util.database.Database;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.containsString;
 
 import java.net.URISyntaxException;
 import java.util.LinkedHashMap;
@@ -46,7 +43,7 @@ class Sql2oPostDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samples);
+    Database.insertSamplePosts(jdbi, samples);
     postDao = new Sql2oPostDao(Database.getSql2o());
   }
 

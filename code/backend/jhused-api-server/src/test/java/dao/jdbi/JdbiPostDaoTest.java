@@ -2,14 +2,13 @@ package dao.jdbi;
 
 import dao.PostDao;
 import dao.jdbiDao.JdbiPostDao;
-import dao.sql2oDao.Sql2oPostDao;
 import exceptions.DaoException;
 import model.Category;
 import model.Post;
 import model.SaleState;
+import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
-import org.sql2o.Sql2o;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -23,12 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JdbiPostDaoTest {
   private static List<Post> samples;
+  private static List<User> sampleUsers;
   private PostDao postDao;
   private static Jdbi jdbi;
 
   @BeforeAll
   static void setSamplePosts() {
     samples = DataStore.samplePosts();
+    sampleUsers = DataStore.sampleUsers();
   }
 
   @BeforeAll
@@ -41,7 +42,8 @@ class JdbiPostDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samples);
+    Database.insertSampleUsers(jdbi, sampleUsers);
+    Database.insertSamplePosts(jdbi, samples);
     postDao = new JdbiPostDao(jdbi);
   }
 
@@ -255,13 +257,13 @@ class JdbiPostDaoTest {
   @DisplayName("updating a post works")
   void updateWorks() {
     //create a post to send to the update method.
-    Post ogPost = new Post(samples.get(0).getId(), "191"+"1".repeat(33),
+    Post ogPost = new Post(samples.get(0).getId(), "001"+"1".repeat(33),
         "Dummy furnitulre", 31.3, SaleState.SALE,
-        "Description ofa dummy furniture",
+        "**Description ofa dummy furnitusdfsre",
         DataStore.sampleImages(Category.FURNITURE),
         DataStore.sampleHashtags(Category.FURNITURE),
-        Category.FURNITURE,
-        "Location of dummy furniture"
+        Category.CAR,
+        "Location ossf dummy furniture"
     );
 
     //get the post back, give the first item in samples uuid.

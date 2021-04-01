@@ -102,6 +102,7 @@ public class JdbiUserDao implements UserDao {
       if (user.getPosts() == null) {
         user.setPosts(new ArrayList<>());
       }
+
       return jdbi.inTransaction(handle -> {
         User updatedUser = handle.createQuery(sql)
             .bind("userId", userId)
@@ -129,7 +130,7 @@ public class JdbiUserDao implements UserDao {
             postDao.create(post);
           }
         }
-        return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
+        return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", userId)
             .reduceResultSet(new LinkedHashMap<>(),
                 userAccumulator).values()).get(0);
       });

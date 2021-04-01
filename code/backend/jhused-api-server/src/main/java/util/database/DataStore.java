@@ -44,6 +44,18 @@ public final class DataStore {
     return userPosts;
   }
 
+  public static User getNewUserForTest() {
+    Post postNew = new Post("9".repeat(36), "008"+"1".repeat(33),
+    "2008 Toyota car", 7100D, SaleState.SOLD,
+    "It still works",
+    DataStore.sampleImages(Category.CAR),
+    DataStore.sampleHashtags(Category.CAR),
+    Category.CAR,
+    "Towson");
+    User userNew = new User("008"+"1".repeat(33),  "Ed", "abc8@yahoo.com",  "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", new ArrayList<>(Arrays.asList(postNew)));
+    return userNew;
+  }
+
   /**
    * NEED REFACTOR
    * Create a list of sample CS courses.

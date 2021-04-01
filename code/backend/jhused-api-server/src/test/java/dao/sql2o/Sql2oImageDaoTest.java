@@ -37,7 +37,7 @@ public class Sql2oImageDaoTest {
   @BeforeEach
   void injectDependency() throws URISyntaxException {
     Database.truncateTables(jdbi);
-    Database.insertSampleData(jdbi, samplePosts);
+    Database.insertSamplePosts(jdbi, samplePosts);
     imageDao = new Sql2oImageDao(Database.getSql2o());
   }
 
