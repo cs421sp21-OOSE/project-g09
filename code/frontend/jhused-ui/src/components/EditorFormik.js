@@ -100,6 +100,28 @@ const EditorFormik = (props) => {
     setSubmitting(false);
   };
 
+  const schema = Yup.object({
+    title: Yup.string()
+      .max(60, "Must be 60 characters or less")
+      .required("Please give it a title"),
+    price: Yup.number()
+      .min(0, "Cannot be smaller than zero")
+      .required("Please give it a price"),
+    location: Yup.string()
+      .max(15, "Must be 30 characters or less")
+      .required("Please provide a location"),
+    category: Yup.string()
+      .oneOf(
+        ["FURNITURE", "CAR", "DESK", "TV", "OTHER"],
+        "Invalid a category"
+      )
+      .required("Please select a category"),
+    description: Yup.string().required(
+      "Please provide a description"
+    ),
+    images: Yup.array().min(1, "Please upload least one image"),
+  });
+
   return (
     <div>
       <Header />
@@ -108,27 +130,7 @@ const EditorFormik = (props) => {
           <Formik
             enableReinitialize={true}
             initialValues={initialPostData}
-            validationSchema={Yup.object({
-              title: Yup.string()
-                .max(60, "Must be 60 characters or less")
-                .required("Please give it a title"),
-              price: Yup.number()
-                .min(0, "Cannot be smaller than zero")
-                .required("Please give it a price"),
-              location: Yup.string()
-                .max(15, "Must be 30 characters or less")
-                .required("Please provide a location"),
-              category: Yup.string()
-                .oneOf(
-                  ["FURNITURE", "CAR", "DESK", "TV", "OTHER"],
-                  "Invalid a category"
-                )
-                .required("Please select a category"),
-              description: Yup.string().required(
-                "Please provide a description"
-              ),
-              images: Yup.array().min(1, "Please upload least one image"),
-            })}
+            validationSchema={schema}
             onSubmit={handleSubmit}
           >
             {(formik) => (
@@ -222,9 +224,6 @@ const EditorFormik = (props) => {
                       {props.mode === "create" ? "Submit" : "Update"}
                     </button>
                   </div>
-                  
-
-
                 </div>
               </form>
             )}

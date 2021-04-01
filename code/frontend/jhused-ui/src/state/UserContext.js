@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import Icon from "../images/icon.png";
+import Icon from "../images/avatars/retsuko-1175534-1280x0.jpeg";
 
 // not totally accurate - just a stand in for now
 const fakeUser = {

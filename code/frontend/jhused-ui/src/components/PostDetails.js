@@ -56,7 +56,7 @@ const PostDetails = (props) => {
                 <img
                   src={context.user.profilePic.url}
                   alt=""
-                  className="w-12 h-12 mr-2"
+                  className="w-12 h-12 mr-2 overflow-hidden object-cover"
                 />
                 <div className="sellerInfo">
                   <div>
