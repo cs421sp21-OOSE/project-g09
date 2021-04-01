@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ServerTest {
 
   private static final List<Post> samplePosts = DataStore.samplePosts();
-  private final static String BASE_URL = "http://localhost:4567";
+  private final static String BASE_URL = "http://localhost:8080";
   private static final Gson gson = new Gson();
   private static Jdbi jdbi;
 

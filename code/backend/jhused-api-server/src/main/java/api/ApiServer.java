@@ -20,6 +20,7 @@ import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
 import spark.Request;
 import spark.Response;
+import spark.Route;
 import spark.Spark;
 import util.SSO.JHUSSOConfigFactory;
 import util.SSO.OktaSSOConfigFactory;
@@ -54,7 +55,7 @@ public class ApiServer {
       return Integer.parseInt(herokuPort);
     }
     //return default port if heroku-port isn't set (i.e. on localhost)
-    return 4567;
+    return 8080;
   }
 
   private static PostDao getPostDao() throws URISyntaxException {
@@ -69,7 +70,7 @@ public class ApiServer {
    * set access control request headers
    */
   public static void setAccessControlRequestHeaders() {
-    options("/*",
+    Route setAccess =
         (request, response) -> {
 
           String accessControlRequestHeaders = request
@@ -92,23 +93,10 @@ public class ApiServer {
             }
           }
           return "OK";
-        });
+        };
+    options("/*", setAccess);
 
-    before(((request, response) -> {
-      String originRequestHeaders = request.headers("Origin");
-      if (originRequestHeaders != null) {
-        switch (originRequestHeaders) {
-          case "http://localhost:3000":
-          case "https://localhost:3000":
-          case "https://jhused-ui.herokuapp.com":
-          case "http://jhused-ui.herokuapp.com":
-            response.header("Access-Control-Allow-Origin", originRequestHeaders);
-            response.header("Vary", "Origin");
-            break;
-        }
-      }
-    }));
-    before((request, response) -> response.header("Access-Control-Allow-Headers", "Origin, Content-Type"));
+    before(setAccess::handle);
     before((request, response) -> response.header("Access-Control-Allow-Credentials", "true"));
   }
 
@@ -126,6 +114,7 @@ public class ApiServer {
     setJdbi();
     PostDao postDao = getPostDao();
     UserDao userDao = getUserDao();
+
     exception(ApiError.class, (ex, req, res) -> {
       // Handle the exception here
       Map<String, String> map = Map.of("status", ex.getStatus() + "",
@@ -152,7 +141,6 @@ public class ApiServer {
 
         String keyword = req.queryParams("keyword"); // use keyword for search
         String sort = req.queryParams("sort");
-//        System.out.println(sort);
         Map<String, String> sortParams = new LinkedHashMap<>(); // need to preserve parameter order
         if (sort != null) {
           // Remove spaces and break into multiple sort queries
@@ -236,8 +224,8 @@ public class ApiServer {
     });
 
     //SSO filter
-//    final Config config = new OktaSSOConfigFactory().build();
-    final Config config = new JHUSSOConfigFactory().build();
+    final Config config = new OktaSSOConfigFactory().build();
+//    final Config config = new JHUSSOConfigFactory().build();
 
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
@@ -268,12 +256,12 @@ public class ApiServer {
         User user = userDao.read(userProfile.getId());
         if (user == null) {
           //TODO decide if create user in backend.
-//          user = new User(userProfile.getId(), userProfile.getUsername() == null ? "What's your name?" :
-//              userProfile.getUsername(), userProfile.getEmail() == null ? "What's your email?" :
-//              userProfile.getEmail(), "", "");
-//          if (userDao.create(user) == null) {
-//            throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
-//          }
+          user = new User(userProfile.getId(), userProfile.getUsername() == null ? "" :
+              userProfile.getUsername(), userProfile.getEmail() == null ? "" :
+              userProfile.getEmail(), "", "");
+          if (userDao.create(user) == null) {
+            throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
+          }
           // TODO set this to create new user page.
           res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getId(), 302);
         } else {
