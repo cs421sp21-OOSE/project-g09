@@ -1,4 +1,5 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useContext } from "react";
+import { UserContext } from "../state";
 import axios from "axios";
 import { Formik, useField } from "formik";
 import * as Yup from "yup";
@@ -16,10 +17,12 @@ const btnStyle =
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
 
+  const userContext = useContext(UserContext.Context);
+
   const { postID } = useParams(); // for loading post id from url address
   const [initialPostData, setInitialPostData] = useState({
     id: "",
-    userId: "",
+    userId: userContext.user.id,
     title: "",
     price: "",
     saleState: "SALE",
