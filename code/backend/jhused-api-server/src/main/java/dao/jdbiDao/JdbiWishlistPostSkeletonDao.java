@@ -16,11 +16,13 @@ import java.util.List;
 
 public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
     private final Jdbi jdbi;
-    private final PostDao postDao;
+    private final JdbiPostDao postDao;
+    private final ResultSetLinkedHashMapAccumulatorProvider<WishlistPostSkeleton> wishListAccumulator;
 
     public JdbiWishlistPostSkeletonDao(Jdbi jdbi) {
         this.jdbi = jdbi;
-        this.postDao = new JdbiPostDao(jdbi);
+        postDao = new JdbiPostDao(jdbi);
+        wishListAccumulator = new ResultSetLinkedHashMapAccumulatorProvider<>(WishlistPostSkeleton.class);
     }
 
     @Override
@@ -39,19 +41,34 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
         }
     }
 
-    //TODO need help here
     @Override
     public List<Post> readAllWishlistEntries(String userId) throws DaoException {
-        String sql = "SELECT FROM wishlist_post WHERE wishlist_post.user_id = :userId;";
-        try {
-            return jdbi.inTransaction(handle -> new ArrayList<>(handle.createQuery(sql)
-                    .bind("userId", userId)
-                    .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
-                    .values()));
-        } catch (StatementException | IllegalStateException ex) {
-            throw new DaoException("Unable to read a post for userId" + userId, ex);
+        List<WishlistPostSkeleton> wishlistSkeletonEntries = readAll(userId);
+
+        List<Post> wishlistPosts = new ArrayList<>();
+
+        for(WishlistPostSkeleton wishlistSkeletonEntry : wishlistSkeletonEntries) {
+            wishlistPosts.add(postDao.read(wishlistSkeletonEntry.getId()));
         }
+        return wishlistPosts;
     }
+
+    private List<WishlistPostSkeleton> readAll(String userId) throws DaoException {
+        String sql = "SELECT FROM wishlist_post WHERE wishlist_post.user_id = :userId;";
+
+        try {
+            return jdbi.inTransaction(handle ->
+                    new ArrayList<>(handle.createQuery(sql)
+                            .bind("user_id", userId)
+                            .reduceResultSet(new LinkedHashMap<>(), wishListAccumulator)
+                            .values()));
+        } catch (StatementException | IllegalStateException ex) {
+            throw new DaoException("Unable to read wishlist for userId " + userId, ex);
+        }
+
+    }
+
+
 
     @Override
     public WishlistPostSkeleton deleteWishlistEntry(String postId, String userId) throws DaoException {
