@@ -87,9 +87,9 @@ public class ApiServer {
               case "https://localhost:3000":
               case "https://jhused-ui.herokuapp.com":
               case "http://jhused-ui.herokuapp.com":
+              default:
                 response.header("Access-Control-Allow-Origin", originRequestHeaders);
                 response.header("Vary", "Origin");
-                break;
             }
           }
           return "OK";
