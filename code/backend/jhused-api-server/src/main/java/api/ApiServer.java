@@ -274,6 +274,20 @@ public class ApiServer {
       }
     });
 
+    //add the specified post to the specified user's wishlist.
+    put("/api/users/:userId/wishlist/all", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        String postId = req.params("postId");
+        Post addedWishlistEntry = getWishlistSkeletonDao().createWishListEntry(postId, userId);
+        if (addedWishlistEntry == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(addedWishlistEntry);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
 
 
 
