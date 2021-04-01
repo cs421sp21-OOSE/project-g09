@@ -27,7 +27,6 @@ public class JHUSSOConfigFactory implements ConfigFactory {
 
     cfg.setMaximumAuthenticationLifetime(3600);
     cfg.setServiceProviderEntityId("https://jhused-api-server.herokuapp.com/callback?client_name=SAML2Client");
-    cfg.setServiceProviderMetadataPath("sp-metadata.xml");
     cfg.setServiceProviderMetadataPath("sp-metadata-jhu.xml");
     final SAML2Client saml2Client = new SAML2Client(cfg);
 
