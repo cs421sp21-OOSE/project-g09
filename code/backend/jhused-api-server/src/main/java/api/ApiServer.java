@@ -296,7 +296,7 @@ public class ApiServer {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
-        Post deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
+        WishlistPostSkeleton deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
         if (deletedWishlistEntry == null) {
           throw new ApiError("Resource not found", 404); // Bad request
         }

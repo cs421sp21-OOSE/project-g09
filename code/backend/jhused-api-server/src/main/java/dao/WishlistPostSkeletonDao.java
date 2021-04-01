@@ -44,6 +44,6 @@ public interface WishlistPostSkeletonDao {
      * @return The Post object deleted from the data source.
      * @throws DaoException A generic exception for CRUD operations.
      */
-    Post deleteWishlistEntry(String postId, String userId) throws DaoException;
+    WishlistPostSkeleton deleteWishlistEntry(String postId, String userId) throws DaoException;
 
 }

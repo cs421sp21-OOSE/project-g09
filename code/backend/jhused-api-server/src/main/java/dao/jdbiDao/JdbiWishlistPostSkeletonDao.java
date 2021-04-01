@@ -54,7 +54,13 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
     }
 
     @Override
-    public Post deleteWishlistEntry(String postId, String userId) throws DaoException {
-        return null;
+    public WishlistPostSkeleton deleteWishlistEntry(String postId, String userId) throws DaoException {
+        String deleteWishlistEntrySql = "WITH deleted AS (DELETE FROM wishlist_post WHERE id=:id AND user_id=:user_id RETURNING *) SELECT FROM deleted;";
+
+        try {
+            return jdbi.inTransaction(handle -> handle.createQuery(deleteWishlistEntrySql).bind("id", postId).bind("user_id", userId).mapToBean(WishlistPostSkeleton.class).findOne().orElse(null));
+        } catch (StatementException | IllegalStateException | NullPointerException ex) {
+            throw new DaoException(ex.getMessage(), ex);
+        }
     }
 }
