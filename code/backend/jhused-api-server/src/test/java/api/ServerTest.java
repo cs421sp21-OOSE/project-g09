@@ -8,6 +8,7 @@ import kong.unirest.UnirestException;
 import model.Category;
 import model.Post;
 import model.SaleState;
+import model.User;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import util.database.DataStore;
 import util.database.Database;
 
+import javax.xml.crypto.Data;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ServerTest {
 
   private static final List<Post> samplePosts = DataStore.samplePosts();
+  private static final List<User> sampleUsers = DataStore.sampleUsers();
   private final static String BASE_URL = "http://localhost:8080";
   private static final Gson gson = new Gson();
   private static Jdbi jdbi;
@@ -43,6 +46,7 @@ class ServerTest {
   void injectDependency() throws URISyntaxException {
     Database.USE_TEST_DATABASE = true; // make sure using test dataset
     Database.truncateTables(jdbi);
+    Database.insertSampleUsers(jdbi, sampleUsers);
     Database.insertSamplePosts(jdbi, samplePosts);
   }
 
@@ -140,7 +144,7 @@ class ServerTest {
   @Test
   public void postPostWorks() throws UnirestException {
     // This test will break if this post is already in database
-    Post post = new Post(UUID.randomUUID().toString(), "001",
+    Post post = new Post(UUID.randomUUID().toString(), "004"+"1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -184,7 +188,7 @@ class ServerTest {
   @Test
   public void putPostWorks() throws UnirestException {
     // This test will break if "0 " is not in the database
-    Post post = new Post("0".repeat(36), "001",
+    Post post = new Post("0".repeat(36), "003"+"1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
