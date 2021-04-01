@@ -47,6 +47,7 @@ public final class Database {
     drop(jdbi);
     createUsersTableWithSampleData(jdbi, DataStore.sampleUsers());
     createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
+    createWishlistPostsTableWithSampleData(jdbi, DataStore.sampleWishlistPosts());
   }
 
   /**
@@ -94,6 +95,16 @@ public final class Database {
     return Jdbi.create(new HikariDataSource(hc)).installPlugin(new PostgresPlugin());
   }
 
+  public static void createWishlistPostsTableWithSampleData(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
+    String sql = "CREATE TABLE IF NOT EXISTS wishlist_post("
+            + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
+            + "user_id VARCHAR(50) NOT NULL"
+            + ");";
+    jdbi.useTransaction(handle -> {
+      handle.execute(sql);
+    });
+  }
+
   /**
    * Create user table schema and add sample users to it.
    *
@@ -116,6 +127,7 @@ public final class Database {
 
   public static void drop(Jdbi jdbi) {
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS wishlist_post;");
       handle.execute("DROP TABLE IF EXISTS post_hashtag;");
       handle.execute("DROP TABLE IF EXISTS image;");
       handle.execute("DROP TABLE IF EXISTS hashtag;");
