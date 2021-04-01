@@ -78,13 +78,13 @@ As a user, I want to make a wish list, so that I can show people what things I a
 
 # Tasks
 - [ ] Implement wish list feature (Louie)
-- [ ] Migrate to JDBI3 (Bohua)
+- [X] Migrate to JDBI3 (Bohua)
 - [ ] Login Backend
-  - [ ]  Database Design, user table, user dao, user api (Qiao)
-    - [ ]   Setup User table (JHID, image_url, preferred name, location, preferred email)
-    - [ ]   Setup User model（listOfPosts）
-    - [ ]   User dao
-    - [ ]   CRUD api for User
+  - [X]  Database Design, user table, user dao, user api (Qiao)
+    - [X]   Setup User table (JHID, image_url, preferred name, location, preferred email)
+    - [X]   Setup User model（listOfPosts）
+    - [X]   User dao
+    - [X]   CRUD api for User
     - [ ]   Email user when post get sold api (nice to have)
   - [ ] SSO apis & functions (Bohua, Louie)
     - [ ] Handle redirect from frontend (when user click account button but not yet login) to redirect to SSO api
