@@ -69,7 +69,6 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
     }
 
 
-
     @Override
     public WishlistPostSkeleton deleteWishlistEntry(String postId, String userId) throws DaoException {
         String deleteWishlistEntrySql = "WITH deleted AS (DELETE FROM wishlist_post WHERE id=:id AND user_id=:user_id RETURNING *) SELECT FROM deleted;";
