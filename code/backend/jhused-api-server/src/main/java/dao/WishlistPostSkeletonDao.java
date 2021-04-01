@@ -15,7 +15,7 @@ public interface WishlistPostSkeletonDao {
      * @return The the post that has been "wish-listed"
      * @throws DaoException A generic exception for CRUD operations.
      */
-    Post createWishlistEntry(WishlistPostSkeleton wishlistPostSkeleton) throws DaoException;
+    //Post createWishlistEntry(WishlistPostSkeleton wishlistPostSkeleton) throws DaoException;
 
     /**
      * Create a an entry in wishlist_posts from the postId and the userId
@@ -25,7 +25,7 @@ public interface WishlistPostSkeletonDao {
      * @return The Post object created.
      * @throws DaoException A generic exception for CRUD operations.
      */
-    Post createWishListEntry(String postId, String userId) throws DaoException;
+    WishlistPostSkeleton createWishListEntry(String postId, String userId) throws DaoException;
 
     /**
      * Read all Wishlist entries from the database with userId.
