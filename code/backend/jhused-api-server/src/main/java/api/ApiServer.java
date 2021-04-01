@@ -224,8 +224,8 @@ public class ApiServer {
     });
 
     //SSO filter
-    final Config config = new OktaSSOConfigFactory().build();
-//    final Config config = new JHUSSOConfigFactory().build();
+//    final Config config = new OktaSSOConfigFactory().build();
+    final Config config = new JHUSSOConfigFactory().build();
 
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
