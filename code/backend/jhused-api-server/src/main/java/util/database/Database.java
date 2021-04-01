@@ -103,6 +103,19 @@ public final class Database {
     jdbi.useTransaction(handle -> {
       handle.execute(sql);
     });
+    insertSampleWishlistPosts(jdbi, samples);
+  }
+
+  public static void insertSampleWishlistPosts(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
+    String sql = "INSERT INTO wishlist_post(id, user_id) "
+            + "VALUES(:id, :user_id);";
+    jdbi.useTransaction(handle -> {
+      PreparedBatch batch = handle.prepareBatch(sql);
+      for (WishlistPostSkeleton wishlistPostSkeleton: samples) {
+        batch.bindBean(wishlistPostSkeleton).add();
+      }
+      batch.execute();
+    });
   }
 
   /**
