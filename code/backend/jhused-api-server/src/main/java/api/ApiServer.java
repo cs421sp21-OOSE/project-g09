@@ -289,7 +289,20 @@ public class ApiServer {
       }
     });
 
-
+    //delete the specified wishlist entry
+    delete("/api/users/:userId/wishlist/all", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        String postId = req.params("postId");
+        Post deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
+        if (deletedWishlistEntry == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(deletedWishlistEntry);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
 
 
     after((req, res) -> res.type("application/json"));
