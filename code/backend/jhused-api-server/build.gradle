@@ -8,7 +8,7 @@ version '0.0.1'
 
 repositories {
     mavenCentral()
-    maven { url "https://build.shibboleth.net/nexus/content/groups/public" }
+    maven { url "https://repository.mulesoft.org/nexus/content/repositories/public/" }
 }
 
 dependencies {
@@ -33,10 +33,11 @@ dependencies {
 
 
     //SSO
-    implementation 'org.pac4j:pac4j-core:4.0.0'
-    implementation 'org.pac4j:pac4j-http:4.0.0'
-    implementation 'org.pac4j:pac4j-saml:4.0.0'
+    implementation 'org.pac4j:pac4j-core:4.4.0'
+    runtimeOnly 'org.pac4j:pac4j-http:4.4.0'
+    implementation 'org.pac4j:pac4j-saml-opensamlv3:4.4.0'
     implementation 'org.pac4j:spark-pac4j:4.0.0'
+    runtimeOnly 'org.pac4j:pac4j-saml:4.4.0'
 
     //JavaSpark
     implementation 'com.sparkjava:spark-core:2.9.3'
@@ -59,12 +60,13 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class' : 'api.ApiServer'
+        attributes('Main-Class': 'api.ApiServer')
     }
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 
-task stage(dependsOn:['build', 'clean'])
+task stage(dependsOn: ['build', 'clean'])
 build.mustRunAfter clean
