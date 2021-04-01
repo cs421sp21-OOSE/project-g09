@@ -76,7 +76,7 @@ const UserProfile = (props) => {
           )}
 
           <img
-            className="w-24 h-24"
+            className="w-24 h-24 overflow-hidden object-cover"
             src={userContext.user.profilePic.url}
             alt="icon"
           />

@@ -73,7 +73,7 @@ const Header = (props) => {
                   <div className="ml-2 sm:ml-3 relative flex">
                     <div className="flex justify-center items-center">
                       <img
-                        className="h-6 w-6 sm:h-12 sm:w-12 rounded-full"
+                        className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"
                         src={context.user.profilePic.url}
                         alt=""
                       />
@@ -129,7 +129,7 @@ const Header = (props) => {
                         Messages
                       </a>
                       <a
-                        href="#"
+                        href={`/user/settings/${context.user.id}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         role="menuitem"
                       >

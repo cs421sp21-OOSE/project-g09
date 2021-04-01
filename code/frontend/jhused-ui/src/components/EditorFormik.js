@@ -1,4 +1,5 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect, useState, useContext } from "react";
+import { UserContext } from "../state";
 import axios from "axios";
 import { Formik, useField } from "formik";
 import * as Yup from "yup";
@@ -12,6 +13,228 @@ const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
 const btnStyle =
   "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
+
+// Editor component with built-in Formik as data validation
+const EditorFormik = (props) => {
+
+  const userContext = useContext(UserContext.Context);
+
+  const { postID } = useParams(); // for loading post id from url address
+  const [initialPostData, setInitialPostData] = useState({
+    id: "",
+    userId: userContext.user.id,
+    title: "",
+    price: "",
+    saleState: "SALE",
+    location: "",
+    category: "",
+    description: "",
+    hashtags: [],
+    images: [],
+  });
+
+  // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does. 
+  const [isLoaded, setIsLoaded] = useState(false); 
+  
+  useEffect(() => {
+    if (props.mode === "update") {
+      axios
+        .get("/api/posts/" + postID)
+        .then((response) => {
+          console.log(response);
+          setInitialPostData(response.data);
+          setIsLoaded(true);
+        })
+        .catch((error) => {
+          console.log(error);
+          history.push("/404");
+        });
+    }
+  }, []); // passing empty array ensures sending request only once
+
+  const history = useHistory(); // for redirecting to other pages
+
+  const handleDelete = (postID) => ((event) => {
+    event.preventDefault();
+    axios
+      .delete("/api/posts/" + postID)
+      .then((response) => {
+        console.log(response);
+        history.push("/editor/redirect/delete-success");
+      })
+      .catch((error) => {
+        console.log(error);
+        history.push("/editor/redirect/delete-failure");
+      });
+  });
+
+  const handleSubmit = (values, { setSubmitting }) => {
+    switch (props.mode) {
+      case "create":
+        axios
+          .post("/api/posts", values)
+          .then((response) => {
+            console.log(response);
+            history.push("/editor/redirect/post-success");
+          })
+          .catch((error) => {
+            console.log(error);
+            history.push("/editor/redirect/post-failure");
+          });
+        break;
+      case "update":
+        axios
+          .put("/api/posts/" + values.id, values)
+          .then((response) => {
+            console.log(response);
+            history.push("/editor/redirect/update-success");
+          })
+          .catch((error) => {
+            console.log(error);
+            history.push("/editor/redirect/update-failure");
+          });
+        break;
+      default:
+      // do nothing
+    }
+    setSubmitting(false);
+  };
+
+  const schema = Yup.object({
+    title: Yup.string()
+      .max(60, "Must be 60 characters or less")
+      .required("Please give it a title"),
+    price: Yup.number()
+      .min(0, "Cannot be smaller than zero")
+      .required("Please give it a price"),
+    location: Yup.string()
+      .max(15, "Must be 30 characters or less")
+      .required("Please provide a location"),
+    category: Yup.string()
+      .oneOf(
+        ["FURNITURE", "CAR", "DESK", "TV", "OTHER"],
+        "Invalid a category"
+      )
+      .required("Please select a category"),
+    description: Yup.string().required(
+      "Please provide a description"
+    ),
+    images: Yup.array().min(1, "Please upload least one image"),
+  });
+
+  return (
+    <div>
+      <Header />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
+          <Formik
+            enableReinitialize={true}
+            initialValues={initialPostData}
+            validationSchema={schema}
+            onSubmit={handleSubmit}
+          >
+            {(formik) => (
+              <form onSubmit={formik.handleSubmit}>
+                <div className="grid grid-cols-12 gap-x-6 gap-y-4">
+                  <StdTextInput
+                    name="title"
+                    type="text"
+                    label="Title"
+                    placeholder="Used things to sell"
+                    className="col-span-full"
+                  />
+
+                  <StdTextInput
+                    name="location"
+                    label="Location"
+                    placeholder="Marylander"
+                    className="col-span-8"
+                  />
+
+                  <StdNumInput
+                    name="price"
+                    label="Price"
+                    placeholder="29.50"
+                    className="col-span-4"
+                  />
+
+                  <CreatableWrapper
+                    name="hashtags"
+                    value={formik.values.hashtags}
+                    onChange={formik.setFieldValue}
+                    onBlur={formik.setFieldTouched}
+                    label="Hashtags"
+                    className="col-span-8"
+                  />
+
+                  <SelectWraper
+                    name="category"
+                    options={{
+                      FURNITURE: { value: "FURNITURE", label: "Furniture" },
+                      CAR: { value: "CAR", label: "Car" },
+                      TV: { value: "TV", label: "TV" },
+                      DESK: { value: "DESK", label: "Desk" },
+                      OTHER: { value: "OTHER", label: "Other" },
+                    }}
+                    label="Category"
+                    placeholder="Select"
+                    value={formik.values.category}
+                    onChange={formik.setFieldValue}
+                    onBlur={formik.setFieldTouched}
+                    touched={formik.touched.category}
+                    error={formik.errors.category}
+                    className="col-span-4"
+                  />
+
+                  <StdTextArea
+                    name="description"
+                    label="Description"
+                    placeholder="Write a description"
+                    className="col-span-full"
+                  />
+
+                  <DropAndView 
+                    name="images"
+                    value={formik.values.images}
+                    postId={formik.values.id}
+                    onChange={formik.setFieldValue}
+                    onBlur={formik.setFieldTouched}
+                    touched={formik.touched.images}
+                    error={formik.errors.images}
+                    isLoaded={isLoaded}
+                    className="col-span-full"
+                  />
+
+                  {(props.mode === "update") && 
+                  <div className="col-start-1 col-span-3 flex justify-start">
+                    <button
+                      className="bg-red-500 rounded-lg hover:bg-red-700 text-white font-bold py-2 px-3"
+                      onClick={handleDelete(formik.values.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>}
+
+                  <div className="col-end-13 flex justify-end">
+                    <button
+                      className={btnStyle}
+                      type="submit"
+                      disabled={formik.isSubmitting}
+                    >
+                      {props.mode === "create" ? "Submit" : "Update"}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </Formik>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EditorFormik;
 
 // Text input with built-in error message
 const StdTextInput = ({ ...props }) => {
@@ -165,223 +388,3 @@ const CreatableWrapper = ({ ...props }) => {
   );
 };
 
-// Editor component with built-in Formik as data validation
-const EditorFormik = (props) => {
-
-  const { postID } = useParams(); // for loading post id from url address
-  const [initialPostData, setInitialPostData] = useState({
-    id: "",
-    userId: "",
-    title: "",
-    price: "",
-    saleState: "SALE",
-    location: "",
-    category: "",
-    description: "",
-    hashtags: [],
-    images: [],
-  });
-
-  // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does. 
-  const [isLoaded, setIsLoaded] = useState(false); 
-  
-  useEffect(() => {
-    if (props.mode === "update") {
-      axios
-        .get("/api/posts/" + postID)
-        .then((response) => {
-          console.log(response);
-          setInitialPostData(response.data);
-          setIsLoaded(true);
-        })
-        .catch((error) => {
-          console.log(error);
-          history.push("/404");
-        });
-    }
-  }, []); // passing empty array ensures sending request only once
-
-  const history = useHistory(); // for redirecting to other pages
-
-  const handleDelete = (postID) => ((event) => {
-    event.preventDefault();
-    axios
-      .delete("/api/posts/" + postID)
-      .then((response) => {
-        console.log(response);
-        history.push("/editor/redirect/delete-success");
-      })
-      .catch((error) => {
-        console.log(error);
-        history.push("/editor/redirect/delete-failure");
-      });
-  });
-
-  const handleSubmit = (values, { setSubmitting }) => {
-    switch (props.mode) {
-      case "create":
-        axios
-          .post("/api/posts", values)
-          .then((response) => {
-            console.log(response);
-            history.push("/editor/redirect/post-success");
-          })
-          .catch((error) => {
-            console.log(error);
-            history.push("/editor/redirect/post-failure");
-          });
-        break;
-      case "update":
-        axios
-          .put("/api/posts/" + values.id, values)
-          .then((response) => {
-            console.log(response);
-            history.push("/editor/redirect/update-success");
-          })
-          .catch((error) => {
-            console.log(error);
-            history.push("/editor/redirect/update-failure");
-          });
-        break;
-      default:
-      // do nothing
-    }
-    setSubmitting(false);
-  };
-
-  return (
-    <div>
-      <Header />
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
-          <Formik
-            enableReinitialize={true}
-            initialValues={initialPostData}
-            validationSchema={Yup.object({
-              title: Yup.string()
-                .max(60, "Must be 60 characters or less")
-                .required("Please give it a title"),
-              price: Yup.number()
-                .min(0, "Cannot be smaller than zero")
-                .required("Please give it a price"),
-              location: Yup.string()
-                .max(15, "Must be 30 characters or less")
-                .required("Please provide a location"),
-              category: Yup.string()
-                .oneOf(
-                  ["FURNITURE", "CAR", "DESK", "TV", "OTHER"],
-                  "Invalid a category"
-                )
-                .required("Please select a category"),
-              description: Yup.string().required(
-                "Please provide a description"
-              ),
-              images: Yup.array().min(1, "Please upload least one image"),
-            })}
-            onSubmit={handleSubmit}
-          >
-            {(formik) => (
-              <form onSubmit={formik.handleSubmit}>
-                <div className="grid grid-cols-12 gap-x-6 gap-y-4">
-                  <StdTextInput
-                    name="title"
-                    type="text"
-                    label="Title"
-                    placeholder="Used things to sell"
-                    className="col-span-full"
-                  />
-
-                  <StdTextInput
-                    name="location"
-                    label="Location"
-                    placeholder="Marylander"
-                    className="col-span-8"
-                  />
-
-                  <StdNumInput
-                    name="price"
-                    label="Price"
-                    placeholder="29.50"
-                    className="col-span-4"
-                  />
-
-                  <CreatableWrapper
-                    name="hashtags"
-                    value={formik.values.hashtags}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    label="Hashtags"
-                    className="col-span-8"
-                  />
-
-                  <SelectWraper
-                    name="category"
-                    options={{
-                      FURNITURE: { value: "FURNITURE", label: "Furniture" },
-                      CAR: { value: "CAR", label: "Car" },
-                      TV: { value: "TV", label: "TV" },
-                      DESK: { value: "DESK", label: "Desk" },
-                      OTHER: { value: "OTHER", label: "Other" },
-                    }}
-                    label="Category"
-                    placeholder="Select"
-                    value={formik.values.category}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    touched={formik.touched.category}
-                    error={formik.errors.category}
-                    className="col-span-4"
-                  />
-
-                  <StdTextArea
-                    name="description"
-                    label="Description"
-                    placeholder="Write a description"
-                    className="col-span-full"
-                  />
-
-                  <DropAndView 
-                    name="images"
-                    value={formik.values.images}
-                    postId={formik.values.id}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    touched={formik.touched.images}
-                    error={formik.errors.images}
-                    isLoaded={isLoaded}
-                    className="col-span-full"
-                  />
-
-                  {(props.mode === "update") && 
-                  <div className="col-start-1 col-span-3 flex justify-start">
-                    <button
-                      className="bg-red-500 rounded-lg hover:bg-red-700 text-white font-bold py-2 px-3"
-                      onClick={handleDelete(formik.values.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>}
-
-                  <div className="col-end-13 flex justify-end">
-                    <button
-                      className={btnStyle}
-                      type="submit"
-                      disabled={formik.isSubmitting}
-                    >
-                      {props.mode === "create" ? "Submit" : "Update"}
-                    </button>
-                  </div>
-                  
-
-
-                </div>
-              </form>
-            )}
-          </Formik>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default EditorFormik;
