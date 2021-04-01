@@ -14,6 +14,7 @@ public class User {
 	private String profileImage;
 	private String location;
 	private List<Post> posts;
+	private List<Post> wishlist;
 
 	public User() {
 		this.posts = new ArrayList<>();
