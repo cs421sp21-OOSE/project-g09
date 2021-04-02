@@ -7,7 +7,7 @@ const ImageGrid = (props) => {
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 justify-center">
         {props.posts &&
           props.posts.map((post) => (
-            <div>
+            <div key={post.id}>
               <PostPreview
                 post={post}
                 key={post.id}

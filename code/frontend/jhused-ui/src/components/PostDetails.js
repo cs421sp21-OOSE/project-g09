@@ -62,7 +62,7 @@ const PostDetails = (props) => {
                       href={`/user/${postUser.id}`}
                       className="hover:text-red-600"
                     >
-                      {context.user.name}
+                      {postUser.name}
                     </a>
                   </div>
                   <Location location={postUser.location} />
