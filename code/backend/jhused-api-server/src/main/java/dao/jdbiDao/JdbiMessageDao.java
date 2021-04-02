@@ -2,7 +2,6 @@ package dao.jdbiDao;
 
 import dao.MessageDao;
 import exceptions.DaoException;
-import model.Image;
 import model.Message;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.PreparedBatch;
@@ -15,7 +14,7 @@ import java.util.UUID;
 public class JdbiMessageDao implements MessageDao {
   private Jdbi jdbi;
 
-  JdbiMessageDao(Jdbi jdbi) {
+  public JdbiMessageDao(Jdbi jdbi) {
     this.jdbi = jdbi;
   }
 
@@ -26,9 +25,12 @@ public class JdbiMessageDao implements MessageDao {
         + "VALUES(:id, :senderId, :receiverId, :message, :read, :sentTime) RETURNING *) "
         + "SELECT * FROM inserted;";
     try {
-      return jdbi.inTransaction(handle -> handle.createQuery(sql).bindBean(message).mapToBean(Message.class))
+      if (message != null && (message.getId() == null || message.getId().length() != 36)) {
+        message.setId(UUID.randomUUID().toString());
+      }
+      return jdbi.inTransaction(handle -> handle.createQuery(sql).bindBean(message).mapToBean(Message.class)
           .findOne()
-          .orElse(null);
+          .orElse(null));
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to create the message: " + ex.getMessage(), ex);
     }
@@ -64,8 +66,8 @@ public class JdbiMessageDao implements MessageDao {
   public Message read(String id) throws DaoException {
     String sql = "SELECT * FROM message WHERE message.id=:id;";
     try {
-      return jdbi.inTransaction(handle -> handle.createQuery(sql).bind("id", id).mapToBean(Message.class))
-          .findOne().orElse(null);
+      return jdbi.inTransaction(handle -> handle.createQuery(sql).bind("id", id).mapToBean(Message.class)
+          .findOne().orElse(null));
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read the message: " + ex.getMessage(), ex);
     }
@@ -75,8 +77,8 @@ public class JdbiMessageDao implements MessageDao {
   public List<Message> readAll() throws DaoException {
     String sql = "SELECT * FROM message;";
     try {
-      return jdbi.inTransaction(handle -> handle.createQuery(sql).mapToBean(Message.class))
-          .list();
+      return jdbi.inTransaction(handle -> handle.createQuery(sql).mapToBean(Message.class)
+          .list());
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read the messages: " + ex.getMessage(), ex);
     }
@@ -87,7 +89,7 @@ public class JdbiMessageDao implements MessageDao {
     String sql = "SELECT * FROM message WHERE message.sender_id = :userId OR message.receiver_id = :userId;";
     try {
       return jdbi.inTransaction(handle -> handle.createQuery(sql).bind("userId", userId)
-          .mapToBean(Message.class)).list();
+          .mapToBean(Message.class).list());
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read the messages given userId:" + userId + " : " + ex.getMessage(), ex);
     }
@@ -98,7 +100,7 @@ public class JdbiMessageDao implements MessageDao {
     String sql = "SELECT * FROM message WHERE message.sender_id = :userId;";
     try {
       return jdbi.inTransaction(handle -> handle.createQuery(sql).bind("userId", senderId)
-          .mapToBean(Message.class)).list();
+          .mapToBean(Message.class).list());
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read the messages given senderId:" + senderId + " : " + ex.getMessage(), ex);
     }
@@ -109,7 +111,7 @@ public class JdbiMessageDao implements MessageDao {
     String sql = "SELECT * FROM message WHERE message.receiver_id = :userId;";
     try {
       return jdbi.inTransaction(handle -> handle.createQuery(sql).bind("userId", receiverId)
-          .mapToBean(Message.class)).list();
+          .mapToBean(Message.class).list());
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to read the messages given receiverId:" + receiverId + " : " + ex.getMessage(),
           ex);
@@ -117,13 +119,14 @@ public class JdbiMessageDao implements MessageDao {
   }
 
   @Override
-  public Message update(Message message) throws DaoException {
+  public Message update(String id, Message message) throws DaoException {
     String sql = "WITH updated AS ("
-        + "UPDATE message SET message.message = :message RETURNING *)"
+        + "UPDATE message SET message = :message, read = :read WHERE message.id = :id RETURNING *)"
         + "SELECT * FROM updated;";
     try {
       return jdbi.inTransaction(handle -> handle.createQuery(sql).bind("message", message.getMessage())
-          .mapToBean(Message.class)).findOne().orElse(null);
+          .bind("read", message.getRead()).bind("id", id)
+          .mapToBean(Message.class).findOne().orElse(null));
     } catch (IllegalStateException | NullPointerException | StatementException ex) {
       throw new DaoException("Unable to update the message: " + ex.getMessage(), ex);
     }
@@ -136,7 +139,7 @@ public class JdbiMessageDao implements MessageDao {
         + "SELECT * FROM deleted;";
     try {
       return jdbi.inTransaction(handle ->
-          handle.createQuery(sql).bind("id", id).mapToBean(Message.class).findOne()).orElse(null);
+          handle.createQuery(sql).bind("id", id).mapToBean(Message.class).findOne().orElse(null));
     } catch (IllegalStateException | StatementException ex) {
       throw new DaoException("Unable to delete the message with id: " + id
           + " error message: " + ex.getMessage(), ex);

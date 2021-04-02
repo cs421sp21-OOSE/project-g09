@@ -96,7 +96,8 @@ public final class Database {
 
   /**
    * create message table with samples
-   * @param jdbi jdbi
+   *
+   * @param jdbi    jdbi
    * @param samples message samples
    */
   public static void createMessageTableWithSampleData(Jdbi jdbi, List<Message> samples) {
@@ -125,7 +126,7 @@ public final class Database {
         + "VALUES(:id, :senderId, :receiverId, :message, :read);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
-      for (Message message: samples) {
+      for (Message message : samples) {
         batch.bindBean(message).add();
       }
       batch.execute();
@@ -134,9 +135,9 @@ public final class Database {
 
   public static void createWishlistPostsTableWithSampleData(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "CREATE TABLE IF NOT EXISTS wishlist_post("
-            + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
-            + "user_id VARCHAR(50) NOT NULL"
-            + ");";
+        + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
+        + "user_id VARCHAR(50) NOT NULL"
+        + ");";
     jdbi.useTransaction(handle -> {
       handle.execute(sql);
     });
@@ -145,10 +146,10 @@ public final class Database {
 
   public static void insertSampleWishlistPosts(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "INSERT INTO wishlist_post(id, user_id) "
-            + "VALUES(:id, :user_id);";
+        + "VALUES(:id, :user_id);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
-      for (WishlistPostSkeleton wishlistPostSkeleton: samples) {
+      for (WishlistPostSkeleton wishlistPostSkeleton : samples) {
         batch.bindBean(wishlistPostSkeleton).add();
       }
       batch.execute();
@@ -185,13 +186,14 @@ public final class Database {
       handle.execute("DROP TABLE IF EXISTS post;");
       handle.execute("DROP TYPE IF EXISTS Category;");
       handle.execute("DROP TYPE IF EXISTS SaleState;");
-      handle.execute("DROP TABLE IF EXISTS jhused_user;");});
+      handle.execute("DROP TABLE IF EXISTS jhused_user;");
+    });
   }
 
   /**
    * Used for inserting the sample users
    *
-   * @param jdbi a Jdbi object connected to the database to be used in this application.
+   * @param jdbi    a Jdbi object connected to the database to be used in this application.
    * @param samples samples of users
    */
   public static void insertSampleUsers(Jdbi jdbi, List<User> samples) {
@@ -200,7 +202,7 @@ public final class Database {
         ":location);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
-      for (User user: samples) {
+      for (User user : samples) {
         batch.bindBean(user).add();
       }
       batch.execute();
@@ -212,9 +214,8 @@ public final class Database {
    *
    * @param jdbi    a Jdbi object connected to the database to be used in this application.
    * @param samples a list of sample posts.
-   * @throws Sql2oException an generic exception thrown by Sql2o encapsulating anny issues with the Sql2o ORM.
    */
-  public static void createPostsTableWithSampleData(Jdbi jdbi, List<Post> samples) throws Sql2oException {
+  public static void createPostsTableWithSampleData(Jdbi jdbi, List<Post> samples) {
     // Must drop image and hashtag before post, to avoid foreign key dependency error
     String sql = "CREATE TABLE IF NOT EXISTS post("
         + "id CHAR(36) NOT NULL PRIMARY KEY,"
@@ -249,12 +250,18 @@ public final class Database {
     insertSamplePosts(jdbi, samples);
   }
 
-  public static void truncateTables(Jdbi jdbi) throws Sql2oException {
+  public static void truncateTables(Jdbi jdbi) {
     // no need to truncate images and post_hashtag, as they will be deleted automatically when
     // foreign key table get truncated.
     jdbi.useTransaction(handle -> {
       handle.execute("TRUNCATE TABLE jhused_user CASCADE");
       handle.execute("TRUNCATE TABLE hashtag CASCADE");
+    });
+  }
+
+  public static void truncateTable(Jdbi jdbi, final String TABLE_NAME) {
+    jdbi.useTransaction(handle -> {
+      handle.execute("TRUNCATE TABLE " + TABLE_NAME + " CASCADE");
     });
   }
 
@@ -277,9 +284,8 @@ public final class Database {
    * will be automatically deleted.
    *
    * @param jdbi a Jdbi object connected to the database to be used in this application.
-   * @throws Sql2oException
    */
-  public static void createImagesTable(Jdbi jdbi) throws Sql2oException {
+  public static void createImagesTable(Jdbi jdbi) {
     String sql = "CREATE TABLE IF NOT EXISTS image("
         + "id CHAR(36) NOT NULL PRIMARY KEY,"
         + "post_id CHAR(36) NOT NULL,"
@@ -303,9 +309,8 @@ public final class Database {
    * deleted, thanks to ON DELETE CASCADE.
    *
    * @param jdbi a Jdbi object connected to the database to be used in this application.
-   * @throws Sql2oException
    */
-  public static void createPostsHashtagsTable(Jdbi jdbi) throws Sql2oException {
+  public static void createPostsHashtagsTable(Jdbi jdbi) {
     String sql = "CREATE TABLE IF NOT EXISTS post_hashtag("
         + "post_id CHAR(36) NOT NULL,"
         + "hashtag_id CHAR(36) NOT NULL,"
@@ -328,7 +333,6 @@ public final class Database {
    * hashtag store hashtag id and hashtag (the content)
    *
    * @param jdbi a Jdbi object connected to the database to be used in this application.
-   * @throws Sql2oException
    */
   public static void createHashtagsTable(Jdbi jdbi) {
     String sql = "CREATE TABLE IF NOT EXISTS hashtag("
@@ -373,7 +377,6 @@ public final class Database {
    *
    * @param jdbi a Jdbi object connected to the database to be used in this application.
    * @param post the to be add Post object
-   * @throws Sql2oException
    */
   private static void addPostsWithInnerObjects(Jdbi jdbi, Post post) {
     String sql = "INSERT INTO post(id, user_id, title, price, sale_state, description, category, location) "
@@ -392,7 +395,6 @@ public final class Database {
    *
    * @param jdbi   a Jdbi object connected to the database to be used in this application.
    * @param images a list of image instances
-   * @throws Sql2oException
    */
   private static void addImages(Jdbi jdbi, List<Image> images) {
     String sql = "INSERT INTO image(id, post_id, url) "
@@ -414,7 +416,6 @@ public final class Database {
    *
    * @param jdbi     a Jdbi object connected to the database to be used in this application.
    * @param hashtags a list of hashtag instances
-   * @throws Sql2oException
    */
   private static void addHashtags(Jdbi jdbi, List<Hashtag> hashtags) {
     String sql = "INSERT INTO hashtag(id, hashtag) "
@@ -434,7 +435,6 @@ public final class Database {
    * @param jdbi     a Jdbi object connected to the database to be used in this application.
    * @param post     the post that relates to hashtag
    * @param hashtags a list of the hashtag that relates to post
-   * @throws Sql2oException
    */
   private static void addOnePostManyHashtags(Jdbi jdbi, Post post, List<Hashtag> hashtags) {
     String sql = "INSERT INTO post_hashtag(post_id, hashtag_id) "
@@ -455,7 +455,7 @@ public final class Database {
    * @param jdbi a Jdbi object connected to the database to be used in this application.
    * @return FUNC_NAME the name of the function
    */
-  private static void createAutoUpdateTimestampDBFunc(Jdbi jdbi) throws Sql2oException {
+  private static void createAutoUpdateTimestampDBFunc(Jdbi jdbi) {
     String sql = "CREATE OR REPLACE FUNCTION " + AUTO_UPDATE_TIMESTAMP_FUNC_NAME + "() "
         + "RETURNS TRIGGER AS $$ "
         + "BEGIN"
@@ -473,10 +473,8 @@ public final class Database {
    *
    * @param jdbi       a Jdbi object connected to the database to be used in this application.
    * @param TABLE_NAME the table's name
-   * @return
-   * @throws Sql2oException
    */
-  private static void registerAutoUpdateTimestampDBFuncTriggerToTable(Jdbi jdbi, final String TABLE_NAME) throws Sql2oException {
+  private static void registerAutoUpdateTimestampDBFuncTriggerToTable(Jdbi jdbi, final String TABLE_NAME) {
     final String TRIG_NAME = "auto_update_" + TABLE_NAME + "_update_time";
     jdbi.useTransaction(handle -> handle.execute("CREATE TRIGGER " + TRIG_NAME + " BEFORE UPDATE ON " + TABLE_NAME +
         " FOR EACH ROW EXECUTE " +

@@ -63,11 +63,12 @@ public interface MessageDao {
 
   /**
    * update a message
+   * @param id the id of the message to be updated
    * @param message the message to be updated
    * @return message updated
    * @throws DaoException
    */
-  Message update(Message message) throws DaoException;
+  Message update(String id, Message message) throws DaoException;
 
   /**
    * delete a message
