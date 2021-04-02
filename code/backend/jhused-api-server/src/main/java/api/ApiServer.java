@@ -1,18 +1,24 @@
 package api;
 
+import com.fasterxml.jackson.databind.type.ArrayType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
+import dao.MessageDao;
 import dao.PostDao;
 import dao.UserDao;
 import dao.WishlistPostSkeletonDao;
+import dao.jdbiDao.JdbiMessageDao;
 import dao.jdbiDao.JdbiPostDao;
 import dao.jdbiDao.JdbiUserDao;
 import dao.jdbiDao.JdbiWishlistPostSkeletonDao;
 import exceptions.ApiError;
 import exceptions.DaoException;
+import model.Message;
 import model.Post;
 import model.User;
+import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
@@ -23,7 +29,6 @@ import org.pac4j.sparkjava.SparkWebContext;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-import model.WishlistPostSkeleton;
 import spark.Spark;
 import util.SSO.JHUSSOConfigFactory;
 import util.database.Database;
@@ -60,12 +65,16 @@ public class ApiServer {
     return 8080;
   }
 
-  private static PostDao getPostDao() throws URISyntaxException {
+  private static PostDao getPostDao() {
     return new JdbiPostDao(jdbi);
   }
 
-  private static UserDao getUserDao() throws URISyntaxException {
+  private static UserDao getUserDao() {
     return new JdbiUserDao(jdbi);
+  }
+
+  private static MessageDao getMessageDao() {
+    return new JdbiMessageDao(jdbi);
   }
 
   private static WishlistPostSkeletonDao getWishlistSkeletonDao() throws URISyntaxException {
@@ -120,6 +129,7 @@ public class ApiServer {
     setJdbi();
     PostDao postDao = getPostDao();
     UserDao userDao = getUserDao();
+    MessageDao messageDao = getMessageDao();
 
     exception(ApiError.class, (ex, req, res) -> {
       // Handle the exception here
@@ -404,6 +414,82 @@ public class ApiServer {
       }
     });
 
+    get("/api/messages", (req, res) -> {
+      try {
+        return gson.toJson(messageDao.readAll());
+      } catch (DaoException ex) {
+        throw new ApiError("Can't read all messages" + ex.getMessage(), 500);
+      }
+    });
+
+    get("/api/messages/:userId", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        return gson.toJson(messageDao.readAllGivenSenderOrReceiverId(userId));
+      } catch (DaoException ex) {
+        throw new ApiError("Can't read all messages given user id" + ex.getMessage(), 500);
+      }
+    });
+
+    put("/api/messages/:messageId", (req, res) -> {
+      try {
+        String messageId = req.params("messageId");
+        Message message = gson.fromJson(req.body(), Message.class);
+        if (message.getId() == null) {
+          throw new ApiError("Incomplete data", 500);
+        }
+        if (!message.getId().equals(messageId)) {
+          throw new ApiError("messageId does not match the resource identifier", 400);
+        }
+        message = messageDao.update(messageId, message);
+        if (message == null) {
+          throw new ApiError("Update failure", 500);
+        }
+        return gson.toJson(message);
+      } catch (DaoException | JsonSyntaxException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    post("/api/messages", (req, res) -> {
+      try {
+        String isList = req.queryParams("isList");
+        if(isList.equals("true"))
+        {
+          Message message = gson.fromJson(req.body(), Message.class);
+          if (message == null) {
+            throw new ApiError("Message sent is null", 400);
+          }
+          return gson.toJson(messageDao.create(message));
+        }else
+        {
+          List<Message> message = gson.fromJson(req.body(), new TypeToken<ArrayList<Message>>(){}.getType());
+          if (message == null) {
+            throw new ApiError("Messages sent is null", 400);
+          }
+          return gson.toJson(messageDao.create(message));
+        }
+      } catch (DaoException ex) {
+        throw new ApiError("Message can't be created" + ex.getMessage(), 500);
+      }
+    });
+
+    delete("/api/messages/:messageId", (req,res)->{
+      try {
+        return messageDao.delete(req.params("messageId"));
+      } catch (DaoException ex) {
+        throw new ApiError("Message can't be created" + ex.getMessage(), 500);
+      }
+    });
+
+    delete("/api/messages", (req,res)->{
+      try {
+        List<String> ids = gson.fromJson(req.body(), new TypeToken<ArrayList<String>>(){}.getType());
+        return messageDao.delete(ids);
+      } catch (DaoException ex) {
+        throw new ApiError("Message can't be created" + ex.getMessage(), 500);
+      }
+    });
 
     after((req, res) -> res.type("application/json"));
   }
