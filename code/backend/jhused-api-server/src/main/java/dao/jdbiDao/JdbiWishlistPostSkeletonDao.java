@@ -48,7 +48,7 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
         List<Post> wishlistPosts = new ArrayList<>();
 
         for(WishlistPostSkeleton wishlistSkeletonEntry : wishlistSkeletonEntries) {
-            wishlistPosts.add(postDao.read(wishlistSkeletonEntry.getId()));
+            wishlistPosts.add(postDao.read(wishlistSkeletonEntry.getPost_id()));
         }
         return wishlistPosts;
     }
