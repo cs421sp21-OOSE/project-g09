@@ -33,6 +33,22 @@ public final class DataStore {
     return samples;
   }
 
+  /**
+   * Create a list of sample Wishlist Posts
+   * @return a list of sample wishlist posts.
+   */
+  public static List<WishlistPostSkeleton> sampleWishlistPosts() {
+    WishlistPostSkeleton post1 = new WishlistPostSkeleton("0".repeat(36), "001111111111111111111111111111111111");
+    WishlistPostSkeleton post2 = new WishlistPostSkeleton("1".repeat(36), "001111111111111111111111111111111111");
+    WishlistPostSkeleton post3 = new WishlistPostSkeleton("3".repeat(36), "002111111111111111111111111111111111");
+    WishlistPostSkeleton post4 = new WishlistPostSkeleton("4".repeat(36), "003111111111111111111111111111111111");
+    WishlistPostSkeleton post5 = new WishlistPostSkeleton("5".repeat(36), "004111111111111111111111111111111111");
+    WishlistPostSkeleton post6 = new WishlistPostSkeleton("6".repeat(36), "005222222222222222222222222222222222");
+    WishlistPostSkeleton post7 = new WishlistPostSkeleton("7".repeat(36), "007111111111111111111111111111111111");
+    List<WishlistPostSkeleton> samples = new ArrayList<>(Arrays.asList(post1, post2, post3, post4, post5, post6, post7));
+    return samples;
+  }
+
   public static List<Post> getPostForUser(String id) {
     List<Post> allPosts = DataStore.samplePosts();
     List<Post> userPosts = new ArrayList<>();
