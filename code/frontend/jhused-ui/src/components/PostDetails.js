@@ -16,33 +16,29 @@ const PostDetails = (props) => {
   const [postUser, setPostUser] = useState(null);
 
   useEffect(() => {
-    const path = "/api/posts/" + params.postID;
+    const postPath = "/api/posts/" + params.postID;
+
     axios
-      .get(path)
+      .get(postPath)
       .then((response) => {
         console.log(response.data);
         setPost(response.data);
         console.log(post);
+        return response.data;
+      })
+      .then((post) => {
+        const userPath = "/api/users/" + post.userId;
+        return axios.get(userPath);
+      })
+      .then((response) => {
+        setPostUser(response.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-  /*
-  useEffect = (() => {
-    axios
-      .get(`/api/users/${post.userId}`)
-      .then((response) => {
-        console.log(response.data);
-        setPostUser(response.data);
-        console.log(post);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [post]) */
 
-  if (post) {
+  if (postUser && post) {
     return (
       <div>
         <Header />
@@ -54,22 +50,22 @@ const PostDetails = (props) => {
             <div className="block mx-4 w-11/12 md:w-1/4 divide-y divide-gray-200">
               <div className="flex">
                 <img
-                  src={context.user.profilePic.url}
+                  src={postUser.profileImage}
                   alt=""
-                  className="w-12 h-12 mr-2 overflow-hidden object-cover"
+                  className="w-12 h-12 mr-2 rounded-full overflow-hidden object-cover"
                 />
                 <div className="sellerInfo">
                   <div>
                     {" "}
                     Sold By{" "}
                     <a
-                      href={`/user/${context.user.id}`}
+                      href={`/user/${postUser.id}`}
                       className="hover:text-red-600"
                     >
                       {context.user.name}
                     </a>
                   </div>
-                  <Location location={context.user.location} />
+                  <Location location={postUser.location} />
                 </div>
               </div>
               <div className="block my-2">
