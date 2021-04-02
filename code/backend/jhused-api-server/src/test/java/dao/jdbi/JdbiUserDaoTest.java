@@ -92,6 +92,11 @@ class JdbiUserDaoTest {
     assertNull(userDao.read("0"));
   }
 
+//  @Test
+//  void readAll() {
+//    assertArrayEquals(sampleUsers, userDao.readAll());
+//  }
+
   @Test
   void updateAddPost() {
     Post postNew = new Post("9".repeat(36), "",

@@ -36,14 +36,6 @@ public class User {
 		this.location = location;
 	}
 
-//	public void setPostList(List<Post> postList) {
-//		if (postList != null) {
-//			for (Post post: postList) {
-//				post.setUserId(this.id);
-//			}
-//		}
-//		this.postList = postList;
-//	}
 	public void addPosts(Post post) {
 		if (posts == null)
 			posts = new ArrayList<>();

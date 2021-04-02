@@ -320,7 +320,7 @@ class JdbiPostDaoTest {
   @Test
   @DisplayName("Search null returns no posts.")
   void searchAllPostsNull() { //string below can be changed to anything.
-    // TODO did not implement this
+    assertNull(postDao.searchAll(null));
   }
 
   @Test
