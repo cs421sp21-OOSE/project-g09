@@ -64,10 +64,6 @@ jar {
     manifest {
         attributes('Main-Class': 'api.ApiServer')
     }
-//    from {
-//        configurations.externalLibs.collect { it.isDirectory() ? it : zipTree(it) }
-////        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-//    }
 }
 
 shadowJar {

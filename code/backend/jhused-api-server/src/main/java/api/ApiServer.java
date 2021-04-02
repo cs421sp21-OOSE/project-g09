@@ -23,7 +23,6 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 import util.SSO.JHUSSOConfigFactory;
-import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
 
 import java.net.URISyntaxException;
@@ -252,21 +251,19 @@ public class ApiServer {
           throw new ApiError("Got multiple user profiles, unexpected.", 500);
         }
         CommonProfile userProfile = userProfiles.get(0);
-        User user = userDao.read(userProfile.getId());
+        User user = userDao.read(userProfile.getUsername()); // user name  is JHED ID
         if (user == null) {
-          //TODO decide if create user in backend.
-          user = new User(userProfile.getId(), userProfile.getUsername() == null ? "" :
-              userProfile.getUsername(), userProfile.getEmail() == null ? "" :
-              userProfile.getEmail(), "", "");
+          if (userProfile.getUsername() == null) {
+            throw new ApiError("Empty user name, unexpected, should be JHED", 500);
+          }
+          user = new User(userProfile.getUsername(), userProfile.getUsername(),
+              userProfile.getUsername() + "@jh.edu", "", "");
           if (userDao.create(user) == null) {
             throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
           }
-          // TODO set this to create new user page.
-          res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getId(), 302);
-        } else {
-          res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getId(), 302);
         }
-      } catch (NullPointerException ex) {
+        res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getId(), 302);
+      } catch (DaoException | NullPointerException ex) {
         throw new ApiError(ex.getMessage(), 500);
       }
       return null;
