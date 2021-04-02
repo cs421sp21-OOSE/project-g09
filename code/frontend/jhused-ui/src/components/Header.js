@@ -146,7 +146,14 @@ const Header = (props) => {
                   </div>
                 </div>
               ) : (
-                <button className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none hover:text-red-600">
+                <button
+                  className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none hover:text-red-600"
+                  onClick={() => {
+                    window.open(
+                      "https://jhused-api-server.herokuapp.com/jhu/login"
+                    );
+                  }}
+                >
                   {" "}
                   Login
                 </button>
