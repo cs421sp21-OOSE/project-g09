@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Header from "./Header";
 import { UserContext } from "../state";
 import { Formik, Form, useField } from "formik";
@@ -22,6 +22,8 @@ export default UserSettings;
 
 const SettingForm = (props) => {
 
+  const [bannerStatus, setBannerStatus] = useState(null);
+
   const schema = Yup.object({
     name: Yup.string()
       .max(30, "Must be 30 characters or less")
@@ -39,9 +41,11 @@ const SettingForm = (props) => {
       .put(`/api/users/${props.user.id}`, values)
       .then((response) => {
         console.log(response);
+        setBannerStatus("Your settings have been saved");
       })
       .catch((error) => {
         console.log(error);
+        setBannerStatus("Cannot update settings. Please try again later");
       })
   }
 
@@ -91,8 +95,11 @@ const SettingForm = (props) => {
             Save
           </button>
 
-          <div className="bg-blue-700">
-            Your setting is saved
+          <div className={`col-span-full ${bannerStatus ? ("") : ("hidden")}`}>
+            <StatusBanner value={bannerStatus} handleOnClick={(event) => {
+              event.preventDefault();
+              setBannerStatus(false);
+            }}/>
           </div>
           
 
@@ -168,6 +175,32 @@ const ProfileAvatar = (props) => {
           <input type="file" className="hidden" accept="image/*" onChange={handleChange}/>
         </label>
       </div>
+    </div>
+  );
+}
+
+const StatusBanner = (props) => {
+
+  return (
+    <div className="flex h-10 bg-blue-600 items-center justify-between">
+      <div className="flex items-center ">
+        <span className="flex ml-4 p-1 rounded-lg bg-blue-800">
+          <svg className="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+          </svg>
+        </span>
+        <span className="px-4 text-sm text-white font-medium truncate">
+          {props.value}
+        </span>
+      </div>
+      <button className="mx-2 outline-none focus:outline-none" onClick={props.handleOnClick} >
+        <span className="flex p-1 rounded-lg bg-blue-600 hover:bg-blue-500">
+          <svg className="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </span>
+      </button>
+
     </div>
   );
 }
