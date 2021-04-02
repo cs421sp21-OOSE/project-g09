@@ -3,8 +3,8 @@ import Header from "./Header";
 import { UserContext } from "../state";
 import { Formik, Form, useField } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import { storage } from "./firebase";
+import axios from "axios";
 
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
@@ -34,9 +34,15 @@ const SettingForm = (props) => {
   });
 
   const formikSubmit = (values, formik) => {
-
-    alert(JSON.stringify(values, null, 2));
-    formik.setSubmitting(false);
+    console.log("Sending ", values);
+    axios
+      .put(`/api/users/${props.user.id}`, values)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   return (
@@ -46,7 +52,7 @@ const SettingForm = (props) => {
       onSubmit={formikSubmit}
     >
       {formik => (
-        <Form className="grid grid-cols-1 w-full md:max-w-2xl space-y-5 justify-center px-6 pt-3 pb-6 mt-6 rounded-lg border">
+        <Form className="grid grid-cols-1 w-full md:max-w-2xl space-y-5 justify-center px-6 pt-3 pb-6 my-6 rounded-lg border">
           
           <div className="text-xl font-semibold">
             User Settings
@@ -84,6 +90,10 @@ const SettingForm = (props) => {
           >
             Save
           </button>
+
+          <div className="bg-blue-700">
+            Your setting is saved
+          </div>
           
 
         </Form>
@@ -136,7 +146,7 @@ const ProfileAvatar = (props) => {
       () => {
         uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
           console.log("File available at ", downloadURL);
-          helper.setValue({...value, url: downloadURL});
+          helper.setValue(downloadURL);
         });
       }
     );
@@ -147,7 +157,7 @@ const ProfileAvatar = (props) => {
       <div className="grid grid-cols-1 justify-items-center w-max">
         <img
           className="rounded-full w-32 h-32 overflow-hidden object-cover"
-          src={value.url}
+          src={value}
           alt="./images/avatars/icon.png"
           {...onlyFields} 
         />

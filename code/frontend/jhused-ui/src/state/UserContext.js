@@ -7,10 +7,7 @@ const fakeUser = {
   name: "Samantha Fu",
   email: "zongming04@gmail.com",
   location: "The Telephone Building",
-  profilePic: {
-    id: "0202202",
-    url: Icon,
-  },
+  profilePic: Icon
 };
 
 const Context = createContext();
