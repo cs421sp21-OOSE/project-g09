@@ -46,6 +46,7 @@ public final class Database {
     createUsersTableWithSampleData(jdbi, DataStore.sampleUsers());
     createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
     createWishlistPostsTableWithSampleData(jdbi, DataStore.sampleWishlistPosts());
+    createMessageTableWithSampleData(jdbi, DataStore.sampleMessages());
   }
 
   /**
@@ -105,7 +106,7 @@ public final class Database {
         + "receiver_id VARCHAR(50) NOT NULL,"
         + "message VARCHAR NOT NULL,"
         + "read BOOLEAN DEFAULT FALSE,"
-        + "sent_time TIMESTAMPEZ DEFAULT CURRENT_TIMESTAMP,"
+        + "sent_time TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,"
         + "FOREIGN KEY (sender_id) " // Note: no comma here
         + "REFERENCES jhused_user(id) "
         + "ON DELETE CASCADE,"
