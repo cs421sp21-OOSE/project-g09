@@ -14,11 +14,22 @@ public class User {
 	private String profileImage;
 	private String location;
 	private List<Post> posts;
+	private List<Post> wishlist;
 
 	public User() {
 		this.posts = new ArrayList<>();
+		this.wishlist = new ArrayList<>();
 	}
 
+	/**
+	 * Constructor using all but wishlist.
+	 * @param id
+	 * @param name
+	 * @param email
+	 * @param profileImage
+	 * @param location
+	 * @param posts
+	 */
 	public User(String id, String name, String email, String profileImage, String location, List<Post> posts) {
 		this.id = id;
 		this.name = name;
@@ -28,6 +39,34 @@ public class User {
 		this.posts = posts;
 	}
 
+	/**
+	 * Full constructor including wishlist
+	 * @param id
+	 * @param name
+	 * @param email
+	 * @param profileImage
+	 * @param location
+	 * @param posts
+	 * @param wishlist
+	 */
+	public User(String id, String name, String email, String profileImage, String location, List<Post> posts, List<Post> wishlist) {
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.profileImage = profileImage;
+		this.location = location;
+		this.posts = posts;
+		this.wishlist = wishlist;
+	}
+
+	/**
+	 * Constructor excluding posts and wishlist.
+	 * @param id
+	 * @param name
+	 * @param email
+	 * @param profileImage
+	 * @param location
+	 */
 	public User(String id, String name, String email, String profileImage, String location) {
 		this.id = id;
 		this.name = name;
@@ -49,6 +88,16 @@ public class User {
 			posts = new ArrayList<>();
 		post.setUserId(this.id);
 		posts.add(post);
+	}
+
+	/**
+	 * Add post to this user's wishlist.
+	 * @param post
+	 */
+	public void addWishlistPost(Post post) {
+		if (wishlist == null)
+			wishlist = new ArrayList<>();
+		wishlist.add(post);
 	}
 
 	@Override

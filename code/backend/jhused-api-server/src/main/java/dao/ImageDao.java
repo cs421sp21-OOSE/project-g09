@@ -86,6 +86,12 @@ public interface ImageDao {
    */
   List<Image> delete(List<String> ids) throws DaoException;
 
+  /**
+   * Get all images belonging to the post with the given postId
+   * @param postId of post
+   * @return list of images from the post
+   * @throws DaoException A generic exception for CRUD operations.
+   */
   List<Image> getImagesOfPost(String postId) throws DaoException;
 
   /**

@@ -22,7 +22,7 @@ import java.util.Map;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = false;
+  public static boolean USE_TEST_DATABASE = true;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -45,6 +45,7 @@ public final class Database {
     drop(jdbi);
     createUsersTableWithSampleData(jdbi, DataStore.sampleUsers());
     createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
+    createWishlistPostsTableWithSampleData(jdbi, DataStore.sampleWishlistPosts());
   }
 
   /**
@@ -92,6 +93,29 @@ public final class Database {
     return Jdbi.create(ds).installPlugin(new PostgresPlugin());
   }
 
+  public static void createWishlistPostsTableWithSampleData(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
+    String sql = "CREATE TABLE IF NOT EXISTS wishlist_post("
+            + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
+            + "user_id VARCHAR(50) NOT NULL"
+            + ");";
+    jdbi.useTransaction(handle -> {
+      handle.execute(sql);
+    });
+    insertSampleWishlistPosts(jdbi, samples);
+  }
+
+  public static void insertSampleWishlistPosts(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
+    String sql = "INSERT INTO wishlist_post(id, user_id) "
+            + "VALUES(:id, :user_id);";
+    jdbi.useTransaction(handle -> {
+      PreparedBatch batch = handle.prepareBatch(sql);
+      for (WishlistPostSkeleton wishlistPostSkeleton: samples) {
+        batch.bindBean(wishlistPostSkeleton).add();
+      }
+      batch.execute();
+    });
+  }
+
   /**
    * Create user table schema and add sample users to it.
    *
@@ -114,6 +138,7 @@ public final class Database {
 
   public static void drop(Jdbi jdbi) {
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS wishlist_post;");
       handle.execute("DROP TABLE IF EXISTS post_hashtag;");
       handle.execute("DROP TABLE IF EXISTS image;");
       handle.execute("DROP TABLE IF EXISTS hashtag;");
