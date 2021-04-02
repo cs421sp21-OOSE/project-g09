@@ -9,7 +9,6 @@ import { Redirect } from "react-router-dom";
 
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
-
   return (
     <div>
       <Header />
