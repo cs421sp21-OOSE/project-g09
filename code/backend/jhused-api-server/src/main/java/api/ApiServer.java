@@ -234,22 +234,22 @@ public class ApiServer {
     //SSO filter
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
 
-    /**
-     * Frontend should redirect user to backend, to this address
-     * When the user tries to visit this address, security filter will
-     * kick in and check if the user has already signed in.
-     *    If signed in,
-     *        we should redirect the user to frontend homepage.
-     *    If not signed in,
-     *        security filter will redirect user to SSO, where user signs in, then
-     *        SSO will route to the callbackurl with user's profile. In this call back route,
-     *        we should interact with the database to check if the user is a first time user.
-     *        If so, create user in database.
-     *        To do this, I think we need to write a
-     *        Callback logic class (not so sure, about to look for doc).
-     *        Then, the user signed in, he will be redirect again back to this address, where we
-     *        redirect him to the ui frontend homepage.
-     * It seems that session stuff is handled by pac4j (the default callbacklogic)
+    /*
+      Frontend should redirect user to backend, to this address
+      When the user tries to visit this address, security filter will
+      kick in and check if the user has already signed in.
+         If signed in,
+             we should redirect the user to frontend homepage.
+         If not signed in,
+             security filter will redirect user to SSO, where user signs in, then
+             SSO will route to the callbackurl with user's profile. In this call back route,
+             we should interact with the database to check if the user is a first time user.
+             If so, create user in database.
+             To do this, I think we need to write a
+             Callback logic class (not so sure, about to look for doc).
+             Then, the user signed in, he will be redirect again back to this address, where we
+             redirect him to the ui frontend homepage.
+      It seems that session stuff is handled by pac4j (the default callbacklogic)
      */
     get("/jhu/login", (req, res) -> {
       List<CommonProfile> userProfiles = getProfiles(req, res);
@@ -281,9 +281,9 @@ public class ApiServer {
     get("/callback", callback);
     post("/callback", callback);
 
-    /**
-     * returns the user's profile (it's a SSO thing, not the one in our database)
-     * returns empty [] if user is not signed in.
+    /*
+      returns the user's profile (it's a SSO thing, not the one in our database)
+      returns empty [] if user is not signed in.
      */
     get("/api/userProfile", (req, res) -> {
       final Map map = new HashMap();

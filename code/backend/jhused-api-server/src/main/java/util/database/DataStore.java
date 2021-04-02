@@ -299,17 +299,17 @@ public final class DataStore {
         + ".", false));
     messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "005" + "1".repeat(33), "Welcome to JHUsed"
         + ".", false));
-    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "006" + "1".repeat(33), "Welcome to JHUsed"
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "005" + "2".repeat(33), "Welcome to JHUsed"
         + ".", false));
     messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "007" + "1".repeat(33), "Welcome to JHUsed"
         + ".", false));
     messages.add(new Message(UUID.randomUUID().toString(), "001" + "1".repeat(33), "001" + "1".repeat(33), "Welcome "
         + "to JHUsed.", false));
-    messages.add(new Message(UUID.randomUUID().toString(), "005" + "1".repeat(33), "001" + "2".repeat(33), "Welcome "
+    messages.add(new Message(UUID.randomUUID().toString(), "005" + "1".repeat(33), "002" + "1".repeat(33), "Welcome "
         + "to JHUsed.", false));
-    messages.add(new Message(UUID.randomUUID().toString(), "006" + "1".repeat(33), "001" + "3".repeat(33), "Welcome "
+    messages.add(new Message(UUID.randomUUID().toString(), "005" + "2".repeat(33), "003" + "1".repeat(33), "Welcome "
         + "to JHUsed.", false));
-    messages.add(new Message(UUID.randomUUID().toString(), "007" + "1".repeat(33), "001" + "4".repeat(33), "Welcome "
+    messages.add(new Message(UUID.randomUUID().toString(), "007" + "1".repeat(33), "004" + "1".repeat(33), "Welcome "
         + "to JHUsed.", false));
     return messages;
   }

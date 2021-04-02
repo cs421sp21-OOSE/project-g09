@@ -22,7 +22,7 @@ import java.util.Map;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = false;
+  public static boolean USE_TEST_DATABASE = true;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -117,11 +117,12 @@ public final class Database {
     jdbi.useTransaction(handle -> {
       handle.execute(sql);
     });
+    insertSampleMessages(jdbi, samples);
   }
 
   public static void insertSampleMessages(Jdbi jdbi, List<Message> samples) {
-    String sql = "INSERT INTO message(id, sender_id, receiver_id, message, read, sent_time) "
-        + "VALUES(:id, :sender_id, :receiver_id, message, read, sent_time);";
+    String sql = "INSERT INTO message(id, sender_id, receiver_id, message, read) "
+        + "VALUES(:id, :senderId, :receiverId, :message, :read);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
       for (Message message: samples) {
