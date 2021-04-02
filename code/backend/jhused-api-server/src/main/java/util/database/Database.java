@@ -22,7 +22,7 @@ import java.util.Map;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = true;
+  public static boolean USE_TEST_DATABASE = false;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -125,10 +125,10 @@ public final class Database {
   public static void createUsersTableWithSampleData(Jdbi jdbi, List<User> samples) {
     String sql = "CREATE TABLE IF NOT EXISTS jhused_user("
         + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
-        + "name VARCHAR(15) NOT NULL,"
-        + "email VARCHAR(30) NOT NULL UNIQUE ,"
+        + "name VARCHAR(100) NOT NULL,"
+        + "email VARCHAR(100) NOT NULL,"
         + "profile_image VARCHAR(200),"
-        + "location VARCHAR(100)"
+        + "location VARCHAR(500)"
         + ");";
     jdbi.useTransaction(handle -> {
       handle.execute(sql);

@@ -23,6 +23,10 @@ public class User {
 
 	/**
 	 * Constructor using all but wishlist.
+	 * **IMPORTANT** when adding a list of object, make sure, initiate the list in default constructor,
+	 * also include an {add[the name of the field, like 'images' for example]} function, to add element, see
+	 * addImages as an example. This might be counter intuitive as 'addImages' sounds weird, but it is expected
+	 * by the **ResultSetLinkedHashMapAccumulatorProvider**.
 	 * @param id
 	 * @param name
 	 * @param email
@@ -94,7 +98,7 @@ public class User {
 	 * Add post to this user's wishlist.
 	 * @param post
 	 */
-	public void addWishlistPost(Post post) {
+	public void addWishlist(Post post) {
 		if (wishlist == null)
 			wishlist = new ArrayList<>();
 		wishlist.add(post);
