@@ -268,8 +268,10 @@ public class ApiServer {
           if (userDao.create(user) == null) {
             throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
           }
+          res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getUsername(), 302);
+        }else{
+          res.redirect(FRONTEND_URL, 302);
         }
-        res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getUsername(), 302);
       } catch (DaoException | NullPointerException ex) {
         throw new ApiError(ex.getMessage(), 500);
       }
