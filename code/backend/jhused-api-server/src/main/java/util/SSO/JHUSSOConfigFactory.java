@@ -33,7 +33,6 @@ public class JHUSSOConfigFactory implements ConfigFactory {
     //only Saml2 client.
     final Clients clients = new Clients("https://jhused-api-server.herokuapp.com/callback", saml2Client);
 
-    //TODO figure out this authorizer stuff
     final Config config = new Config(clients);
     config.setHttpActionAdapter(new HttpActionAdapter());
     return config;

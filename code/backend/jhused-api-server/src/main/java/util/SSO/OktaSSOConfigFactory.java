@@ -31,7 +31,6 @@ public class OktaSSOConfigFactory implements ConfigFactory {
     //only Saml2 client.
     final Clients clients = new Clients("http://localhost:8080/callback", saml2Client);
 
-    //TODO figure out this authorizer stuff
     final Config config = new Config(clients);
 //        config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
 //    config.addAuthorizer("custom", new CustomAuthorizer());
