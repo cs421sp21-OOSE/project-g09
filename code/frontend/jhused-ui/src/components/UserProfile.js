@@ -11,6 +11,8 @@ import { useHistory, useParams } from "react-router-dom";
 const UserProfile = (props) => {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
+  const [mode, setMode] = useState("selling");
+  const [wishlist, setWishlist] = useState([]);
   const userContext = useContext(UserContext.Context);
   const history = useHistory();
   const params = useParams();
@@ -83,7 +85,7 @@ const UserProfile = (props) => {
               src={user.profileImage}
               alt="icon"
             />
-            <div className="pt-1 mx-2 font-semibold">
+            <div className="pt-1 mx-4 font-semibold">
               <h1 className="text-2xl font-bold"> {user.name} </h1>
               <div className="text-lg">{user.email}</div>
               <div className="text-lg">
@@ -91,9 +93,36 @@ const UserProfile = (props) => {
               </div>
             </div>
           </div>
-          <h1 className="text-2xl font-bold"> Selling </h1>
+          <div className="space-x-10">
+            <button
+              className="focus:outline-none disabled:hover:text-black hover:text-red-600"
+              onClick={() => {
+                setMode("selling");
+              }}
+            >
+              <h1 className="text-2xl font-bold my-2 focus:outline-none">
+                {" "}
+                Selling{" "}
+              </h1>
+            </button>
+            <button
+              className="focus:outline-none disabled:hover:text-black hover:text-red-600"
+              onClick={() => {
+                setMode("wishlist");
+              }}
+            >
+              <h1 className="text-2xl font-bold my-2 focus:outline-none">
+                {" "}
+                Wishlist{" "}
+              </h1>
+            </button>
+          </div>
           <div className="">
-            <ImageGrid posts={posts} displayEdit={true} />
+            {mode === "selling" ? (
+              <ImageGrid posts={posts} displayEdit={true} />
+            ) : (
+              <ImageGrid posts={wishlist} displayEdit={false} />
+            )}
           </div>
         </div>
       </div>
