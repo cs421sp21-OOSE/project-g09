@@ -22,7 +22,7 @@ import java.util.Map;
  * A utility class with methods to establish JDBC connection, set schemas, etc.
  */
 public final class Database {
-  public static boolean USE_TEST_DATABASE = false;
+  public static boolean USE_TEST_DATABASE = true;
   public static final String AUTO_UPDATE_TIMESTAMP_FUNC_NAME = "auto_update_update_time_column";
 
   private Database() {
@@ -95,18 +95,24 @@ public final class Database {
 
   public static void createWishlistPostsTableWithSampleData(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "CREATE TABLE IF NOT EXISTS wishlist_post("
-            + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
-            + "user_id VARCHAR(50) NOT NULL"
+            + "post_id VARCHAR(50) NOT NULL,"
+            + "user_id VARCHAR(50) NOT NULL,"
+            + "PRIMARY KEY (post_id, user_id),"
+            + "FOREIGN KEY (post_id) " // Note: no comma here
+            + "REFERENCES post(id) "
+            + "ON DELETE CASCADE"
             + ");";
+
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS wishlist_post;");
       handle.execute(sql);
     });
     insertSampleWishlistPosts(jdbi, samples);
   }
 
   public static void insertSampleWishlistPosts(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
-    String sql = "INSERT INTO wishlist_post(id, user_id) "
-            + "VALUES(:id, :user_id);";
+    String sql = "INSERT INTO wishlist_post(post_id, user_id) "
+            + "VALUES(:post_id, :user_id);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
       for (WishlistPostSkeleton wishlistPostSkeleton: samples) {
