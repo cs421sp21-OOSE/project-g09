@@ -4,7 +4,8 @@ import Location from "./Location";
 import axios from "../util/axios";
 import Header from "./Header";
 import { UserContext } from "../state";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, Redirect } from "react-router-dom";
+import context from "react-bootstrap/esm/AccordionContext";
 /**
  * Component for user profile page
  */
@@ -50,7 +51,7 @@ const UserProfile = (props) => {
       });
   }, []);
 
-  if (user && posts) {
+  if (user && posts && userContext.user) {
     return (
       <div className="user-profile">
         <Header />
@@ -127,6 +128,8 @@ const UserProfile = (props) => {
         </div>
       </div>
     );
+  } else if (!userContext.user) {
+    return <div><Redirect to="/editor/redirect/unauthorized-access" /></div>;
   } else {
     return "";
   }

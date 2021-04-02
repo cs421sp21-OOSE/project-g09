@@ -5,17 +5,24 @@ import { Formik, Form, useField } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { storage } from "./firebase";
+import {Redirect} from "react-router-dom";
 
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
-  return (
-    <div>
-      <Header />
-      <div className="flex justify-center w-full">
-        <SettingForm user={userContext.user}/>
+
+  if (userContext) {
+    return (
+      <div>
+        <Header />
+        <div className="flex justify-center w-full">
+          <SettingForm user={userContext.user}/>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div><Redirect to="/editor/redirect/unauthorized-access" /></div>;
+  }
+
 };
 
 export default UserSettings;
