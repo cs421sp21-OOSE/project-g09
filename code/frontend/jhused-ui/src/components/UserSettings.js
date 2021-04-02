@@ -64,7 +64,7 @@ const SettingForm = (props) => {
 
           <ProfileAvatar 
             className="col-span-full"
-            name="profilePic"
+            name="profileImage"
           />
 
           <FormInput 
