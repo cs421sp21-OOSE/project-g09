@@ -6,6 +6,7 @@ import Header from "./Header";
 import { UserContext } from "../state";
 import { useHistory, useParams, Redirect } from "react-router-dom";
 import context from "react-bootstrap/esm/AccordionContext";
+
 /**
  * Component for user profile page
  */
@@ -128,8 +129,6 @@ const UserProfile = (props) => {
         </div>
       </div>
     );
-  } else if (!userContext.user) {
-    return <div><Redirect to="/editor/redirect/unauthorized-access" /></div>;
   } else {
     return "";
   }

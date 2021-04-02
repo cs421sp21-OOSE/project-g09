@@ -229,7 +229,7 @@ const EditorFormik = (props) => {
       </div>
     );
   } else {
-    return <div><Redirect to="/editor/redirect/unauthorized-access" /></div>;
+    return "";
   }
 };
 

@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import axios from "../util/axios";
 import Icon from "../images/avatars/retsuko-1175534-1280x0.jpeg";
+import {Redirect} from "react-router-dom";
 
 // not totally accurate - just a stand in for now
 const fakeUser = {
@@ -36,11 +37,12 @@ const Provider = (props) => {
       })
       .then((jhed) => {
         const path = "/api/users/" + jhed;
-        return axios.get(path);
+        return axios.get(path,);
       })
       .then((response) => {
+        // needs to be smoething here to deal with the case that it's a first time user, I think. 
+        // 
         setUser(response.data);
-        // we will need to do something else instead of this if the user does not exist
       })
       .catch((err) => {
         console.log(err);
