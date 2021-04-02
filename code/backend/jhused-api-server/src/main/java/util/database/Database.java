@@ -93,6 +93,43 @@ public final class Database {
     return Jdbi.create(ds).installPlugin(new PostgresPlugin());
   }
 
+  /**
+   * create message table with samples
+   * @param jdbi jdbi
+   * @param samples message samples
+   */
+  public static void createMessageTableWithSampleData(Jdbi jdbi, List<Message> samples) {
+    String sql = "CREATE TABLE IF NOT EXISTS message("
+        + "id char(36) NOT NULL PRIMARY KEY,"
+        + "sender_id VARCHAR(50) NOT NULL,"
+        + "receiver_id VARCHAR(50) NOT NULL,"
+        + "message VARCHAR NOT NULL,"
+        + "read BOOLEAN DEFAULT FALSE,"
+        + "sent_time TIMESTAMPEZ DEFAULT CURRENT_TIMESTAMP,"
+        + "FOREIGN KEY (sender_id) " // Note: no comma here
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE,"
+        + "FOREIGN KEY (receiver_id) " // Note: no comma here
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE"
+        + ");";
+    jdbi.useTransaction(handle -> {
+      handle.execute(sql);
+    });
+  }
+
+  public static void insertSampleMessages(Jdbi jdbi, List<Message> samples) {
+    String sql = "INSERT INTO message(id, sender_id, receiver_id, message, read, sent_time) "
+        + "VALUES(:id, :sender_id, :receiver_id, message, read, sent_time);";
+    jdbi.useTransaction(handle -> {
+      PreparedBatch batch = handle.prepareBatch(sql);
+      for (Message message: samples) {
+        batch.bindBean(message).add();
+      }
+      batch.execute();
+    });
+  }
+
   public static void createWishlistPostsTableWithSampleData(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "CREATE TABLE IF NOT EXISTS wishlist_post("
             + "id VARCHAR(50) NOT NULL PRIMARY KEY,"
@@ -138,6 +175,7 @@ public final class Database {
 
   public static void drop(Jdbi jdbi) {
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS message;");
       handle.execute("DROP TABLE IF EXISTS wishlist_post;");
       handle.execute("DROP TABLE IF EXISTS post_hashtag;");
       handle.execute("DROP TABLE IF EXISTS image;");
