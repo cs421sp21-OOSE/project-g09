@@ -19,7 +19,9 @@ const Provider = (props) => {
 
   useEffect(() => {
     axios
-      .get("/api/userProfile")
+      .get("/api/userProfile", {
+        withCredentials: true,
+      })
       .then((response) => {
         console.log(response);
         // setUser
@@ -38,6 +40,7 @@ const Provider = (props) => {
       })
       .then((response) => {
         setUser(response.data);
+        // we will need to do something else instead of this if the user does not exist
       })
       .catch((err) => {
         console.log(err);
