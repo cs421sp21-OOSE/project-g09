@@ -27,7 +27,7 @@ const Provider = (props) => {
       })
       .then((jhed) => {
         const path = "/api/users/" + jhed;
-        return axios.get(path,);
+        return axios.get(path);
       })
       .then((response) => {
         console.log(response.data);

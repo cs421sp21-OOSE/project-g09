@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../state";
 import {
   CarouselProvider,
@@ -16,40 +16,58 @@ import axios from "axios";
 const Carousel = (props) => {
   console.log(props.images);
   const userContext = useContext(UserContext.Context);
+  const [inWishlist, setInWishlist] = useState(false);
 
-  const renderDots = () => {
-    return <div>dot</div>;
-  };
-
-  const addToWishlist = (postID) => {
-    const path = `/api/users/${userContext.user.id}/wishlist/all`;
-    axios
-      .put(path, {
-        params: {
-          userId: userContext.user.id,
-          postId: postID,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((e) => {
-        console.log(e);
+  useEffect(() => {
+    if (userContext.user) {
+      /*
+      userContext.user.wishlist.forEach((post) => {
+        if (post.id === props.id) setInWishlist(true);
       });
+      */
+
+      const found = userContext.user.wishlist.find((post) => post.id === props.id);
+      if (found) setInWishlist(true);
+    }
+  }, []);
+
+  const handleWishlist = (postID) => {
+    // check if post is in wishlist already
+    const path = `api/users/${userContext.user.id}/wishlist/${postID}`;
+    if (inWishlist) {
+      axios
+        .delete(path)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      axios
+        .post(path)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+    setInWishlist(!inWishlist);
   };
 
   if (userContext.user) {
     return (
       <div className="relative carousel m-0 p-0 w-full h-full ">
         <button
-          className="origin-top-right absolute right-3 top-0 text-gray-300 hover:text-red-600 focus:outline-none"
-          onClick={addToWishlist(props.id)}
+          className={`origin-top-right absolute right-3 top-0 ${inWishlist ? "text-red-600": "text-gray-300 hover:text-red-600"} focus:outline-none`}
+          onClick={() => handleWishlist(props.id)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            className="w-7 h-7 sm:w-10 sm:h-10"
+            className={`${inWishlist ? "": "hover:w-10 hover:h-10 hover:sm:w-11 hover:sm:h-11"} w-7 h-7 sm:w-10 sm:h-10 `}
           >
             <path
               fillRule="evenodd"

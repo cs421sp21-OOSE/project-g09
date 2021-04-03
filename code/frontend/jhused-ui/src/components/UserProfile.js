@@ -54,9 +54,11 @@ const UserProfile = (props) => {
 
   useEffect(() => {
     const path = `api/users/${params.userID}/wishlist/all`;
+    console.log(path);
     axios
       .get(path)
       .then((response) => {
+        console.log(response.data);
         setWishlist(response.data);
       })
       .catch((e) => {
