@@ -121,13 +121,19 @@ What we have done:
 * We have migrated to Tailwind CSS framework. Now, our app is media responsive, looks good on variaous devices. We have begun to adjust our application's style moving towards a more morden styled ecommerce website like Etsy and Depop.
 * We have added user input form validations and remainders to make editing posts or user's profile more user friendly.
 * We have migrated from Sql2o to Jdbi3. Now we can use join sqls to retrieve complex models with 1 database connection, which speeds up our application. However, due to the fact that we are using Firebase to sotre images, so the images have to be downloaded after user renders the frontend page. This cause a delay in showing posts.
+* We have added 4 additional nice-to-have user stories, which will help our application go beyond CRUD.
 
 What we have not done:
 * We have not made the wish list feature rich enough. We will add notification to wish list.
 * We have not made the chatting persistant. Although, we have all Apis ready, we did not have time to integrate with the frontend. In the next iteration, we will definately be able to add persistant to chatting.
-* We have not implemented the pagination yet. It's an optional task, and will consider implement it in the next iteration.
+* We have not implemented the pagination yet. It's an optional task, and will consider implementing it in the next iteration.
 * We have not made our application looks more fancy. We did start using the Tailwind css framework, and adjusted the style gradually. In the next iteration, we will shift more time on this task.
+* We have not made our application go very beyond CRUD, but we now have a clear plan on how should we do that. We have added several additional nice-to-have user stories that can help our application go beyond CRUD. We will implement them in the following iterations. In the following iterations, we have much less user stories comparing with iteration 1 to 3, so we will have more time concentrating on going beyond CRUD.
 
 Challenges
 * Migrating from Sql2o to Jdbi3 is challenging. We have to write our own result set handler to handle complex joins. We used java reflection to solve this. Some backend members feel challenged and met some issue adjusting to Jdbi3, we helped each other and finished all the backend jobs.
 * Integrating JHU SSO is also very challenging. Due to the fact, we have separate frontend and backend, our case is not very common, and resources are even less on the Internet. We have met issues with Cross-origin resource sharing. It's hard to figure out how our application login flow should be. As the SP-Metadata is only registered for our deployed server, developing in local became challenging, have to use another IDP for local development.
+* We met some challenges dealing with Bootstrap and Tailwind conflicts when developing the chat feature. We have to migrate from Bootstrap to Tailwind.
+
+How should we improve:
+* We should make a draft of Apis at the begining of the iteration, and update and communicate with each other frequently. Many of our jobs depends on each other, so some has to wait for others to finish their jobs. Hope planing will ease this problem.
