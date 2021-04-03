@@ -6,11 +6,10 @@ import Header from "./Header";
 import { UserContext } from "../state";
 import { useParams, useHistory } from "react-router-dom";
 
-// TODO: set up getting user info of post
 const PostDetails = (props) => {
   const params = useParams();
   console.log(params.postID);
-  const context = useContext(UserContext.Context);
+  const userContext = useContext(UserContext.Context);
 
   const [post, setPost] = useState(null);
   const [postUser, setPostUser] = useState(null);
