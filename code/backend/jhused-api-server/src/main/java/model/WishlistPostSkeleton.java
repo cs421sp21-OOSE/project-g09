@@ -4,12 +4,16 @@ import lombok.Data;
 
 @Data
 public class WishlistPostSkeleton {
-    private String id;  //of post
-    private String user_id;  // of user who has it wish-listed.
+    private String postId;  //of post
+    private String userId;  // of user who has it wish-listed.
 
-    public WishlistPostSkeleton(String id, String user_id) {
-        this.id = id;
-        this.user_id = user_id;
+    public WishlistPostSkeleton() {
+
+    }
+
+    public WishlistPostSkeleton(String postId, String userId) {
+        this.postId = postId;
+        this.userId = userId;
     }
 
     //Don't need set/get functions! Lombok automates these.

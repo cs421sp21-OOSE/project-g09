@@ -384,7 +384,6 @@ public class ApiServer {
       }
     });
 
-    //TODO might need to change this to be implemented elsewhere or to redirect back to original screen.
 
     //add the specified post to the specified user's wishlist.
     put("/api/users/:userId/wishlist/all", (req, res) -> {
@@ -415,6 +414,8 @@ public class ApiServer {
         throw new ApiError(ex.getMessage(), 500);
       }
     });
+
+    // END WISHLIST ROUTE
 
     get("/api/messages", (req, res) -> {
       try {
