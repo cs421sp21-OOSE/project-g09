@@ -1,4 +1,3 @@
-import {Button, Form, InputGroup} from 'react-bootstrap';
 import {useCallback, useState} from "react";
 import {useConversations} from "../../state/ConversationsProvider";
 
@@ -46,22 +45,20 @@ const OpenConversation = () => {
           })}
         </div>
       </div>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="m-2">
-          <InputGroup>
-            <Form.Control
-              as="textarea"
+      <form onSubmit={handleSubmit}>
+        <div className="inline-flex m-2">
+            <input
+              type="text"
               required
               value={text}
               onChange={e => setText(e.target.value)}
-              style={{ height: '75px', resize: 'none' }}
+              className="border rounded-full px-6 py-3 outline-none"
+              placeholder="Type your message"
             />
-            <InputGroup.Append>
-              <Button type="submit">Send</Button>
-            </InputGroup.Append>
-          </InputGroup>
-        </Form.Group>
-      </Form>
+            <button type="submit">Send</button>
+
+        </div>
+      </form>
     </div>
   );
 };

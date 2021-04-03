@@ -81,7 +81,6 @@ const UserProfile = (props) => {
             ) : (
               ""
             )}
-
             <img
               className="w-24 h-24 rounded-full overflow-hidden object-cover"
               src={user.profileImage}
