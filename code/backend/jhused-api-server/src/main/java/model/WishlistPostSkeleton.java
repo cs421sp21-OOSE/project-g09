@@ -7,9 +7,13 @@ public class WishlistPostSkeleton {
     private String postId;  //of post
     private String userId;  // of user who has it wish-listed.
 
-    public WishlistPostSkeleton(String post_id, String user_id) {
-        this.postId = post_id;
-        this.userId = user_id;
+    public WishlistPostSkeleton() {
+
+    }
+
+    public WishlistPostSkeleton(String postId, String userId) {
+        this.postId = postId;
+        this.userId = userId;
     }
 
     //Don't need set/get functions! Lombok automates these.

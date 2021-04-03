@@ -115,7 +115,7 @@ public final class Database {
 
   public static void insertSampleWishlistPosts(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "INSERT INTO wishlist_post(post_id, user_id) "
-            + "VALUES(:post_id, :user_id);";
+            + "VALUES(:postId, :userId);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
       for (WishlistPostSkeleton wishlistPostSkeleton: samples) {

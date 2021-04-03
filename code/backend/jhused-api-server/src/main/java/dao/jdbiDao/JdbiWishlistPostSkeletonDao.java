@@ -26,14 +26,14 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
     }
 
     @Override
-    public WishlistPostSkeleton createWishListEntry(String post_id, String user_id) throws DaoException {
+    public WishlistPostSkeleton createWishListEntry(String postId, String userId) throws DaoException {
         String createWishlistEntrySql = "WITH inserted AS (INSERT INTO wishlist_post(post_id, user_id) VALUES(:post_id, :user_id) RETURNING *) SELECT * FROM inserted;";
 
         try {
             return jdbi.inTransaction(handle ->
                     handle.createQuery(createWishlistEntrySql)
-                            .bind("post_id", post_id)
-                            .bind("user_id", user_id)
+                            .bind("post_id", postId)
+                            .bind("user_id", userId)
                             .mapToBean(WishlistPostSkeleton.class)
                             .findOne()).orElse(null);
         } catch (StatementException | IllegalStateException | NullPointerException ex) {
@@ -53,14 +53,17 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
         return wishlistPosts;
     }
 
-    private List<WishlistPostSkeleton> readAll(String user_id) throws DaoException {
-        String sql = "SELECT FROM wishlist_post WHERE wishlist_post.user_id = :user_id;";
+    private List<WishlistPostSkeleton> readAll(String userId) throws DaoException {
+        String sql = "SELECT * FROM wishlist_post WHERE user_id = :user_id;";
 
         try {
             return jdbi.inTransaction(handle ->
-                    handle.createQuery(sql).bind("user_id", user_id).mapToBean(WishlistPostSkeleton.class).list());
+                    handle.createQuery(sql)
+                            .bind("user_id", userId)
+                            .mapToBean(WishlistPostSkeleton.class)
+                            .list());
         } catch (StatementException | IllegalStateException ex) {
-            throw new DaoException("Unable to read wishlist for userId " + user_id, ex);
+            throw new DaoException("Unable to read wishlist for userId " + userId, ex);
         }
 
     }

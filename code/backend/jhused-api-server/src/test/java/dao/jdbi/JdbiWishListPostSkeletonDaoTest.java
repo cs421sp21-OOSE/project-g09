@@ -25,8 +25,8 @@ public class JdbiWishListPostSkeletonDaoTest {
 
     @BeforeAll
     static void connectToDatabase() throws URISyntaxException {
-        //Database.USE_TEST_DATABASE = true; // use test dataset
-        //Database.main(null); // reset dataset and add samples
+        Database.USE_TEST_DATABASE = true; // use test dataset
+        Database.main(null); // reset dataset and add samples
         jdbi = Database.getJdbi();
     }
 
@@ -49,9 +49,9 @@ public class JdbiWishListPostSkeletonDaoTest {
     @Test //test breaks if specified user_id has more than one post wishlisted!
     @DisplayName("test to see if create wishlist entry works")
     void createWishlistEntryWorks() {
-        WishlistPostSkeleton newEntry = wishlistPostSkeletonDao.createWishListEntry("8".repeat(36), "002111111111111111111111111111111111");
+        WishlistPostSkeleton newEntry = wishlistPostSkeletonDao.createWishListEntry("8".repeat(36), "005111111111111111111111111111111111");
 
-        List<Post> wishlistSkeletonEntries = wishlistPostSkeletonDao.readAllWishlistEntries("002111111111111111111111111111111111");
+        List<Post> wishlistSkeletonEntries = wishlistPostSkeletonDao.readAllWishlistEntries("005111111111111111111111111111111111");
 
         assertEquals(wishlistSkeletonEntries.get(0).getId(), newEntry.getPostId());
 
