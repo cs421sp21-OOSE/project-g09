@@ -18,7 +18,7 @@ const SideBar = ({ user }) => {
   };
 
   return (
-    <div style={{ width: '250px' }} className="d-flex flex-column">
+    <div className="w-72 flex-none flex flex-col relative">
       <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
         <Nav variant="tabs" className="justify-content-center">
           <Nav.Item>
@@ -36,15 +36,18 @@ const SideBar = ({ user }) => {
             <Contacts />
           </Tab.Pane>
         </Tab.Content>
-        <div className="p-2 border-top border-right small">
-          Your Id: <span className="text-muted">{user.id}</span>
-          <br/>
-          Your Name: <span className="text-muted">{user.name}</span>
-        </div>
-        <Button onClick={() => setModalOpen(true)} className="rounded-0">
-          New {conversationsOpen ? 'Conversations' : 'Contacts'}
-        </Button>
       </Tab.Container>
+
+      <div className="w-full absolute bottom-0 py-4 px-2">
+          <div className="p-2 border text-sm">
+            Your Id: <span className="text-gray-500 truncate">{user.id}</span>
+            <br/>
+            Your Name: <span className="text-gray-500">{user.name}</span>
+          </div>
+          <button onClick={() => setModalOpen(true)} className="w-full rounded-full focus:outline-none text-white font-semibold bg-blue-600 hover:bg-blue-800 py-1.5">
+            New {conversationsOpen ? 'Conversations' : 'Contacts'}
+          </button>
+      </div>
 
       <Modal show={modalOpen} onHide={closeModal}>
         {conversationsOpen ?
