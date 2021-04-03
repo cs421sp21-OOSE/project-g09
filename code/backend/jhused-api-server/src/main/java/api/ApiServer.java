@@ -392,7 +392,7 @@ public class ApiServer {
 
 
     //add the specified post to the specified user's wishlist.
-    post("/api/users/:userId/wishlist/all", (req, res) -> {
+    post("/api/users/:userId/wishlist/:postId", (req, res) -> {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
@@ -407,7 +407,7 @@ public class ApiServer {
     });
 
     //delete the specified wishlist entry
-    delete("/api/users/:userId/wishlist/all", (req, res) -> {
+    delete("/api/users/:userId/wishlist/:postId", (req, res) -> {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
