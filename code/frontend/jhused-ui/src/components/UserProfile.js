@@ -13,6 +13,7 @@ const UserProfile = (props) => {
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState(null);
   const [mode, setMode] = useState("selling");
+  const [editAccess, setEditAccess] = useState(false);
   const [wishlist, setWishlist] = useState([]);
   const userContext = useContext(UserContext.Context);
   const history = useHistory();
@@ -51,23 +52,14 @@ const UserProfile = (props) => {
       });
   }, []);
 
-
   useEffect(() => {
-    // /api/users/:userId/wishlist/all
-    const path = "/api/users/" + params.userID + "/wishlist/all";
-    axios
-      .get(path)
-      .then((response) => {
-        const postArray = response.data.posts;
-        postArray.sort(compareByStatus);
-        setWishlist(postArray);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+    if (userContext.user && userContext.user.id === params.userID) {
+      setEditAccess(true);
+    }
+  }, [userContext, setEditAccess]);
 
-  if (user && posts) {
+  if (user && posts && userContext.user) {
+    
     return (
       <div className="user-profile">
         <Header />
@@ -137,7 +129,7 @@ const UserProfile = (props) => {
           </div>
           <div className="">
             {mode === "selling" ? (
-              <ImageGrid posts={posts} displayEdit={true} />
+              <ImageGrid posts={posts} displayEdit={editAccess} />
             ) : (
               <ImageGrid posts={wishlist} displayEdit={false} />
             )}

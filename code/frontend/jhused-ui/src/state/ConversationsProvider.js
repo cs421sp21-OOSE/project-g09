@@ -52,6 +52,7 @@ const ConversationsProvider = ({ user, children }) => {
 
   useEffect(() => {
     if (socket == null) return
+    if (user == null) return
     socket.on('receive-message', addMessageToConversation)
     return () => socket.off('receive-message')
   }, [socket, addMessageToConversation])
@@ -61,7 +62,7 @@ const ConversationsProvider = ({ user, children }) => {
     addMessageToConversation({recipients, text, sender:user.id});
   };
 
-  const formattedConversations = conversations.map((conversation, index) => {
+  const formattedConversations = user? (conversations.map((conversation, index) => {
     const recipients = conversation.recipients.map(recipient => {
       const contact = contacts.find(contact => {
         return contact.id === recipient
@@ -81,7 +82,7 @@ const ConversationsProvider = ({ user, children }) => {
 
     const selected = index === selectedConversationIndex;
     return { ...conversation, messages, recipients, selected };
-  });
+  })) : [];
 
   const value = {
     conversations: formattedConversations,

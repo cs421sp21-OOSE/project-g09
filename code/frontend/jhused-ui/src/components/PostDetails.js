@@ -5,11 +5,17 @@ import axios from "../util/axios";
 import Header from "./Header";
 import { UserContext } from "../state";
 import { useParams, useHistory } from "react-router-dom";
+import { useContacts } from "../state/ContactsProvider";
+import { useConversations } from "../state/ConversationsProvider";
 
 const PostDetails = (props) => {
   const params = useParams();
   console.log(params.postID);
-  const userContext = useContext(UserContext.Context);
+  const context = useContext(UserContext.Context);
+  const history = useHistory();
+
+  const { createContact } = useContacts();
+  const { createConversation } = useConversations();
 
   const [post, setPost] = useState(null);
   const [postUser, setPostUser] = useState(null);
@@ -36,6 +42,14 @@ const PostDetails = (props) => {
         console.log(err);
       });
   }, []);
+
+  const handleMessageSeller = () => {
+    if (context.user) {
+      createContact(postUser.id, postUser.name);
+      createConversation([postUser.id]);
+      history.push(`/chat/${context.user.id}`);
+    }
+  }
 
   if (postUser && post) {
     return (
@@ -74,8 +88,9 @@ const PostDetails = (props) => {
                   <p className="text-xl">{post.description} </p>
                 </div>
                 <div className="block my-3 space-y-3">
-                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
-                    Message Sellar
+                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold"
+                    onClick={handleMessageSeller}>
+                    Message Seller
                   </button>
                   <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
                     {" "}
@@ -89,7 +104,7 @@ const PostDetails = (props) => {
       </div>
     );
   } else {
-    return "this is garbage";
+    return "";
   }
 };
 
