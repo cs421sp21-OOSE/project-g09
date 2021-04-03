@@ -94,7 +94,7 @@ public class ApiServer {
           String methodRequestHeaders = request
               .headers("Access-Control-Request-Method");
           if (accessControlRequestHeaders != null) {
-            response.header("Access-Control-Allow-Method",
+            response.header("Access-Control-Allow-Methods",
                 methodRequestHeaders);
           }
 
