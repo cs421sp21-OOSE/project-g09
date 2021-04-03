@@ -46,15 +46,23 @@ As a user, I want to report filthy posts, so that I don't have to see disgusting
 ## Software Architecture & Technology Stack
 **Frontend**
 * Framework: React
-* JS, HTML, CSS
-  
+* JS, HTML, CSS (Tailwind)
+* Formik for user input validation
 
 **Backend**
+
+API Server:  
 
 * Framework: SparkJava
 * Database: PostgreSQL, Firebase (only for image storage)  
 * Database ORM: Jdbi3 (sql2o until iteration3, from iteration3 using Jdbi3)  
+* Security: Pac4j
+
+Chat server: 
+
+* Framework: Express
 
 **Deploy**
+
 * Heroku
 
