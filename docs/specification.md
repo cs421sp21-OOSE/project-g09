@@ -60,7 +60,7 @@ API Server:
 
 Chat server: 
 
-* Framework: Express
+* Framework: Express for server, Socket.IO 3.0 for realtime chatting
 
 **Deploy**
 
