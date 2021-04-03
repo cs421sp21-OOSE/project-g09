@@ -311,6 +311,8 @@ public final class DataStore {
         + "to JHUsed.", false));
     messages.add(new Message(UUID.randomUUID().toString(), "007" + "1".repeat(33), "004" + "1".repeat(33), "Welcome "
         + "to JHUsed.", false));
+    messages.add(new Message("0".repeat(36), "JHUsedAdmin", "004" + "1".repeat(33), "Welcome "
+        + "to JHUsed.", false));
     return messages;
   }
 }

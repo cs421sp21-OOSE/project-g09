@@ -445,7 +445,7 @@ public class ApiServer {
         String messageId = req.params("messageId");
         Message message = gson.fromJson(req.body(), Message.class);
         if (message.getId() == null) {
-          throw new ApiError("Incomplete data", 500);
+          throw new ApiError("Incomplete data", 400);
         }
         if (!message.getId().equals(messageId)) {
           throw new ApiError("messageId does not match the resource identifier", 400);
@@ -455,7 +455,7 @@ public class ApiServer {
           throw new ApiError("Update failure", 500);
         }
         return gson.toJson(message);
-      } catch (DaoException | JsonSyntaxException ex) {
+      } catch (DaoException | NullPointerException | JsonSyntaxException ex) {
         throw new ApiError(ex.getMessage(), 500);
       }
     });
@@ -489,15 +489,19 @@ public class ApiServer {
           }
           return gson.toJson(resMessage);
         }
-      } catch (DaoException ex) {
+      } catch (DaoException | NullPointerException | JsonSyntaxException ex) {
         throw new ApiError("Message can't be created" + ex.getMessage(), 500);
       }
     });
 
     delete("/api/messages/:messageId", (req, res) -> {
       try {
-        return messageDao.delete(req.params("messageId"));
-      } catch (DaoException ex) {
+        Message message = messageDao.delete(req.params("messageId"));
+        if (message == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(message);
+      } catch (DaoException | NullPointerException | JsonSyntaxException ex) {
         throw new ApiError("Message can't be created" + ex.getMessage(), 500);
       }
     });
@@ -506,8 +510,11 @@ public class ApiServer {
       try {
         List<String> ids = gson.fromJson(req.body(), new TypeToken<ArrayList<String>>() {
         }.getType());
-        return messageDao.delete(ids);
-      } catch (DaoException ex) {
+        List<Message> messages = messageDao.delete(ids);
+        if(messages==null||ids==null||messages.size()!=ids.size())
+          throw new ApiError("Unable to delete all messages, contain invalid ids, rolled back, none is deleted.", 400);
+        return gson.toJson(messages);
+      } catch (DaoException | NullPointerException | JsonSyntaxException ex) {
         throw new ApiError("Message can't be created" + ex.getMessage(), 500);
       }
     });

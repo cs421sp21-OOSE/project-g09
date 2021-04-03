@@ -16,10 +16,7 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -291,7 +288,41 @@ class ServerTest {
   }
 
   @Test
-  public void createAMessagesWork() throws UnirestException {
+  public void getMessageGivenUserIdWorks() throws UnirestException {
+    final String URL = BASE_URL + "/api/messages/{userId}";
+    Map<String, List<Message>> userIds = new LinkedHashMap<>();
+    for (Message message : sampleMessages) {
+      if (userIds.get(message.getReceiverId()) == null) {
+        List<Message> messages = new ArrayList<>();
+        messages.add(message);
+        userIds.put(message.getReceiverId(), messages);
+      } else {
+        userIds.get(message.getReceiverId()).add(message);
+      }
+      if (userIds.get(message.getSenderId()) == null) {
+        List<Message> messages = new ArrayList<>();
+        messages.add(message);
+        userIds.put(message.getSenderId(), messages);
+      } else if (!userIds.get(message.getSenderId()).contains(message)) {
+        userIds.get(message.getSenderId()).add(message);
+      }
+    }
+    for (Map.Entry<String, List<Message>> entry : userIds.entrySet()) {
+      HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).routeParam("userId", entry.getKey()).asJson();
+      assertEquals(200, jsonResponse.getStatus());
+      for (int i = 0; i < entry.getValue().size(); ++i) {
+        Message message = entry.getValue().get(i);
+        assertEquals(message.getMessage(), jsonResponse.getBody().getArray().getJSONObject(i).get("message"));
+        assertEquals(message.getRead(), jsonResponse.getBody().getArray().getJSONObject(i).get("read"));
+        assertEquals(message.getId(), jsonResponse.getBody().getArray().getJSONObject(i).get("id"));
+        assertEquals(message.getSenderId(), jsonResponse.getBody().getArray().getJSONObject(i).get("senderId"));
+        assertEquals(message.getReceiverId(), jsonResponse.getBody().getArray().getJSONObject(i).get("receiverId"));
+      }
+    }
+  }
+
+  @Test
+  public void postAMessagesWork() throws UnirestException {
     final String URL = BASE_URL + "/api/messages";
     Message message = new Message(null, "JHUsedAdmin", "002" + "1".repeat(33), "11 test message", false);
     HttpResponse<JsonNode> jsonResponse = Unirest.post(URL).body(gson.toJson(message)).asJson();
@@ -305,7 +336,7 @@ class ServerTest {
   }
 
   @Test
-  public void createAListOfMessagesWork() throws UnirestException {
+  public void postAListOfMessagesWork() throws UnirestException {
     final String URL = BASE_URL + "/api/messages";
     Database.truncateTable(jdbi, "message");
     HttpResponse<JsonNode> jsonResponse =
@@ -334,7 +365,7 @@ class ServerTest {
   }
 
   @Test
-  void createAInvalidMessageReturn500() {
+  void postAInvalidMessageReturn500() {
     final String URL = BASE_URL + "/api/messages";
     Message message = new Message(null, "fff", "002" + "1".repeat(33), "11 test message", false);
     HttpResponse<JsonNode> jsonResponse = Unirest.post(URL).body(gson.toJson(message)).asJson();
@@ -348,11 +379,82 @@ class ServerTest {
   }
 
   @Test
-  void updateAMessageWorks() {
-    final String URL = BASE_URL + "/api/messages";
-    Message message = new Message(sampleMessages.get(0).getId(), "JHUsedAdmin", "002" + "1".repeat(33), "updated 11 "
+  void putAMessageWorks() {
+    final String URL = BASE_URL + "/api/messages/{messageId}";
+    Message message = new Message(sampleMessages.get(0).getId(), null, null, "updated 11 "
         + "test message", true);
-    HttpResponse<JsonNode> jsonResponse = Unirest.put(URL).body(gson.toJson(message)).asJson();
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.put(URL).routeParam("messageId", message.getId()).body(gson.toJson(message)).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertEquals(message.getMessage(), jsonResponse.getBody().getObject().get("message"));
+    assertEquals(message.getRead(), jsonResponse.getBody().getObject().get("read"));
   }
 
+  @Test
+  void putAnInvalidMessageWorks() {
+    final String URL = BASE_URL + "/api/messages/{messageId}";
+    Message message = new Message(null, null, null, "updated 11 "
+        + "test message", true);
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.put(URL).routeParam("messageId", sampleMessages.get(0).getId()).body(gson.toJson(message)).asJson();
+    assertEquals(400, jsonResponse.getStatus());
+    message.setId("jjj");
+    jsonResponse =
+        Unirest.put(URL).routeParam("messageId", sampleMessages.get(0).getId()).body(gson.toJson(message)).asJson();
+    assertEquals(400, jsonResponse.getStatus());
+  }
+
+  @Test
+  void deleteAMessageWorks() {
+    final String URL = BASE_URL + "/api/messages/{messageId}";
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.delete(URL).routeParam("messageId", sampleMessages.get(0).getId()).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    Message message = sampleMessages.get(0);
+    assertEquals(message.getMessage(), jsonResponse.getBody().getObject().get("message"));
+    assertEquals(message.getSenderId(), jsonResponse.getBody().getObject().get("senderId"));
+    assertEquals(message.getReceiverId(), jsonResponse.getBody().getObject().get("receiverId"));
+    assertEquals(message.getRead(), jsonResponse.getBody().getObject().get("read"));
+  }
+
+  @Test
+  void deleteNonExistingMessageThrow404() {
+    final String URL = BASE_URL + "/api/messages/{messageId}";
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.delete(URL).routeParam("messageId", "jlaksdjflais").asJson();
+    assertEquals(404, jsonResponse.getStatus());
+  }
+
+  @Test
+  void deleteAListOfMessagesWorks() {
+    final String URL = BASE_URL + "/api/messages";
+    List<String> ids = new ArrayList<>();
+    for (Message message : sampleMessages) {
+      ids.add(message.getId());
+    }
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.delete(URL).body(gson.toJson(ids)).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    List<Message> messages = sampleMessages;
+    for (int i = 0; i < messages.size(); ++i) {
+      JSONObject res = jsonResponse.getBody().getArray().getJSONObject(i);
+      assertEquals(messages.get(i).getMessage(), res.get("message"));
+      assertEquals(messages.get(i).getSenderId(), res.get("senderId"));
+      assertEquals(messages.get(i).getReceiverId(), res.get("receiverId"));
+      assertEquals(messages.get(i).getRead(), res.get("read"));
+    }
+  }
+
+  @Test
+  void deleteAListOfMessagesWithInvalidIdsReturn400() {
+    final String URL = BASE_URL + "/api/messages";
+    List<String> ids = new ArrayList<>();
+    for (Message message : sampleMessages) {
+      ids.add(message.getId());
+    }
+    ids.set(0,"jjhhs");
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.delete(URL).body(gson.toJson(ids)).asJson();
+    assertEquals(400, jsonResponse.getStatus());
+  }
 }
