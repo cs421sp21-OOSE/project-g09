@@ -1,6 +1,5 @@
 package api;
 
-import com.fasterxml.jackson.databind.type.ArrayType;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -26,10 +25,7 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-import spark.Spark;
+import spark.*;
 import util.SSO.JHUSSOConfigFactory;
 import util.database.Database;
 
@@ -95,6 +91,13 @@ public class ApiServer {
                 accessControlRequestHeaders);
           }
 
+          String methodRequestHeaders = request
+              .headers("Access-Control-Request-Method");
+          if (accessControlRequestHeaders != null) {
+            response.header("Access-Control-Allow-Method",
+                methodRequestHeaders);
+          }
+
           String originRequestHeaders = request.headers("Origin");
           if (originRequestHeaders != null) {
             switch (originRequestHeaders) {
@@ -109,10 +112,10 @@ public class ApiServer {
           }
           return "OK";
         };
-    options("/*", setAccess);
 
     before(setAccess::handle);
     before((request, response) -> response.header("Access-Control-Allow-Credentials", "true"));
+    options("/*",((request, response) -> "OK"));
   }
 
   /**
