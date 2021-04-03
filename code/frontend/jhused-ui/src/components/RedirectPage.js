@@ -50,6 +50,11 @@ const MESSAGES = {
     title: "Deletion failed",
     text: "There is a problem with the server. Please try again later.",
     icon: ICON_FAILURE
+  },
+  "unauthorized-access": {
+    title: "Unauthorized Access",
+    text: "You do not have access to this page. Please login",
+    icon: ICON_FAILURE
   }
 };
 
