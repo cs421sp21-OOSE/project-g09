@@ -47,7 +47,7 @@ const Provider = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  });
+  }, []);
 
   return (
     <Context.Provider value={{ user, setUser }}>
