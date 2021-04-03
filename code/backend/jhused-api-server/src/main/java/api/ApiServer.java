@@ -392,7 +392,7 @@ public class ApiServer {
 
 
     //add the specified post to the specified user's wishlist.
-    put("/api/users/:userId/wishlist/all", (req, res) -> {
+    post("/api/users/:userId/wishlist/all", (req, res) -> {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
