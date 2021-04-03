@@ -15,6 +15,8 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -96,6 +98,22 @@ public class JdbiImageDaoTest {
   }
 
   @Test
+  void createImageList() {
+    Post post = samplePosts.get(0);
+    Image newImage = new Image(UUID.randomUUID().toString(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
+        ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
+    Image newImage2 = new Image(UUID.randomUUID().toString(), post.getId(), "image.img");
+    List<Image> images = new ArrayList<>(Arrays.asList(newImage, newImage2));
+    assertEquals(images, imageDao.create(images));
+  }
+
+  @Test
+  void createImageListNull() {
+    assertEquals(new ArrayList<>(), imageDao.create(new ArrayList<>()));
+  }
+
+
+  @Test
   void updateImageWorks() {
     Post post = samplePosts.get(0);
     Image newImage = new Image(post.getImages().get(0).getId(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq" +
@@ -140,5 +158,23 @@ public class JdbiImageDaoTest {
   @Test
   void getImagesGivenNullPostIdReturnEmpty() {
     assertEquals(0, imageDao.getImagesOfPost(null).size());
+  }
+
+  @Test
+  void deleteImageList() {
+    Post post = samplePosts.get(0);
+    Image newImage = new Image(UUID.randomUUID().toString(), post.getId(), "https://1i9wu42vzknf1h4zwf2to5aq-wpengine" +
+        ".netdna-ssl.com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg");
+    Image newImage2 = new Image(UUID.randomUUID().toString(), post.getId(), "image.img");
+    List<Image> images = new ArrayList<>(Arrays.asList(newImage, newImage2));
+    imageDao.create(images);
+    List<String> imageIdList = new ArrayList<>(Arrays.asList(newImage.getId(), newImage2.getId()));
+    assertEquals(images, imageDao.delete(imageIdList));
+  }
+
+  @Test
+  void deleteImageListNonExist() {
+    List<String> imageIdList = new ArrayList<>(Arrays.asList("123", "456"));
+    assertEquals(new ArrayList<>(), imageDao.delete(imageIdList));
   }
 }
