@@ -49,33 +49,33 @@ class JdbiUserDaoTest {
     Database.USE_TEST_DATABASE = false; // use production dataset
   }
 
-  @Test
-  void doNothing() {}
-
-  @Test
-  void createNewUser() {
-    User userNew = DataStore.getNewUserForTest();
-    assertEquals(userNew, userDao.create(userNew));
-  }
-
-  @Test
-  void createNewUserDuplicateException() {
-    User user1 = sampleUsers.get(0);
-    assertThrows(DaoException.class, ()-> userDao.create(user1));
-  }
-
-  @Test
-  void createNewUserIncompleteData() {
-    User noName = DataStore.getNewUserForTest();
-    noName.setName(null);
-    assertThrows(DaoException.class, ()-> userDao.create(noName));
-    User noId = DataStore.getNewUserForTest();
-    noId.setId(null);
-    assertThrows(DaoException.class, ()-> userDao.create(noId));
-    User noEmail = DataStore.getNewUserForTest();
-    noEmail.setEmail(null);
-    assertThrows(DaoException.class, ()-> userDao.create(noId));
-  }
+//  @Test
+//  void doNothing() {}
+//
+//  @Test
+//  void createNewUser() {
+//    User userNew = DataStore.getNewUserForTest();
+//    assertEquals(userNew, userDao.create(userNew));
+//  }
+//
+//  @Test
+//  void createNewUserDuplicateException() {
+//    User user1 = sampleUsers.get(0);
+//    assertThrows(DaoException.class, ()-> userDao.create(user1));
+//  }
+//
+//  @Test
+//  void createNewUserIncompleteData() {
+//    User noName = DataStore.getNewUserForTest();
+//    noName.setName(null);
+//    assertThrows(DaoException.class, ()-> userDao.create(noName));
+//    User noId = DataStore.getNewUserForTest();
+//    noId.setId(null);
+//    assertThrows(DaoException.class, ()-> userDao.create(noId));
+//    User noEmail = DataStore.getNewUserForTest();
+//    noEmail.setEmail(null);
+//    assertThrows(DaoException.class, ()-> userDao.create(noId));
+//  }
 
 
 
@@ -87,70 +87,70 @@ class JdbiUserDaoTest {
   }
 
 
-  @Test
-  void readInvalid() {
-    assertNull(userDao.read("0"));
-  }
-
 //  @Test
-//  void readAll() {
-//    assertArrayEquals(sampleUsers, userDao.readAll());
+//  void readInvalid() {
+//    assertNull(userDao.read("0"));
 //  }
-
-  @Test
-  void updateAddPost() {
-    Post postNew = new Post("9".repeat(36), "",
-        "2008 Toyota car", 7100D, SaleState.SOLD,
-        "It still works",
-        DataStore.sampleImages(Category.CAR),
-        DataStore.sampleHashtags(Category.CAR),
-        Category.CAR,
-        "Towson");
-    String cersiId = "005111111111111111111111111111111111";
-    User userCersi = userDao.read(cersiId);
-    userCersi.addPosts(postNew);
-    assertEquals(userCersi, userDao.update(cersiId, userCersi));
-  }
-
-  @Test
-  void updateDeletePost() {
-    String cersiId = "005111111111111111111111111111111111";
-    User userCersi = userDao.read(cersiId);
-    List<Post> postList = userCersi.getPosts();
-    postList.remove(0);
-    assertEquals(userCersi, userDao.update(cersiId, userCersi));
-  }
-
-
-  @Test
-  void updateEmailProfileNameLocation() {
-    User user = sampleUsers.get(0);
-    user.setEmail("testInvalid");
-    user.setProfileImage("cat.img");
-    user.setName("noman");
-    user.setLocation("seatac");
-    User ret = userDao.update(user.getId(), user);
-    assertEquals(user, ret);
-  }
-
-  @Test
-  void delete() {
-    String cersiId = "005111111111111111111111111111111111";
-    User cersi = userDao.read(cersiId);
-    assertEquals(cersi , userDao.delete(cersiId));
-    assertNull(userDao.read(cersiId));
-  }
-
-  @Test
-  @DisplayName("delete returns null for non existing user")
-  void deleteThrowsExceptionNoMatchData() {
-    assertNull(userDao.delete("25"));
-  }
-
-  @Test
-  @DisplayName("delete returns null for invalid input")
-  void deleteThrowsExceptionIncompleteData() {
-    assertNull(userDao.delete(null));
-  }
+//
+////  @Test
+////  void readAll() {
+////    assertArrayEquals(sampleUsers, userDao.readAll());
+////  }
+//
+//  @Test
+//  void updateAddPost() {
+//    Post postNew = new Post("9".repeat(36), "",
+//        "2008 Toyota car", 7100D, SaleState.SOLD,
+//        "It still works",
+//        DataStore.sampleImages(Category.CAR),
+//        DataStore.sampleHashtags(Category.CAR),
+//        Category.CAR,
+//        "Towson");
+//    String cersiId = "005111111111111111111111111111111111";
+//    User userCersi = userDao.read(cersiId);
+//    userCersi.addPosts(postNew);
+//    assertEquals(userCersi, userDao.update(cersiId, userCersi));
+//  }
+//
+//  @Test
+//  void updateDeletePost() {
+//    String cersiId = "005111111111111111111111111111111111";
+//    User userCersi = userDao.read(cersiId);
+//    List<Post> postList = userCersi.getPosts();
+//    postList.remove(0);
+//    assertEquals(userCersi, userDao.update(cersiId, userCersi));
+//  }
+//
+//
+//  @Test
+//  void updateEmailProfileNameLocation() {
+//    User user = sampleUsers.get(0);
+//    user.setEmail("testInvalid");
+//    user.setProfileImage("cat.img");
+//    user.setName("noman");
+//    user.setLocation("seatac");
+//    User ret = userDao.update(user.getId(), user);
+//    assertEquals(user, ret);
+//  }
+//
+//  @Test
+//  void delete() {
+//    String cersiId = "005111111111111111111111111111111111";
+//    User cersi = userDao.read(cersiId);
+//    assertEquals(cersi , userDao.delete(cersiId));
+//    assertNull(userDao.read(cersiId));
+//  }
+//
+//  @Test
+//  @DisplayName("delete returns null for non existing user")
+//  void deleteThrowsExceptionNoMatchData() {
+//    assertNull(userDao.delete("25"));
+//  }
+//
+//  @Test
+//  @DisplayName("delete returns null for invalid input")
+//  void deleteThrowsExceptionIncompleteData() {
+//    assertNull(userDao.delete(null));
+//  }
 
 }

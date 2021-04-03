@@ -2,9 +2,11 @@ package dao.jdbiDao;
 
 import dao.PostDao;
 import dao.UserDao;
+import dao.WishlistPostSkeletonDao;
 import exceptions.DaoException;
 import model.Post;
 import model.User;
+import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.StatementException;
 import util.jdbiResultSetHandler.ResultSetLinkedHashMapAccumulatorProvider;
@@ -16,29 +18,53 @@ import java.util.List;
 public class JdbiUserDao implements UserDao {
   private final Jdbi jdbi;
   private final PostDao postDao;
+  private final WishlistPostSkeletonDao wishlistPostSkeletonDao;
   private final ResultSetLinkedHashMapAccumulatorProvider<User> userAccumulator;
   private final String SELECT_USER_BASIC =
       "SElECT jhused_user.*,"
-          + "post.id as posts_id, "
-          + "post.user_id as posts_user_id, "
-          + "post.title as posts_title, "
-          + "post.price as posts_price, "
-          + "post.sale_state as posts_sale_state, "
-          + "post.description as posts_description, "
-          + "post.category as posts_category, "
-          + "post.location as posts_location, "
-          + "post.create_time as posts_create_time, "
-          + "post.update_time as posts_update_time, "
-          + "image.id as posts_images_id, "
-          + "image.url as posts_images_url,"
-          + "image.post_id as posts_images_post_id, "
-          + "hashtag.id as posts_hashtags_id, "
-          + "hashtag.hashtag as posts_hashtags_hashtag "
+          + "user_post.id as posts_id, "
+          + "user_post.user_id as posts_user_id, "
+          + "user_post.title as posts_title, "
+          + "user_post.price as posts_price, "
+          + "user_post.sale_state as posts_sale_state, "
+          + "user_post.description as posts_description, "
+          + "user_post.category as posts_category, "
+          + "user_post.location as posts_location, "
+          + "user_post.create_time as posts_create_time, "
+          + "user_post.update_time as posts_update_time, "
+          + "user_post_image.id as posts_images_id, "
+          + "user_post_image.url as posts_images_url,"
+          + "user_post_image.post_id as posts_images_post_id, "
+          + "user_hashtag.id as posts_hashtags_id, "
+          + "user_hashtag.hashtag as posts_hashtags_hashtag, "
+
+          + "wishlist_post.id as wishlist_id, "
+          + "wishlist_post.user_id as wishlist_user_id, "
+          + "wishlist_post.title as wishlist_title, "
+          + "wishlist_post.price as wishlist_price, "
+          + "wishlist_post.sale_state as wishlist_sale_state, "
+          + "wishlist_post.description as wishlist_description, "
+          + "wishlist_post.category as wishlist_category, "
+          + "wishlist_post.location as wishlist_location, "
+          + "wishlist_post.create_time as wishlist_create_time, "
+          + "wishlist_post.update_time as wishlist_update_time, "
+          + "wishlist_post_image.id as wishlist_images_id, "
+          + "wishlist_post_image.url as wishlist_images_url,"
+          + "wishlist_post_image.post_id as wishlist_images_post_id, "
+          + "wishlist_hashtag.id as wishlist_hashtags_id, "
+          + "wishlist_hashtag.hashtag as wishlist_hashtags_hashtag "
+
           + "FROM jhused_user "
-          + "LEFT JOIN post ON jhused_user.id = post.user_id "
-          + "LEFT JOIN image ON image.post_id = post.id "
-          + "LEFT JOIN post_hashtag ON post_hashtag.post_id = post.id "
-          + "LEFT JOIN hashtag ON hashtag.id = post_hashtag.hashtag_id ";
+          + "LEFT JOIN post user_post ON jhused_user.id = user_post.user_id "
+          + "LEFT JOIN image user_post_image ON user_post.id = user_post_image.post_id "
+          + "LEFT JOIN post_hashtag user_post_hashtag ON user_post.id = user_post_hashtag.post_id "
+          + "LEFT JOIN hashtag user_hashtag ON user_post_hashtag.hashtag_id = user_hashtag.id "
+
+          + "LEFT JOIN wishlist_post wishlist_post_relation ON jhused_user.id = wishlist_post_relation.user_id "
+          + "LEFT JOIN post wishlist_post ON wishlist_post_relation.post_id = wishlist_post.id "
+          + "LEFT JOIN image wishlist_post_image ON wishlist_post.id = wishlist_post_image.post_id "
+          + "LEFT JOIN post_hashtag wishlist_post_hashtag ON wishlist_post.id = wishlist_post_hashtag.post_id "
+          + "LEFT JOIN hashtag wishlist_hashtag ON wishlist_post_hashtag.hashtag_id = wishlist_hashtag.id ";
 
   private final String SELECT_USER_GIVEN_ID = SELECT_USER_BASIC
       + "WHERE jhused_user.id = :userId;";
@@ -50,6 +76,7 @@ public class JdbiUserDao implements UserDao {
   public JdbiUserDao(Jdbi jdbi) {
     this.jdbi = jdbi;
     this.postDao = new JdbiPostDao(jdbi);
+    this.wishlistPostSkeletonDao = new JdbiWishlistPostSkeletonDao(jdbi);
     this.userAccumulator = new ResultSetLinkedHashMapAccumulatorProvider<>(User.class);
   }
 
@@ -64,12 +91,20 @@ public class JdbiUserDao implements UserDao {
     if (user.getPosts() == null) {
       user.setPosts(new ArrayList<>());
     }
+    if (user.getWishlist() == null) {
+      user.setWishlist(new ArrayList<>());
+    }
     try {
       return jdbi.inTransaction(handle -> {
         handle.createUpdate(sql).bindBean(user).execute();
         if (!user.getPosts().isEmpty()) {
           for (Post post : user.getPosts())
             postDao.create(post);
+        }
+        if (!user.getWishlist().isEmpty()) {
+          for (Post post: user.getWishlist()) {
+            wishlistPostSkeletonDao.createWishListEntry(post.getId(), user.getId());
+          }
         }
         return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
             .reduceResultSet(new LinkedHashMap<>(),
@@ -108,7 +143,9 @@ public class JdbiUserDao implements UserDao {
       if (user.getPosts() == null) {
         user.setPosts(new ArrayList<>());
       }
-
+      if (user.getWishlist() == null) {
+        user.setWishlist(new ArrayList<>());
+      }
       return jdbi.inTransaction(handle -> {
         User updatedUser = handle.createQuery(sql)
             .bind("userId", userId)
@@ -123,7 +160,7 @@ public class JdbiUserDao implements UserDao {
           toDeletePost.forEach(p -> toDeletePostIds.add(p.getId()));
           List<Post> toAddPost = new ArrayList<>();
           for (Post post : user.getPosts()) {
-            if (toDeletePost.contains(post.getId())) {
+            if (toDeletePost.contains(post)) {
               toDeletePostIds.remove(post.getId());
             } else {
               toAddPost.add(post);
@@ -134,6 +171,27 @@ public class JdbiUserDao implements UserDao {
           }
           for (Post post : toAddPost) {
             postDao.create(post);
+          }
+
+          List<WishlistPostSkeleton> toDeleteWishlistPost = wishlistPostSkeletonDao.readAll(userId);
+          List<String> toDeleteWishlistPostIds = new ArrayList<>();
+          toDeleteWishlistPost.forEach(p -> toDeleteWishlistPostIds.add(p.getPostId()));
+          List<WishlistPostSkeleton> toAddWishlist = new ArrayList<>();
+          for (Post wishlistPost: user.getWishlist()) {
+            if (toDeleteWishlistPostIds.contains(wishlistPost.getId())) {
+              toDeletePost.remove(new WishlistPostSkeleton(wishlistPost.getId(), userId));
+            }
+            else {
+              toAddWishlist.add(new WishlistPostSkeleton(wishlistPost.getId(), userId));
+            }
+          }
+
+          for (WishlistPostSkeleton postSkeleton: toDeleteWishlistPost) {
+            wishlistPostSkeletonDao.deleteWishlistEntry(postSkeleton.getPostId(), postSkeleton.getUserId());
+          }
+
+          for (WishlistPostSkeleton postSkeleton: toAddWishlist) {
+            wishlistPostSkeletonDao.createWishListEntry(postSkeleton.getPostId(), postSkeleton.getUserId());
           }
         }
         return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", userId)
@@ -154,10 +212,12 @@ public class JdbiUserDao implements UserDao {
 
     try {
       List<Post> posts = postDao.readAllFromUser(id);
+      List<Post> wishlist = wishlistPostSkeletonDao.readAllWishlistEntries(id);
       return jdbi.inTransaction(handle -> {
         User user = handle.createQuery(sql).bind("id", id).mapToBean(User.class).findOne().orElse(null);
         if (user != null) {
           user.setPosts(posts);
+          user.setWishlist(wishlist);
         }
         return user;
       });
