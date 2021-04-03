@@ -5,9 +5,9 @@ import {ContactsProvider} from "../../state/ContactsProvider";
 import {ConversationsProvider} from "../../state/ConversationsProvider";
 import {SocketProvider} from "../../state/SocketProvider";
 
-const ChatPage = ({ user }) => {
+const ChatPage = () => {
   const dashboard = (
-    <DashBoard user={user} />
+    <DashBoard />
   );
 
   return (
