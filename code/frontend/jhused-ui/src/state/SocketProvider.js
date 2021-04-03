@@ -16,8 +16,9 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (!context.user) return;
+    const id = context.user.id
     const newSocket = io(serverUrl,
-      { query:  context.user.id  });
+      { query: {id} });
     setSocket(newSocket);
 
     return () => newSocket.close();
