@@ -25,7 +25,10 @@ import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
-import spark.*;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import spark.Spark;
 import util.SSO.JHUSSOConfigFactory;
 import util.database.Database;
 
@@ -115,7 +118,7 @@ public class ApiServer {
 
     before(setAccess::handle);
     before((request, response) -> response.header("Access-Control-Allow-Credentials", "true"));
-    options("/*",((request, response) -> "OK"));
+    options("/*", ((request, response) -> "OK"));
   }
 
   /**
@@ -282,7 +285,7 @@ public class ApiServer {
             throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
           }
           res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getUsername(), 302);
-        }else{
+        } else {
           res.redirect(FRONTEND_URL, 302);
         }
       } catch (DaoException | NullPointerException ex) {
@@ -459,28 +462,39 @@ public class ApiServer {
 
     post("/api/messages", (req, res) -> {
       try {
-        String isList = req.queryParams("isList");
-        if(isList.equals("true"))
-        {
+        boolean isList = Boolean.parseBoolean(req.queryParams("isList"));
+        if (!isList) {
           Message message = gson.fromJson(req.body(), Message.class);
           if (message == null) {
             throw new ApiError("Message sent is null", 400);
           }
-          return gson.toJson(messageDao.create(message));
-        }else
-        {
-          List<Message> message = gson.fromJson(req.body(), new TypeToken<ArrayList<Message>>(){}.getType());
+          Message resMessage = messageDao.create(message);
+          if (resMessage != null) {
+            res.status(201);
+          } else {
+            throw new ApiError("Can't create the message: ", 400);
+          }
+          return gson.toJson(resMessage);
+        } else {
+          List<Message> message = gson.fromJson(req.body(), new TypeToken<ArrayList<Message>>() {
+          }.getType());
           if (message == null) {
             throw new ApiError("Messages sent is null", 400);
           }
-          return gson.toJson(messageDao.create(message));
+          List<Message> resMessage = messageDao.create(message);
+          if (resMessage != null) {
+            res.status(201);
+          } else {
+            throw new ApiError("Can't create the message: ", 400);
+          }
+          return gson.toJson(resMessage);
         }
       } catch (DaoException ex) {
         throw new ApiError("Message can't be created" + ex.getMessage(), 500);
       }
     });
 
-    delete("/api/messages/:messageId", (req,res)->{
+    delete("/api/messages/:messageId", (req, res) -> {
       try {
         return messageDao.delete(req.params("messageId"));
       } catch (DaoException ex) {
@@ -488,9 +502,10 @@ public class ApiServer {
       }
     });
 
-    delete("/api/messages", (req,res)->{
+    delete("/api/messages", (req, res) -> {
       try {
-        List<String> ids = gson.fromJson(req.body(), new TypeToken<ArrayList<String>>(){}.getType());
+        List<String> ids = gson.fromJson(req.body(), new TypeToken<ArrayList<String>>() {
+        }.getType());
         return messageDao.delete(ids);
       } catch (DaoException ex) {
         throw new ApiError("Message can't be created" + ex.getMessage(), 500);

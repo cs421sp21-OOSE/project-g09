@@ -5,10 +5,8 @@ import kong.unirest.HttpResponse;
 import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
-import model.Category;
-import model.Post;
-import model.SaleState;
-import model.User;
+import kong.unirest.json.JSONObject;
+import model.*;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import util.database.DataStore;
 import util.database.Database;
 
-import javax.xml.crypto.Data;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +27,7 @@ class ServerTest {
 
   private static final List<Post> samplePosts = DataStore.samplePosts();
   private static final List<User> sampleUsers = DataStore.sampleUsers();
+  private static final List<Message> sampleMessages = DataStore.sampleMessages();
   private final static String BASE_URL = "http://localhost:8080";
   private static final Gson gson = new Gson();
   private static Jdbi jdbi;
@@ -48,6 +46,7 @@ class ServerTest {
     Database.truncateTables(jdbi);
     Database.insertSampleUsers(jdbi, sampleUsers);
     Database.insertSamplePosts(jdbi, samplePosts);
+    Database.insertSampleMessages(jdbi, sampleMessages);
   }
 
   @AfterAll
@@ -144,7 +143,7 @@ class ServerTest {
   @Test
   public void postPostWorks() throws UnirestException {
     // This test will break if this post is already in database
-    Post post = new Post(UUID.randomUUID().toString(), "004"+"1".repeat(33),
+    Post post = new Post(UUID.randomUUID().toString(), "004" + "1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -188,7 +187,7 @@ class ServerTest {
   @Test
   public void putPostWorks() throws UnirestException {
     // This test will break if "0 " is not in the database
-    Post post = new Post("0".repeat(36), "003"+"1".repeat(33),
+    Post post = new Post("0".repeat(36), "003" + "1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -282,4 +281,78 @@ class ServerTest {
     HttpResponse<JsonNode> jsonResponse = Unirest.delete(URL).asJson();
     assertEquals(404, jsonResponse.getStatus());
   }
+
+  @Test
+  public void getMessagesWork() throws UnirestException {
+    final String URL = BASE_URL + "/api/messages";
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertEquals(sampleMessages.size(), jsonResponse.getBody().getArray().length());
+  }
+
+  @Test
+  public void createAMessagesWork() throws UnirestException {
+    final String URL = BASE_URL + "/api/messages";
+    Message message = new Message(null, "JHUsedAdmin", "002" + "1".repeat(33), "11 test message", false);
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL).body(gson.toJson(message)).asJson();
+    assertEquals(201, jsonResponse.getStatus());
+    assertEquals(message.getMessage(), jsonResponse.getBody().getObject().get("message"));
+    Map<String, String> mapMessage = Map.of("senderId", "JHUsedAdmin", "receiverId", "004" + "1".repeat(33),
+        "message", "jjj");
+    jsonResponse = Unirest.post(URL).body(gson.toJson(mapMessage)).asJson();
+    assertEquals(201, jsonResponse.getStatus());
+    assertEquals(mapMessage.get("message"), jsonResponse.getBody().getObject().get("message"));
+  }
+
+  @Test
+  public void createAListOfMessagesWork() throws UnirestException {
+    final String URL = BASE_URL + "/api/messages";
+    Database.truncateTable(jdbi, "message");
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.post(URL).queryString("isList", true).body(gson.toJson(sampleMessages)).asJson();
+    assertEquals(201, jsonResponse.getStatus());
+    for (int i = 0; i < sampleMessages.size(); ++i) {
+      JSONObject res = jsonResponse.getBody().getArray().getJSONObject(i);
+      assertEquals(sampleMessages.get(i).getMessage(), res.get("message"));
+      assertEquals(sampleMessages.get(i).getId(), res.get("id"));
+      assertEquals(sampleMessages.get(i).getSenderId(), res.get("senderId"));
+      assertEquals(sampleMessages.get(i).getReceiverId(), res.get("receiverId"));
+      assertEquals(sampleMessages.get(i).getRead(), res.get("read"));
+    }
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message(null, "JHUsedAdmin", "002" + "1".repeat(33), "11 test message", false));
+    messages.add(new Message(null, "003" + "1".repeat(33), "002" + "1".repeat(33), "11 test ssmessage", false));
+    jsonResponse = Unirest.post(URL).queryString("isList", true).body(gson.toJson(messages)).asJson();
+    assertEquals(201, jsonResponse.getStatus());
+    for (int i = 0; i < messages.size(); ++i) {
+      JSONObject res = jsonResponse.getBody().getArray().getJSONObject(i);
+      assertEquals(messages.get(i).getMessage(), res.get("message"));
+      assertEquals(messages.get(i).getSenderId(), res.get("senderId"));
+      assertEquals(messages.get(i).getReceiverId(), res.get("receiverId"));
+      assertEquals(messages.get(i).getRead(), res.get("read"));
+    }
+  }
+
+  @Test
+  void createAInvalidMessageReturn500() {
+    final String URL = BASE_URL + "/api/messages";
+    Message message = new Message(null, "fff", "002" + "1".repeat(33), "11 test message", false);
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL).body(gson.toJson(message)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+    message = new Message(null, "JHUsedAdmin", "112" + "1".repeat(33), "11 test message", false);
+    jsonResponse = Unirest.post(URL).body(gson.toJson(message)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+    message = new Message(null, "JHUsedAdmin", "002" + "1".repeat(33), null, false);
+    jsonResponse = Unirest.post(URL).body(gson.toJson(message)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+  }
+
+  @Test
+  void updateAMessageWorks() {
+    final String URL = BASE_URL + "/api/messages";
+    Message message = new Message(sampleMessages.get(0).getId(), "JHUsedAdmin", "002" + "1".repeat(33), "updated 11 "
+        + "test message", true);
+    HttpResponse<JsonNode> jsonResponse = Unirest.put(URL).body(gson.toJson(message)).asJson();
+  }
+
 }
