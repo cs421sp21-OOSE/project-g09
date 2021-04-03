@@ -19,24 +19,21 @@ const SideBar = ({ user }) => {
 
   return (
     <div className="w-72 flex-none flex flex-col relative">
-      <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
-        <Nav variant="tabs" className="justify-content-center">
-          <Nav.Item>
-            <Nav.Link eventKey={CONVERSATIONS_KEY}>Conversations</Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link eventKey={CONTACTS_KEY}>Contacts</Nav.Link>
-          </Nav.Item>
-        </Nav>
-        <Tab.Content className="border-right overflow-auto flex-grow-1">
-          <Tab.Pane eventKey={CONVERSATIONS_KEY}>
-            <Conversations />
-          </Tab.Pane>
-          <Tab.Pane eventKey={CONTACTS_KEY}>
-            <Contacts />
-          </Tab.Pane>
-        </Tab.Content>
-      </Tab.Container>
+      <nav class="flex flex-col sm:flex-row justify-content-center">
+        <button
+          class={`text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none
+          ${activeKey === CONVERSATIONS_KEY ? "text-blue-500 border-b-2 font-medium border-blue-500" : ''}`}
+          onClick={() => {setActiveKey(CONVERSATIONS_KEY)}}>
+          Conversations</button>
+        <button
+          class={`text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none
+          ${activeKey === CONTACTS_KEY ? "text-blue-500 border-b-2 font-medium border-blue-500" : ''}`}
+          onClick={() => {setActiveKey(CONTACTS_KEY)}}>
+          Contacts</button>
+      </nav>
+      <div className="border-right overflow-auto flex-grow-1">
+        {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
+      </div>
 
       <div className="w-full absolute bottom-0 py-4 px-2">
           <div className="p-2 border text-sm">
