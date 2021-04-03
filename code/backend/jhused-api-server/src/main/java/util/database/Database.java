@@ -100,6 +100,9 @@ public final class Database {
             + "PRIMARY KEY (post_id, user_id),"
             + "FOREIGN KEY (post_id) " // Note: no comma here
             + "REFERENCES post(id) "
+            + "ON DELETE CASCADE,"
+            + "FOREIGN KEY (user_id) " // Note: no comma here
+            + "REFERENCES jhused_user(id) "
             + "ON DELETE CASCADE"
             + ");";
 

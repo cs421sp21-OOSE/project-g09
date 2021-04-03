@@ -7,10 +7,7 @@ import dao.jdbiDao.JdbiWishlistPostSkeletonDao;
 import model.Post;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import util.database.DataStore;
 import util.database.Database;
 
@@ -45,7 +42,20 @@ public class JdbiWishListPostSkeletonDaoTest {
         Database.USE_TEST_DATABASE = false; // use production dataset
     }
 
-    @Test
+    //@Test
     void doNothing() {
     }
+
+    @Test //test breaks if specified user_id has more than one post wishlisted!
+    @DisplayName("test to see if create wishlist entry works")
+    void createWishlistEntryWorks() {
+        WishlistPostSkeleton newEntry = wishlistPostSkeletonDao.createWishListEntry("8".repeat(36), "002111111111111111111111111111111111");
+
+        List<Post> wishlistSkeletonEntries = wishlistPostSkeletonDao.readAllWishlistEntries("002111111111111111111111111111111111");
+
+        assertEquals(wishlistSkeletonEntries.get(0).getId(), newEntry.getPost_id());
+
+    }
+
+
 }
