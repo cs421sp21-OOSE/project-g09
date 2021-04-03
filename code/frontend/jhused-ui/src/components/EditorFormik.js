@@ -5,7 +5,7 @@ import { Formik, useField } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
-import { useHistory, useParams } from "react-router";
+import { useHistory, useParams, Redirect } from "react-router-dom";
 import Header from "./Header";
 import DropAndView from "./DropAndView";
 
@@ -16,13 +16,12 @@ const btnStyle =
 
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
-
   const userContext = useContext(UserContext.Context);
 
   const { postID } = useParams(); // for loading post id from url address
   const [initialPostData, setInitialPostData] = useState({
     id: "",
-    userId: userContext.user.id,
+    userId: "",
     title: "",
     price: "",
     saleState: "SALE",
@@ -33,9 +32,9 @@ const EditorFormik = (props) => {
     images: [],
   });
 
-  // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does. 
-  const [isLoaded, setIsLoaded] = useState(false); 
-  
+  // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does.
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
     if (props.mode === "update") {
       axios
@@ -54,7 +53,7 @@ const EditorFormik = (props) => {
 
   const history = useHistory(); // for redirecting to other pages
 
-  const handleDelete = (postID) => ((event) => {
+  const handleDelete = (postID) => (event) => {
     event.preventDefault();
     axios
       .delete("/api/posts/" + postID)
@@ -66,9 +65,11 @@ const EditorFormik = (props) => {
         console.log(error);
         history.push("/editor/redirect/delete-failure");
       });
-  });
+  };
 
   const handleSubmit = (values, { setSubmitting }) => {
+    values.userId = userContext.user.id;
+    console.log(values);
     switch (props.mode) {
       case "create":
         axios
@@ -111,127 +112,127 @@ const EditorFormik = (props) => {
       .max(15, "Must be 30 characters or less")
       .required("Please provide a location"),
     category: Yup.string()
-      .oneOf(
-        ["FURNITURE", "CAR", "DESK", "TV", "OTHER"],
-        "Invalid a category"
-      )
+      .oneOf(["FURNITURE", "CAR", "DESK", "TV", "OTHER"], "Invalid a category")
       .required("Please select a category"),
-    description: Yup.string().required(
-      "Please provide a description"
-    ),
+    description: Yup.string().required("Please provide a description"),
     images: Yup.array().min(1, "Please upload least one image"),
   });
 
-  return (
-    <div>
-      <Header />
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
-          <Formik
-            enableReinitialize={true}
-            initialValues={initialPostData}
-            validationSchema={schema}
-            onSubmit={handleSubmit}
-          >
-            {(formik) => (
-              <form onSubmit={formik.handleSubmit}>
-                <div className="grid grid-cols-12 gap-x-6 gap-y-4">
-                  <StdTextInput
-                    name="title"
-                    type="text"
-                    label="Title"
-                    placeholder="Used things to sell"
-                    className="col-span-full"
-                  />
+  if (userContext) {
+    return (
+      <div>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
+            <Formik
+              enableReinitialize={true}
+              initialValues={initialPostData}
+              validationSchema={schema}
+              onSubmit={handleSubmit}
+            >
+              {(formik) => (
+                <form onSubmit={formik.handleSubmit}>
+                  <div className="grid grid-cols-12 gap-x-6 gap-y-4">
+                    <StdTextInput
+                      name="title"
+                      type="text"
+                      label="Title"
+                      placeholder="Used things to sell"
+                      className="col-span-full"
+                    />
 
-                  <StdTextInput
-                    name="location"
-                    label="Location"
-                    placeholder="Marylander"
-                    className="col-span-8"
-                  />
+                    <StdTextInput
+                      name="location"
+                      label="Location"
+                      placeholder="Marylander"
+                      className="col-span-8"
+                    />
 
-                  <StdNumInput
-                    name="price"
-                    label="Price"
-                    placeholder="29.50"
-                    className="col-span-4"
-                  />
+                    <StdNumInput
+                      name="price"
+                      label="Price"
+                      placeholder="29.50"
+                      className="col-span-4"
+                    />
 
-                  <CreatableWrapper
-                    name="hashtags"
-                    value={formik.values.hashtags}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    label="Hashtags"
-                    className="col-span-8"
-                  />
+                    <CreatableWrapper
+                      name="hashtags"
+                      value={formik.values.hashtags}
+                      onChange={formik.setFieldValue}
+                      onBlur={formik.setFieldTouched}
+                      label="Hashtags"
+                      className="col-span-8"
+                    />
 
-                  <SelectWraper
-                    name="category"
-                    options={{
-                      FURNITURE: { value: "FURNITURE", label: "Furniture" },
-                      CAR: { value: "CAR", label: "Car" },
-                      TV: { value: "TV", label: "TV" },
-                      DESK: { value: "DESK", label: "Desk" },
-                      OTHER: { value: "OTHER", label: "Other" },
-                    }}
-                    label="Category"
-                    placeholder="Select"
-                    value={formik.values.category}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    touched={formik.touched.category}
-                    error={formik.errors.category}
-                    className="col-span-4"
-                  />
+                    <SelectWraper
+                      name="category"
+                      options={{
+                        FURNITURE: { value: "FURNITURE", label: "Furniture" },
+                        CAR: { value: "CAR", label: "Car" },
+                        TV: { value: "TV", label: "TV" },
+                        DESK: { value: "DESK", label: "Desk" },
+                        OTHER: { value: "OTHER", label: "Other" },
+                      }}
+                      label="Category"
+                      placeholder="Select"
+                      value={formik.values.category}
+                      onChange={formik.setFieldValue}
+                      onBlur={formik.setFieldTouched}
+                      touched={formik.touched.category}
+                      error={formik.errors.category}
+                      className="col-span-4"
+                    />
 
-                  <StdTextArea
-                    name="description"
-                    label="Description"
-                    placeholder="Write a description"
-                    className="col-span-full"
-                  />
+                    <StdTextArea
+                      name="description"
+                      label="Description"
+                      placeholder="Write a description"
+                      className="col-span-full"
+                    />
 
-                  <DropAndView 
-                    name="images"
-                    value={formik.values.images}
-                    postId={formik.values.id}
-                    onChange={formik.setFieldValue}
-                    onBlur={formik.setFieldTouched}
-                    touched={formik.touched.images}
-                    error={formik.errors.images}
-                    isLoaded={isLoaded}
-                    className="col-span-full"
-                  />
+                    <DropAndView
+                      name="images"
+                      value={formik.values.images}
+                      postId={formik.values.id}
+                      onChange={formik.setFieldValue}
+                      onBlur={formik.setFieldTouched}
+                      touched={formik.touched.images}
+                      error={formik.errors.images}
+                      isLoaded={isLoaded}
+                      className="col-span-full"
+                    />
 
-                  {(props.mode === "update") && 
-                  <div className="col-start-1 col-span-3 flex justify-start">
-                    <button
-                      className="bg-red-500 rounded-lg hover:bg-red-700 text-white font-bold py-2 px-3"
-                      onClick={handleDelete(formik.values.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>}
+                    {props.mode === "update" && (
+                      <div className="col-start-1 col-span-3 flex justify-start">
+                        <button
+                          className="bg-red-500 rounded-lg hover:bg-red-700 text-white font-bold py-2 px-3"
+                          onClick={handleDelete(formik.values.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
 
-                  <div className="col-end-13 flex justify-end">
-                    <button
-                      className={btnStyle}
-                      type="submit"
-                      disabled={formik.isSubmitting}
-                    >
-                      {props.mode === "create" ? "Submit" : "Update"}
-                    </button>
+                    <div className="col-end-13 flex justify-end">
+                      <button
+                        className={btnStyle}
+                        type="submit"
+                        disabled={formik.isSubmitting}
+                      >
+                        {props.mode === "create" ? "Submit" : "Update"}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </form>
-            )}
-          </Formik>
+                </form>
+              )}
+            </Formik>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return "";
+  }
 };
 
 export default EditorFormik;
@@ -368,7 +369,7 @@ const CreatableWrapper = ({ ...props }) => {
 
   return (
     <div className={props.className}>
-      <laebl className={fieldLabelStyle}>{props.label}</laebl>
+      <lable className={fieldLabelStyle}>{props.label}</lable>
       <CreatableSelecet
         components={{ DropdownIndicator: null }}
         inputValue={tagInput || ""}
@@ -387,4 +388,3 @@ const CreatableWrapper = ({ ...props }) => {
     </div>
   );
 };
-

@@ -90,7 +90,7 @@ const PostDetails = (props) => {
       </div>
     );
   } else {
-    return "this is garbage";
+    return "";
   }
 };
 
