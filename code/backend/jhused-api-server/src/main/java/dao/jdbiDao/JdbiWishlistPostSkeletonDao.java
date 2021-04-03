@@ -29,15 +29,13 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
     public WishlistPostSkeleton createWishListEntry(String post_id, String user_id) throws DaoException {
         String createWishlistEntrySql = "WITH inserted AS (INSERT INTO wishlist_post(post_id, user_id) VALUES(:post_id, :user_id) RETURNING *) SELECT * FROM inserted;";
 
-        WishlistPostSkeleton newEntry = new WishlistPostSkeleton(post_id, user_id);
-
         try {
-            return jdbi.inTransaction(handle -> {
-                handle.createUpdate(createWishlistEntrySql)
-                        .bindBean(newEntry)
-                        .execute();
-                return newEntry;
-            });
+            return jdbi.inTransaction(handle ->
+                    handle.createQuery(createWishlistEntrySql)
+                            .bind("post_id", post_id)
+                            .bind("user_id", user_id)
+                            .mapToBean(WishlistPostSkeleton.class)
+                            .findOne()).orElse(null);
         } catch (StatementException | IllegalStateException | NullPointerException ex) {
             throw new DaoException(ex.getMessage(), ex);
         }
@@ -50,7 +48,7 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
         List<Post> wishlistPosts = new ArrayList<>();
 
         for(WishlistPostSkeleton wishlistSkeletonEntry : wishlistSkeletonEntries) {
-            wishlistPosts.add(postDao.read(wishlistSkeletonEntry.getPost_id()));
+            wishlistPosts.add(postDao.read(wishlistSkeletonEntry.getPostId()));
         }
         return wishlistPosts;
     }
@@ -60,10 +58,7 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
 
         try {
             return jdbi.inTransaction(handle ->
-                    new ArrayList<>(handle.createQuery(sql)
-                            .bind("user_id", user_id)
-                            .reduceResultSet(new LinkedHashMap<>(), wishListAccumulator)
-                            .values()));
+                    handle.createQuery(sql).bind("user_id", user_id).mapToBean(WishlistPostSkeleton.class).list());
         } catch (StatementException | IllegalStateException ex) {
             throw new DaoException("Unable to read wishlist for userId " + user_id, ex);
         }
