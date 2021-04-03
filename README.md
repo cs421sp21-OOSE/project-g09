@@ -48,10 +48,13 @@ Then the server should be running on the [localhost:8080](http://localhost:8080)
 ### Built With
 #### Backend
 ##### Framework:
+API server:  
 SparkJava 2.9.3 for api server  
 Jdbi3 3.16.0 for database interaction  
 Pac4j 4.0.0 for SSO integration and security  
-Express 4.17.1 for chat server  
+chat server:  
+Express 4.17.1
+Socket.IO 3.0 for realtime chatting
 
 ##### Build Tool & Package Manager:
 Gradle 6.7  
