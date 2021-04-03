@@ -21,7 +21,7 @@ const EditorFormik = (props) => {
   const { postID } = useParams(); // for loading post id from url address
   const [initialPostData, setInitialPostData] = useState({
     id: "",
-    userId: userContext.user.id,
+    userId: "",
     title: "",
     price: "",
     saleState: "SALE",
@@ -68,6 +68,7 @@ const EditorFormik = (props) => {
   };
 
   const handleSubmit = (values, { setSubmitting }) => {
+    values.userId = userContext.user.id;
     switch (props.mode) {
       case "create":
         axios
@@ -367,7 +368,7 @@ const CreatableWrapper = ({ ...props }) => {
 
   return (
     <div className={props.className}>
-      <laebl className={fieldLabelStyle}>{props.label}</laebl>
+      <lable className={fieldLabelStyle}>{props.label}</lable>
       <CreatableSelecet
         components={{ DropdownIndicator: null }}
         inputValue={tagInput || ""}

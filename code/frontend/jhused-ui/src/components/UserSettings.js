@@ -8,14 +8,19 @@ import axios from "axios";
 
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
-  return (
-    <div>
-      <Header />
-      <div className="flex justify-center w-full">
-        <SettingForm user={userContext.user} />
+
+  if (userContext.user) {
+    return (
+      <div>
+        <Header />
+        <div className="flex justify-center w-full">
+          <SettingForm user={userContext.user} />
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return "";
+  }
 };
 
 export default UserSettings;
@@ -103,7 +108,7 @@ const SettingForm = (props) => {
 };
 
 // Basic form input components
-const FormInput = (props) => {
+const FormInput = ({ ...props }) => {
   const [field, meta] = useField(props);
 
   return (
