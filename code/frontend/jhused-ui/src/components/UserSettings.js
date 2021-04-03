@@ -26,6 +26,7 @@ const UserSettings = () => {
 export default UserSettings;
 
 const SettingForm = (props) => {
+  const userContext = useContext(UserContext.Context);
   const [bannerStatus, setBannerStatus] = useState(null);
 
   const schema = Yup.object({
@@ -40,6 +41,9 @@ const SettingForm = (props) => {
 
   const formikSubmit = (values, formik) => {
     console.log("Sending ", values);
+
+    userContext.setUser(values);
+    
     axios
       .put(`/api/users/${props.user.id}`, values)
       .then((response) => {

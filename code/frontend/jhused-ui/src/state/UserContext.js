@@ -30,8 +30,7 @@ const Provider = (props) => {
         return axios.get(path,);
       })
       .then((response) => {
-        // needs to be smoething here to deal with the case that it's a first time user, I think. 
-        // 
+        console.log(response.data);
         setUser(response.data);
       })
       .catch((err) => {
