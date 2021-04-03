@@ -100,7 +100,7 @@ As a user, I want to make a wish list, so that I can show people what things I a
 - [ ] Chatting box
   - [ ] Chat box component - firebase or other 3rd party lib (Junjie, Chu)
   - [x] Add chat box button in homepage and account page to allow user check his/her messages. (Sam)
-  - [ ] Add start chatting button in other user's account page to start conversation. (Sam)
+  - [x] Add start chatting button in other user's account page to start conversation. (Sam)
 - [X] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
   - [X] Homepage (Sam)
   - [X] post detail (Sam)
@@ -112,3 +112,22 @@ As a user, I want to make a wish list, so that I can show people what things I a
 - [ ] Pagination (If we have time)
 
 # Retrospective
+
+What we have done:
+* We have implemented the all the basic features of the user stories in this iteration.
+* We have successfully integrated the JHU SSO to our application. JHU students can login using their JHU account, and edit their prefered name, email, avatar, and location in our application.
+* We have added a realtime chatting feature in the frontend using Socket.IO and have set up a separate chatting sever. We have also provided Apis to support chatting history persistance.
+* We have added a basic wish list feature, through which user can add posts to the user's wish list.
+* We have migrated to Tailwind CSS framework. Now, our app is media responsive, looks good on variaous devices. We have begun to adjust our application's style moving towards a more morden styled ecommerce website like Etsy and Depop.
+* We have added user input form validations and remainders to make editing posts or user's profile more user friendly.
+* We have migrated from Sql2o to Jdbi3. Now we can use join sqls to retrieve complex models with 1 database connection, which speeds up our application. However, due to the fact that we are using Firebase to sotre images, so the images have to be downloaded after user renders the frontend page. This cause a delay in showing posts.
+
+What we have not done:
+* We have not made the wish list feature rich enough. We will add notification to wish list.
+* We have not made the chatting persistant. Although, we have all Apis ready, we did not have time to integrate with the frontend. In the next iteration, we will definately be able to add persistant to chatting.
+* We have not implemented the pagination yet. It's an optional task, and will consider implement it in the next iteration.
+* We have not made our application looks more fancy. We did start using the Tailwind css framework, and adjusted the style gradually. In the next iteration, we will shift more time on this task.
+
+Challenges
+* Migrating from Sql2o to Jdbi3 is challenging. We have to write our own result set handler to handle complex joins. We used java reflection to solve this. Some backend members feel challenged and met some issue adjusting to Jdbi3, we helped each other and finished all the backend jobs.
+* Integrating JHU SSO is also very challenging. Due to the fact, we have separate frontend and backend, our case is not very common, and resources are even less on the Internet. We have met issues with Cross-origin resource sharing. It's hard to figure out how our application login flow should be. As the SP-Metadata is only registered for our deployed server, developing in local became challenging, have to use another IDP for local development.
