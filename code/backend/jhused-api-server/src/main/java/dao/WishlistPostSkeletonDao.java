@@ -46,4 +46,5 @@ public interface WishlistPostSkeletonDao {
      */
     WishlistPostSkeleton deleteWishlistEntry(String post_id, String user_id) throws DaoException;
 
+    List<WishlistPostSkeleton> readAll(String userId) throws DaoException;
 }
