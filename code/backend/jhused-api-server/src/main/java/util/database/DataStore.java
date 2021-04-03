@@ -18,25 +18,59 @@ public final class DataStore {
 
   /**
    * Create a list of sample Users.
+   *
    * @return a list of sample Users.
    */
   public static List<User> sampleUsers() {
-    User user1 = new User("001"+"1".repeat(33),  "Arya", "abc1@yahoo.com",  "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", getPostForUser("001"+"1".repeat(33)));
-    User user2 = new User("002"+"1".repeat(33),  "Tyrion", "abc2@yahoo.com",  "http://pix2.tvzhe.com/thumb/character/184/535/405x540.jpg", "Freshman quad", getPostForUser("002"+"1".repeat(33)));
-    User user3 = new User("003"+"1".repeat(33),  "Danny", "abc3@yahoo.com",  "https://img.cvtvcn.com/group1/default/20191022/13/45/1/1571723140170.jpg", "Wyman quad", getPostForUser("003"+"1".repeat(33)));
-    User user4 = new User("004"+"1".repeat(33),  "Jon", "abc4@yahoo.com",  "https://cw1.tw/CW/images/article/201708/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004"+"1".repeat(33)));
-    User user5 = new User("005"+"1".repeat(33),  "Cersi", "abc5@yahoo.com",  "https://lh3.googleusercontent.com/proxy/e2_kH0ynbEij4oqX-Qu0NzBHcCLC8V-fcSrzSWIaBrlnEY_XbCuwTktpYo5koHt7m9qkxRWTce4sM94ZZBT0w081psrECWhNzONZ", "hodson hall", getPostForUser("005"+"1".repeat(33)));
-    User user6 = new User("005"+"2".repeat(33),  "Shae", "abc6@yahoo.com",  "https://static.wikia.nocookie.net/asoiaf/images/3/3d/Shae_HBO.jpg/revision/latest/scale-to-width-down/300?cb=20120205045225&path-prefix=zh", "the beach", getPostForUser("005"+"2".repeat(33)));
-    User user7 = new User("007"+"1".repeat(33),  "NightKing", "abc7@yahoo.com",  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1QwaGlXQD0Ov_7ekfNe5d1kJtMmulrFQUpw&usqp=CAU", "the beach", getPostForUser("empty"));
-    List<User> samples = new ArrayList<>(Arrays.asList(user1, user2, user3, user4, user5, user6, user7));
+    User user0 = new User("JHUsedAdmin", "JHUsed Administrator", "", "https://images6.fanpop"
+        + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "", new ArrayList<>());
+    User user1 = new User("001" + "1".repeat(33), "Arya", "abc1@yahoo.com", "https://images6.fanpop"
+        + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", getPostForUser(
+        "001" + "1".repeat(33)));
+    User user2 = new User("002" + "1".repeat(33), "Tyrion", "abc2@yahoo.com", "http://pix2.tvzhe"
+        + ".com/thumb/character/184/535/405x540.jpg", "Freshman quad", getPostForUser("002" + "1".repeat(33)));
+    User user3 = new User("003" + "1".repeat(33), "Danny", "abc3@yahoo.com", "https://img.cvtvcn"
+        + ".com/group1/default/20191022/13/45/1/1571723140170.jpg", "Wyman quad",
+        getPostForUser("003" + "1".repeat(33)));
+    User user4 = new User("004" + "1".repeat(33), "Jon", "abc4@yahoo.com", "https://cw1.tw/CW/images/article/201708"
+        + "/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004" + "1".repeat(33)));
+    User user5 = new User("005" + "1".repeat(33), "Cersi", "abc5@yahoo.com", "https://lh3.googleusercontent"
+        + ".com/proxy/e2_kH0ynbEij4oqX-Qu0NzBHcCLC8V"
+        + "-fcSrzSWIaBrlnEY_XbCuwTktpYo5koHt7m9qkxRWTce4sM94ZZBT0w081psrECWhNzONZ", "hodson hall", getPostForUser(
+        "005" + "1".repeat(33)));
+    User user6 = new User("005" + "2".repeat(33), "Shae", "abc6@yahoo.com", "https://static.wikia.nocookie"
+        + ".net/asoiaf/images/3/3d/Shae_HBO.jpg/revision/latest/scale-to-width-down/300?cb=20120205045225&path-prefix"
+        + "=zh", "the beach", getPostForUser("005" + "2".repeat(33)));
+    User user7 = new User("007" + "1".repeat(33), "NightKing", "abc7@yahoo.com", "https://encrypted-tbn0.gstatic"
+        + ".com/images?q=tbn:ANd9GcQ1QwaGlXQD0Ov_7ekfNe5d1kJtMmulrFQUpw&usqp=CAU", "the beach", getPostForUser("empty"
+    ));
+    List<User> samples = new ArrayList<>(Arrays.asList(user0, user1, user2, user3, user4, user5, user6, user7));
 
+    return samples;
+  }
+
+  /**
+   * Create a list of sample Wishlist Posts
+   *
+   * @return a list of sample wishlist posts.
+   */
+  public static List<WishlistPostSkeleton> sampleWishlistPosts() {
+    WishlistPostSkeleton post1 = new WishlistPostSkeleton("0".repeat(36), "001111111111111111111111111111111111");
+    WishlistPostSkeleton post2 = new WishlistPostSkeleton("1".repeat(36), "001111111111111111111111111111111111");
+    WishlistPostSkeleton post3 = new WishlistPostSkeleton("3".repeat(36), "002111111111111111111111111111111111");
+    WishlistPostSkeleton post4 = new WishlistPostSkeleton("4".repeat(36), "003111111111111111111111111111111111");
+    WishlistPostSkeleton post5 = new WishlistPostSkeleton("5".repeat(36), "004111111111111111111111111111111111");
+    WishlistPostSkeleton post6 = new WishlistPostSkeleton("6".repeat(36), "005111111111111111111111111111111111");
+    WishlistPostSkeleton post7 = new WishlistPostSkeleton("7".repeat(36), "005222222222222222222222222222222222");
+    WishlistPostSkeleton post8 = new WishlistPostSkeleton("7".repeat(36), "007111111111111111111111111111111111");
+    List<WishlistPostSkeleton> samples = new ArrayList<>(Arrays.asList(post1, post2, post3, post4, post5, post6, post7,post8));
     return samples;
   }
 
   public static List<Post> getPostForUser(String id) {
     List<Post> allPosts = DataStore.samplePosts();
     List<Post> userPosts = new ArrayList<>();
-    for(Post post: allPosts) {
+    for (Post post : allPosts) {
       if (post.getUserId().equals(id)) {
         userPosts.add(post);
       }
@@ -45,14 +79,16 @@ public final class DataStore {
   }
 
   public static User getNewUserForTest() {
-    Post postNew = new Post("9".repeat(36), "008"+"1".repeat(33),
-    "2008 Toyota car", 7100D, SaleState.SOLD,
-    "It still works",
-    DataStore.sampleImages(Category.CAR),
-    DataStore.sampleHashtags(Category.CAR),
-    Category.CAR,
-    "Towson");
-    User userNew = new User("008"+"1".repeat(33),  "Ed", "abc8@yahoo.com",  "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", new ArrayList<>(Arrays.asList(postNew)));
+    Post postNew = new Post("9".repeat(36), "008" + "1".repeat(33),
+        "2008 Toyota car", 7100D, SaleState.SOLD,
+        "It still works",
+        DataStore.sampleImages(Category.CAR),
+        DataStore.sampleHashtags(Category.CAR),
+        Category.CAR,
+        "Towson");
+    User userNew = new User("008" + "1".repeat(33), "Ed", "abc8@yahoo.com", "https://images6.fanpop"
+        + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad",
+        new ArrayList<>(Arrays.asList(postNew)));
     return userNew;
   }
 
@@ -63,69 +99,69 @@ public final class DataStore {
    * @return a list of sample CS courses.
    */
   public static List<Post> samplePosts() {
-    Post p1 = new Post("0".repeat(36), "001"+"1".repeat(33),
+    Post p1 = new Post("0".repeat(36), "001" + "1".repeat(33),
         "Brown Coffee Table", 99.99D, SaleState.SALE,
         "Sleek modern looking, almost new",
-        sampleImages("0".repeat(36),"1".repeat(36),Category.FURNITURE),
+        sampleImages("0".repeat(36), "1".repeat(36), Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Hampden"
     );
-    Post p2 = new Post("1".repeat(36), "002"+"1".repeat(33),
+    Post p2 = new Post("1".repeat(36), "002" + "1".repeat(33),
         "Samsung TV brand new", 489.99D, SaleState.SALE,
         "Samsung, brand new, what else to say?",
-        sampleImages("2".repeat(36),"3".repeat(36),Category.TV),
+        sampleImages("2".repeat(36), "3".repeat(36), Category.TV),
         sampleHashtags(Category.TV),
         Category.TV,
         "BestBuy"
     );
-    Post p3 = new Post("3".repeat(36), "003"+"1".repeat(33),
+    Post p3 = new Post("3".repeat(36), "003" + "1".repeat(33),
         "Dream car to sell", 20000D, SaleState.SALE,
         "Compact car with amazing turquoise color",
-        sampleImages("4".repeat(36),"5".repeat(36),Category.CAR),
+        sampleImages("4".repeat(36), "5".repeat(36), Category.CAR),
         sampleHashtags(Category.CAR),
         Category.CAR,
         "Inner Harbor"
     );
-    Post p4 = new Post("4".repeat(36), "004"+"1".repeat(33),
+    Post p4 = new Post("4".repeat(36), "004" + "1".repeat(33),
         "Vintage office desk", 129.99D, SaleState.SALE,
         "I bought from IKEA",
-        sampleImages("6".repeat(36),"7".repeat(36),Category.DESK),
+        sampleImages("6".repeat(36), "7".repeat(36), Category.DESK),
         sampleHashtags(Category.DESK),
         Category.DESK,
         "Carlyle"
     );
-    Post p5 = new Post("5".repeat(36), "005"+"1".repeat(33),
+    Post p5 = new Post("5".repeat(36), "005" + "1".repeat(33),
         "Minimalist lamp", 29.99D, SaleState.SALE,
         "I'm minimalist",
-        sampleImages("8".repeat(36),"9".repeat(36),Category.FURNITURE),
+        sampleImages("8".repeat(36), "9".repeat(36), Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "ICON"
     );
-    Post p6 = new Post("6".repeat(36), "005"+"1".repeat(33),
+    Post p6 = new Post("6".repeat(36), "005" + "1".repeat(33),
         "Coffee cup", 29.99D, SaleState.SALE,
         "Great for drinking beer",
-        sampleImages("10".repeat(18),"12".repeat(18),Category.FURNITURE),
+        sampleImages("10".repeat(18), "12".repeat(18), Category.FURNITURE),
         sampleHashtags(Category.FURNITURE),
         Category.FURNITURE,
         "Marylander"
     );
-    Post p7 = new Post("7".repeat(36), "005"+"1".repeat(33),
+    Post p7 = new Post("7".repeat(36), "005" + "1".repeat(33),
         "1998 Toyota car", 7000D, SaleState.SALE,
         "It still works",
-        sampleImages("13".repeat(18),"14".repeat(18),Category.CAR),
+        sampleImages("13".repeat(18), "14".repeat(18), Category.CAR),
         sampleHashtags(Category.CAR),
         Category.CAR,
         "Towson"
     );
-    Post p8 = new Post("8".repeat(36), "005"+"2".repeat(33),
-            "1998 Toyota car", 7100D, SaleState.SOLD,
-            "It still works",
-            sampleImages("15".repeat(18),"16".repeat(18),Category.TV),
-            sampleHashtags(Category.TV),
-            Category.TV,
-            "Towson"
+    Post p8 = new Post("8".repeat(36), "005" + "2".repeat(33),
+        "1998 Toyota car", 7100D, SaleState.SOLD,
+        "It still works",
+        sampleImages("15".repeat(18), "16".repeat(18), Category.TV),
+        sampleHashtags(Category.TV),
+        Category.TV,
+        "Towson"
     );
     List<Post> samples = new ArrayList<>(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8));
     return samples;
@@ -134,13 +170,13 @@ public final class DataStore {
   /**
    * return a list of images corresponding to the list of posts
    * returned by samplePosts()
+   *
    * @return a list of images owned by posts returned by samplePosts()
    */
-  public static List<Image> sampleImages(){
+  public static List<Image> sampleImages() {
     List<Image> images = new ArrayList<>();
     List<Post> posts = samplePosts();
-    for (Post post: posts)
-    {
+    for (Post post : posts) {
       images.addAll(post.getImages());
     }
     return images;
@@ -149,6 +185,7 @@ public final class DataStore {
   /**
    * return a list of 2 Image (models) given 2 ids.
    * This is used for tests
+   *
    * @return a list Image
    */
   public static List<Image> sampleImages(String uuid1, String uuid2, Category category) {
@@ -248,5 +285,34 @@ public final class DataStore {
         break;
     }
     return hashtags;
+  }
+
+  public static List<Message> sampleMessages() {
+    List<Message> messages = new ArrayList<>();
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "001" + "1".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "002" + "1".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "003" + "1".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "004" + "1".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "005" + "1".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "005" + "2".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "JHUsedAdmin", "007" + "1".repeat(33), "Welcome to JHUsed"
+        + ".", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "001" + "1".repeat(33), "001" + "1".repeat(33), "Welcome "
+        + "to JHUsed.", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "005" + "1".repeat(33), "002" + "1".repeat(33), "Welcome "
+        + "to JHUsed.", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "005" + "2".repeat(33), "003" + "1".repeat(33), "Welcome "
+        + "to JHUsed.", false));
+    messages.add(new Message(UUID.randomUUID().toString(), "007" + "1".repeat(33), "004" + "1".repeat(33), "Welcome "
+        + "to JHUsed.", false));
+    messages.add(new Message("0".repeat(36), "JHUsedAdmin", "004" + "1".repeat(33), "Welcome "
+        + "to JHUsed.", false));
+    return messages;
   }
 }

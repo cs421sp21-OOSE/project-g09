@@ -2,7 +2,7 @@
 
 In this iteration, we only have one table in database.  
 
-![image](../assets/BackendStructure/DatabaseDiagram-i2.jpg)  
+![image](../assets/BackendStructure/DatabaseDiagram-i3.jpg)  
 
 Note: little dot at the left-bottom corner of a column field indicate whether the column is a must have (NOT NULL) column.
 

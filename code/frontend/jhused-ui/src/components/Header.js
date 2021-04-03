@@ -73,8 +73,8 @@ const Header = (props) => {
                   <div className="ml-2 sm:ml-3 relative flex">
                     <div className="flex justify-center items-center">
                       <img
-                        className="h-6 w-6 sm:h-12 sm:w-12 rounded-full"
-                        src={context.user.profilePic.url}
+                        className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"
+                        src={context.user.profileImage}
                         alt=""
                       />
                       <button
@@ -129,24 +129,24 @@ const Header = (props) => {
                         Messages
                       </a>
                       <a
-                        href="#"
+                        href={`/user/settings/${context.user.id}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         role="menuitem"
                       >
                         Settings
                       </a>
-                      <a
-                        href="#"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                        role="menuitem"
-                      >
-                        Logout
-                      </a>
                     </div>
                   </div>
                 </div>
               ) : (
-                <button className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none hover:text-red-600">
+                <button
+                  className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none hover:text-red-600"
+                  onClick={() => {
+                    window.open(
+                      "https://jhused-api-server.herokuapp.com/jhu/login"
+                    );
+                  }}
+                >
                   {" "}
                   Login
                 </button>

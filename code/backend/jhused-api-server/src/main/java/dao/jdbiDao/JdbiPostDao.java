@@ -82,6 +82,8 @@ public class JdbiPostDao implements PostDao {
       return jdbi.inTransaction(handle -> {
         handle.createUpdate(insertPostSql).bindBean(post).execute();
         if (!post.getImages().isEmpty()) {
+          for(Image image:post.getImages())
+            image.setPostId(post.getId());
           imageDao.create(post.getImages());
         }
 

@@ -5,44 +5,54 @@ import axios from "../util/axios";
 import Header from "./Header";
 import { UserContext } from "../state";
 import { useParams, useHistory } from "react-router-dom";
+import { useContacts } from "../state/ContactsProvider";
+import { useConversations } from "../state/ConversationsProvider";
 
 // TODO: set up getting user info of post
 const PostDetails = (props) => {
   const params = useParams();
   console.log(params.postID);
   const context = useContext(UserContext.Context);
+  const history = useHistory();
+
+  const { createContact } = useContacts();
+  const { createConversation } = useConversations();
 
   const [post, setPost] = useState(null);
   const [postUser, setPostUser] = useState(null);
 
   useEffect(() => {
-    const path = "/api/posts/" + params.postID;
+    const postPath = "/api/posts/" + params.postID;
+
     axios
-      .get(path)
+      .get(postPath)
       .then((response) => {
         console.log(response.data);
         setPost(response.data);
         console.log(post);
+        return response.data;
+      })
+      .then((post) => {
+        const userPath = "/api/users/" + post.userId;
+        return axios.get(userPath);
+      })
+      .then((response) => {
+        setPostUser(response.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-  /*
-  useEffect = (() => {
-    axios
-      .get(`/api/users/${post.userId}`)
-      .then((response) => {
-        console.log(response.data);
-        setPostUser(response.data);
-        console.log(post);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [post]) */
 
-  if (post) {
+  const handleMessageSeller = () => {
+    if (context.user) {
+      createContact(postUser.id, postUser.name);
+      createConversation([postUser.id]);
+      history.push(`/chat/${context.user.id}`);
+    }
+  }
+
+  if (postUser && post) {
     return (
       <div>
         <Header />
@@ -54,22 +64,22 @@ const PostDetails = (props) => {
             <div className="block mx-4 w-11/12 md:w-1/4 divide-y divide-gray-200">
               <div className="flex">
                 <img
-                  src={context.user.profilePic.url}
+                  src={postUser.profileImage}
                   alt=""
-                  className="w-12 h-12 mr-2"
+                  className="w-12 h-12 mr-2 rounded-full overflow-hidden object-cover"
                 />
                 <div className="sellerInfo">
                   <div>
                     {" "}
                     Sold By{" "}
                     <a
-                      href={`/user/${context.user.id}`}
+                      href={`/user/${postUser.id}`}
                       className="hover:text-red-600"
                     >
-                      {context.user.name}
+                      {postUser.name}
                     </a>
                   </div>
-                  <Location location={context.user.location} />
+                  <Location location={postUser.location} />
                 </div>
               </div>
               <div className="block my-2">
@@ -79,8 +89,9 @@ const PostDetails = (props) => {
                   <p className="text-xl">{post.description} </p>
                 </div>
                 <div className="block my-3 space-y-3">
-                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
-                    Message Sellar
+                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold"
+                    onClick={handleMessageSeller}>
+                    Message Seller
                   </button>
                   <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
                     {" "}
@@ -94,7 +105,7 @@ const PostDetails = (props) => {
       </div>
     );
   } else {
-    return "this is garbage";
+    return "";
   }
 };
 
