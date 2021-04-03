@@ -43,8 +43,8 @@ public final class DataStore {
     WishlistPostSkeleton post3 = new WishlistPostSkeleton("3".repeat(36), "002111111111111111111111111111111111");
     WishlistPostSkeleton post4 = new WishlistPostSkeleton("4".repeat(36), "003111111111111111111111111111111111");
     WishlistPostSkeleton post5 = new WishlistPostSkeleton("5".repeat(36), "004111111111111111111111111111111111");
-    WishlistPostSkeleton post6 = new WishlistPostSkeleton("6".repeat(36), "005222222222222222222222222222222222");
-    WishlistPostSkeleton post7 = new WishlistPostSkeleton("7".repeat(36), "007111111111111111111111111111111111");
+    WishlistPostSkeleton post6 = new WishlistPostSkeleton("6".repeat(36), "005111111111111111111111111111111111");
+    WishlistPostSkeleton post7 = new WishlistPostSkeleton("7".repeat(36), "005222222222222222222222222222222222");
     List<WishlistPostSkeleton> samples = new ArrayList<>(Arrays.asList(post1, post2, post3, post4, post5, post6, post7));
     return samples;
   }
