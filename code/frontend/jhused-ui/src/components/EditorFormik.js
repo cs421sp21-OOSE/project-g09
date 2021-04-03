@@ -69,6 +69,7 @@ const EditorFormik = (props) => {
 
   const handleSubmit = (values, { setSubmitting }) => {
     values.userId = userContext.user.id;
+    console.log(values);
     switch (props.mode) {
       case "create":
         axios

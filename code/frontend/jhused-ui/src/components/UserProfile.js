@@ -54,12 +54,13 @@ const UserProfile = (props) => {
   }, []);
 
   useEffect(() => {
-    if (userContext.user === params.userID) {
+    if (userContext.user && userContext.user.id === params.userID) {
       setEditAccess(true);
     }
-  }, []);
+  }, [userContext, setEditAccess]);
 
   if (user && posts && userContext.user) {
+    
     return (
       <div className="user-profile">
         <Header />
