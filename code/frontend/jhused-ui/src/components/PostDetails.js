@@ -49,7 +49,7 @@ const PostDetails = (props) => {
       createConversation([postUser.id]);
       history.push(`/chat/${context.user.id}`);
     }
-  }
+  };
 
   if (postUser && post) {
     return (
@@ -58,7 +58,7 @@ const PostDetails = (props) => {
         <div className="flex w-full justify-center align-center">
           <div className="my-8 block md:flex justify-center align-center w-full sm:w-11/12 bg-white ">
             <div className=" w-full md:w-3/5">
-              <Carousel images={post.images} id={post.id}/>
+              <Carousel images={post.images} id={post.id} />
             </div>
             <div className="block mx-4 w-11/12 md:w-1/4 divide-y divide-gray-200">
               <div className="flex">
@@ -87,16 +87,22 @@ const PostDetails = (props) => {
                   <h1 className="font-semibold">${post.price}</h1>
                   <p className="text-xl">{post.description} </p>
                 </div>
-                <div className="block my-3 space-y-3">
-                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold"
-                    onClick={handleMessageSeller}>
-                    Message Seller
-                  </button>
-                  <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
-                    {" "}
-                    Buy Now
-                  </button>
-                </div>
+                {context.user ? (
+                  <div className="block my-3 space-y-3">
+                    <button
+                      className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold"
+                      onClick={handleMessageSeller}
+                    >
+                      Message Seller
+                    </button>
+                    <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
+                      {" "}
+                      Buy Now
+                    </button>
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>

@@ -43,7 +43,7 @@ const SettingForm = (props) => {
     console.log("Sending ", values);
 
     userContext.setUser(values);
-    
+
     axios
       .put(`/api/users/${props.user.id}`, values)
       .then((response) => {
@@ -88,6 +88,12 @@ const SettingForm = (props) => {
             type="text"
             label="Location"
           />
+
+          <div className="col-span-full text-l ">
+            We save this information to help improve your experience on our
+            website, and your information will never be shared with any third
+            parties.
+          </div>
 
           <button
             className="w-24 bg-blue-700 rounded-lg focus:outline-none hover:bg-blue-800 text-white font-bold py-1 px-4 justify-self-end"

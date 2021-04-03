@@ -21,7 +21,7 @@ const Header = (props) => {
                 <img src={Logo} alt="logo" className="w-36 sm:w-48 h-auto" />{" "}
               </a>
               <form
-                className="justify-content content-center relative w-3/5 h-7 sm:h-10 text-gray-300"
+                className="justify-content content-center relative w-3/5 h-7 sm:h-10 text-gray-800"
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (searchTerm) {
