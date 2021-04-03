@@ -7,13 +7,7 @@ import {SocketProvider} from "../../state/SocketProvider";
 
 const ChatPage = ({ user }) => {
   const dashboard = (
-    <SocketProvider user={user}>
-      <ContactsProvider>
-        <ConversationsProvider user={user}>
-          <DashBoard user={user} />
-        </ConversationsProvider>
-      </ContactsProvider>
-    </SocketProvider>
+    <DashBoard user={user} />
   );
 
   return (
