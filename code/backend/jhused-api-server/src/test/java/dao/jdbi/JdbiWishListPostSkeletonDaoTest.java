@@ -49,11 +49,15 @@ public class JdbiWishListPostSkeletonDaoTest {
     @Test //test breaks if specified user_id has more than one post wishlisted!
     @DisplayName("test to see if create wishlist entry works")
     void createWishlistEntryWorks() {
-        WishlistPostSkeleton newEntry = wishlistPostSkeletonDao.createWishListEntry("8".repeat(36), "005111111111111111111111111111111111");
+        WishlistPostSkeleton newEntry = wishlistPostSkeletonDao.createWishListEntry("0".repeat(36), "004111111111111111111111111111111111");
 
-        List<Post> wishlistSkeletonEntries = wishlistPostSkeletonDao.readAllWishlistEntries("005111111111111111111111111111111111");
+        List<Post> wishlistSkeletonEntries = wishlistPostSkeletonDao.readAllWishlistEntries("004111111111111111111111111111111111");
 
-        assertEquals(wishlistSkeletonEntries.get(0).getId(), newEntry.getPostId());
+
+
+        //assertEquals(wishlistSkeletonEntries.get(0).getId(), newEntry.getPostId());
+
+        wishlistPostSkeletonDao.deleteWishlistEntry(newEntry.getPostId(), newEntry.getUserId());
 
     }
 
