@@ -44,7 +44,7 @@ const PostDetails = (props) => {
         <div className="flex w-full justify-center align-center">
           <div className="my-8 block md:flex justify-center align-center w-full sm:w-11/12 bg-white ">
             <div className=" w-full md:w-3/5">
-              <Carousel images={post.images} />
+              <Carousel images={post.images} id={post.id}/>
             </div>
             <div className="block mx-4 w-11/12 md:w-1/4 divide-y divide-gray-200">
               <div className="flex">
