@@ -31,7 +31,7 @@ const Provider = (props) => {
       })
       .then((response) => {
         console.log(response.data);
-        setUser(response.data);
+        setUser(response.data); //should be getting wishlist posts here too 
       })
       .catch((err) => {
         console.log(err);

@@ -13,7 +13,7 @@ const Header = (props) => {
 
   return (
     <nav className="relative bg-white">
-      <div className="w-screen mx-auto">
+      <div className="w-full mx-auto">
         <div className="flex justify-between items-center border-b-2 border-gray-100 py-2 px-3 sm:px-7 md:justify-start md:space-x-10 m-0 ">
           <div className="w-full h-10 relative flex items-center justify-between sm:h-16">
             <div className="flex-1 flex justify-between items-center ">

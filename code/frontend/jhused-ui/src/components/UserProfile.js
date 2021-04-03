@@ -53,13 +53,24 @@ const UserProfile = (props) => {
   }, []);
 
   useEffect(() => {
+    const path = `api/users/${params.userID}/wishlist/all`;
+    axios
+      .get(path)
+      .then((response) => {
+        setWishlist(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
     if (userContext.user && userContext.user.id === params.userID) {
       setEditAccess(true);
     }
   }, [userContext, setEditAccess]);
 
   if (user && posts && userContext.user) {
-    
     return (
       <div className="user-profile">
         <Header />
