@@ -41,7 +41,7 @@ Refresh Gradle
 Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: awesomeexpressshop@gmail.com Pass: Johnshopkins6!).
 Run api/ApiServer
 ```
-Then the server should be running on the [localhost:4567](http://localhost:4567)
+Then the server should be running on the [localhost:8080](http://localhost:8080)
 
 ## Developing
 
@@ -49,7 +49,9 @@ Then the server should be running on the [localhost:4567](http://localhost:4567)
 #### Backend
 ##### Framework:
 SparkJava 2.9.3 for api server  
-Jdbi3 3.16.0 for database interaction
+Jdbi3 3.16.0 for database interaction  
+Pac4j 4.0.0 for SSO integration and security  
+Express 4.17.1 for chat server  
 
 ##### Build Tool & Package Manager:
 Gradle 6.7  
@@ -57,19 +59,17 @@ Gradle 6.7
 #### Frontend
 ##### Framework:
 React 17.0.1  
+Tailwind 2.0.4 for css framework  
+Formik 2.2.6  for user input validation  
 
 ##### Build Tool & Package Manager:
 Node.js 14.16.0
 
 ### Prerequisites
 What is needed to set up the dev environment. For instance, global dependencies or any other tools. include download links.  
+[Java >=11](https://adoptopenjdk.net/)  
 [Intellij 2020.3.2](https://www.jetbrains.com/idea/)  
 [Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)  
-
-Install belows in frontend folder (code/frontend/jhused-ui):  
-[Create-React-App](https://github.com/facebookincubator/create-react-app)    
-[axios](https://github.com/axios/axios)  
-[react-router-dom](https://reactrouter.com/web/guides/quick-start)  
 
 
 ### Setting up Dev
@@ -86,7 +86,7 @@ Refresh Gradle
 Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: awesomeexpressshop@gmail.com Pass: Johnshopkins6!).
 Edit what you want
 Run api/ApiServer
-visit http://localhost:4567
+visit http://localhost:8080
 
 # to setup frontend
 got to code/frontend/jhused-ui

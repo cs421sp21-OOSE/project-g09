@@ -27,7 +27,6 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. The user can choose the order of items listed by selecting in the sort drop style(most recent, least recent, price low to high, price hight to low).
 6. The user can visit the account page by clicking the "Your Profile" from the drop down menu of the account icon.
 7. The user can open the chat box by clicking the "Messages" from the drop down menu of the account icon. to view messages.
-7. The user can logout by  clicking the "Logout" from the drop down menu of the account icon.
 8. The user can login by clicking the Login button and then redirect to JHU SSO to login, then redirect to information registration page, and then back to homepage with logged in status.
 
 ![](../assets/Wireframe/Wireframe-HomepageLoggedIn-iteration3.png)
@@ -64,7 +63,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 ### Account information editing page
 
 1. The user can edit location, preferred email,  preferred user name, and upload avatar (an image) in this editing page.  
-2. If it's the user's first login, this page contain no default information, other wise, it is filled with original values.  
+2. If it's the user's first login, this page contain default information based on user's JHED, other wise, it is filled with original values.  
 
 ![](../assets/Wireframe/Wireframe-editUser-iteration3.png)
 
@@ -77,31 +76,30 @@ As a user, I want to login into the platform using my JHED account to verify my 
 As a user, I want to make a wish list, so that I can show people what things I am looking for
 
 # Tasks
-- [ ] Implement wish list feature (Louie)
+- [ ] Implement wish list feature (Louie:Backend; Sam:Frontend)
 - [X] Migrate to JDBI3 (Bohua)
-- [ ] Login Backend
+- [x] Login Backend
   - [X]  Database Design, user table, user dao, user api (Qiao)
     - [X]   Setup User table (JHID, image_url, preferred name, location, preferred email)
     - [X]   Setup User model（listOfPosts）
     - [X]   User dao
     - [X]   CRUD api for User
-    - [ ]   Email user when post get sold api (nice to have)
-  - [ ] SSO apis & functions (Bohua, Louie)
-    - [ ] Handle redirect from frontend (when user click account button but not yet login) to redirect to SSO api
-    - [ ] Handle SSO call back
-    - [ ] Handle SSO encription and decription
-  - [ ] Handle Sessions (Bohua, Louie)
-- [ ] Login Frontend
-  - [ ] Editing user information page (route to this page/pop up in account page (must login)) (Chu)
-  - [ ] Handle user's login status (Junjie)
-    - [ ] Check if user is logged in
-    - [ ] Redirect to login backend api url if not
+  - [x] SSO apis & functions (Bohua, Louie)
+    - [x] Handle redirect from frontend (when user click account button but not yet login) to redirect to SSO api
+    - [x] Handle SSO call back
+    - [x] Handle SSO encription and decription
+  - [x] Handle Sessions (Bohua, Louie)
+- [x] Login Frontend
+  - [x] Editing user information page (route to this page/pop up in account page (must login)) (Chu)
+  - [x] Handle user's login status (Junjie)
+    - [x] Check if user is logged in
+    - [x] Redirect to login backend api url if not
 - [X] User frontend
   - [X] Add user link in post detail to allow user to visit the post owner's user page. (Sam)
   - [X] Add user information editing button in his/her account page to open the "Editing user information page". (Sam)
 - [ ] Chatting box
   - [ ] Chat box component - firebase or other 3rd party lib (Junjie, Chu)
-  - [ ] Add chat box button in homepage and account page to allow user check his/her messages. (Bohua)
+  - [x] Add chat box button in homepage and account page to allow user check his/her messages. (Sam)
   - [ ] Add start chatting button in other user's account page to start conversation. (Sam)
 - [X] Migrate to Tailwind CSS framework (gradually, no need to get all done in this iteration)
   - [X] Homepage (Sam)
