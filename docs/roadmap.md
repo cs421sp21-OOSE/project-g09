@@ -21,13 +21,16 @@ As a user, I want to sort by recently added, oldest, recently updated, lowest pr
 As a user, I want to have the chatting feature, so that I can coordinate with the person on the other end  
 As a user, I want to login into the platform, so that I can access my past activities  
 As a user, I want to sign up an account, so that I can log in  
-
+As a user, I want to login into the platform using my JHED account to verify my identity, so that sign up and login will be easy  
+As a user I want to make a wish list, so that I can show people what things I am looking for    
 
 ## Iteration 4
 
 As a user, I want to pay for my purchase through the website to keep transactions secure, so that sign up and login will be easy  
-As a user, I want to see other people’s location information, so that I can buy from others close to me  
- 
+As a user, I want to be notified about changes to posts that I am interested in, so that I can keep track on them  
+
+
 ## Iteration 5  
 
-As a user I want to make a wish list, so that I can show people what things I am looking for    
+As a user, I want to see the count of views of a post, so that I can check how popular that post is  
+As a user, I want to see other people’s location information, so that I can buy from others close to me  

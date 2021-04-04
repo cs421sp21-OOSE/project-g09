@@ -1,9 +1,11 @@
 package model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,8 +28,13 @@ public class Post {
   private List<Hashtag> hashtags;    // don't need to have
   private Category category;  // must have
   private String location;  // must have
+  @EqualsAndHashCode.Exclude
   private Instant createTime;
+  @EqualsAndHashCode.Exclude
   private Instant updateTime;
+
+  public Post() {
+  }
 
   /**
    * Constructor for Post.
@@ -76,7 +83,7 @@ public class Post {
    * @param location    location of the post.
    */
   public Post(String id, String userId, String title, Double price, SaleState saleState, String description
-          , List<Image> images, List<Hashtag> hashtags, Category category, String location) {
+      , List<Image> images, List<Hashtag> hashtags, Category category, String location) {
     this.id = id;
     this.userId = userId;
     this.title = title;
@@ -136,33 +143,25 @@ public class Post {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Post)) {
-      return false;
-    }
+    if (this == o) return true;
+    if (!(o instanceof Post)) return false;
     Post post = (Post) o;
-    return Objects.equals(userId, post.userId) && Objects
-        .equals(title, post.title) && Objects.equals(price, post.price) && Objects
-        .equals(description, post.description) && Objects.equals(images, post.images)
-        && Objects.equals(hashtags, post.hashtags) && category == post.category
-        && Objects.equals(location, post.location);
+    return Objects.equals(id, post.id) && Objects.equals(userId, post.userId) && Objects.equals(title, post.title) && Objects.equals(price, post.price) && saleState == post.saleState && Objects.equals(description, post.description) && Objects.equals(new HashSet(images), new HashSet(post.images)) && Objects.equals(new HashSet(hashtags),new HashSet(post.hashtags)) && category == post.category && Objects.equals(location, post.location);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, title, price, description, images, hashtags, category, location);
+    return Objects.hash(id, userId, title, price, saleState, description, new HashSet(images), new HashSet(hashtags), category, location);
   }
 
-  public void addImage(Image image) {
+  public void addImages(Image image) {
     if (images == null)
       images = new ArrayList<>();
     image.setPostId(this.id);
     images.add(image);
   }
 
-  public void addHashtag(Hashtag hashtag) {
+  public void addHashtags(Hashtag hashtag) {
     if (hashtags == null)
       hashtags = new ArrayList<>();
     hashtags.add(hashtag);

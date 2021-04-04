@@ -37,19 +37,32 @@ As a user, I want to see other people’s location information, so that I can bu
 **Nice-to-have**  
 As a user, I want to login into the platform using my JHED account to verify my identity, so that sign up and login will be easy  
 As a user, I want to be informed about what object I am trying to sell using computer vision probably, so that I wouldn’t be confused about what hashtag to use  
-As a user I want to make a wish list, so that I can show people what things I am looking for  
+As a user, I want to make a wish list, so that I can show people what things I am looking for  
+As a user, I want to be notified about changes to posts that I am interested in, so that I can keep track on them  
+As a user, I want to see the count of views of a post, so that I can check how popular that post is  
+As a user, I want to bid on posts, so that I can buy items bargining with others for cheaper prices  
+As a user, I want to report filthy posts, so that I don't have to see disgusting posts.
 
 ## Software Architecture & Technology Stack
 **Frontend**
 * Framework: React
-* JS, HTML, CSS
-  
+* JS, HTML, CSS (Tailwind)
+* Formik for user input validation
 
 **Backend**
 
+API Server:  
+
 * Framework: SparkJava
-* Database: PostgreSQL
+* Database: PostgreSQL, Firebase (only for image storage)  
+* Database ORM: Jdbi3 (sql2o until iteration3, from iteration3 using Jdbi3)  
+* Security: Pac4j
+
+Chat server: 
+
+* Framework: Express for server, Socket.IO 3.0 for realtime chatting
 
 **Deploy**
+
 * Heroku
 

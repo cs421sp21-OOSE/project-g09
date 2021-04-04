@@ -169,6 +169,12 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  public List<Post> readAllFromUser(String userId) throws DaoException {
+    return null;
+  }
+
+
+    @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
     try (Connection conn = sql2o.open()) {
       String sql = "SELECT * FROM post";
@@ -323,7 +329,7 @@ public class Sql2oPostDao implements PostDao {
 
   }
 
-  @Override
+//  @Override
   @Deprecated
   public List<Post> searchAll(String searchQuery) {
     String sql = "SELECT * FROM post WHERE " +
@@ -351,7 +357,7 @@ public class Sql2oPostDao implements PostDao {
     }
   }
 
-  @Override
+//  @Override
   @Deprecated
   public List<Post> searchCategory(String searchQuery, Category specified) {
     String sql = "SELECT * FROM post WHERE " +

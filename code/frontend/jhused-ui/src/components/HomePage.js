@@ -1,34 +1,26 @@
 import React, { useEffect, useState } from "react";
 import ImageGrid from "./ImageGrid";
-import EditorPopup from "./EditorPopUp";
-import "./HomePage.css";
 import axios from "../util/axios";
-import SearchIcon from "../images/search.png";
-import DownArrow from "../images/down-arrow.png";
-import UpArrow from "../images/up-arrow.png";
-import Icon from "../images/icon.png";
-
-const userID = "4"; // dummy userID for now
+import { Link, useLocation } from "react-router-dom";
+import Header from "./Header";
+import * as QueryString from "query-string";
 
 const HomePage = () => {
-  // State for controlling whether editor should show up
-  const [editorLive, setEditorLive] = useState(false);
   // All the posts
   const [posts, setPosts] = useState([]);
-  // posts after searching
-  const [searchedPosts, setSearchedPosts] = useState([]);
   // posts after filtering
   const [filteredPosts, setFilteredPosts] = useState([]);
-  // State of the Search Bar
-  const [searchTerm, setSearchTerm] = useState("");
   // State of the category filter
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   // State of the sorting type
-  const [sortType, setSortType] = useState("Create Time");
+  const [sortType, setSortType] = useState("Most Recently Updated");
   // State of the sorting direction
   const [sortDirection, setSortDirection] = useState("desc");
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
+
+  const location = useLocation();
+  const params = QueryString.parse(location.search).search;
 
   // get all posts
   useEffect(() => {
@@ -36,6 +28,7 @@ const HomePage = () => {
       .get("/api/posts", {
         params: {
           sort: "update_time:desc",
+          keyword: params,
         },
       })
       .then((response) => {
@@ -46,26 +39,10 @@ const HomePage = () => {
       });
   }, [setPosts]);
 
-  // searching among all posts
-  useEffect(() => {
-    setSearchedPosts(
-      posts.filter((post) => {
-        if (searchTerm === "") {
-          return post;
-        } else if (
-          post.title.toLowerCase().includes(searchTerm.toLowerCase())
-        ) {
-          /*TODO: searching is only for title currently*/
-          return post;
-        } else return null;
-      })
-    );
-  }, [posts, searchTerm, setSearchedPosts]);
-
   // filtering among searched posts
   useEffect(() => {
     setFilteredPosts(
-      searchedPosts.filter((post) => {
+      posts.filter((post) => {
         if (post.saleState === "SALE") {
           if (
             selectedCategory === "ALL" ||
@@ -76,19 +53,12 @@ const HomePage = () => {
         } else return null;
       })
     );
-  }, [searchedPosts, selectedCategory, setFilteredPosts]);
+  }, [posts, selectedCategory, setFilteredPosts]);
 
   // sorting among searched&filtered posts
   useEffect(() => {
-    if (sortType === "Create Time") {
-      setSortedPosts(
-        filteredPosts
-          .filter((post) => {
-            return post;
-          })
-          .sort(sortByCreateTime)
-      );
-    } else if (sortType === "Update Time") {
+    if (sortType === "Most Recently Updated") {
+      setSortDirection("desc");
       setSortedPosts(
         filteredPosts
           .filter((post) => {
@@ -96,7 +66,44 @@ const HomePage = () => {
           })
           .sort(sortByUpdateTime)
       );
-    } else if (sortType === "Price") {
+    } else if (sortType === "Least Recently Updated") {
+      setSortDirection("asc");
+      setSortedPosts(
+        filteredPosts
+          .filter((post) => {
+            return post;
+          })
+          .sort(sortByUpdateTime)
+      );
+    } else if (sortType === "Most Recent") {
+      setSortDirection("desc");
+      setSortedPosts(
+        filteredPosts
+          .filter((post) => {
+            return post;
+          })
+          .sort(sortByCreateTime)
+      );
+    } else if (sortType === "Least Recent") {
+      setSortDirection("asc");
+      setSortedPosts(
+        filteredPosts
+          .filter((post) => {
+            return post;
+          })
+          .sort(sortByCreateTime)
+      );
+    } else if (sortType === "Price: Low to High") {
+      setSortDirection("asc");
+      setSortedPosts(
+        filteredPosts
+          .filter((post) => {
+            return post;
+          })
+          .sort(sortByPrice)
+      );
+    } else if (sortType === "Price: High to Low") {
+      setSortDirection("desc");
       setSortedPosts(
         filteredPosts
           .filter((post) => {
@@ -125,88 +132,72 @@ const HomePage = () => {
     );
   };
 
-  const handlePostBtnChange = () => {
-    setEditorLive(!editorLive);
-  };
-
   return (
     <div className="home-page">
-      <div className="home-page-header">
-        {/* Button for setting up editor's post-updating feature only - delete later once my page is setup */}
-        <button className="post-button" onClick={handlePostBtnChange}>
-          Post
-        </button>
-
-        <div className="search-bar">
-          <input
-            className="search"
-            type="text"
-            placeholder="Search..."
-            onChange={(event) => {
-              setSearchTerm(event.target.value);
-            }}
-          />
-          <img className="search-icon" src={SearchIcon} alt="search icon" />
-        </div>
-
-        <a href={`/user/${userID}`}>
-          <img className="home-user-icon" src={Icon} alt="icon" />
-        </a>
-
-        <div className="dropdown">
-          {" "}
+      <Header />
+      <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
+        <div className="">
           {/*TODO: the categories are hard-coded for now*/}
           <select
+            className="w-30 sm:w-40 rounded-md text-2xl bg-white focus:outline-none"
             onChange={(event) => {
               setSelectedCategory(event.target.value);
             }}
           >
-            <option>ALL</option>
-            <option>FURNITURE</option>
-            <option>CAR</option>
-            <option>TV</option>
-            <option>DESK</option>
-            <option>OTHER</option>
+            <option className="text-sm md:text-2xl rounded-md block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              ALL
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              FURNITURE
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              CAR
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-gray-700 hover:bg-gray-100">
+              TV
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2  text-gray-700 hover:bg-gray-100">
+              DESK
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              OTHER
+            </option>
           </select>
         </div>
 
-        <div className="dropdown" id="sort-dropdown">
+        <div className="dropdown">
           {/*TODO: the sorting options are hard-coded for now*/}
           <select
+            className="w-30 sm:w-80 rounded-md text-2xl bg-white focus:outline-none"
             onChange={(event) => {
               setSortType(event.target.value);
             }}
           >
-            <option>Update Time</option>
-            <option>Create Time</option>
-            <option>Price</option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Most Recently Updated
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Least Recently Updated
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Most Recent
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Least Recent
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Price: Low to High
+            </option>
+            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+              Price: High to Low
+            </option>
           </select>
-          <button
-            className="direction-button"
-            onClick={() => {
-              sortDirection === "asc"
-                ? setSortDirection("desc")
-                : setSortDirection("asc");
-            }}
-          >
-            <img
-              className="sort-direction"
-              src={sortDirection === "asc" ? UpArrow : DownArrow}
-              alt="sort direction icon"
-            />
-          </button>
         </div>
       </div>
-
-      {editorLive ? (
-        <EditorPopup
-          toggle={handlePostBtnChange}
-          mode={"create"}
-          post={null}
-        />
-      ) : null}
-      {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
-      <ImageGrid posts={sortedPosts} />
+      <div className="mx-12">
+        {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
+        <ImageGrid posts={sortedPosts} />
+      </div>
     </div>
   );
 };
