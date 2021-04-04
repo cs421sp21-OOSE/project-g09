@@ -13,7 +13,7 @@ const Header = (props) => {
 
   return (
     <nav className="relative bg-white">
-      <div className="w-screen mx-auto">
+      <div className="w-full mx-auto">
         <div className="flex justify-between items-center border-b-2 border-gray-100 py-2 px-3 sm:px-7 md:justify-start md:space-x-10 m-0 ">
           <div className="w-full h-10 relative flex items-center justify-between sm:h-16">
             <div className="flex-1 flex justify-between items-center ">
@@ -21,7 +21,7 @@ const Header = (props) => {
                 <img src={Logo} alt="logo" className="w-36 sm:w-48 h-auto" />{" "}
               </a>
               <form
-                className="justify-content content-center relative w-3/5 h-7 sm:h-10 text-gray-300"
+                className="justify-content content-center relative w-3/5 h-7 sm:h-10 text-gray-800"
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (searchTerm) {
@@ -142,9 +142,8 @@ const Header = (props) => {
                 <button
                   className="text-xl sm:text-2xl font-bold mx-2 sm:mx-3 focus:outline-none hover:text-red-600"
                   onClick={() => {
-                    window.open(
-                      "https://jhused-api-server.herokuapp.com/jhu/login"
-                    );
+                    window.location =
+                      "https://jhused-api-server.herokuapp.com/jhu/login";
                   }}
                 >
                   {" "}

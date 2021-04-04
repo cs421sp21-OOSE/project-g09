@@ -4,9 +4,8 @@ import Location from "./Location";
 import axios from "../util/axios";
 import Header from "./Header";
 import { UserContext } from "../state";
-import { useHistory, useParams, Redirect } from "react-router-dom";
-import context from "react-bootstrap/esm/AccordionContext";
-
+import { useHistory, useParams } from "react-router-dom";
+import "./UserProfile.css";
 /**
  * Component for user profile page
  */
@@ -54,13 +53,26 @@ const UserProfile = (props) => {
   }, []);
 
   useEffect(() => {
+    const path = `api/users/${params.userID}/wishlist/all`;
+    console.log(path);
+    axios
+      .get(path)
+      .then((response) => {
+        console.log(response.data);
+        setWishlist(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
+  useEffect(() => {
     if (userContext.user && userContext.user.id === params.userID) {
       setEditAccess(true);
     }
   }, [userContext, setEditAccess]);
 
   if (user && posts && userContext.user) {
-    
     return (
       <div className="user-profile">
         <Header />
@@ -95,19 +107,20 @@ const UserProfile = (props) => {
               alt="icon"
             />
             <div className="pt-1 mx-4 font-semibold">
-              <h1 className="text-2xl font-bold"> {user.name} </h1>
-              <div className="text-lg">{user.email}</div>
-              <div className="text-lg">
+              <h1 className="text-2xl font-bold "> {user.name} </h1>
+              <div className="text-lg text-gray-600">{user.email}</div>
+              <div className="text-lg text-gray-600">
                 <Location location={user.location} size="s" />
               </div>
             </div>
           </div>
           <div className="space-x-10">
             <button
-              className="focus:outline-none disabled:hover:text-black hover:text-red-600"
+              className="focus:outline-none text-gray-600 hover:text-red-600"
               onClick={() => {
                 setMode("selling");
               }}
+              disabled={mode === "selling" ? true : false}
             >
               <h1 className="text-2xl font-bold my-2 focus:outline-none">
                 {" "}
@@ -115,10 +128,11 @@ const UserProfile = (props) => {
               </h1>
             </button>
             <button
-              className="focus:outline-none disabled:hover:text-black hover:text-red-600"
+              className="focus:outline-none text-gray-600 hover:text-red-600"
               onClick={() => {
                 setMode("wishlist");
               }}
+              disabled={mode === "wishlist" ? true : false}
             >
               <h1 className="text-2xl font-bold my-2 focus:outline-none">
                 {" "}

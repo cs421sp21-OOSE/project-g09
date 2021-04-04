@@ -5,8 +5,6 @@ import { Link, useLocation } from "react-router-dom";
 import Header from "./Header";
 import * as QueryString from "query-string";
 
-const userID = "4"; // dummy userID for now
-
 const HomePage = () => {
   // All the posts
   const [posts, setPosts] = useState([]);

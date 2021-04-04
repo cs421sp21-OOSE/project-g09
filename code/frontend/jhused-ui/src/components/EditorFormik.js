@@ -122,8 +122,8 @@ const EditorFormik = (props) => {
     return (
       <div>
         <Header />
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="max-w-xl w-full bg-white shadow rounded px-4 py-4 mt-6 mb-6">
+        <div className="min-h-screen flex items-center justify-center ">
+          <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
               enableReinitialize={true}
               initialValues={initialPostData}
@@ -131,7 +131,7 @@ const EditorFormik = (props) => {
               onSubmit={handleSubmit}
             >
               {(formik) => (
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} >
                   <div className="grid grid-cols-12 gap-x-6 gap-y-4">
                     <StdTextInput
                       name="title"

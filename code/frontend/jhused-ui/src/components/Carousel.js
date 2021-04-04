@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../state";
 import {
   CarouselProvider,
   Slider,
@@ -10,31 +11,92 @@ import {
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import "./Carousel.css";
+import axios from "../util/axios";
 
 const Carousel = (props) => {
   console.log(props.images);
+  const userContext = useContext(UserContext.Context);
+  const [inWishlist, setInWishlist] = useState(false);
 
-  const renderDots = () => {
-    return <div>dot</div>;
+  useEffect(() => {
+    if (userContext.user) {
+      // temp solution while user.wishlist isn't working
+      axios
+        .get(`/api/users/${userContext.user.id}/wishlist/all`)
+        .then((response) => {
+          const wishlist = response.data;
+          const f = wishlist.find((post) => post.id === props.id);
+          if (f) setInWishlist(true);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+
+    /* for when user.wishlsit is working in api
+    if (userContext.user) {
+      const found = userContext.user.wishlist.find(
+        (post) => post.id === props.id
+      );
+      if (found) setInWishlist(true);
+    }
+    */
+  }, []);
+
+  const handleWishlist = (postID) => {
+    // check if post is in wishlist already
+    const path = `api/users/${userContext.user.id}/wishlist/${postID}`;
+    if (inWishlist) {
+      axios
+        .delete(path)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      axios
+        .post(path)
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+    setInWishlist(!inWishlist);
   };
 
   return (
     <div className="relative carousel m-0 p-0 w-full h-full ">
-      <button className="origin-top-right absolute right-3 top-0 text-gray-300 hover:text-red-600 focus:outline-none">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="w-7 h-7 sm:w-10 sm:h-10"
+      {userContext.user ? (
+        <button
+          className={`origin-top-right absolute right-3 top-0 ${
+            inWishlist ? "text-red-600" : "text-gray-300 hover:text-red-600"
+          } focus:outline-none`}
+          onClick={() => handleWishlist(props.id)}
         >
-          <path
-            fillRule="evenodd"
-            d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className={`${
+              inWishlist
+                ? ""
+                : "hover:w-10 hover:h-10 hover:sm:w-11 hover:sm:h-11"
+            } w-7 h-7 sm:w-10 sm:h-10 `}
+          >
+            <path
+              fillRule="evenodd"
+              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      ) : (
+        ""
+      )}
       <CarouselProvider
         naturalSlideWidth={100}
         naturalSlideHeight={100}
