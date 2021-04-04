@@ -1,17 +1,19 @@
 import {Tab, Nav, Button, Modal} from 'react-bootstrap';
-import {useState} from "react";
+import {useState,useContext} from "react";
 import Conversations from "./Conversations";
 import Contacts from "./Contacts";
 import NewContactModal from "./NewContactModal";
 import NewConversationModal from "./NewConversationModal";
+import { UserContext } from "../../state";
 
 const CONVERSATIONS_KEY = 'conversations';
 const CONTACTS_KEY = 'contacts';
 
-const SideBar = ({ user }) => {
+const SideBar = () => {
   const [activeKey, setActiveKey] = useState(CONVERSATIONS_KEY);
   const [modalOpen, setModalOpen] = useState(false);
   const conversationsOpen = activeKey === CONVERSATIONS_KEY;
+  const context = useContext(UserContext.Context);
 
   const closeModal = () => {
     setModalOpen(false);
@@ -37,9 +39,9 @@ const SideBar = ({ user }) => {
 
       <div className="w-full absolute bottom-0 py-4 px-2">
           <div className="p-2 border text-sm">
-            Your Id: <span className="text-gray-500 truncate">{user.id}</span>
+            Your Id: <span className="text-gray-500 truncate">{context.user.id}</span>
             <br/>
-            Your Name: <span className="text-gray-500">{user.name}</span>
+            Your Name: <span className="text-gray-500">{context.user.name}</span>
           </div>
           <button onClick={() => setModalOpen(true)} className="w-full rounded-full focus:outline-none text-white font-semibold bg-blue-600 hover:bg-blue-800 py-1.5">
             New {conversationsOpen ? 'Conversations' : 'Contacts'}

@@ -1,5 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import io from 'socket.io-client';
+import { UserContext } from "./";
 
 const serverUrl = 'https://jhused-chat-server.herokuapp.com/'
 
@@ -9,17 +10,19 @@ export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-export const SocketProvider = ({ user, children }) => {
+export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState();
+  const context = useContext(UserContext.Context);
 
   useEffect(() => {
-    if (!user) return;
+    if (!context.user) return;
+    const id = context.user.id
     const newSocket = io(serverUrl,
-      { query:  user.id  });
+      { query: {id} });
     setSocket(newSocket);
 
     return () => newSocket.close();
-  }, [user])
+  }, [context.user])
 
   return(
     <SocketContext.Provider value={socket}>

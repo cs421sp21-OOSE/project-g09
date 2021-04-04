@@ -2,6 +2,7 @@ import React, {useContext, useState, useEffect, useCallback} from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import {useContacts} from "./ContactsProvider";
 import {useSocket} from "./SocketProvider";
+import { UserContext } from "./";
 
 const ConversationsContext = React.createContext();
 
@@ -9,11 +10,12 @@ const useConversations = () => {
   return useContext(ConversationsContext)
 };
 
-const ConversationsProvider = ({ user, children }) => {
+const ConversationsProvider = ({ children }) => {
   const [conversations, setConversations] = useLocalStorage('conversations', []);
   const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
   const { contacts } = useContacts()
   const socket = useSocket();
+  const context = useContext(UserContext.Context);
 
   const createConversation = (recipients) => {
     setConversations(prevConversations => {
@@ -52,17 +54,17 @@ const ConversationsProvider = ({ user, children }) => {
 
   useEffect(() => {
     if (socket == null) return
-    if (user == null) return
+    if (context.user == null) return
     socket.on('receive-message', addMessageToConversation)
     return () => socket.off('receive-message')
   }, [socket, addMessageToConversation])
 
   const sendMessage = (recipients, text) => {
     socket.emit('send-message', { recipients, text });
-    addMessageToConversation({recipients, text, sender:user.id});
+    addMessageToConversation({recipients, text, sender:context.user.id});
   };
 
-  const formattedConversations = user? (conversations.map((conversation, index) => {
+  const formattedConversations = context.user? (conversations.map((conversation, index) => {
     const recipients = conversation.recipients.map(recipient => {
       const contact = contacts.find(contact => {
         return contact.id === recipient
@@ -76,7 +78,7 @@ const ConversationsProvider = ({ user, children }) => {
         return contact.id === message.sender
       });
       const name = (contact && contact.name) || message.sender;
-      const fromMe = user.id === message.sender;
+      const fromMe = context.user.id === message.sender;
       return {...message, senderName: name, fromMe};
     });
 

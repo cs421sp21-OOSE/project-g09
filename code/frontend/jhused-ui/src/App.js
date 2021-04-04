@@ -50,11 +50,11 @@ const App = () => {
         <Route exact path="/">
           <HomePage />
         </Route>
-        <SocketProvider user={user}>
+        <SocketProvider>
           <ContactsProvider>
-            <ConversationsProvider user={user}>
+            <ConversationsProvider>
               <Route exact path="/chat/:userID">
-                {user !== null ? <ChatPage user={user} /> : "Not Logged in"}
+                {user !== null ? <ChatPage /> : "Not Logged in"}
               </Route>
               <Route exact path="/post/:postID" children={<PostDetails />} />
             </ConversationsProvider>

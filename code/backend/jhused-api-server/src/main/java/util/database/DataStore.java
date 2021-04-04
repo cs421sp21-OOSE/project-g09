@@ -23,30 +23,44 @@ public final class DataStore {
    */
   public static List<User> sampleUsers() {
     User user0 = new User("JHUsedAdmin", "JHUsed Administrator", "", "https://images6.fanpop"
-        + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "", new ArrayList<>());
+        + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "", new ArrayList<>(), new ArrayList<>());
     User user1 = new User("001" + "1".repeat(33), "Arya", "abc1@yahoo.com", "https://images6.fanpop"
         + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad", getPostForUser(
-        "001" + "1".repeat(33)));
+        "001" + "1".repeat(33)), getWishListPostsForUser("001" + "1".repeat(33)));
     User user2 = new User("002" + "1".repeat(33), "Tyrion", "abc2@yahoo.com", "http://pix2.tvzhe"
-        + ".com/thumb/character/184/535/405x540.jpg", "Freshman quad", getPostForUser("002" + "1".repeat(33)));
+        + ".com/thumb/character/184/535/405x540.jpg", "Freshman quad", getPostForUser("002" + "1".repeat(33)), getWishListPostsForUser("002" + "1".repeat(33)));
     User user3 = new User("003" + "1".repeat(33), "Danny", "abc3@yahoo.com", "https://img.cvtvcn"
         + ".com/group1/default/20191022/13/45/1/1571723140170.jpg", "Wyman quad",
-        getPostForUser("003" + "1".repeat(33)));
+        getPostForUser("003" + "1".repeat(33)), getWishListPostsForUser("003" + "1".repeat(33)));
     User user4 = new User("004" + "1".repeat(33), "Jon", "abc4@yahoo.com", "https://cw1.tw/CW/images/article/201708"
-        + "/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004" + "1".repeat(33)));
-    User user5 = new User("005" + "1".repeat(33), "Cersi", "abc5@yahoo.com", "https://lh3.googleusercontent"
-        + ".com/proxy/e2_kH0ynbEij4oqX-Qu0NzBHcCLC8V"
-        + "-fcSrzSWIaBrlnEY_XbCuwTktpYo5koHt7m9qkxRWTce4sM94ZZBT0w081psrECWhNzONZ", "hodson hall", getPostForUser(
-        "005" + "1".repeat(33)));
+        + "/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004" + "1".repeat(33)), getWishListPostsForUser("004" + "1".repeat(33)));
+    User user5 = new User("005" + "1".repeat(33), "Cersi", "abc5@yahoo.com", "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cersei-euron-gift-1500579238.png?crop=0.563xw:1xh;center,top&resize=980:*", "hodson hall", getPostForUser(
+        "005" + "1".repeat(33)), getWishListPostsForUser("005" + "1".repeat(33)));
     User user6 = new User("005" + "2".repeat(33), "Shae", "abc6@yahoo.com", "https://static.wikia.nocookie"
         + ".net/asoiaf/images/3/3d/Shae_HBO.jpg/revision/latest/scale-to-width-down/300?cb=20120205045225&path-prefix"
-        + "=zh", "the beach", getPostForUser("005" + "2".repeat(33)));
+        + "=zh", "the beach", getPostForUser("005" + "2".repeat(33)), getWishListPostsForUser("005" + "2".repeat(33)));
     User user7 = new User("007" + "1".repeat(33), "NightKing", "abc7@yahoo.com", "https://encrypted-tbn0.gstatic"
         + ".com/images?q=tbn:ANd9GcQ1QwaGlXQD0Ov_7ekfNe5d1kJtMmulrFQUpw&usqp=CAU", "the beach", getPostForUser("empty"
-    ));
+    ), getWishListPostsForUser("empty"));
     List<User> samples = new ArrayList<>(Arrays.asList(user0, user1, user2, user3, user4, user5, user6, user7));
 
     return samples;
+  }
+
+  public static List<Post> getWishListPostsForUser(String userId) {
+    List<WishlistPostSkeleton> skeletons = DataStore.sampleWishlistPosts();
+    List<Post> samplePosts = DataStore.samplePosts();
+    List<Post> ret = new ArrayList<>();
+    for (WishlistPostSkeleton skeleton: skeletons) {
+      if (userId == skeleton.getUserId()) {
+        for (Post sample: samplePosts) {
+          if (sample.getId() == skeleton.getPostId()) {
+            ret.add(sample);
+          }
+        }
+      }
+    }
+    return ret;
   }
 
   /**
