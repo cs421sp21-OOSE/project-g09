@@ -179,7 +179,7 @@ public class JdbiUserDao implements UserDao {
           List<WishlistPostSkeleton> toAddWishlist = new ArrayList<>();
           for (Post wishlistPost: user.getWishlist()) {
             if (toDeleteWishlistPostIds.contains(wishlistPost.getId())) {
-              toDeletePost.remove(new WishlistPostSkeleton(wishlistPost.getId(), userId));
+              toDeleteWishlistPost.remove(new WishlistPostSkeleton(wishlistPost.getId(), userId));
             }
             else {
               toAddWishlist.add(new WishlistPostSkeleton(wishlistPost.getId(), userId));

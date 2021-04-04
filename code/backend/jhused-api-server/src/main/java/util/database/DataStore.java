@@ -93,6 +93,8 @@ public final class DataStore {
   }
 
   public static User getNewUserForTest() {
+    List<Post> samplePosts = DataStore.samplePosts();
+    List<Post> wishList = new ArrayList<>(Arrays.asList(samplePosts.get(0), samplePosts.get(1)));
     Post postNew = new Post("9".repeat(36), "008" + "1".repeat(33),
         "2008 Toyota car", 7100D, SaleState.SOLD,
         "It still works",
@@ -102,7 +104,7 @@ public final class DataStore {
         "Towson");
     User userNew = new User("008" + "1".repeat(33), "Ed", "abc8@yahoo.com", "https://images6.fanpop"
         + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "keyser Quad",
-        new ArrayList<>(Arrays.asList(postNew)));
+        new ArrayList<>(Arrays.asList(postNew)), wishList);
     return userNew;
   }
 
