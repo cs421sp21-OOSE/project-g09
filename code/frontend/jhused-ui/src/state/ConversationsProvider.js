@@ -18,9 +18,14 @@ const ConversationsProvider = ({ children }) => {
   const context = useContext(UserContext.Context);
 
   const createConversation = (recipients) => {
-    setConversations(prevConversations => {
-      return [...prevConversations, { recipients, messages: [] }]
-    });
+    const existingConversation = conversations.filter(conversation => {
+      return (arrayEquality(conversation.recipients, recipients))
+    })
+    if (existingConversation.length === 0) {
+      setConversations(prevConversations => {
+        return [...prevConversations, { recipients, messages: [] }]
+      });
+    }
   };
 
   const addMessageToConversation = useCallback(( {recipients, text, sender} ) => {
