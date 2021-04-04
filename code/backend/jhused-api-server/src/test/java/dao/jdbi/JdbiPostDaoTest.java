@@ -58,18 +58,9 @@ class JdbiPostDaoTest {
   }
 
   @Test
-  void loadTest() throws DaoException {
-    for (int i=0;i<1000;++i)
-    {
-      List<Post> posts = postDao.readAll();
-      assertIterableEquals(samples, posts);
-    }
-  }
-
-  @Test
   @DisplayName("create works for valid input")
   void createNewPost() throws DaoException {
-    Post c1 = new Post(UUID.randomUUID().toString(), "001"+"1".repeat(33),
+    Post c1 = new Post(UUID.randomUUID().toString(), "001" + "1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -86,7 +77,7 @@ class JdbiPostDaoTest {
   @Test
   @DisplayName("create throws exception for duplicate post")
   void createThrowsExceptionDuplicateData() {
-    Post c1 = new Post("0".repeat(36), "001"+"1".repeat(33),
+    Post c1 = new Post("0".repeat(36), "001" + "1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -102,7 +93,7 @@ class JdbiPostDaoTest {
   @Test
   @DisplayName("create throws exception for invalid input")
   void createThrowsExceptionIncompleteData() {
-    Post c1 = new Post(null, "001"+"1".repeat(33),
+    Post c1 = new Post(null, "001" + "1".repeat(33),
         "Dummy furniture", 30D, SaleState.SALE,
         "Description of dummy furniture",
         DataStore.sampleImages(Category.FURNITURE),
@@ -158,7 +149,7 @@ class JdbiPostDaoTest {
 
   @Test
   @DisplayName("read all the posts that contain a query string in their title")
-  // Change query "dummy" to "Table" because sample data are updated
+    // Change query "dummy" to "Table" because sample data are updated
   void readAllGivenTitle() {
     String query = "Table";
     List<Post> posts = postDao.readAll(query);
@@ -182,7 +173,7 @@ class JdbiPostDaoTest {
 
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "desc");
-    List<Post> posts = postDao.readAllAdvanced(null,null, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, null, sortParams);
     assertNotEquals(0, posts.size());
     assertEquals(true, Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
   }
@@ -192,7 +183,7 @@ class JdbiPostDaoTest {
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
     sortParams.put("update_time", "desc");
-    List<Post> posts = postDao.readAllAdvanced(null,null, sortParams);
+    List<Post> posts = postDao.readAllAdvanced(null, null, sortParams);
 
     assertEquals("Coffee cup", posts.get(0).getTitle());
   }
@@ -212,9 +203,9 @@ class JdbiPostDaoTest {
   }
 
   @Test
-  // This test will break because this search cannot handle whole word search
-  // The search will return a post with location Carlyle which has car keyword
-  // Need to discuss if we need to do whole word search or get more order
+    // This test will break because this search cannot handle whole word search
+    // The search will return a post with location Carlyle which has car keyword
+    // Need to discuss if we need to do whole word search or get more order
   void readAllSearchAndSort() {
     String query = "coffee";
     Map<String, String> sortParams = new LinkedHashMap<>();
@@ -225,7 +216,7 @@ class JdbiPostDaoTest {
 
   @Test
   void readAllWithCategory() {
-    String category= "car";
+    String category = "car";
     List<Post> posts = postDao.readAllAdvanced(category, null, null);
     assertNotEquals(0, posts.size());
     assertEquals("Dream car to sell", posts.get(0).getTitle());
@@ -233,7 +224,7 @@ class JdbiPostDaoTest {
 
   @Test
   void readAllWithCategoryAndSort() {
-    String category= "car";
+    String category = "car";
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
     List<Post> posts = postDao.readAllAdvanced(category, null, sortParams);
@@ -243,7 +234,7 @@ class JdbiPostDaoTest {
 
   @Test
   void readAllWithCategoryAndKeyword() {
-    String category= "furniture";
+    String category = "furniture";
     String keyword = "lamp";
     List<Post> posts = postDao.readAllAdvanced(category, keyword, null);
     assertEquals(1, posts.size());
@@ -252,7 +243,7 @@ class JdbiPostDaoTest {
 
   @Test
   void readAllWithCategoryAndKeywordAndSort() {
-    String category= "furniture";
+    String category = "furniture";
     String keyword = "coffee";
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
@@ -266,7 +257,7 @@ class JdbiPostDaoTest {
   @DisplayName("updating a post works")
   void updateWorks() {
     //create a post to send to the update method.
-    Post ogPost = new Post(samples.get(0).getId(), "001"+"1".repeat(33),
+    Post ogPost = new Post(samples.get(0).getId(), "001" + "1".repeat(33),
         "Dummy furnitulre", 31.3, SaleState.SALE,
         "**Description ofa dummy furnitusdfsre",
         DataStore.sampleImages(Category.FURNITURE),
@@ -285,8 +276,8 @@ class JdbiPostDaoTest {
   @Test
   @DisplayName("Update returns null for an invalid uuid")
   void updateReturnsNullInvalidCode() {
-    Post ogPost = new Post("100", "Updated Title!",100D, Category.CAR,
-            "Baltimore");
+    Post ogPost = new Post("100", "Updated Title!", 100D, Category.CAR,
+        "Baltimore");
     Post post = postDao.update("25", ogPost);
     assertNull(post);
   }
@@ -320,50 +311,13 @@ class JdbiPostDaoTest {
   }
 
   @Test
-  @DisplayName("Get posts with somewhat matching titles, descriptions and " +
-          "locations")
-  void searchAllPosts() { //string below can be changed to anything.
-    // TODO did not implement this
-  }
-
-  @Test
-  @DisplayName("Search null returns no posts.")
-  void searchAllPostsNull() { //string below can be changed to anything.
-    assertNull(postDao.searchAll(null));
-  }
-
-  @Test
-  @DisplayName("Search empty string returns all posts")
-  void searchAllPostsEmptyString() { //string below can be changed to anything.
-    // TODO did not implement this
-  }
-
-  @Test
-  @DisplayName("Get posts with somewhat matching titles, descriptions and " +
-          "locations from the specified category")
-  void searchCategory() { //string and category below can be changed to anything.
-    // TODO did not implement this
-  }
-
-  @Test
-  @DisplayName("Get posts with somewhat matching titles, descriptions and " +
-          "locations from the specified category")
-  void searchCategoryNull() { //string below can be changed to anything.
-    // TODO did not implement this
-
-  }
-
-
-
-  @Test
   @DisplayName("returns posts with specified category")
   void getPostsFromCategory() {
     List<Post> posts = postDao.getCategory(Category.DESK);
 
-    for(Post thisPost: posts) {
+    for (Post thisPost : posts) {
       assertEquals(thisPost.getCategory(), Category.DESK);
     }
-
   }
 
   @Test
