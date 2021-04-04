@@ -377,50 +377,50 @@ public class ApiServer {
 
     //BEGIN WISHLIST ROUTES
 
-//    //get all wishlist posts for specified user
-//    get("/api/users/:userId/wishlist/all", (req, res) -> {
-//      try {
-//        String userId = req.params("userId");
-//        List<Post> wishlist = getWishlistSkeletonDao().readAllWishlistEntries(userId);
-//        if (wishlist.size() == 0) {
-//          throw new ApiError("Resource not found", 404); // Bad request
-//        }
-//        return gson.toJson(wishlist);
-//      } catch (DaoException ex) {
-//        throw new ApiError(ex.getMessage(), 500);
-//      }
-//    });
-//
-//
-//    //add the specified post to the specified user's wishlist.
-//    post("/api/users/:userId/wishlist/:postId", (req, res) -> {
-//      try {
-//        String userId = req.params("userId");
-//        String postId = req.params("postId");
-//        WishlistPostSkeleton addedWishlistEntry = getWishlistSkeletonDao().createWishListEntry(postId, userId);
-//        if (addedWishlistEntry == null) {
-//          throw new ApiError("Resource not found", 404); // Bad request
-//        }
-//        return gson.toJson(addedWishlistEntry);
-//      } catch (DaoException ex) {
-//        throw new ApiError(ex.getMessage(), 500);
-//      }
-//    });
-//
-//    //delete the specified wishlist entry
-//    delete("/api/users/:userId/wishlist/:postId", (req, res) -> {
-//      try {
-//        String userId = req.params("userId");
-//        String postId = req.params("postId");
-//        WishlistPostSkeleton deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
-//        if (deletedWishlistEntry == null) {
-//          throw new ApiError("Resource not found", 404); // Bad request
-//        }
-//        return gson.toJson(deletedWishlistEntry);
-//      } catch (DaoException ex) {
-//        throw new ApiError(ex.getMessage(), 500);
-//      }
-//    });
+    //get all wishlist posts for specified user
+    get("/api/users/:userId/wishlist/all", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        List<Post> wishlist = getWishlistSkeletonDao().readAllWishlistEntries(userId);
+        if (wishlist.size() == 0) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(wishlist);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+
+    //add the specified post to the specified user's wishlist.
+    post("/api/users/:userId/wishlist/:postId", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        String postId = req.params("postId");
+        WishlistPostSkeleton addedWishlistEntry = getWishlistSkeletonDao().createWishListEntry(postId, userId);
+        if (addedWishlistEntry == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(addedWishlistEntry);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
+
+    //delete the specified wishlist entry
+    delete("/api/users/:userId/wishlist/:postId", (req, res) -> {
+      try {
+        String userId = req.params("userId");
+        String postId = req.params("postId");
+        WishlistPostSkeleton deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
+        if (deletedWishlistEntry == null) {
+          throw new ApiError("Resource not found", 404); // Bad request
+        }
+        return gson.toJson(deletedWishlistEntry);
+      } catch (DaoException ex) {
+        throw new ApiError(ex.getMessage(), 500);
+      }
+    });
 
     // END WISHLIST ROUTE
 
