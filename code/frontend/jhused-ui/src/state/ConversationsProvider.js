@@ -12,7 +12,8 @@ const useConversations = () => {
 
 const ConversationsProvider = ({ children }) => {
   const [conversations, setConversations] = useLocalStorage('conversations', []);
-  const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
+  const [selectedConversationIndex, setSelectedConversationIndex] = useState(conversations.length - 1 >= 0 ?
+    conversations.length - 1 : 0);
   const { contacts } = useContacts()
   const socket = useSocket();
   const context = useContext(UserContext.Context);
