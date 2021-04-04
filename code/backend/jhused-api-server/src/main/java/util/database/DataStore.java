@@ -34,9 +34,7 @@ public final class DataStore {
         getPostForUser("003" + "1".repeat(33)), getWishListPostsForUser("003" + "1".repeat(33)));
     User user4 = new User("004" + "1".repeat(33), "Jon", "abc4@yahoo.com", "https://cw1.tw/CW/images/article/201708"
         + "/article-599e6c4e2f51d.jpg", "decker quad", getPostForUser("004" + "1".repeat(33)), getWishListPostsForUser("004" + "1".repeat(33)));
-    User user5 = new User("005" + "1".repeat(33), "Cersi", "abc5@yahoo.com", "https://lh3.googleusercontent"
-        + ".com/proxy/e2_kH0ynbEij4oqX-Qu0NzBHcCLC8V"
-        + "-fcSrzSWIaBrlnEY_XbCuwTktpYo5koHt7m9qkxRWTce4sM94ZZBT0w081psrECWhNzONZ", "hodson hall", getPostForUser(
+    User user5 = new User("005" + "1".repeat(33), "Cersi", "abc5@yahoo.com", "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/cersei-euron-gift-1500579238.png?crop=0.563xw:1xh;center,top&resize=980:*", "hodson hall", getPostForUser(
         "005" + "1".repeat(33)), getWishListPostsForUser("005" + "1".repeat(33)));
     User user6 = new User("005" + "2".repeat(33), "Shae", "abc6@yahoo.com", "https://static.wikia.nocookie"
         + ".net/asoiaf/images/3/3d/Shae_HBO.jpg/revision/latest/scale-to-width-down/300?cb=20120205045225&path-prefix"
