@@ -2,7 +2,8 @@
 
  This is a web application for JHU affiliated people to post, browse, and buy second hand items and services.   
  Frontend: https://jhused-ui.herokuapp.com/  
- Backend: https://jhused-api-server.herokuapp.com/
+ API Backend: https://jhused-api-server.herokuapp.com/  
+ Chat Backend: https://jhused-chat-server.herokuapp.com
 
 **Advisors** 
 
@@ -150,7 +151,9 @@ git subtree push --prefix code/backend/jhused-chat-server heroku-chat-server mas
 
 
 And again you'd need to tell what the previous code actually does.
+
 Make sure you check out the branch you want to deploy first. The command "git subtree push ..." will deploy the HEAD branch to heroku. 
+
 #### Special note for frontend deploy
 For the frontend deploy, you need to go to package.json. Under "script", change start: "craco start" to start: "node server.js". See more information about it [here](https://github.com/gsoft-inc/craco/issues/233#issuecomment-757575452).
 
