@@ -2,7 +2,7 @@
 
  This is a web application for JHU affiliated people to post, browse, and buy second hand items and services.   
  Frontend: https://jhused-ui.herokuapp.com/  
- API Backend: https://jhused-api-server.herokuapp.com/
+ API Backend: https://jhused-api-server.herokuapp.com/  
  Chat Backend: https://jhused-chat-server.herokuapp.com
 
 **Advisors** 
