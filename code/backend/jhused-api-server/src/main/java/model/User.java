@@ -101,11 +101,11 @@ public class User {
 		if (this == o) return true;
 		if (!(o instanceof User)) return false;
 		User user = (User) o;
-		return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(profileImage, user.profileImage) && Objects.equals(location, user.location) && Objects.equals(new HashSet(posts),new HashSet(user.posts));
+		return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(profileImage, user.profileImage) && Objects.equals(location, user.location) && Objects.equals(new HashSet<>(posts), new HashSet<>(user.posts)) && Objects.equals(new HashSet<>(wishlist), new HashSet<>(user.wishlist));
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, email, profileImage, location,new HashSet(posts));
+		return Objects.hash(id, name, email, profileImage, location, posts, wishlist);
 	}
 }

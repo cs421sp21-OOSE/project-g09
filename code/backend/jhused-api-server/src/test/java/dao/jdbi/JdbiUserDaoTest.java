@@ -3,10 +3,7 @@ package dao.jdbi;
 import dao.UserDao;
 import dao.jdbiDao.JdbiUserDao;
 import exceptions.DaoException;
-import model.Category;
-import model.Post;
-import model.SaleState;
-import model.User;
+import model.*;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 import util.database.DataStore;
@@ -20,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JdbiUserDaoTest {
   private static List<User> sampleUsers;
   private static List<Post> samplePosts;
+  private static List<WishlistPostSkeleton> sampleWishlistSkeleton;
   private UserDao userDao;
   private static Jdbi jdbi;
 
@@ -27,6 +25,7 @@ class JdbiUserDaoTest {
   static void setSamples() {
     sampleUsers = DataStore.sampleUsers();
     samplePosts = DataStore.samplePosts();
+    sampleWishlistSkeleton = DataStore.sampleWishlistPosts();
   }
 
   @BeforeAll
@@ -41,6 +40,7 @@ class JdbiUserDaoTest {
     Database.truncateTables(jdbi);
     Database.insertSampleUsers(jdbi, sampleUsers);
     Database.insertSamplePosts(jdbi, samplePosts);
+    Database.insertSampleWishlistPosts(jdbi, sampleWishlistSkeleton);
     userDao = new JdbiUserDao(jdbi);
   }
 
@@ -79,12 +79,12 @@ class JdbiUserDaoTest {
 
 
 
-  @Test
-  void read() {
-    for (User user2: sampleUsers) {
-      assertEquals(user2, userDao.read(user2.getId()));
-    }
-  }
+//  @Test
+//  void read() {
+//    for (User user2: sampleUsers) {
+//      assertEquals(user2, userDao.read(user2.getId()));
+//    }
+//  }
 
 
 //  @Test
@@ -99,7 +99,7 @@ class JdbiUserDaoTest {
 //
 //  @Test
 //  void updateAddPost() {
-//    Post postNew = new Post("9".repeat(36), "",
+//    Post postNew = new Post("98".repeat(18), "",
 //        "2008 Toyota car", 7100D, SaleState.SOLD,
 //        "It still works",
 //        DataStore.sampleImages(Category.CAR),
@@ -117,8 +117,11 @@ class JdbiUserDaoTest {
 //    String cersiId = "005111111111111111111111111111111111";
 //    User userCersi = userDao.read(cersiId);
 //    List<Post> postList = userCersi.getPosts();
+//    System.out.println(postList);
 //    postList.remove(0);
-//    assertEquals(userCersi, userDao.update(cersiId, userCersi));
+//    User updatedUser = userDao.update(cersiId, userCersi);
+//    System.out.println(updatedUser.getPosts());
+//    assertEquals(userCersi, updatedUser);
 //  }
 //
 //
@@ -133,6 +136,23 @@ class JdbiUserDaoTest {
 //    assertEquals(user, ret);
 //  }
 //
+  @Test
+  void updateWishListAddAndDelete() {
+    User newUser = DataStore.getNewUserForTest();
+    userDao.create(newUser);
+    List<Post> wishlist = newUser.getWishlist();
+    System.out.println(wishlist);
+    wishlist.remove(0);
+    System.out.println(wishlist);
+
+    Post toAddWishPost = DataStore.samplePosts().get(2);
+    wishlist.add(toAddWishPost);
+    newUser.setWishlist(wishlist);
+    User updatedUser = userDao.update(newUser.getId(), newUser);
+    System.out.println(updatedUser.getWishlist());
+    assertEquals(newUser, updatedUser);
+  }
+
 //  @Test
 //  void delete() {
 //    String cersiId = "005111111111111111111111111111111111";
