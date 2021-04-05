@@ -32,7 +32,7 @@ const OpenConversation = () => {
                 className={`flex items-center ${
                   message.fromMe ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div className="w-max h-full px-6">
-                  {message.fromMe ? "You" : message.senderName}
+                  {(message.fromMe ? "You" : message.senderName) + ` ${new Date(message.sentTime).toLocaleString()}`}
                 </div>
                 <div className={`text-left w-max-2/4 rounded px-2 py-1 ${
                   message.fromMe ? 'bg-blue-500 text-white' : 'bg-gray-400 text-white'}`}>
