@@ -3,6 +3,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import {useContacts} from "./ContactsProvider";
 import {useSocket} from "./SocketProvider";
 import { UserContext } from "./";
+import axios from "axios";
 
 const ConversationsContext = React.createContext();
 
@@ -12,21 +13,27 @@ const useConversations = () => {
 
 const ConversationsProvider = ({ children }) => {
   const [conversations, setConversations] = useLocalStorage('conversations', []);
-  const [selectedConversationIndex, setSelectedConversationIndex] = useState(0);
+  const [selectedConversationIndex, setSelectedConversationIndex] = useState(conversations.length - 1 >= 0 ?
+    conversations.length - 1 : 0);
   const { contacts } = useContacts()
   const socket = useSocket();
   const context = useContext(UserContext.Context);
 
   const createConversation = (recipients) => {
-    setConversations(prevConversations => {
-      return [...prevConversations, { recipients, messages: [] }]
-    });
+    const existingConversation = conversations.filter(conversation => {
+      return (arrayEquality(conversation.recipients, recipients))
+    })
+    if (existingConversation.length === 0) {
+      setConversations(prevConversations => {
+        return [...prevConversations, { recipients, messages: [] }]
+      });
+    }
   };
 
-  const addMessageToConversation = useCallback(( {recipients, text, sender} ) => {
+  const addMessageToConversation = useCallback(( {recipients, text, sender, sentTime} ) => {
     setConversations(prevConversations => {
       let madeChange = false;
-      const newMessage = { sender, text };
+      const newMessage = { sender, text, sentTime };
       const newConversations = prevConversations.map(
         conversation => {
           if (arrayEquality(conversation.recipients, recipients))
@@ -57,11 +64,34 @@ const ConversationsProvider = ({ children }) => {
     if (context.user == null) return
     socket.on('receive-message', addMessageToConversation)
     return () => socket.off('receive-message')
-  }, [socket, addMessageToConversation])
+  }, [socket, addMessageToConversation, context.user])
 
   const sendMessage = (recipients, text) => {
-    socket.emit('send-message', { recipients, text });
-    addMessageToConversation({recipients, text, sender:context.user.id});
+    const sentTime = Date.now()
+    socket.emit('send-message', { recipients, text, sentTime:sentTime });
+    addMessageToConversation({recipients, text, sender:context.user.id, sentTime:sentTime});
+    let messageToDB = {
+      id: '0123456',
+      senderId: `${context.user.id}`,
+      receiverId: `${recipients[0]}`,
+      message: text,
+      read: false,
+      sentTime: {
+        seconds: sentTime,
+        nanos: 212877000
+      }
+    }
+
+    console.log(messageToDB)
+    axios.post("/api/messages", messageToDB,
+      {params: { isList: false }
+      })
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   const formattedConversations = context.user? (conversations.map((conversation, index) => {
@@ -81,7 +111,7 @@ const ConversationsProvider = ({ children }) => {
       const fromMe = context.user.id === message.sender;
       return {...message, senderName: name, fromMe};
     });
-
+    messages.sort((a, b) => (a.sentTime > b.sentTime) ? 1 : -1)
     const selected = index === selectedConversationIndex;
     return { ...conversation, messages, recipients, selected };
   })) : [];
@@ -91,6 +121,8 @@ const ConversationsProvider = ({ children }) => {
     createConversation,
     selectConversationIndex: setSelectedConversationIndex,
     selectedConversation: formattedConversations[selectedConversationIndex],
+    setConversations,
+    addMessageToConversation,
     sendMessage
   }
 
