@@ -87,7 +87,7 @@ const ConversationsProvider = ({ children }) => {
       const fromMe = context.user.id === message.sender;
       return {...message, senderName: name, fromMe};
     });
-
+    messages.sort((a, b) => (a.sentTime > b.sentTime) ? 1 : -1)
     const selected = index === selectedConversationIndex;
     return { ...conversation, messages, recipients, selected };
   })) : [];
