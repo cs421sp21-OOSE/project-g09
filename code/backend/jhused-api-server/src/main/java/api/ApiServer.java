@@ -546,7 +546,7 @@ public class ApiServer {
     final SparkWebContext context = new SparkWebContext(request, response);
     final ProfileManager manager = new ProfileManager(context);
     List<CommonProfile> profiles = manager.getAll(true);
-    if (isDebug) {
+    if (isDebug&&profiles!=null&&profiles.size()!=0) {
       profiles.get(0).addAttribute("userid", profiles.get(0).getId());
     }
     return profiles;
