@@ -47,8 +47,8 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
-  //  private static final String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
-  private static final String FRONTEND_URL = "http://localhost:3000";
+    private static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
+//  private static String FRONTEND_URL = "http://localhost:3000";
 
   private static Jdbi jdbi;
 
@@ -57,6 +57,7 @@ public class ApiServer {
   private static void checkIfDebug() {
     String mode = System.getenv("MODE");
     isDebug = mode != null && mode.equals("DEBUG");
+    FRONTEND_URL = isDebug?FRONTEND_URL:"http://localhost:3000";
   }
 
   private static void setJdbi() throws URISyntaxException {
