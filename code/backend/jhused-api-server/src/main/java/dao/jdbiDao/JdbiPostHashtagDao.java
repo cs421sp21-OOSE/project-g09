@@ -59,8 +59,8 @@ public class JdbiPostHashtagDao implements PostHashtagDao {
     String sql = "WITH deleted AS ("
         + "DELETE FROM post_hashtag "
         + "WHERE post_hashtag.post_id = :postId "
-        + "AND post_hashtag.hashtag_id = :hashtagId) "
-        + ") SELECT deleted.post_id as \"postId\", deleted.hashtag_id as \"hashtagId\" FROM deleted;";
+        + "AND post_hashtag.hashtag_id = :hashtagId RETURNING *) "
+        + "SELECT deleted.post_id as \"postId\", deleted.hashtag_id as \"hashtagId\" FROM deleted;";
     return getMaps(postIds, hashtagIds, sql);
   }
 
@@ -69,8 +69,8 @@ public class JdbiPostHashtagDao implements PostHashtagDao {
     String sql = "WITH deleted AS ("
         + "DELETE FROM post_hashtag "
         + "WHERE post_hashtag.post_id = :postId "
-        + "AND post_hashtag.hashtag_id = :hashtagId) "
-        + ") SELECT deleted.post_id as \"postId\", deleted.hashtag_id as \"hashtagId\" FROM deleted;";
+        + "AND post_hashtag.hashtag_id = :hashtagId RETURNING *) "
+        + "SELECT deleted.post_id as \"postId\", deleted.hashtag_id as \"hashtagId\" FROM deleted;";
     return getMaps(postId, hashtagIds, sql);
   }
 
