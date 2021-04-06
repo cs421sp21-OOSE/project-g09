@@ -80,11 +80,11 @@ As a user, I want to give user option to flag a post(Tentative)
   - [ ]  Header w/o search bar for chat (sam)
   - [ ]  Search without Browser Force Refresh, if possible (sam)
   - [ ]  Chat Page
-    - [ ]   Differentiate read/unread messages, New messages notification
-    - [ ]   Frontend
-      - [ ]Delete messages
-      - [ ]Delete contacts
-      - [ ]Add user profile
+    - [ ]  Differentiate read/unread messages, New messages notification
+    - [ ]  Frontend
+      - [ ]  Delete messages
+      - [ ]  Delete contacts
+      - [ ]  Add user profile
   - [ ]  Wishlist post heart not turning red in time
   - [ ]  Invite more people to test out web app
 
