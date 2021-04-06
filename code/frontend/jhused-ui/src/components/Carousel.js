@@ -45,7 +45,7 @@ const Carousel = (props) => {
 
   const handleWishlist = (postID) => {
     // check if post is in wishlist already
-    const path = `api/users/${userContext.user.id}/wishlist/${postID}`;
+    const path = `/api/users/${userContext.user.id}/wishlist/${postID}`;
     if (inWishlist) {
       axios
         .delete(path)
