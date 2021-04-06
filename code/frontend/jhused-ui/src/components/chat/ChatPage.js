@@ -10,7 +10,7 @@ const ChatPage = () => {
   const { setConversations, addMessageToConversation } = useConversations();
 
   useEffect(() => {
-    setConversations([])
+    //setConversations([])
     axios.get(`/api/messages/${context.user.id}`)
       .then((response) => {
         const historyMessages = response.data
