@@ -41,6 +41,8 @@ const EditorFormik = (props) => {
         .get("/api/posts/" + postID)
         .then((response) => {
           console.log(response);
+          if(response.data.hashtags==undefined)
+            response.data.hashtags=[];
           setInitialPostData(response.data);
           setIsLoaded(true);
         })

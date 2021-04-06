@@ -15,6 +15,7 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -165,7 +166,7 @@ public class JdbiHashtagDaoTest {
   @Test
   void getHashtagsGivenPostIdWork() {
     for (Post post : samplePosts) {
-      assertEquals(post.getHashtags(), hashtagDao.getHashtagsOfPost(post.getId()));
+      assertEquals(post.getHashtags()==null?new ArrayList<>():post.getHashtags(), hashtagDao.getHashtagsOfPost(post.getId()));
     }
   }
 

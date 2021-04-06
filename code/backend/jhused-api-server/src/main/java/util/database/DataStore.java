@@ -95,7 +95,7 @@ public final class DataStore {
   public static User getNewUserForTest() {
     List<Post> samplePosts = DataStore.samplePosts();
     List<Post> wishList = new ArrayList<>(Arrays.asList(samplePosts.get(0), samplePosts.get(1)));
-    Post postNew = new Post("9".repeat(36), "008" + "1".repeat(33),
+    Post postNew = new Post("12".repeat(18), "008" + "1".repeat(33),
         "2008 Toyota car", 7100D, SaleState.SOLD,
         "It still works",
         DataStore.sampleImages(Category.CAR),
