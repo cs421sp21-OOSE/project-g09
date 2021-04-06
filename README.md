@@ -55,7 +55,7 @@ Jdbi3 3.16.0 for database interaction
 Pac4j 4.0.0 for SSO integration and security  
 chat server:  
 Express 4.17.1  
-Socket.IO 3.0 for realtime chatting
+Socket.IO 2.3.0 for realtime chatting
 
 ##### Build Tool & Package Manager:
 Gradle 6.7  
