@@ -25,6 +25,7 @@
    ![](../assets/LocalDebug/axios_local_url.jpg)  
 
 4. Run frontend.
+5. **DON'T FORGET TO UNDO THE CHANGES IN FRONTEND WHEN PUSHING OR DEPLOYING.**
 
 ### What you should see
 
@@ -35,3 +36,4 @@
 ![](../assets/LocalDebug/OktaLogin.jpg) 
 5. Then use user name "testpac4j@gmail.com" and password "Pac4jtest" to login.
 6. Then you should be able to login.
+
