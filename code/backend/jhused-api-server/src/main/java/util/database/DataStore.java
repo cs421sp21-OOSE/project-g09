@@ -179,8 +179,15 @@ public final class DataStore {
         Category.TV,
         "Towson"
     );
-    List<Post> samples = new ArrayList<>(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8));
-    return samples;
+    Post p9 = new Post("9".repeat(36), "005" + "2".repeat(33),
+        "1998 Toyota car", 7100D, SaleState.SOLD,
+        "It still works",
+        sampleImages("17".repeat(18), "18".repeat(18), Category.FURNITURE),
+        null,
+        Category.FURNITURE,
+        "Towson"
+    );
+    return new ArrayList<>(Arrays.asList(p1, p2, p3, p4, p5, p6, p7, p8,p9));
   }
 
   /**

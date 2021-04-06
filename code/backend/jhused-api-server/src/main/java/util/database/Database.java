@@ -135,16 +135,16 @@ public final class Database {
 
   public static void createWishlistPostsTableWithSampleData(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "CREATE TABLE IF NOT EXISTS wishlist_post("
-            + "post_id VARCHAR(50) NOT NULL,"
-            + "user_id VARCHAR(50) NOT NULL,"
-            + "PRIMARY KEY (post_id, user_id),"
-            + "FOREIGN KEY (post_id) " // Note: no comma here
-            + "REFERENCES post(id) "
-            + "ON DELETE CASCADE,"
-            + "FOREIGN KEY (user_id) " // Note: no comma here
-            + "REFERENCES jhused_user(id) "
-            + "ON DELETE CASCADE"
-            + ");";
+        + "post_id VARCHAR(50) NOT NULL,"
+        + "user_id VARCHAR(50) NOT NULL,"
+        + "PRIMARY KEY (post_id, user_id),"
+        + "FOREIGN KEY (post_id) " // Note: no comma here
+        + "REFERENCES post(id) "
+        + "ON DELETE CASCADE,"
+        + "FOREIGN KEY (user_id) " // Note: no comma here
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE"
+        + ");";
 
     jdbi.useTransaction(handle -> {
       handle.execute("DROP TABLE IF EXISTS wishlist_post;");
@@ -155,7 +155,7 @@ public final class Database {
 
   public static void insertSampleWishlistPosts(Jdbi jdbi, List<WishlistPostSkeleton> samples) {
     String sql = "INSERT INTO wishlist_post(post_id, user_id) "
-            + "VALUES(:postId, :userId);";
+        + "VALUES(:postId, :userId);";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
       for (WishlistPostSkeleton wishlistPostSkeleton : samples) {
@@ -394,9 +394,12 @@ public final class Database {
     jdbi.useTransaction(handle -> {
       handle.createUpdate(sql).bindBean(post).execute();
     });
-    addImages(jdbi, post.getImages());
-    addHashtags(jdbi, post.getHashtags());
-    addOnePostManyHashtags(jdbi, post, post.getHashtags());
+    if (post.getImages() != null)
+      addImages(jdbi, post.getImages());
+    if (post.getHashtags() != null) {
+      addHashtags(jdbi, post.getHashtags());
+      addOnePostManyHashtags(jdbi, post, post.getHashtags());
+    }
   }
 
   /**
