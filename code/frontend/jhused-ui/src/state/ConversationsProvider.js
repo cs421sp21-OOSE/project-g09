@@ -3,6 +3,7 @@ import useLocalStorage from "../hooks/useLocalStorage";
 import {useContacts} from "./ContactsProvider";
 import {useSocket} from "./SocketProvider";
 import { UserContext } from "./";
+import axios from "axios";
 
 const ConversationsContext = React.createContext();
 
@@ -66,8 +67,31 @@ const ConversationsProvider = ({ children }) => {
   }, [socket, addMessageToConversation, context.user])
 
   const sendMessage = (recipients, text) => {
-    socket.emit('send-message', { recipients, text, sentTime:Date.now() });
-    addMessageToConversation({recipients, text, sender:context.user.id, sentTime:Date.now()});
+    const sentTime = Date.now()
+    socket.emit('send-message', { recipients, text, sentTime:sentTime });
+    addMessageToConversation({recipients, text, sender:context.user.id, sentTime:sentTime});
+    let messageToDB = {
+      id: '0123456',
+      senderId: `${context.user.id}`,
+      receiverId: `${recipients[0]}`,
+      message: text,
+      read: false,
+      sentTime: {
+        seconds: sentTime,
+        nanos: 212877000
+      }
+    }
+
+    console.log(messageToDB)
+    axios.post("/api/messages", messageToDB,
+      {params: { isList: false }
+      })
+      .then((response) => {
+        console.log(response)
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   const formattedConversations = context.user? (conversations.map((conversation, index) => {
