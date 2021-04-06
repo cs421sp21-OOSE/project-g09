@@ -57,7 +57,7 @@ public class ApiServer {
   private static void checkIfDebug() {
     String mode = System.getenv("MODE");
     isDebug = mode != null && mode.equals("DEBUG");
-    FRONTEND_URL = isDebug?FRONTEND_URL:"http://localhost:3000";
+    FRONTEND_URL = !isDebug?FRONTEND_URL:"http://localhost:3000";
   }
 
   private static void setJdbi() throws URISyntaxException {
