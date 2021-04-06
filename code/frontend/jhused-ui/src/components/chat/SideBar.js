@@ -1,4 +1,4 @@
-import {Tab, Nav, Button, Modal} from 'react-bootstrap';
+import {Modal} from 'react-bootstrap';
 import {useState,useContext} from "react";
 import Conversations from "./Conversations";
 import Contacts from "./Contacts";

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import HomePage from "./components/HomePage";
-import { Switch, Route, useLocation, Redirect } from "react-router-dom";
+import { Switch, Route, useLocation} from "react-router-dom";
 import PostDetails from "./components/PostDetails";
 import UserProfile from "./components/UserProfile";
 import EditorFormik from "./components/EditorFormik";
@@ -9,7 +9,6 @@ import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/chat/ChatPage";
 import UserSettings from "./components/UserSettings";
 import { UserContext } from "./state";
-import context from "react-bootstrap/esm/AccordionContext";
 import {SocketProvider} from "./state/SocketProvider";
 import {ContactsProvider} from "./state/ContactsProvider";
 import {ConversationsProvider} from "./state/ConversationsProvider";

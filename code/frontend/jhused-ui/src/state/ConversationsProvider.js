@@ -63,7 +63,7 @@ const ConversationsProvider = ({ children }) => {
     if (context.user == null) return
     socket.on('receive-message', addMessageToConversation)
     return () => socket.off('receive-message')
-  }, [socket, addMessageToConversation])
+  }, [socket, addMessageToConversation, context.user])
 
   const sendMessage = (recipients, text) => {
     socket.emit('send-message', { recipients, text, sentTime:Date.now() });
@@ -97,6 +97,8 @@ const ConversationsProvider = ({ children }) => {
     createConversation,
     selectConversationIndex: setSelectedConversationIndex,
     selectedConversation: formattedConversations[selectedConversationIndex],
+    setConversations,
+    addMessageToConversation,
     sendMessage
   }
 
