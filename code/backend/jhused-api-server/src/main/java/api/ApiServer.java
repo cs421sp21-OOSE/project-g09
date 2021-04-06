@@ -30,6 +30,7 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 import util.SSO.JHUSSOConfigFactory;
+import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
 
 import java.net.URISyntaxException;
@@ -46,11 +47,22 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
-  private static final String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
+  //  private static final String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
+  private static final String FRONTEND_URL = "http://localhost:3000";
 
   private static Jdbi jdbi;
 
+  private static boolean isDebug;
+
+  private static void checkIfDebug() {
+    String mode = System.getenv("MODE");
+    isDebug = mode != null && mode.equals("DEBUG");
+  }
+
   private static void setJdbi() throws URISyntaxException {
+    if (isDebug) {
+      Database.USE_TEST_DATABASE = true;
+    }
     jdbi = Database.getJdbi();
   }
 
@@ -129,6 +141,7 @@ public class ApiServer {
   }
 
   public static void main(String[] args) throws URISyntaxException {
+    checkIfDebug();
     port(getHerokuAssignedPort());
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
@@ -246,7 +259,8 @@ public class ApiServer {
       }
     });
 
-    final Config config = new JHUSSOConfigFactory().build();
+//    final Config config = new JHUSSOConfigFactory().build();
+    final Config config = getSSOConfig();
 
     //SSO filter
     before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
@@ -275,13 +289,17 @@ public class ApiServer {
           throw new ApiError("Got multiple user profiles, unexpected.", 500);
         }
         CommonProfile userProfile = userProfiles.get(0);
-        User user = userDao.read(userProfile.getUsername()); // user name  is JHED ID
+        String key = isDebug ? userProfile.getId() : userProfile.getUsername();
+        User user = userDao.read(key); // user name  is JHED ID
         if (user == null) {
-          if (userProfile.getUsername() == null) {
+          if (key == null) {
             throw new ApiError("Empty user name, unexpected, should be JHED", 500);
           }
-          user = new User(userProfile.getUsername(), userProfile.getUsername(),
-              userProfile.getUsername() + "@jh.edu", "", "");
+          if (!isDebug) {
+            user = new User(key, key,key + "@jh.edu", "", "");
+          } else {
+            user = new User(key, key, key, "", "");
+          }
           if (userDao.create(user) == null) {
             throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
           }
@@ -512,7 +530,7 @@ public class ApiServer {
         List<String> ids = gson.fromJson(req.body(), new TypeToken<ArrayList<String>>() {
         }.getType());
         List<Message> messages = messageDao.delete(ids);
-        if(messages==null||ids==null||messages.size()!=ids.size())
+        if (messages == null || ids == null || messages.size() != ids.size())
           throw new ApiError("Unable to delete all messages, contain invalid ids, rolled back, none is deleted.", 400);
         return gson.toJson(messages);
       } catch (DaoException | NullPointerException | JsonSyntaxException ex) {
@@ -526,6 +544,17 @@ public class ApiServer {
   private static List<CommonProfile> getProfiles(final Request request, final Response response) {
     final SparkWebContext context = new SparkWebContext(request, response);
     final ProfileManager manager = new ProfileManager(context);
-    return manager.getAll(true);
+    List<CommonProfile> profiles = manager.getAll(true);
+    if (isDebug) {
+      profiles.get(0).addAttribute("userid", profiles.get(0).getId());
+    }
+    return profiles;
+  }
+
+  private static Config getSSOConfig() {
+    if (isDebug)
+      return new OktaSSOConfigFactory().build();
+    else
+      return new JHUSSOConfigFactory().build();
   }
 }

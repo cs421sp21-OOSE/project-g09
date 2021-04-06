@@ -141,19 +141,6 @@ public class Post {
     this.images = images;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (!(o instanceof Post)) return false;
-    Post post = (Post) o;
-    return Objects.equals(id, post.id) && Objects.equals(userId, post.userId) && Objects.equals(title, post.title) && Objects.equals(price, post.price) && saleState == post.saleState && Objects.equals(description, post.description) && Objects.equals(new HashSet(images), new HashSet(post.images)) && Objects.equals(new HashSet(hashtags),new HashSet(post.hashtags)) && category == post.category && Objects.equals(location, post.location);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, userId, title, price, saleState, description, new HashSet(images), new HashSet(hashtags), category, location);
-  }
-
   public void addImages(Image image) {
     if (images == null)
       images = new ArrayList<>();
