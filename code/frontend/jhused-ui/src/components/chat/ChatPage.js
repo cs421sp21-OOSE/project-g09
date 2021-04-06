@@ -7,10 +7,16 @@ import { UserContext } from "../../state/";
 
 const ChatPage = () => {
   const context = useContext(UserContext.Context);
-  const { setConversations, addMessageToConversation } = useConversations();
+  const { conversations, setConversations, addMessageToConversation } = useConversations();
 
   useEffect(() => {
-    //setConversations([])
+    const initialConversations = conversations.map((conversation) => {
+      const recipients = conversation.recipients.map( (recipient) => {
+          return recipient.id
+      })
+      return { recipients, messages: [] }
+    })
+    setConversations(initialConversations)
     axios.get(`/api/messages/${context.user.id}`)
       .then((response) => {
         const historyMessages = response.data
@@ -34,7 +40,7 @@ const ChatPage = () => {
       .catch((err) => {
         console.log(err);
       });
-  },[addMessageToConversation, context.user.id, setConversations])
+  },[addMessageToConversation, context.user.id, setConversations]) // Don't add conversations as dependency here
 
 
   return <DashBoard/>
