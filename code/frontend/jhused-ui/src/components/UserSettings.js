@@ -41,8 +41,6 @@ const SettingForm = (props) => {
 
   const formikSubmit = (values, formik) => {
     console.log("Sending ", values);
-    //values.wishlist = userContext.user.wishlist;
-    //values.posts = userContext.user.posts;
     userContext.setUser(values);
     axios
       .put(`/api/users/${props.user.id}`, values)
