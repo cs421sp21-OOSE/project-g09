@@ -29,9 +29,11 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.Spark;
+import spark.embeddedserver.EmbeddedServers;
 import util.SSO.JHUSSOConfigFactory;
 import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
+import util.server.CustomEmbeddedJettyFactory;
 
 import java.net.URISyntaxException;
 import java.util.*;
@@ -47,17 +49,24 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
-    private static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
+  private static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
 //  private static String FRONTEND_URL = "http://localhost:3000";
 
   private static Jdbi jdbi;
 
   private static boolean isDebug;
 
+  private static void setSSLForLocalDev() {
+    if (isDebug) {
+      secure("src/main/resources/samlKeystore.jks",
+          "k-d1bf-i4s7*sd5fj", null, null);
+    }
+  }
+
   private static void checkIfDebug() {
     String mode = System.getenv("MODE");
     isDebug = mode != null && mode.equals("DEBUG");
-    FRONTEND_URL = !isDebug?FRONTEND_URL:"http://localhost:3000";
+    FRONTEND_URL = !isDebug ? FRONTEND_URL : "http://localhost:3000";
   }
 
   private static void setJdbi() throws URISyntaxException {
@@ -142,7 +151,13 @@ public class ApiServer {
   }
 
   public static void main(String[] args) throws URISyntaxException {
+    EmbeddedServers.add(
+        EmbeddedServers.Identifiers.JETTY,
+        new CustomEmbeddedJettyFactory());
+
     checkIfDebug();
+    setSSLForLocalDev();
+
     port(getHerokuAssignedPort());
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
@@ -297,7 +312,7 @@ public class ApiServer {
             throw new ApiError("Empty user name, unexpected, should be JHED", 500);
           }
           if (!isDebug) {
-            user = new User(key, key,key + "@jh.edu", "", "");
+            user = new User(key, key, key + "@jh.edu", "", "");
           } else {
             user = new User(key, key, key, "", "");
           }
@@ -546,7 +561,7 @@ public class ApiServer {
     final SparkWebContext context = new SparkWebContext(request, response);
     final ProfileManager manager = new ProfileManager(context);
     List<CommonProfile> profiles = manager.getAll(true);
-    if (isDebug&&profiles!=null&&profiles.size()!=0) {
+    if (isDebug && profiles != null && profiles.size() != 0) {
       profiles.get(0).addAttribute("userid", profiles.get(0).getId());
     }
     return profiles;
