@@ -30,8 +30,8 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
+import util.SSO.SamlTestSSOConfigFactory;
 import util.SSO.JHUSSOConfigFactory;
-import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
 import util.server.CustomEmbeddedJettyFactory;
 
@@ -305,7 +305,7 @@ public class ApiServer {
           throw new ApiError("Got multiple user profiles, unexpected.", 500);
         }
         CommonProfile userProfile = userProfiles.get(0);
-        String key = isDebug ? userProfile.getId() : userProfile.getUsername();
+        String key = isDebug ? userProfile.getAttribute("userid").toString() : userProfile.getUsername();
         User user = userDao.read(key); // user name  is JHED ID
         if (user == null) {
           if (key == null) {
@@ -562,14 +562,14 @@ public class ApiServer {
     final ProfileManager manager = new ProfileManager(context);
     List<CommonProfile> profiles = manager.getAll(true);
     if (isDebug && profiles != null && profiles.size() != 0) {
-      profiles.get(0).addAttribute("userid", profiles.get(0).getId());
+      profiles.get(0).addAttribute("userid", ((ArrayList)(profiles.get(0).getAttribute("mail"))).get(0));
     }
     return profiles;
   }
 
   private static Config getSSOConfig() {
     if (isDebug)
-      return new OktaSSOConfigFactory().build();
+      return new SamlTestSSOConfigFactory().build();
     else
       return new JHUSSOConfigFactory().build();
   }
