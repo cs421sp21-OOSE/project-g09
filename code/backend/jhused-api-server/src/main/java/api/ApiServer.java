@@ -20,6 +20,8 @@ import model.User;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.config.DefaultConfigFactory;
+import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.sparkjava.CallbackRoute;
@@ -29,9 +31,11 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.Spark;
+import spark.embeddedserver.EmbeddedServers;
+import util.SSO.SamlTestSSOConfigFactory;
 import util.SSO.JHUSSOConfigFactory;
-import util.SSO.OktaSSOConfigFactory;
 import util.database.Database;
+import util.server.CustomEmbeddedJettyFactory;
 
 import java.net.URISyntaxException;
 import java.util.*;
@@ -47,17 +51,24 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
-    private static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
+  private static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
 //  private static String FRONTEND_URL = "http://localhost:3000";
 
   private static Jdbi jdbi;
 
   private static boolean isDebug;
 
+  private static void setSSLForLocalDev() {
+    if (isDebug) {
+      secure("src/main/resources/samlKeystore.jks",
+          "k-d1bf-i4s7*sd5fj", null, null);
+    }
+  }
+
   private static void checkIfDebug() {
     String mode = System.getenv("MODE");
     isDebug = mode != null && mode.equals("DEBUG");
-    FRONTEND_URL = !isDebug?FRONTEND_URL:"http://localhost:3000";
+    FRONTEND_URL = !isDebug ? FRONTEND_URL : "http://localhost:3000";
   }
 
   private static void setJdbi() throws URISyntaxException {
@@ -142,7 +153,13 @@ public class ApiServer {
   }
 
   public static void main(String[] args) throws URISyntaxException {
+    EmbeddedServers.add(
+        EmbeddedServers.Identifiers.JETTY,
+        new CustomEmbeddedJettyFactory());
+
     checkIfDebug();
+    setSSLForLocalDev();
+
     port(getHerokuAssignedPort());
     setAccessControlRequestHeaders();
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
@@ -290,14 +307,14 @@ public class ApiServer {
           throw new ApiError("Got multiple user profiles, unexpected.", 500);
         }
         CommonProfile userProfile = userProfiles.get(0);
-        String key = isDebug ? userProfile.getId() : userProfile.getUsername();
+        String key = isDebug ? userProfile.getAttribute("userid").toString() : userProfile.getUsername();
         User user = userDao.read(key); // user name  is JHED ID
         if (user == null) {
           if (key == null) {
             throw new ApiError("Empty user name, unexpected, should be JHED", 500);
           }
           if (!isDebug) {
-            user = new User(key, key,key + "@jh.edu", "", "");
+            user = new User(key, key, key + "@jh.edu", "", "");
           } else {
             user = new User(key, key, key, "", "");
           }
@@ -400,7 +417,7 @@ public class ApiServer {
     get("/api/users/:userId/wishlist/all", (req, res) -> {
       try {
         String userId = req.params("userId");
-        List<Post> wishlist = getWishlistSkeletonDao().readAllWishlistEntries(userId);
+        List<Post> wishlist = wishlistPostSkeletonDao.readAllWishlistEntries(userId);
         if (wishlist.size() == 0) {
           throw new ApiError("Resource not found", 404); // Bad request
         }
@@ -416,7 +433,7 @@ public class ApiServer {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
-        WishlistPostSkeleton addedWishlistEntry = getWishlistSkeletonDao().createWishListEntry(postId, userId);
+        WishlistPostSkeleton addedWishlistEntry = wishlistPostSkeletonDao.createWishListEntry(postId, userId);
         if (addedWishlistEntry == null) {
           throw new ApiError("Resource not found", 404); // Bad request
         }
@@ -431,7 +448,7 @@ public class ApiServer {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
-        WishlistPostSkeleton deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
+        WishlistPostSkeleton deletedWishlistEntry = wishlistPostSkeletonDao.deleteWishlistEntry(postId, userId);
         if (deletedWishlistEntry == null) {
           throw new ApiError("Resource not found", 404); // Bad request
         }
@@ -546,15 +563,15 @@ public class ApiServer {
     final SparkWebContext context = new SparkWebContext(request, response);
     final ProfileManager manager = new ProfileManager(context);
     List<CommonProfile> profiles = manager.getAll(true);
-    if (isDebug&&profiles!=null&&profiles.size()!=0) {
-      profiles.get(0).addAttribute("userid", profiles.get(0).getId());
+    if (isDebug && profiles != null && profiles.size() != 0) {
+      profiles.get(0).addAttribute("userid", ((ArrayList)(profiles.get(0).getAttribute("mail"))).get(0));
     }
     return profiles;
   }
 
   private static Config getSSOConfig() {
     if (isDebug)
-      return new OktaSSOConfigFactory().build();
+      return new SamlTestSSOConfigFactory().build();
     else
       return new JHUSSOConfigFactory().build();
   }

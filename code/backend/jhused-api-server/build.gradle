@@ -9,8 +9,7 @@ version '0.0.1'
 
 repositories {
     mavenCentral()
-    // comment this line and line 42, the jar works
-    maven { url "https://repository.mulesoft.org/nexus/content/repositories/public/" }
+    maven { url "https://build.shibboleth.net/nexus/content/repositories/releases/" }
 }
 
 dependencies {
@@ -38,7 +37,6 @@ dependencies {
     implementation 'org.pac4j:pac4j-core:4.0.0'
     implementation 'org.pac4j:pac4j-http:4.0.0'
     implementation 'org.pac4j:spark-pac4j:4.0.0'
-    // comment this line and line 12, the jar works
     implementation 'org.pac4j:pac4j-saml:4.0.0'
 
     //JavaSpark
