@@ -82,8 +82,8 @@ As a user, I want to give user option to flag a post(Tentative)
   - [ ]  Chat Page
     - [ ]  Differentiate read/unread messages, New messages notification
     - [ ]  Frontend
-      - [ ]  Delete messages
-      - [ ]  Delete contacts
+      - [ ]  Delete messages (chu)
+      - [ ]  Delete contacts (chu)
       - [ ]  Add user profile
   - [ ]  Wishlist post heart not turning red in time
   - [ ]  Invite more people to test out web app
