@@ -3,6 +3,7 @@ package util.SSO;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
+import org.pac4j.core.context.JEEContext;
 import org.pac4j.saml.client.SAML2Client;
 import org.pac4j.saml.config.SAML2Configuration;
 
@@ -35,6 +36,7 @@ public class JHUSSOConfigFactory implements ConfigFactory {
 
     final Config config = new Config(clients);
     config.setHttpActionAdapter(new HttpActionAdapter());
+    config.setSecurityLogic(CustomSecurityLogic.INSTANCE);
     return config;
   }
 }

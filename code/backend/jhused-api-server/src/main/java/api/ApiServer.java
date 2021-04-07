@@ -20,6 +20,8 @@ import model.User;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.pac4j.core.config.Config;
+import org.pac4j.core.config.DefaultConfigFactory;
+import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.sparkjava.CallbackRoute;
@@ -415,7 +417,7 @@ public class ApiServer {
     get("/api/users/:userId/wishlist/all", (req, res) -> {
       try {
         String userId = req.params("userId");
-        List<Post> wishlist = getWishlistSkeletonDao().readAllWishlistEntries(userId);
+        List<Post> wishlist = wishlistPostSkeletonDao.readAllWishlistEntries(userId);
         if (wishlist.size() == 0) {
           throw new ApiError("Resource not found", 404); // Bad request
         }
@@ -431,7 +433,7 @@ public class ApiServer {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
-        WishlistPostSkeleton addedWishlistEntry = getWishlistSkeletonDao().createWishListEntry(postId, userId);
+        WishlistPostSkeleton addedWishlistEntry = wishlistPostSkeletonDao.createWishListEntry(postId, userId);
         if (addedWishlistEntry == null) {
           throw new ApiError("Resource not found", 404); // Bad request
         }
@@ -446,7 +448,7 @@ public class ApiServer {
       try {
         String userId = req.params("userId");
         String postId = req.params("postId");
-        WishlistPostSkeleton deletedWishlistEntry = getWishlistSkeletonDao().deleteWishlistEntry(postId, userId);
+        WishlistPostSkeleton deletedWishlistEntry = wishlistPostSkeletonDao.deleteWishlistEntry(postId, userId);
         if (deletedWishlistEntry == null) {
           throw new ApiError("Resource not found", 404); // Bad request
         }

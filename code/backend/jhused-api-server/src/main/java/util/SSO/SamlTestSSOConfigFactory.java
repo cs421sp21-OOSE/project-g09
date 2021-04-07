@@ -33,6 +33,7 @@ public class SamlTestSSOConfigFactory implements ConfigFactory {
 
     final Config config = new Config(clients);
     config.setHttpActionAdapter(new HttpActionAdapter());
+    config.setSecurityLogic(CustomSecurityLogic.INSTANCE);
     return config;
   }
 }

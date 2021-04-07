@@ -2,6 +2,7 @@ package util.server;
 
 import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.util.thread.ThreadPool;
+import org.eclipse.jetty.webapp.WebAppContext;
 import spark.ExceptionMapper;
 import spark.embeddedserver.EmbeddedServer;
 import spark.embeddedserver.EmbeddedServerFactory;
