@@ -34,7 +34,7 @@
 1. Open a browser
 2. Visit [http://localhost:3000](http://localhost:3000)
 3. You should see the homepage, click the Login at up right corner
-4. You should be first redirected to [http://localhost:8080/jhu/login], then you should see a third party SSO like this:
+4. You should be first redirected to [https://localhost:8080/jhu/login](https://localhost:8080/jhu/login), then you should see a third party SSO like this:
 ![](../assets/LocalDebug/SamlTestLogin.jpg) 
 5. Then use user name and password provided in the red rectangle to login.
 6. Then it will request you to accept some dummy permission, just click accept at the bottom.
