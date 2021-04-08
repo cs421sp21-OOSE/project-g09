@@ -37,10 +37,7 @@ public class JdbiHashtagDao implements HashtagDao {
 
   @Override
   public List<Hashtag> create(List<Hashtag> hashtags) throws DaoException {
-    String sql = "WITH inserted AS ("
-        + "INSERT INTO hashtag(id, hashtag) "
-        + "VALUES(:id, :hashtag) RETURNING *"
-        + ") SELECT * FROM inserted;";
+    String sql = "INSERT INTO hashtag(id, hashtag) VALUES(:id, :hashtag);";
 
     try {
       return jdbi.inTransaction(handle -> {

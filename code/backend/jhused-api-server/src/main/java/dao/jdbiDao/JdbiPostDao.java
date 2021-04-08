@@ -82,7 +82,7 @@ public class JdbiPostDao implements PostDao {
       return jdbi.inTransaction(handle -> {
         handle.createUpdate(insertPostSql).bindBean(post).execute();
         if (!post.getImages().isEmpty()) {
-          for(Image image:post.getImages())
+          for (Image image : post.getImages())
             image.setPostId(post.getId());
           imageDao.create(post.getImages());
         }
@@ -264,7 +264,6 @@ public class JdbiPostDao implements PostDao {
         if (updatedPost != null) {
           List<Image> toBeUpdatedImages = new ArrayList<>();
           List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
-          List<String> toBeUpdatedHashtagsIds = new ArrayList<>();
           List<Image> deleteImages = imageDao.getImagesOfPost(post.getId());
           List<String> deleteImagesIds = new ArrayList<>();
           deleteImages.forEach(k -> deleteImagesIds.add(k.getId()));
@@ -289,11 +288,12 @@ public class JdbiPostDao implements PostDao {
               deleteHashtagsIds.remove(hashtag.getId());
             } else if (!deleteHashtags.contains(hashtag)) {
               toBeUpdatedHashtags.add(hashtag);
-              toBeUpdatedHashtagsIds.add(hashtag.getId());
             }
           }
           postHashtagDao.delete(post.getId(), deleteHashtagsIds);
-          hashtagDao.create(toBeUpdatedHashtags);
+          List<String> toBeUpdatedHashtagsIds = new ArrayList<>();
+          List<Hashtag> createdHashtags = hashtagDao.create(toBeUpdatedHashtags);
+          createdHashtags.forEach(hashtag -> toBeUpdatedHashtagsIds.add(hashtag.getId()));
           postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
         }
         return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID)
