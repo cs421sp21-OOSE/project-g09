@@ -5,7 +5,7 @@ import { Formik, useField } from "formik";
 import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
-import { useHistory, useParams, Redirect } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Header from "./Header";
 import DropAndView from "./DropAndView";
 
@@ -105,13 +105,13 @@ const EditorFormik = (props) => {
 
   const schema = Yup.object({
     title: Yup.string()
-      .max(60, "Must be 60 characters or less")
+      .max(100, "Must be 100 characters or less")
       .required("Please give it a title"),
     price: Yup.number()
       .min(0, "Cannot be smaller than zero")
       .required("Please give it a price"),
     location: Yup.string()
-      .max(15, "Must be 30 characters or less")
+      .max(100, "Must be 100 characters or less")
       .required("Please provide a location"),
     category: Yup.string()
       .oneOf(["FURNITURE", "CAR", "DESK", "TV", "OTHER"], "Invalid a category")
