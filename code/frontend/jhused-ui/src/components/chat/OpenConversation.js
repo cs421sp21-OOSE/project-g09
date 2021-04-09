@@ -20,37 +20,37 @@ const OpenConversation = () => {
   };
 
   return(
-    <div className="flex-1 relative py-6">
-      <div className="w-full">
-        <div className="flex flex-col justify-end space-y-4">
-          {selectedConversation.messages.map((message, index) => {
-            const lastMessage = selectedConversation.messages.length - 1 === index;
-            return (
-              <div
-                ref={lastMessage ? setRef : null}
-                key={index}
-                className={`flex items-center ${
-                  message.fromMe ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className="w-max h-full px-6">
-                  {(message.fromMe ? "You" : message.senderName) + ` ${new Date(message.sentTime).toLocaleString()}`}
-                </div>
-                <div className={`text-left w-max-2/4 rounded px-2 py-1 ${
-                  message.fromMe ? 'bg-blue-500 text-white' : 'bg-gray-400 text-white'}`}>
-                  {message.text}
-                </div>
+    <div className="flex-1 flex flex-col">
+      <div className="w-full h-full overflow-y-auto flex-1 flex flex-col justify-end space-y-4">
+        {selectedConversation.messages.map((message, index) => {
+          const lastMessage = selectedConversation.messages.length - 1 === index;
+          return (
+            <div
+              ref={lastMessage ? setRef : null}
+              key={index}
+              className={`flex items-center ${
+                message.fromMe ? 'flex-row-reverse' : 'flex-row'}`}>
+
+              <div className="min-w-max px-6">
+                {(message.fromMe ? "You" : message.senderName) + ` ${new Date(message.sentTime).toLocaleString()}`}
               </div>
-            )
-          })}
-        </div>
+
+              <div className={`max-w-lg break-all text-left rounded px-2 py-1 ${
+                message.fromMe ? 'bg-blue-500 text-white ml-10' : 'bg-gray-400 text-white'}`}>
+                {message.text}
+              </div>
+            </div>
+          )
+        })}
       </div>
-      <form onSubmit={handleSubmit} className="w-full absolute bottom-0 py-4 px-2">
-        <div className="flex m-2 space-x-4">
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="flex m-2 space-x-4 mb-6">
             <input
               type="text"
               required
               value={text}
               onChange={e => setText(e.target.value)}
-              className="flex-1 border rounded-full px-6 py-3 outline-none focus:outline-none"
+              className="flex-1 border rounded-full px-6 outline-none focus:outline-none"
               placeholder="Type your message"
             />
             <button type="submit" className="focus:outline-none">

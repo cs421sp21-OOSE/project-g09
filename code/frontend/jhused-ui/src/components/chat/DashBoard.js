@@ -6,7 +6,7 @@ const DashBoard = () => {
   const { selectedConversation } = useConversations()
 
   return (
-    <div className="flex flex-row min-h-screen min-w-full">
+    <div className="flex flex-row h-screen min-w-full">
       <SideBar />
       { selectedConversation && <OpenConversation />}
     </div>

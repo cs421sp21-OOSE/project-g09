@@ -20,7 +20,7 @@ const SideBar = () => {
   };
 
   return (
-    <div className="w-72 flex-none flex flex-col relative">
+    <div className="w-36 md:w-72 h-full flex-none flex flex-col relative">
       <nav class="flex flex-col sm:flex-row justify-content-center">
         <button
           class={`text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none
@@ -37,7 +37,7 @@ const SideBar = () => {
         {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
       </div>
 
-      <div className="w-full absolute bottom-0 py-4 px-2">
+      <div className="w-full absolute bottom-0 py-6 px-2">
           <div className="p-2 border text-sm">
             Your Id: <span className="text-gray-500 truncate">{context.user.id}</span>
             <br/>
