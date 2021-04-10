@@ -12,6 +12,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.context.WebContext;
 import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.engine.AbstractExceptionAwareLogic;
+import org.pac4j.core.engine.DefaultSecurityLogic;
 import org.pac4j.core.engine.SecurityGrantedAccessAdapter;
 import org.pac4j.core.engine.SecurityLogic;
 import org.pac4j.core.engine.decision.DefaultProfileStorageDecision;
@@ -39,9 +40,9 @@ import static org.pac4j.core.util.CommonHelper.*;
 
 public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements SecurityLogic<R, C> {
 
-  public static final CustomSecurityLogic INSTANCE = new CustomSecurityLogic();
+  public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(CustomSecurityLogic.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSecurityLogic.class);
 
   private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 
@@ -54,18 +55,15 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
   private SavedRequestHandler savedRequestHandler = new DefaultSavedRequestHandler();
 
   @Override
-  public R perform(final C context, final Config config,
-                   final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
+  public R perform(final C context, final Config config, final SecurityGrantedAccessAdapter<R, C> securityGrantedAccessAdapter,
                    final HttpActionAdapter<R, C> httpActionAdapter,
-                   final String clients, final String authorizers, final String matchers,
-                   final Boolean inputMultiProfile,
+                   final String clients, final String authorizers, final String matchers, final Boolean inputMultiProfile,
                    final Object... parameters) {
 
     LOGGER.debug("=== SECURITY ===");
 
     HttpAction action;
     try {
-
 
       // default value
       final boolean multiProfile = inputMultiProfile != null && inputMultiProfile;
@@ -84,14 +82,13 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
       // logic
       LOGGER.debug("url: {}", context.getFullRequestURL());
       LOGGER.debug("matchers: {}", matchers);
-      if (matchingChecker.matches(context, matchers, config.getMatchers())) {
+      LOGGER.debug("clients: {}", clients);
+      final List<Client<? extends Credentials>> currentClients = clientFinder.find(configClients, context, clients);
+      LOGGER.debug("currentClients: {}", currentClients);
 
-        LOGGER.debug("clients: {}", clients);
-        final List<Client<? extends Credentials>> currentClients = clientFinder.find(configClients, context, clients);
-        LOGGER.debug("currentClients: {}", currentClients);
+      if (matchingChecker.matches(context, matchers, config.getMatchers(), currentClients)) {
 
-        final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context,
-            currentClients);
+        final boolean loadProfilesFromSession = profileStorageDecision.mustLoadProfilesFromSession(context, currentClients);
         LOGGER.debug("loadProfilesFromSession: {}", loadProfilesFromSession);
         context.setRequestAttribute(Pac4jConstants.LOAD_PROFILES_FROM_SESSION, loadProfilesFromSession);
         final ProfileManager<UserProfile> manager = getProfileManager(context);
@@ -131,10 +128,10 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
           }
         }
 
-        // we have profile(s) -> check authorizations
+        // we have profile(s) -> check authorizations; otherwise, redirect to identity provider or 401
         if (isNotEmpty(profiles)) {
           LOGGER.debug("authorizers: {}", authorizers);
-          if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers())) {
+          if (authorizationChecker.isAuthorized(context, profiles, authorizers, config.getAuthorizers(), currentClients)) {
             LOGGER.debug("authenticated and authorized -> grant access");
             return securityGrantedAccessAdapter.adapt(context, profiles, parameters);
           } else {
@@ -168,10 +165,10 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
   /**
    * Return a forbidden error.
    *
-   * @param context        the web context
+   * @param context the web context
    * @param currentClients the current clients
-   * @param profiles       the current profiles
-   * @param authorizers    the authorizers
+   * @param profiles the current profiles
+   * @param authorizers the authorizers
    * @return a forbidden error
    */
   protected HttpAction forbidden(final C context, final List<Client<? extends Credentials>> currentClients,
@@ -182,7 +179,7 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
   /**
    * Return whether we must start a login process if the first client is an indirect one.
    *
-   * @param context        the web context
+   * @param context the web context
    * @param currentClients the current clients
    * @return whether we must start a login process
    */
@@ -193,7 +190,7 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
   /**
    * Save the requested url.
    *
-   * @param context        the web context
+   * @param context the web context
    * @param currentClients the current clients
    */
   protected void saveRequestedUrl(final C context, final List<Client<? extends Credentials>> currentClients,
@@ -206,12 +203,11 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
   /**
    * Perform a redirection to start the login process of the first indirect client.
    *
-   * @param context        the web context
+   * @param context the web context
    * @param currentClients the current clients
    * @return the performed redirection
    */
-  protected HttpAction redirectToIdentityProvider(final C context,
-                                                  final List<Client<? extends Credentials>> currentClients) {
+  protected HttpAction redirectToIdentityProvider(final C context, final List<Client<? extends Credentials>> currentClients) {
     final IndirectClient currentClient = (IndirectClient) currentClients.get(0);
     return (HttpAction) currentClient.getRedirectionAction(context).get();
   }
@@ -219,7 +215,7 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
   /**
    * Return an unauthorized error.
    *
-   * @param context        the web context
+   * @param context the web context
    * @param currentClients the current clients
    * @return an unauthorized error
    */
@@ -269,8 +265,7 @@ public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExcept
 
   @Override
   public String toString() {
-    return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker",
-        this.authorizationChecker,
+    return toNiceString(this.getClass(), "clientFinder", this.clientFinder, "authorizationChecker", this.authorizationChecker,
         "matchingChecker", this.matchingChecker, "profileStorageDecision", this.profileStorageDecision,
         "errorUrl", getErrorUrl(), "savedRequestHandler", savedRequestHandler);
   }

@@ -1,8 +1,11 @@
 package util.SSO;
 
 
+import org.pac4j.core.client.Client;
+import org.pac4j.core.client.IndirectClient;
 import org.pac4j.core.context.HttpConstants;
 import org.pac4j.core.context.WebContext;
+import org.pac4j.core.credentials.Credentials;
 import org.pac4j.core.matching.checker.MatchingChecker;
 import org.pac4j.core.matching.matcher.*;
 import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;
@@ -24,7 +27,7 @@ public class CustomMatchingChecker implements MatchingChecker {
   static final XFrameOptionsMatcher X_FRAME_OPTIONS_MATCHER = new XFrameOptionsMatcher();
   static final XSSProtectionMatcher XSS_PROTECTION_MATCHER = new XSSProtectionMatcher();
   static final CacheControlMatcher CACHE_CONTROL_MATCHER = new CacheControlMatcher();
-  static final CsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CustomCsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
+  static final CustomCsrfTokenGeneratorMatcher CSRF_TOKEN_MATCHER = new CustomCsrfTokenGeneratorMatcher(new DefaultCsrfTokenGenerator());
   static final CorsMatcher CORS_MATCHER = new CorsMatcher();
 
   static {
@@ -40,14 +43,15 @@ public class CustomMatchingChecker implements MatchingChecker {
   }
 
   @Override
-  public boolean matches(final WebContext context, final String matchersValue, final Map<String, Matcher> matchersMap) {
+  public boolean matches(final WebContext context, final String matchersValue, final Map<String, Matcher> matchersMap,
+                         final List<Client<? extends Credentials>> clients) {
     String matcherNames = matchersValue;
-    // by default, if we have no matchers defined, we apply the security headers and the CSRF token generation
+    // if we have no matchers defined, compute the default one(s)
     if (CommonHelper.isBlank(matcherNames)) {
-      matcherNames = DefaultMatchers.SECURITYHEADERS + Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
+      matcherNames = computeDefaultMatchers(clients);
     }
     final List<Matcher> matchers = new ArrayList<>();
-    // we must have matchers
+    // we must have matchers defined
     CommonHelper.assertNotNull("matchersMap", matchersMap);
     final Map<String, Matcher> allMatchers = buildAllMatchers(matchersMap);
     final String[] names = matcherNames.split(Pac4jConstants.ELEMENT_SEPARATOR);
@@ -99,7 +103,16 @@ public class CustomMatchingChecker implements MatchingChecker {
     return true;
   }
 
-  private Map<String, Matcher> buildAllMatchers(final Map<String, Matcher> matchersMap) {
+  protected String computeDefaultMatchers(final List<Client<? extends Credentials>> clients) {
+    for (final Client client : clients) {
+      if (client instanceof IndirectClient) {
+        return DefaultMatchers.SECURITYHEADERS + Pac4jConstants.ELEMENT_SEPARATOR + DefaultMatchers.CSRF_TOKEN;
+      }
+    }
+    return DefaultMatchers.SECURITYHEADERS;
+  }
+
+  protected Map<String, Matcher> buildAllMatchers(final Map<String, Matcher> matchersMap) {
     final Map<String, Matcher> allMatchers = new HashMap<>();
     allMatchers.putAll(matchersMap);
     addDefaultMatcherIfNotDefined(allMatchers, DefaultMatchers.GET, GET_MATCHER);
@@ -109,7 +122,7 @@ public class CustomMatchingChecker implements MatchingChecker {
     return allMatchers;
   }
 
-  private void addDefaultMatcherIfNotDefined(final Map<String, Matcher> allMatchers, final String name, final Matcher matcher) {
+  protected void addDefaultMatcherIfNotDefined(final Map<String, Matcher> allMatchers, final String name, final Matcher matcher) {
     if (!allMatchers.containsKey(name)) {
       allMatchers.put(name, matcher);
     }
