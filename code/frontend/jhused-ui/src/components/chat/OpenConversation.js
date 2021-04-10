@@ -37,9 +37,6 @@ const OpenConversation = () => {
                 
                 <div className="mx-2">
                   <img src={userContext.user.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
-                  {/* <div className="min-w-max px-6">
-                    {(message.fromMe ? "You" : message.senderName)}
-                  </div> */}
                 </div>
                 
                 <div className="flex flex-col items-end">
@@ -47,7 +44,7 @@ const OpenConversation = () => {
                     message.fromMe ? 'bg-blue-500 text-white ml-10' : 'bg-gray-400 text-white'}`}>
                     {message.text}
                   </div>
-                  <div className="font-light text-sm text-gray-500">
+                  <div className="font-light text-xs text-gray-500">
                     {new Date(message.sentTime).toLocaleString()}
                   </div>
                 </div>
@@ -64,7 +61,7 @@ const OpenConversation = () => {
                 required
                 value={text}
                 onChange={e => setText(e.target.value)}
-                className="flex-1 border rounded-full px-6 outline-none focus:outline-none"
+                className="flex-1 border rounded-full px-6 outline-none focus:outline-none focus:border-gray-400"
                 placeholder="Type your message"
               />
               <button type="submit" className="focus:outline-none">
