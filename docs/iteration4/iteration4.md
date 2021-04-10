@@ -80,7 +80,7 @@ As a user, I want to give user option to flag a post(Tentative)
   - [ ]  Header w/o search bar for chat (sam)
   - [ ]  Search without Browser Force Refresh, if possible (sam)
   - [ ]  Chat Page
-    - [ ]  Differentiate read/unread messages, New messages notification
+    - [ ]  Differentiate read/unread messages, New messages notification (Junjie)
     - [ ]  Frontend
       - [ ]  Delete messages (chu)
       - [ ]  Delete contacts (chu)
