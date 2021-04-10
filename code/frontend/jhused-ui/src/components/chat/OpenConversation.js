@@ -1,7 +1,9 @@
-import {useCallback, useState} from "react";
+import {useContext, useCallback, useState} from "react";
 import {useConversations} from "../../state/ConversationsProvider";
+import { UserContext } from "../../state";
 
 const OpenConversation = () => {
+  const userContext = useContext(UserContext.Context); // for getting user avatr
   const [text, setText] = useState('');
   const { sendMessage, selectedConversation } = useConversations();
   const setRef = useCallback(node => {
@@ -29,17 +31,25 @@ const OpenConversation = () => {
               <div
                 ref={lastMessage ? setRef : null}
                 key={index}
-                className={`flex items-center ${
+                className={`flex items-start ${
                   message.fromMe ? 'flex-row-reverse' : 'flex-row'}`}
               >
-
-                <div className="min-w-max px-6">
-                  {(message.fromMe ? "You" : message.senderName) + ` ${new Date(message.sentTime).toLocaleString()}`}
+                
+                <div className="mx-2">
+                  <img src={userContext.user.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+                  {/* <div className="min-w-max px-6">
+                    {(message.fromMe ? "You" : message.senderName)}
+                  </div> */}
                 </div>
-                  
-                <div className={`max-w-lg break-all text-left rounded px-2 py-1 ${
-                  message.fromMe ? 'bg-blue-500 text-white ml-10' : 'bg-gray-400 text-white'}`}>
-                  {message.text}
+                
+                <div className="flex flex-col items-end">
+                  <div className={`max-w-lg break-all text-left rounded px-2 py-1 ${
+                    message.fromMe ? 'bg-blue-500 text-white ml-10' : 'bg-gray-400 text-white'}`}>
+                    {message.text}
+                  </div>
+                  <div className="font-light text-sm text-gray-500">
+                    {new Date(message.sentTime).toLocaleString()}
+                  </div>
                 </div>
               </div>
             )
