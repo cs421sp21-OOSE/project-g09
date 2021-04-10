@@ -20,11 +20,10 @@ import model.User;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.config.DefaultConfigFactory;
-import org.pac4j.core.matching.matcher.csrf.DefaultCsrfTokenGenerator;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.sparkjava.CallbackRoute;
+import org.pac4j.sparkjava.LogoutRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
 import spark.Request;
@@ -32,8 +31,8 @@ import spark.Response;
 import spark.Route;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
-import util.SSO.SamlTestSSOConfigFactory;
 import util.SSO.JHUSSOConfigFactory;
+import util.SSO.SamlTestSSOConfigFactory;
 import util.database.Database;
 import util.server.CustomEmbeddedJettyFactory;
 
@@ -51,8 +50,8 @@ public class ApiServer {
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
-  private static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
-//  private static String FRONTEND_URL = "http://localhost:3000";
+  public static String FRONTEND_URL = "https://jhused-ui.herokuapp.com";
+  public static String BACKEND_URL = "https://jhused-api-server.herokuapp.com";
 
   private static Jdbi jdbi;
 
@@ -69,6 +68,7 @@ public class ApiServer {
     String mode = System.getenv("MODE");
     isDebug = mode != null && mode.equals("DEBUG");
     FRONTEND_URL = !isDebug ? FRONTEND_URL : "http://localhost:3000";
+    BACKEND_URL = !isDebug ? BACKEND_URL : "https://localhost:8080";
   }
 
   private static void setJdbi() throws URISyntaxException {
@@ -336,6 +336,13 @@ public class ApiServer {
     get("/callback", callback);
     post("/callback", callback);
 
+    final LogoutRoute centralLogout = new LogoutRoute(config);
+    centralLogout.setLogoutUrlPattern(BACKEND_URL+"/*");
+    centralLogout.setLocalLogout(false);
+    centralLogout.setCentralLogout(true);
+    centralLogout.setDestroySession(true);
+    get("/centralLogout", centralLogout);
+
     /*
       returns the user's profile (it's a SSO thing, not the one in our database)
       returns empty [] if user is not signed in.
@@ -564,7 +571,7 @@ public class ApiServer {
     final ProfileManager manager = new ProfileManager(context);
     List<CommonProfile> profiles = manager.getAll(true);
     if (isDebug && profiles != null && profiles.size() != 0) {
-      profiles.get(0).addAttribute("userid", ((ArrayList)(profiles.get(0).getAttribute("mail"))).get(0));
+      profiles.get(0).addAttribute("userid", ((ArrayList) (profiles.get(0).getAttribute("mail"))).get(0));
     }
     return profiles;
   }
