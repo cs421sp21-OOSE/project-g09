@@ -28,7 +28,7 @@ const ChatPage = () => {
         })
         messagesAsReceiver.forEach((message) => {
           addMessageToConversation(
-            {messageId: message.id, recipients: [message.senderId], text: message.message, sender: message.senderId, sentTime: message.sentTime.seconds, read:false}//TODO
+            {messageId: message.id, recipients: [message.senderId], text: message.message, sender: message.senderId, sentTime: message.sentTime.seconds, read:message.read}
           )
         })
         messagesAsSender.forEach((message) => {
