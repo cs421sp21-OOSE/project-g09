@@ -1,7 +1,9 @@
-import {useCallback, useState} from "react";
+import {useContext, useCallback, useState} from "react";
 import {useConversations} from "../../state/ConversationsProvider";
+import { UserContext } from "../../state";
 
 const OpenConversation = () => {
+  const userContext = useContext(UserContext.Context); // for getting user avatr
   const [text, setText] = useState('');
   const { sendMessage, selectedConversation } = useConversations();
   const setRef = useCallback(node => {
@@ -20,44 +22,58 @@ const OpenConversation = () => {
   };
 
   return(
-    <div className="flex-1 relative py-6">
-      <div className="flex flex-col justify-end space-y-4">
-        {selectedConversation.messages.map((message, index) => {
-          const lastMessage = selectedConversation.messages.length - 1 === index;
-          return (
-            <div
-              ref={lastMessage ? setRef : null}
-              key={index}
-              className={`flex items-center ${
-                message.fromMe ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className="w-max px-6">
-                {(message.fromMe ? "You" : message.senderName) + ` ${new Date(message.sentTime).toLocaleString()}`}
-              </div>
-              <div className={`flex text-left rounded px-2 py-1 ${
-                message.fromMe ? 'bg-blue-500 text-white' : 'bg-gray-400 text-white'}`}>
-                {message.text}
-              </div>
-            </div>
-          )
-        })}
+    <div className="flex-1 py-6 px-4">
+      <div className="bg-gray-100 rounded-2xl h-full flex flex-col">
+        <div className="w-full overflow-auto flex-1 my-4">
+          <div className="flex flex-col space-y-4">
+            {selectedConversation.messages.map((message, index) => {
+              const lastMessage = selectedConversation.messages.length - 1 === index;
+              return (
+                <div
+                  ref={lastMessage ? setRef : null}
+                  key={index}
+                  className={`flex items-start ${
+                    message.fromMe ? 'flex-row-reverse' : 'flex-row'}`}
+                >
+                  
+                  <div className="mx-2">
+                    <img src={userContext.user.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+                  </div>
+                  
+                  <div className="flex flex-col items-end">
+                    <div className={`max-w-lg break-all text-left rounded-xl px-4 py-2 shadow ${
+                      message.fromMe ? 'bg-blue-300' : 'bg-white'}`}>
+                      {message.text}
+                    </div>
+                    <div className="font-light text-xs text-gray-500">
+                      {new Date(message.sentTime).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
       </div>
-      <form onSubmit={handleSubmit} className="w-full absolute bottom-0 py-4 px-2">
-        <div className="flex m-2 space-x-4">
-            <input
-              type="text"
-              required
-              value={text}
-              onChange={e => setText(e.target.value)}
-              className="flex-1 border rounded-full px-6 py-3 outline-none focus:outline-none"
-              placeholder="Type your message"
-            />
-            <button type="submit" className="focus:outline-none">
-              <svg className="w-12 text-blue-600 hover:text-blue-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
-              </svg>
-            </button>
+        <div className="flex-none w-full">
+          <form onSubmit={handleSubmit}>
+            <div className="flex m-2 space-x-4 mb-6">
+                <input
+                  type="text"
+                  required
+                  value={text}
+                  onChange={e => setText(e.target.value)}
+                  className="flex-1 border rounded-full px-6 outline-none focus:outline-none focus:border-gray-400"
+                  placeholder="Type your message"
+                />
+                <button type="submit" className="focus:outline-none">
+                  <svg className="w-12 text-blue-600 hover:text-blue-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
