@@ -3,6 +3,7 @@ import { UserContext } from "../state";
 import Logo from "../images/logo.png";
 import "./Header.css";
 import { useHistory } from "react-router-dom";
+import {useConversations} from "../state/ConversationsProvider";
 
 const Header = (props) => {
   const context = useContext(UserContext.Context);
@@ -10,6 +11,7 @@ const Header = (props) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { conversations } = useConversations();
 
   return (
     <nav className="relative bg-white">
@@ -77,6 +79,16 @@ const Header = (props) => {
                         src={context.user.profileImage}
                         alt=""
                       />
+
+                      {conversations.filter(conversation => {
+                          return conversation.messages.filter(message => {
+                            return message.read === false
+                          }).length !== 0
+                        }).length === 0 ? "" :
+                          <div className="-ml-2 -mt-10 h-4 w-4 rounded-full bg-red-500">
+                          </div>
+                      }
+
                       <button
                         type="button"
                         className="flex text-sm rounded-full focus:outline-none"
@@ -126,8 +138,17 @@ const Header = (props) => {
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         role="menuitem"
                       >
+                        {conversations.filter(conversation => {
+                          return conversation.messages.filter(message => {
+                            return message.read === false
+                          }).length !== 0
+                        }).length === 0 ? "" :
+                          <div className="ml-16 -mt-2 h-2 w-2 rounded-full bg-red-500">
+                          </div>
+                        }
                         Messages
                       </a>
+
                       <a
                         href={`/user/settings/${context.user.id}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
