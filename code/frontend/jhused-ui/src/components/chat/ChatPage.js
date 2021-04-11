@@ -28,12 +28,12 @@ const ChatPage = () => {
         })
         messagesAsReceiver.forEach((message) => {
           addMessageToConversation(
-            {recipients: [message.senderId], text: message.message, sender: message.senderId, sentTime: message.sentTime.seconds}
+            {recipients: [message.senderId], text: message.message, sender: message.senderId, sentTime: message.sentTime.seconds, read:false}
           )
         })
         messagesAsSender.forEach((message) => {
           addMessageToConversation(
-            {recipients: [message.receiverId], text: message.message, sender: context.user.id, sentTime: message.sentTime.seconds}
+            {recipients: [message.receiverId], text: message.message, sender: context.user.id, sentTime: message.sentTime.seconds, read:true}
           )
         })
       })
