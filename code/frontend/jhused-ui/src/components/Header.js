@@ -135,6 +135,14 @@ const Header = (props) => {
                       >
                         Settings
                       </a>
+                      <a
+                        href={`https://jhused-api-server.herokuapp.com/centralLogout`}
+                        // href={`https://localhost:8080/centralLogout`}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        role="menuitem"
+                      >
+                        Logout
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -144,6 +152,7 @@ const Header = (props) => {
                   onClick={() => {
                     window.location =
                       "https://jhused-api-server.herokuapp.com/jhu/login";
+                    // "https://localhost:8080/jhu/login";
                   }}
                 >
                   {" "}

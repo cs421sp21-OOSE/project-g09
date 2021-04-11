@@ -34,10 +34,11 @@ dependencies {
 
 
     //SSO
-    implementation 'org.pac4j:pac4j-core:4.0.0'
-    implementation 'org.pac4j:pac4j-http:4.0.0'
+    implementation 'org.pac4j:pac4j-core:4.4.0'
+    implementation 'org.pac4j:pac4j-http:4.4.0'
     implementation 'org.pac4j:spark-pac4j:4.0.0'
-    implementation 'org.pac4j:pac4j-saml:4.0.0'
+    implementation 'org.pac4j:pac4j-saml-opensamlv3:4.4.0'
+//    implementation 'org.pac4j:pac4j-saml:4.4.0'
 
     //JavaSpark
     implementation 'com.sparkjava:spark-core:2.9.3'

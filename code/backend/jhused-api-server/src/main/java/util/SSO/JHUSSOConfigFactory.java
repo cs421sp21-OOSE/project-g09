@@ -1,5 +1,7 @@
 package util.SSO;
 
+import api.ApiServer;
+import org.opensaml.saml.common.xml.SAMLConstants;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
@@ -29,6 +31,9 @@ public class JHUSSOConfigFactory implements ConfigFactory {
     cfg.setMaximumAuthenticationLifetime(3600);
     cfg.setServiceProviderEntityId("https://jhused-api-server.herokuapp.com/callback?client_name=SAML2Client");
     cfg.setServiceProviderMetadataPath("sp-metadata-jhu.xml");
+    cfg.setPostLogoutURL(ApiServer.BACKEND_URL+"/redirectToFrontend");
+    cfg.setSpLogoutRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
+    cfg.setSpLogoutRequestSigned(true);
     final SAML2Client saml2Client = new SAML2Client(cfg);
 
     //only Saml2 client.
