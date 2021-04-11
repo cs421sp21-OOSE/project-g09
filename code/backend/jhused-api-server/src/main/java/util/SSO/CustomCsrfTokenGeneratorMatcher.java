@@ -63,6 +63,7 @@ public class CustomCsrfTokenGeneratorMatcher implements Matcher{
       else if(sameSite.equals(HttpCookie.SameSite.STRICT))
         cookie.setComment(HttpCookie.SAME_SITE_STRICT_COMMENT);
     }
+    context.addResponseCookie(cookie);
     return true;
   }
 

@@ -40,9 +40,9 @@ import static org.pac4j.core.util.CommonHelper.*;
 
 public class CustomSecurityLogic<R, C extends WebContext> extends AbstractExceptionAwareLogic<R, C> implements SecurityLogic<R, C> {
 
-  public static final DefaultSecurityLogic INSTANCE = new DefaultSecurityLogic();
+  public static final CustomSecurityLogic INSTANCE = new CustomSecurityLogic();
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(DefaultSecurityLogic.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CustomSecurityLogic.class);
 
   private ClientFinder clientFinder = new DefaultSecurityClientFinder();
 

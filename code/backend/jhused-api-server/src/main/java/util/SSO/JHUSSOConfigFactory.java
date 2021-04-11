@@ -32,6 +32,7 @@ public class JHUSSOConfigFactory implements ConfigFactory {
     cfg.setServiceProviderEntityId("https://jhused-api-server.herokuapp.com/callback?client_name=SAML2Client");
     cfg.setServiceProviderMetadataPath("sp-metadata-jhu.xml");
     cfg.setPostLogoutURL(ApiServer.BACKEND_URL+"/redirectToFrontend");
+    cfg.setSpLogoutRequestBindingType(SAMLConstants.SAML2_REDIRECT_BINDING_URI);
     cfg.setSpLogoutRequestSigned(true);
     final SAML2Client saml2Client = new SAML2Client(cfg);
 
