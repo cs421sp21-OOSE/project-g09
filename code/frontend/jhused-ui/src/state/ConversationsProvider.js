@@ -19,6 +19,31 @@ const ConversationsProvider = ({ children }) => {
   const socket = useSocket();
   const context = useContext(UserContext.Context);
 
+  const readMessagesInConversation = useCallback( ({ index }) => {
+    setConversations(prevConversations => {
+    const newConversations = prevConversations.map((conversation, idx) => {
+        if(idx === index) {
+          const newMessages = conversation.messages.map(message => {
+            if (message.read === false) {
+              return {
+                ...message,
+                read: true
+              }
+            }
+            else return message
+          })
+
+          return {
+            ...conversation,
+            messages: newMessages
+          }
+        }
+        else return conversation
+      })
+    return newConversations
+    })
+  },[setConversations])
+
   const createConversation = (recipients) => {
     const existingConversation = conversations.filter(conversation => {
       return (arrayEquality(conversation.recipients, recipients))
@@ -30,10 +55,10 @@ const ConversationsProvider = ({ children }) => {
     }
   };
 
-  const addMessageToConversation = useCallback(( {recipients, text, sender, sentTime, read} ) => {
+  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
     setConversations(prevConversations => {
       let madeChange = false;
-      const newMessage = { sender, text, sentTime, read };
+      const newMessage = { messageId, sender, text, sentTime, read };
       const newConversations = prevConversations.map(
         conversation => {
           if (arrayEquality(conversation.recipients, recipients))
@@ -68,8 +93,7 @@ const ConversationsProvider = ({ children }) => {
 
   const sendMessage = (recipients, text) => {
     const sentTime = Date.now()
-    socket.emit('send-message', { recipients, text, sentTime:sentTime });
-    addMessageToConversation({recipients, text, sender:context.user.id, sentTime:sentTime, read:true});
+
     let messageToDB = {
       id: '0123456',
       senderId: `${context.user.id}`,
@@ -82,16 +106,18 @@ const ConversationsProvider = ({ children }) => {
       }
     }
 
-    console.log(messageToDB)
     axios.post("/api/messages", messageToDB,
       {params: { isList: false }
       })
       .then((response) => {
-        console.log(response)
+        socket.emit('send-message', { messageId:response.data.id, recipients, text, sentTime:sentTime });
+        addMessageToConversation({ messageId:response.data.id,
+          recipients, text, sender:context.user.id, sentTime:sentTime, read:true});
       })
       .catch((error) => {
         console.log(error);
       })
+
   };
 
   const formattedConversations = context.user? (conversations.map((conversation, index) => {
@@ -123,7 +149,8 @@ const ConversationsProvider = ({ children }) => {
     selectedConversation: formattedConversations[selectedConversationIndex],
     setConversations,
     addMessageToConversation,
-    sendMessage
+    sendMessage,
+    readMessagesInConversation
   }
 
   return (
