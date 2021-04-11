@@ -337,11 +337,16 @@ public class ApiServer {
     post("/callback", callback);
 
     final LogoutRoute centralLogout = new LogoutRoute(config);
+    centralLogout.setDefaultUrl(BACKEND_URL+"/redirectToFrontend");
     centralLogout.setLogoutUrlPattern(BACKEND_URL+"/*");
     centralLogout.setLocalLogout(false);
     centralLogout.setCentralLogout(true);
     centralLogout.setDestroySession(true);
     get("/centralLogout", centralLogout);
+    get("/redirectToFrontend",(req,res)->{
+      res.redirect(FRONTEND_URL,302);
+      return null;
+    });
 
     /*
       returns the user's profile (it's a SSO thing, not the one in our database)

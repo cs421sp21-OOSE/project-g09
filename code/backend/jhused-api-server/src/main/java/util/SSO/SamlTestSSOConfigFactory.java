@@ -28,6 +28,7 @@ public class SamlTestSSOConfigFactory implements ConfigFactory {
     cfg.setMaximumAuthenticationLifetime(3600);
     cfg.setServiceProviderEntityId("https://localhost:8080/callback?client_name=SAML2Client");
     cfg.setServiceProviderMetadataPath("sp-metadata-local.xml");
+    cfg.setPostLogoutURL(ApiServer.BACKEND_URL+"/redirectToFrontend");
     cfg.setSpLogoutRequestSigned(true);
     final SAML2Client saml2Client = new SAML2Client(cfg);
 
