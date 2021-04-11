@@ -14,7 +14,7 @@ io.on('connection', socket => {
       const newRecipients = recipients.filter(r => r !== recipient)
       newRecipients.push(id)
       socket.broadcast.to(recipient).emit('receive-message', {
-        recipients: newRecipients, text, sender: id, sentTime
+        recipients: newRecipients, text, sender: id, sentTime, read:true
       })
     })
   })
