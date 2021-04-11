@@ -15,15 +15,18 @@ const Conversations = () => {
                 active={conversation.selected}>
                 <div className="flex flex-row ml-3 justify-between">
                   {conversation.recipients.map(recipient => recipient.name).join(', ')}
-                  <div className="rounded-full h-6 w-6 bg-red-600 text-white">
                     {
                       conversation.messages.filter(message => {
                         return message.read === false
-                      }).length === 0 ? "" : conversation.messages.filter(message => {
-                        return message.read === false
-                      }).length
+                      }).length === 0 ? "" :
+                        <div className="rounded-full h-6 w-6 bg-red-600 text-white">
+                        {
+                          conversation.messages.filter(message => {
+                            return message.read === false
+                          }).length
+                        }
+                        </div>
                     }
-                  </div>
                 </div>
               </ListGroup.Item>
         </div>
