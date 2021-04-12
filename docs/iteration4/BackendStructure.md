@@ -10,7 +10,7 @@ The posts_hashtags is a many to many relationship table between posts and hashta
 
 # Model 
 
-![image](../assets/UML/UML-iteration4 PostAndUser.png)  
+![image](../assets/UML/UML-iteration4_PostAndUser.png)  
 
 # API doc:
 
