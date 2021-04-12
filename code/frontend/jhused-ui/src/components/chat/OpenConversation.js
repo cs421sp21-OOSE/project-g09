@@ -38,6 +38,7 @@ const OpenConversation = () => {
                   
                   <div className="mx-2">
                     <img src={userContext.user.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+
                   </div>
                   
                   <div className="flex flex-col items-end">
