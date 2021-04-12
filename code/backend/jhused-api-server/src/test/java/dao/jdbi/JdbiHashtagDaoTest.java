@@ -58,6 +58,17 @@ public class JdbiHashtagDaoTest {
   }
 
   @Test
+  void createAListOfNewHashtag() {
+    List<Hashtag> newHashtags = new ArrayList<>();
+    newHashtags.add(new Hashtag(UUID.randomUUID().toString(), "test+"));
+    newHashtags.add(new Hashtag(UUID.randomUUID().toString(), "test+1"));
+    newHashtags.add(new Hashtag(UUID.randomUUID().toString(), "test+2"));
+    newHashtags.add(new Hashtag(UUID.randomUUID().toString(), "test+3"));
+    newHashtags.add(new Hashtag(UUID.randomUUID().toString(), "test+4"));
+    assertEquals(newHashtags, hashtagDao.create(newHashtags));
+  }
+
+  @Test
   void createDuplicateHashtagIdDaoException() {
     Hashtag newHashtag = new Hashtag(samplePosts.get(0).getHashtags().get(0).getId(), "test");
     assertThrows(DaoException.class, () -> {
