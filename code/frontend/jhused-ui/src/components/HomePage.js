@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ImageGrid from "./ImageGrid";
 import axios from "../util/axios";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Header from "./Header";
 import * as QueryString from "query-string";
+import { SearchContext } from '../state'
 
 const HomePage = () => {
+
+  const searchContext = useContext(SearchContext.Context);
+
   // All the posts
   const [posts, setPosts] = useState([]);
   // posts after filtering
@@ -19,16 +23,18 @@ const HomePage = () => {
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
 
-  const location = useLocation();
-  const params = QueryString.parse(location.search).search;
+  //const location = useLocation();
+  //const params = QueryString.parse(location.search).search;
 
   // get all posts
   useEffect(() => {
+    //console.log(searchContext.searchTerm);
+    console.log("search term above");
     axios
       .get("/api/posts", {
         params: {
           sort: "update_time:desc",
-          keyword: params,
+          keyword: searchContext.searchTerm,
         },
       })
       .then((response) => {

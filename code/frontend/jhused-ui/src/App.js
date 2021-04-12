@@ -14,8 +14,6 @@ import {ContactsProvider} from "./state/ContactsProvider";
 import {ConversationsProvider} from "./state/ConversationsProvider";
 
 const App = () => {
-  const location = useLocation();
-  const background = location.state && location.state.background;
   const { user } = useContext(UserContext.Context);
   
 
@@ -57,8 +55,6 @@ const App = () => {
         <Route exact path="/post/:postID" children={<PostDetails />} />
 
       </Switch>
-
-      {/**background && <Route path="/post/:postID" children={<PostDetails />} /> */}
     </div>
   );
 };
