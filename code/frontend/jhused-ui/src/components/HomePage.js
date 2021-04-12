@@ -134,7 +134,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <Header />
+      <Header search={true}/>
       <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
         <div className="">
           {/*TODO: the categories are hard-coded for now*/}

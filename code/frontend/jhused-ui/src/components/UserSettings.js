@@ -12,7 +12,7 @@ const UserSettings = () => {
   if (userContext.user) {
     return (
       <div>
-        <Header />
+        <Header search={true}/>
         <div className="flex justify-center w-full">
           <SettingForm user={userContext.user} />
         </div>
