@@ -22,6 +22,9 @@ const SideBar = () => {
   return (
     <div className="w-32 md:w-64 flex-none pl-4 py-6">
       <div className="h-full flex flex-col">
+        <div className="font-black text-2xl px-2 mb-2">
+          Chat
+        </div>
         <div className="flex flex-wrap items-center gap-x-6 w-full px-2 bg-blue-100 rounded-2xl p-4">
           <div>
             <img src={context.user.profileImage} alt="" className="h-12 w-12 sm:h-24 sm:w-24 rounded-full overflow-hidden object-cover"/>
@@ -46,7 +49,7 @@ const SideBar = () => {
               onClick={() => {setActiveKey(CONTACTS_KEY)}}>
               Contacts</button>
           </nav>
-          <div className="border-right overflow-auto flex-grow-1">
+          <div className="  ">
             {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
           </div>
         </div>
