@@ -10,7 +10,6 @@ const CONVERSATIONS_KEY = 'conversations';
 const CONTACTS_KEY = 'contacts';
 
 const SideBar = () => {
-  const userContext = useContext(UserContext.Context); // for getting user avatr
   const [activeKey, setActiveKey] = useState(CONVERSATIONS_KEY);
   const [modalOpen, setModalOpen] = useState(false);
   const conversationsOpen = activeKey === CONVERSATIONS_KEY;
@@ -25,7 +24,7 @@ const SideBar = () => {
       <div className="h-full flex flex-col">
         <div className="flex flex-wrap items-center gap-x-6 w-full px-2 bg-blue-100 rounded-2xl p-4">
           <div>
-            <img src={userContext.user.profileImage} alt="" className="h-12 w-12 sm:h-24 sm:w-24 rounded-full overflow-hidden object-cover"/>
+            <img src={context.user.profileImage} alt="" className="h-12 w-12 sm:h-24 sm:w-24 rounded-full overflow-hidden object-cover"/>
           </div>
           <div className="text-sm text-gray-500">
             ID: <span className="text-gray-700 truncate">{context.user.id}</span>

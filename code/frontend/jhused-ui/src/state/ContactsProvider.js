@@ -10,13 +10,13 @@ const useContacts = () => {
 const ContactsProvider = ({ children }) => {
   const [contacts, setContacts] = useLocalStorage('contacts', []);
 
-  const createContact = (id, name) => {
+  const createContact = (id, name, image) => {
     const existingContacts = contacts.filter(contact => {
       return (contact.id === id)
     })
     if (existingContacts.length === 0) {
       setContacts(prevContacts => {
-        return [...prevContacts, {id, name}]
+        return [...prevContacts, {id, name, image}]
       });
     }
   };

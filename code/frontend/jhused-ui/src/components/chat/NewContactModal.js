@@ -1,6 +1,6 @@
-import {Modal, Form, Button} from "react-bootstrap";
 import {useRef} from "react";
 import { useContacts } from "../../state/ContactsProvider";
+import axios from "axios";
 
 const NewContactModal = ({ closeModal }) => {
   const idRef = useRef();
@@ -9,8 +9,16 @@ const NewContactModal = ({ closeModal }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createContact(idRef.current.value, nameRef.current.value);
-    closeModal();
+    let id = idRef.current.value;
+    axios.get(`/api/users/${id}`).then((response) => {
+        console.log("Contact is loaded here", response);
+        let image = response.data.profileImage;
+        createContact(idRef.current.value, nameRef.current.value, image);
+        closeModal();
+      }
+    );
+    // createContact(idRef.current.value, nameRef.current.value);
+    // closeModal();
   };
 
   return (
