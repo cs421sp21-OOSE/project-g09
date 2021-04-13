@@ -58,7 +58,10 @@ const NewConversationModal = ({ closeModal }) => {
             </button>
             <button 
                 className="px-3 py-1 font-normal border text-gray-800 border-gray-300 rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 shadow-sm"
-                onClick={() => closeModal()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  closeModal();
+                }}
             >
               Cancel  
             </button>

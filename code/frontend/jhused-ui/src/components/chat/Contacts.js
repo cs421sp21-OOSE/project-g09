@@ -5,12 +5,12 @@ const Contacts = () => {
 
   
   return (
-    <ul className="flex flex-col w-full h-full my-4 gap-y-4">
+    <ul className="flex flex-col w-full h-full my-4 gap-y-2">
       {contacts.map(contact => (
         <li className="flex items-center flex-wrap gap-x-4 px-2 py-2 border shadow-sm rounded-xl group hover:bg-gray-500 relative" key={contact.id}>
           <img className="flex-none rounded-full w-12 h-12 object-cover overlfow-hidden"src={contact.image} alt=""/>
           <div className="font-semibold group-hover:text-white">{contact.name}</div>
-          <button className="absolute right-2 top-2 rounded-full h-5 w-5" 
+          <button className="absolute right-2 top-2 rounded-full h-5 w-5 invisible group-hover:visible" 
             onClick={(event) => {
               event.preventDefault();
               deleteContact(contact.id);
