@@ -21,8 +21,14 @@ const ContactsProvider = ({ children }) => {
     }
   };
 
+  const deleteContact = (id) => {
+    setContacts(prevContacts => 
+      prevContacts.filter(contact => contact.id !== id)
+    )
+  }
+
   return (
-    <ContactsContext.Provider value={{ contacts, createContact }}>
+    <ContactsContext.Provider value={{ contacts, createContact, deleteContact }}>
       {children}
     </ContactsContext.Provider>
   );

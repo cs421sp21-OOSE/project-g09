@@ -1,4 +1,4 @@
-import {Button, Form, Modal} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useContacts } from '../../state/ContactsProvider'
 import {useState} from "react";
 import { useConversations } from '../../state/ConversationsProvider'

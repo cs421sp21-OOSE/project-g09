@@ -17,8 +17,6 @@ const NewContactModal = ({ closeModal }) => {
         closeModal();
       }
     );
-    // createContact(idRef.current.value, nameRef.current.value);
-    // closeModal();
   };
 
   return (
