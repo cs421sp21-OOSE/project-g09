@@ -339,7 +339,7 @@ public class ApiServer {
     final LogoutRoute centralLogout = new LogoutRoute(config);
     centralLogout.setDefaultUrl(BACKEND_URL+"/redirectToFrontend");
     centralLogout.setLogoutUrlPattern(BACKEND_URL+"/*");
-    centralLogout.setLocalLogout(false);
+    centralLogout.setLocalLogout(true);
     centralLogout.setCentralLogout(true);
     centralLogout.setDestroySession(true);
     get("/centralLogout", centralLogout);
