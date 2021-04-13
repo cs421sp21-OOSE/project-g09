@@ -62,14 +62,22 @@ const OpenConversation = () => {
                   </div>
                   
                   <div className="flex flex-col items-end">
-                    <div className={`max-w-lg break-all text-left rounded-xl px-4 py-2 shadow ${
-                      message.fromMe ? 'bg-blue-300' : 'bg-white'}`}>
-                      {message.text}
+                    <div className={`group flex items-center ${message.fromMe ? "flex-row" : "flex-row-reverse"}`}>
+                      <button className="invisible group-hover:visible focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-400 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                      <div className={`max-w-lg break-all text-left rounded-xl px-4 py-2 shadow ${
+                        message.fromMe ? 'bg-blue-300' : 'bg-white'}`}>
+                        {message.text}
+                      </div>
                     </div>
                     <div className="font-light text-xs text-gray-500">
                       {new Date(message.sentTime).toLocaleString()}
                     </div>
                   </div>
+
                 </div>
               )
             })}
