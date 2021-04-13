@@ -12,6 +12,7 @@ import { UserContext } from "./state";
 import {SocketProvider} from "./state/SocketProvider";
 import {ContactsProvider} from "./state/ContactsProvider";
 import {ConversationsProvider} from "./state/ConversationsProvider";
+import Select from "./components/Select";
 
 const App = () => {
   const { user } = useContext(UserContext.Context);
@@ -54,6 +55,10 @@ const App = () => {
 
         <Route exact path="/post/:postID" children={<PostDetails />} />
 
+    
+        <Route exact path="/test">
+          <Select menuItems={['ALL', 'furniture', 'tv', 'desk']}/>
+        </Route>
       </Switch>
     </div>
   );

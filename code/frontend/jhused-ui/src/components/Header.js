@@ -9,11 +9,11 @@ import {SearchContext} from "../state"
 const Header = props => {
   const context = useContext(UserContext.Context)
   const history = useHistory()
-
-  const [isOpen, setIsOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const { conversations } = useConversations()
   const searchContext = useContext(SearchContext.Context);
+  const [isOpen, setIsOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState(searchContext.searchTerm)
+  const { conversations } = useConversations()
+  
 
   return (
     <nav className='relative bg-white'>
@@ -40,7 +40,7 @@ const Header = props => {
                   <input
                     className='w-full h-7 sm:h-10 rounded-3xl border-2 border-solid border-gray-300 focus:outline-none px-4 '
                     type='text'
-                    placeholder='Search'
+                    placeholder='Search for posts'
                     value={searchTerm}
                     onChange={e => {
                       setSearchTerm(e.target.value)
