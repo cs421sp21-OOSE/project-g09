@@ -20,9 +20,11 @@ public class JdbiRateDao implements RateDao {
   public Rate create(Rate rate) throws DaoException {
     String sql = "WITH inserted AS (INSERT INTO rate("
         + "rater_id, seller_id, rate) VALUES("
-        + ":raterId, sellerId, rate) RETURNING *) "
+        + ":raterId, :sellerId, :rate) RETURNING *) "
         + "SELECT * FROM inserted;";
     try {
+      if(rate.getRate()>5||rate.getRate()<0)
+        throw new DaoException("rate out of range, should be in [0,5] and be int.",null);
       return jdbi.inTransaction(handle ->
           handle.createQuery(sql)
               .bindBean(rate)
@@ -37,12 +39,14 @@ public class JdbiRateDao implements RateDao {
   public Rate createOrUpdate(String raterId, String sellerId, Rate rate) throws DaoException {
     String sql = "WITH inserted AS (INSERT INTO rate("
         + "rater_id, seller_id, rate) VALUES("
-        + ":raterId, sellerId, rate) "
+        + ":raterId, :sellerId, :rate) "
         + "ON CONFLICT (rater_id, seller_id) DO UPDATE "
         + "SET rate = :rate "
         + "RETURNING *) "
         + "SELECT * FROM inserted;";
     try {
+      if(rate.getRate()>5||rate.getRate()<0)
+        throw new DaoException("rate out of range, should be in [0,5] and be int.",null);
       return jdbi.inTransaction(handle ->
           handle.createQuery(sql)
               .bind("raterId", raterId)
@@ -61,6 +65,8 @@ public class JdbiRateDao implements RateDao {
     try {
       return jdbi.inTransaction(handle ->
           handle.createQuery(sql)
+              .bind("raterId",raterId)
+              .bind("sellerId",sellerId)
               .mapToBean(Rate.class)
               .findOne()).orElse(null);
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
@@ -88,8 +94,11 @@ public class JdbiRateDao implements RateDao {
         + "RETURNING *) "
         + "SELECT * FROM updated;";
     try {
+      if(rate.getRate()>5||rate.getRate()<0)
+        throw new DaoException("rate out of range, should be in [0,5] and be int.",null);
       return jdbi.inTransaction(handle ->
           handle.createQuery(sql)
+              .bindBean(rate)
               .bind("raterId", raterId)
               .bind("sellerId", sellerId)
               .mapToBean(Rate.class)

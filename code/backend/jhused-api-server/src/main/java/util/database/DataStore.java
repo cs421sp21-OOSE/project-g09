@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A utility class with methods to create sample data.
@@ -21,10 +20,10 @@ public final class DataStore {
     List<Rate> rates = new ArrayList<>();
     List<User> users = sampleUsers();
     int totalUsers = users.size();
-    for (int i = 0; i < 20; ++i)
-      rates.add(new Rate(users.get(ThreadLocalRandom.current().nextInt(0, totalUsers)).getId()
-          , users.get(ThreadLocalRandom.current().nextInt(0, totalUsers)).getId(),
-          ThreadLocalRandom.current().nextInt(0, 6)));
+    for (int i = 1; i < totalUsers; ++i) {
+      rates.add(new Rate(users.get(i).getId(), users.get(1 + (i + 1) % (totalUsers - 1)).getId(),(i+3)%6));
+      rates.add(new Rate(users.get(i).getId(), users.get(1 + (i + 2) % (totalUsers - 1)).getId(),(i+2)%6));
+    }
     return rates;
   }
 
