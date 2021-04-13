@@ -47,6 +47,7 @@ public final class Database {
     createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
     createWishlistPostsTableWithSampleData(jdbi, DataStore.sampleWishlistPosts());
     createMessageTableWithSampleData(jdbi, DataStore.sampleMessages());
+    createRateTableWithSampleData(jdbi, DataStore.sampleRates());
   }
 
   /**
@@ -115,7 +116,9 @@ public final class Database {
 
   public static void insertSampleRates(Jdbi jdbi, List<Rate> samples) {
     String sql = "INSERT INTO rate(rater_id, seller_id, rate) "
-        + "VALUES(:raterId, :sellerId, :rate);";
+        + "VALUES(:raterId, :sellerId, :rate) "
+        + "ON CONFLICT (rater_id,seller_id) DO UPDATE "
+        + "SET rate = :rate;";
     jdbi.useTransaction(handle -> {
       PreparedBatch batch = handle.prepareBatch(sql);
       for (Rate rate : samples) {
@@ -218,6 +221,7 @@ public final class Database {
 
   public static void drop(Jdbi jdbi) {
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS rate");
       handle.execute("DROP TABLE IF EXISTS message;");
       handle.execute("DROP TABLE IF EXISTS wishlist_post;");
       handle.execute("DROP TABLE IF EXISTS post_hashtag;");

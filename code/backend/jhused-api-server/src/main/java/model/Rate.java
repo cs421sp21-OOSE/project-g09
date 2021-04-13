@@ -1,5 +1,8 @@
 package model;
 
+import lombok.Data;
+
+@Data
 public class Rate {
   private String raterId;
   private String sellerId;
