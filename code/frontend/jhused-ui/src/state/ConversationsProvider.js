@@ -84,6 +84,30 @@ const ConversationsProvider = ({ children }) => {
     });
   }, [setConversations]);
 
+  const deleteMessageFromConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
+    // Remove messages from the database
+    axios
+      .delete(`/api/messages/${messageId}`)
+      .then(response => {
+        // TODO: pass success banner
+        console.log("Message deleted ", response.data);
+      })
+      .catch(error => {
+        // TODO: failure banner
+        console.log("Fail to delete messages", error);
+      })
+
+    // Remove messages in the local storage
+    setConversations(prevConversations => {
+      const newConversations = prevConversations.map(conversation => {
+        // Remove the specific message from the messages
+        conversation.messages = conversation.messages.filter(message => message.messageId !== messageId);
+        return conversation;
+      });
+      return newConversations;
+    });
+  }, [setConversations]);
+
   useEffect(() => {
     if (socket == null) return
     if (context.user == null) return
@@ -150,7 +174,8 @@ const ConversationsProvider = ({ children }) => {
     setConversations,
     addMessageToConversation,
     sendMessage,
-    readMessagesInConversation
+    readMessagesInConversation,
+    deleteMessageFromConversation
   }
 
   return (

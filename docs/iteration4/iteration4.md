@@ -16,7 +16,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
 
-![](../assets/UML/UML-iteration3.png)
+![](../assets/UML/UML-iteration4.png)
 
 
 # Wireframe & Use-case
@@ -79,12 +79,14 @@ As a user, I want to give user option to flag a post(Tentative)
   - [ ]  JHU Login completely broken in Safari (Bohua)
   - [ ]  Header w/o search bar for chat (sam)
   - [ ]  Search without Browser Force Refresh, if possible (sam)
+  - [ ]  Logout
+  - [ ]  Pagination
   - [ ]  Chat Page
     - [ ]  Differentiate read/unread messages, New messages notification (Junjie)
     - [ ]  Frontend
       - [ ]  Delete messages (chu)
       - [ ]  Delete contacts (chu)
-      - [ ]  Add user profile
+      - [ ]  Add user profile (qiao)
   - [ ]  Wishlist post heart not turning red in time
   - [ ]  Invite more people to test out web app
 
