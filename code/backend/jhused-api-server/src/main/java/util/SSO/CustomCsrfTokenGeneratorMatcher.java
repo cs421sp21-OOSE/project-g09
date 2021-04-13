@@ -10,7 +10,7 @@ import org.pac4j.core.matching.matcher.csrf.CsrfTokenGeneratorMatcher;
 import org.pac4j.core.util.CommonHelper;
 import org.pac4j.core.util.Pac4jConstants;
 
-public class CustomCsrfTokenGeneratorMatcher extends CsrfTokenGeneratorMatcher {
+public class CustomCsrfTokenGeneratorMatcher implements Matcher{
 
   private CsrfTokenGenerator csrfTokenGenerator;
 
@@ -26,8 +26,7 @@ public class CustomCsrfTokenGeneratorMatcher extends CsrfTokenGeneratorMatcher {
 
   private HttpCookie.SameSite sameSite;
 
-  public CustomCsrfTokenGeneratorMatcher(CsrfTokenGenerator csrfTokenGenerator) {
-    super(csrfTokenGenerator);
+  public CustomCsrfTokenGeneratorMatcher(final CsrfTokenGenerator csrfTokenGenerator) {
     this.csrfTokenGenerator = csrfTokenGenerator;
     sameSite=HttpCookie.SameSite.NONE;
     secure=true;
@@ -64,6 +63,65 @@ public class CustomCsrfTokenGeneratorMatcher extends CsrfTokenGeneratorMatcher {
       else if(sameSite.equals(HttpCookie.SameSite.STRICT))
         cookie.setComment(HttpCookie.SAME_SITE_STRICT_COMMENT);
     }
+    context.addResponseCookie(cookie);
     return true;
+  }
+
+  public CsrfTokenGenerator getCsrfTokenGenerator() {
+    return csrfTokenGenerator;
+  }
+
+  public void setCsrfTokenGenerator(final CsrfTokenGenerator csrfTokenGenerator) {
+    this.csrfTokenGenerator = csrfTokenGenerator;
+  }
+
+  public String getDomain() {
+    return domain;
+  }
+
+  public void setDomain(final String domain) {
+    this.domain = domain;
+  }
+
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(final String path) {
+    this.path = path;
+  }
+
+  public Boolean getHttpOnly() {
+    return httpOnly;
+  }
+
+  public void setHttpOnly(final Boolean httpOnly) {
+    this.httpOnly = httpOnly;
+  }
+
+  public Boolean getSecure() {
+    return secure;
+  }
+
+  public void setSecure(final Boolean secure) {
+    this.secure = secure;
+  }
+
+  public Integer getMaxAge() {
+    return maxAge;
+  }
+
+  public void setMaxAge(Integer maxAge) {
+    this.maxAge = maxAge;
+  }
+
+  public void setSameSite(HttpCookie.SameSite sameSite) {
+    this.sameSite = sameSite;
+  }
+
+  @Override
+  public String toString() {
+    return CommonHelper.toNiceString(this.getClass(), "csrfTokenGenerator", csrfTokenGenerator, "domain", domain, "path", path,
+        "httpOnly", httpOnly, "secure", secure, "maxAge", maxAge);
   }
 }

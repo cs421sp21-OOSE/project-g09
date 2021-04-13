@@ -1,10 +1,12 @@
-import {useContext, useCallback, useState} from "react";
+import {useContext, useCallback, useState, useEffect} from "react";
 import {useConversations} from "../../state/ConversationsProvider";
 import { UserContext } from "../../state";
+import axios from "../../util/axios";
 
 const OpenConversation = () => {
   const userContext = useContext(UserContext.Context); // for getting user avatr
   const [text, setText] = useState('');
+  const [other, setOther] = useState('');
   const { sendMessage, selectedConversation } = useConversations();
   const setRef = useCallback(node => {
     if (node) {
@@ -21,7 +23,24 @@ const OpenConversation = () => {
     setText('');
   };
 
-  return(
+  const otherMessage = selectedConversation.messages.find((message) => {
+    return !message.fromMe;
+  });
+
+  const otherId = otherMessage ? otherMessage.sender: userContext.user.id;
+
+  useEffect(() => {
+      axios
+        .get(`/api/users/${otherId}`)
+        .then((response) => {
+          setOther(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  }, []);
+
+    return(
     <div className="flex-1 py-6 px-4">
       <div className="bg-gray-100 rounded-2xl h-full flex flex-col">
         <div className="w-full overflow-auto flex-1 my-4">
@@ -37,7 +56,9 @@ const OpenConversation = () => {
                 >
                   
                   <div className="mx-2">
-                    <img src={userContext.user.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+                    <img src={
+                    message.fromMe ? userContext.user.profileImage: other.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+
                   </div>
                   
                   <div className="flex flex-col items-end">

@@ -1,7 +1,39 @@
 import {useConversations} from "../../state/ConversationsProvider";
+import axios from "axios";
 
 const Conversations = () => {
-  const { conversations, selectConversationIndex } = useConversations()
+  const { conversations, selectConversationIndex, readMessagesInConversation } = useConversations()
+
+  const setMessageToRead = ({ index }) => {
+    selectConversationIndex(index)
+    readMessagesInConversation({index})
+    conversations[index].messages.forEach(message => {
+      // update the read status in the Database
+      let updatedMessage = {
+        id: message.messageId,
+        senderId: `${message.sender}`,
+        receiverId: `${conversations[index].recipients[0]}`,
+        message: message.text,
+        read: true,
+        sentTime: {
+          seconds: message.sentTime,
+          nanos: 212877000
+        }
+      }
+
+      axios.put(`/api/messages/${updatedMessage.id}`, updatedMessage,
+        {params: { isList: false }
+        })
+        .then((response) => {
+          //console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+
+    })
+  }
+
 
   return (
     <ul className="flex flex-col w-full h-full my-4 gap-y-2 overflow-y-auto">
@@ -24,7 +56,11 @@ const Conversations = () => {
               {conversation.messages.length === 0 ? ("") : (conversation.messages[conversation.messages.length - 1].text)}
             </div>
           </div>
-          
+          <div className="rounded-full h-6 w-6 bg-red-600 text-white">
+            {conversation.messages.filter(message => message.read === false).length === 0 ? 
+              ("") : (conversation.messages.filter(message => message.read === false).length)
+            }
+          </div>
         </li>
       ))}
     </ul>

@@ -8,9 +8,9 @@ Note: little dot at the left-bottom corner of a column field indicate whether th
 
 The posts_hashtags is a many to many relationship table between posts and hashtags.
 
-# Model 
+# Model
 
-![image](../assets/UML/UML-iteration3.png)  
+![image](../assets/UML/UML-iteration4.png)  
 
 # API doc:
 

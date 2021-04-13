@@ -3,13 +3,22 @@ import ReactDOM from "react-dom";
 import './index.css';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import {BrowserRouter, Switch} from "react-router-dom";
 import { UserContext } from "./state";
+import {ContactsProvider} from "./state/ContactsProvider";
+import {ConversationsProvider} from "./state/ConversationsProvider";
+import {SocketProvider} from "./state/SocketProvider";
 
 ReactDOM.render(
   <BrowserRouter  forceRefresh={true}>
     <UserContext.Provider>
-      <App />
+      <SocketProvider>
+        <ContactsProvider>
+          <ConversationsProvider>
+            <App />
+          </ConversationsProvider>
+        </ContactsProvider>
+      </SocketProvider>
     </UserContext.Provider>
   </BrowserRouter>,
   document.getElementById("root")
