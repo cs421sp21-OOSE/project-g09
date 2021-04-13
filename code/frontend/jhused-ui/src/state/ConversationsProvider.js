@@ -84,6 +84,21 @@ const ConversationsProvider = ({ children }) => {
     });
   }, [setConversations]);
 
+  const deleteMessageFromConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
+    // Remove messages from the database
+    axios
+      .delete(`/api/messages/${messageId}`)
+      .then(response => {
+        // TODO: pass success banner
+        console.log("Message deleted ", response.data);
+      })
+
+    // Remove messages in the local storage
+    setConversations(prevConversations => {
+      prevConversations.filter(message => message.id !== messageId);
+    });
+  }, [setConversations]);
+
   useEffect(() => {
     if (socket == null) return
     if (context.user == null) return
@@ -150,7 +165,8 @@ const ConversationsProvider = ({ children }) => {
     setConversations,
     addMessageToConversation,
     sendMessage,
-    readMessagesInConversation
+    readMessagesInConversation,
+    deleteMessageFromConversation
   }
 
   return (
