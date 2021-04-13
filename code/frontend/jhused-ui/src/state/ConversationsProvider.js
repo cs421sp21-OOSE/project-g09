@@ -92,10 +92,19 @@ const ConversationsProvider = ({ children }) => {
         // TODO: pass success banner
         console.log("Message deleted ", response.data);
       })
+      .catch(error => {
+        // TODO: failure banner
+        console.log("Fail to delete messages", error);
+      })
 
     // Remove messages in the local storage
     setConversations(prevConversations => {
-      prevConversations.filter(message => message.id !== messageId);
+      const newConversations = prevConversations.map(conversation => {
+        // Remove the specific message from the messages
+        conversation.messages = conversation.messages.filter(message => message.id !== messageId);
+        return conversation;
+      });
+      return newConversations;
     });
   }, [setConversations]);
 

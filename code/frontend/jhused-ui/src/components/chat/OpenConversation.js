@@ -61,7 +61,7 @@ const OpenConversation = () => {
                     message.fromMe ? userContext.user.profileImage: other.profileImage} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
                   </div>
                   
-                  <div className="flex flex-col items-end">
+                  <div className={`flex flex-col ${message.fromMe ? "items-end" : "items-start"}`}>
                     <div className={`group flex items-center ${message.fromMe ? "flex-row" : "flex-row-reverse"}`}>
                       
                       {/* Button for deleting messages */}
@@ -89,6 +89,8 @@ const OpenConversation = () => {
               )
             })}
           </div>
+        
+      {/* Send message button */}
       </div>
         <div className="flex-none w-full">
           <form onSubmit={handleSubmit}>
