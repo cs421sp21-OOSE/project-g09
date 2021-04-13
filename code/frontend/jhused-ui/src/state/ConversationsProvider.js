@@ -101,7 +101,7 @@ const ConversationsProvider = ({ children }) => {
     setConversations(prevConversations => {
       const newConversations = prevConversations.map(conversation => {
         // Remove the specific message from the messages
-        conversation.messages = conversation.messages.filter(message => message.id !== messageId);
+        conversation.messages = conversation.messages.filter(message => message.messageId !== messageId);
         return conversation;
       });
       return newConversations;
