@@ -34,7 +34,6 @@ const Conversations = () => {
     })
   }
 
-
   return (
     <ul className="flex flex-col w-full h-full my-4 gap-y-2 overflow-y-auto">
       {conversations.map((conversation, index) => (
