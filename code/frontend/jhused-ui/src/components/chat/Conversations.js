@@ -39,7 +39,7 @@ const Conversations = () => {
     <ul className="flex flex-col w-full h-full my-4 gap-y-2 overflow-y-auto">
       {conversations.map((conversation, index) => (
         <li
-          className="flex items-center flex-wrap md:flex-nowrap gap-x-4 rounded-xl group hover:bg-gray-500 px-2 py-2 border shadow-sm"
+          className="flex items-center flex-wrap md:flex-nowrap gap-x-4 rounded-xl group hover:bg-gray-500 px-2 py-2 border shadow-sm relative"
           key={index}
           action
           onClick={() => selectConversationIndex(index)}
@@ -56,10 +56,9 @@ const Conversations = () => {
               {conversation.messages.length === 0 ? ("") : (conversation.messages[conversation.messages.length - 1].text)}
             </div>
           </div>
-          <div className="rounded-full h-6 w-6 bg-red-600 text-white">
-            {conversation.messages.filter(message => message.read === false).length === 0 ? 
-              ("") : (conversation.messages.filter(message => message.read === false).length)
-            }
+          <div className={`absolute top-1 right-1 flex place-content-center rounded-full h-5 w-5 bg-red-600 text-white text-sm 
+            ${conversation.messages.filter(message => message.read === false).length === 0 ? ("opacity-0") : ("")}`}>
+            {conversation.messages.filter(message => message.read === false).length}
           </div>
         </li>
       ))}
