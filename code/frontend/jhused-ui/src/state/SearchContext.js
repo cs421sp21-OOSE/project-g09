@@ -5,6 +5,7 @@ const Context = createContext();
 const Provider = (props) => {
   const [searchTerm, setSearchTerm] = useState("");
 
+
   return (
     <Context.Provider value={{ searchTerm, setSearchTerm }}>
       {props.children}

@@ -5,7 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {BrowserRouter} from "react-router-dom";
 import {Router} from "react-router";
-import { UserContext } from "./state";
+import { UserContext, SearchContext } from "./state";
 import {ContactsProvider} from "./state/ContactsProvider";
 import {ConversationsProvider} from "./state/ConversationsProvider";
 import {SocketProvider} from "./state/SocketProvider";
@@ -16,7 +16,9 @@ ReactDOM.render(
       <SocketProvider>
         <ContactsProvider>
           <ConversationsProvider>
-            <App />
+            <SearchContext.Provider >
+              <App />
+            </SearchContext.Provider>
           </ConversationsProvider>
         </ContactsProvider>
       </SocketProvider>

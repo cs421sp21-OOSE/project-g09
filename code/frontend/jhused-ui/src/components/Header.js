@@ -4,7 +4,7 @@ import Logo from '../images/logo.png'
 import './Header.css'
 import { useHistory } from 'react-router-dom'
 import { useConversations } from '../state/ConversationsProvider'
-
+import {SearchContext} from "../state"
 
 const Header = props => {
   const context = useContext(UserContext.Context)
@@ -13,6 +13,7 @@ const Header = props => {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const { conversations } = useConversations()
+  const searchContext = useContext(SearchContext.Context);
 
   return (
     <nav className='relative bg-white'>
@@ -29,10 +30,11 @@ const Header = props => {
                   onSubmit={e => {
                     e.preventDefault()
                     if (searchTerm) {
-                      history.push(`?search=${searchTerm}`)
+                      searchContext.setSearchTerm(searchTerm);
                     } else {
-                      history.push('/')
+                      searchContext.setSearchTerm("");
                     }
+                    history.push('/')
                   }}
                 >
                   <input

@@ -43,7 +43,7 @@ const HomePage = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [setPosts]);
+  }, [setPosts, searchContext]);
 
   // filtering among searched posts
   useEffect(() => {
