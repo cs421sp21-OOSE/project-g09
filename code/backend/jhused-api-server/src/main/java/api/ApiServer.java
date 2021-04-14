@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import controller.ExceptionController;
 import controller.PostController;
+import controller.SSOController;
 import dao.MessageDao;
 import dao.PostDao;
 import dao.UserDao;
@@ -21,14 +23,6 @@ import model.User;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.profile.CommonProfile;
-import org.pac4j.core.profile.ProfileManager;
-import org.pac4j.sparkjava.CallbackRoute;
-import org.pac4j.sparkjava.LogoutRoute;
-import org.pac4j.sparkjava.SecurityFilter;
-import org.pac4j.sparkjava.SparkWebContext;
-import spark.Request;
-import spark.Response;
 import spark.Route;
 import spark.Spark;
 import spark.embeddedserver.EmbeddedServers;
@@ -38,7 +32,9 @@ import util.database.Database;
 import util.server.CustomEmbeddedJettyFactory;
 
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -50,7 +46,7 @@ public class ApiServer {
 
   private static Jdbi jdbi;
 
-  private static boolean isDebug;
+  public static boolean isDebug;
 
   private static void setSSLForLocalDev() {
     if (isDebug) {
@@ -160,18 +156,12 @@ public class ApiServer {
     Gson gson = new GsonBuilder().disableHtmlEscaping().create();
     setJdbi();
     PostController postController = new PostController(jdbi);
+    SSOController ssoController = new SSOController(getSSOConfig(), jdbi);
     UserDao userDao = getUserDao();
     MessageDao messageDao = getMessageDao();
     WishlistPostSkeletonDao wishlistPostSkeletonDao = getWishlistSkeletonDao();
 
-    exception(ApiError.class, (ex, req, res) -> {
-      // Handle the exception here
-      Map<String, String> map = Map.of("status", ex.getStatus() + "",
-          "error", ex.getMessage());
-      res.body(gson.toJson(map));
-      res.status(ex.getStatus());
-      res.type("application/json");
-    });
+    exception(ApiError.class, new ExceptionController());
 
     get("/", (req, res) -> {
       Map<String, String> message = Map.of("message", "Hello World");
@@ -189,82 +179,14 @@ public class ApiServer {
     final Config config = getSSOConfig();
 
     //SSO filter
-    before("/jhu/login", new SecurityFilter(config, "SAML2Client"));
+    before("/jhu/login", ssoController.securityFilter);
 
-    /*
-      Frontend should redirect user to backend, to this address
-      When the user tries to visit this address, security filter will
-      kick in and check if the user has already signed in.
-         If signed in,
-             we should redirect the user to frontend homepage.
-         If not signed in,
-             security filter will redirect user to SSO, where user signs in, then
-             SSO will route to the callbackurl with user's profile. In this call back route,
-             we should interact with the database to check if the user is a first time user.
-             If so, create user in database.
-             To do this, I think we need to write a
-             Callback logic class (not so sure, about to look for doc).
-             Then, the user signed in, he will be redirect again back to this address, where we
-             redirect him to the ui frontend homepage.
-      It seems that session stuff is handled by pac4j (the default callbacklogic)
-     */
-    get("/jhu/login", (req, res) -> {
-      List<CommonProfile> userProfiles = getProfiles(req, res);
-      try {
-        if (userProfiles.size() != 1) {
-          throw new ApiError("Got multiple user profiles, unexpected.", 500);
-        }
-        CommonProfile userProfile = userProfiles.get(0);
-        String key = isDebug ? userProfile.getAttribute("userid").toString() : userProfile.getUsername();
-        User user = userDao.read(key); // user name  is JHED ID
-        if (user == null) {
-          if (key == null) {
-            throw new ApiError("Empty user name, unexpected, should be JHED", 500);
-          }
-          if (!isDebug) {
-            user = new User(key, key, key + "@jh.edu", "", "");
-          } else {
-            user = new User(key, key, key, "", "");
-          }
-          if (userDao.create(user) == null) {
-            throw new ApiError("Unable to create user: " + userProfile.toString(), 500);
-          }
-          res.redirect(FRONTEND_URL + "/user/settings/" + userProfile.getUsername(), 302);
-        } else {
-          res.redirect(FRONTEND_URL, 302);
-        }
-      } catch (DaoException | NullPointerException ex) {
-        throw new ApiError(ex.getMessage(), 500);
-      }
-      return null;
-    });
-
-    final CallbackRoute callback = new CallbackRoute(config, null, true);
-    //callback.setRenewSession(false);
-    get("/callback", callback);
-    post("/callback", callback);
-
-    final LogoutRoute centralLogout = new LogoutRoute(config);
-    centralLogout.setDefaultUrl(BACKEND_URL+"/redirectToFrontend");
-    centralLogout.setLogoutUrlPattern(BACKEND_URL+"/*");
-    centralLogout.setLocalLogout(true);
-    centralLogout.setCentralLogout(true);
-    centralLogout.setDestroySession(true);
-    get("/centralLogout", centralLogout);
-    get("/redirectToFrontend",(req,res)->{
-      res.redirect(FRONTEND_URL,302);
-      return null;
-    });
-
-    /*
-      returns the user's profile (it's a SSO thing, not the one in our database)
-      returns empty [] if user is not signed in.
-     */
-    get("/api/userProfile", (req, res) -> {
-      final Map map = new HashMap();
-      map.put("profiles", getProfiles(req, res));
-      return gson.toJson(map);
-    });
+    get("/jhu/login", ssoController.login);
+    get("/callback", ssoController.callback);
+    post("/callback", ssoController.callback);
+    get("/centralLogout", ssoController.centralLogout);
+    get("/redirectToFrontend", ssoController.redirectToFrontend);
+    get("/api/userProfile", ssoController.getUserProfile);
 
     get("/api/users", (req, res) -> {
       try {
@@ -477,16 +399,6 @@ public class ApiServer {
     });
 
     after((req, res) -> res.type("application/json"));
-  }
-
-  private static List<CommonProfile> getProfiles(final Request request, final Response response) {
-    final SparkWebContext context = new SparkWebContext(request, response);
-    final ProfileManager manager = new ProfileManager(context);
-    List<CommonProfile> profiles = manager.getAll(true);
-    if (isDebug && profiles != null && profiles.size() != 0) {
-      profiles.get(0).addAttribute("userid", ((ArrayList) (profiles.get(0).getAttribute("mail"))).get(0));
-    }
-    return profiles;
   }
 
   private static Config getSSOConfig() {
