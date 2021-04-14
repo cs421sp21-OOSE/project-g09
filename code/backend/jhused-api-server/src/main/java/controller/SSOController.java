@@ -32,7 +32,7 @@ public class SSOController {
   public final SecurityFilter securityFilter;
   public final LogoutRoute centralLogout;
   private static UserDao userDao;
-  private static Gson gson;
+  private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   public SSOController(Config config, Jdbi jdbi) {
     this.config = config;
@@ -41,7 +41,6 @@ public class SSOController {
     userDao = new JdbiUserDao(jdbi);
     centralLogout = new LogoutRoute(config);
     configCentralLogout();
-    gson = new GsonBuilder().disableHtmlEscaping().create();
   }
 
   private void configCentralLogout() {

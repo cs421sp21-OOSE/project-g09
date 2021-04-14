@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import controller.ExceptionController;
 import controller.PostController;
 import controller.SSOController;
+import controller.UserController;
 import dao.MessageDao;
 import dao.PostDao;
 import dao.UserDao;
@@ -157,6 +158,7 @@ public class ApiServer {
     setJdbi();
     PostController postController = new PostController(jdbi);
     SSOController ssoController = new SSOController(getSSOConfig(), jdbi);
+    UserController userController = new UserController(jdbi);
     UserDao userDao = getUserDao();
     MessageDao messageDao = getMessageDao();
     WishlistPostSkeletonDao wishlistPostSkeletonDao = getWishlistSkeletonDao();
@@ -170,88 +172,28 @@ public class ApiServer {
     });
 
     get("/api/posts", postController.getPosts);
-    get("/api/posts/:postUuid", postController.getPostGivenId);
+    get("/api/posts/:postId", postController.getPostGivenId);
     post("/api/posts", postController.createPost);
-    put("/api/posts/:postUuid", postController.updatePost);
-    delete("/api/posts/:postUuid", postController.deletePost);
+    put("/api/posts/:postId", postController.updatePost);
+    delete("/api/posts/:postId", postController.deletePost);
 
 //    final Config config = new JHUSSOConfigFactory().build();
     final Config config = getSSOConfig();
 
     //SSO filter
     before("/jhu/login", ssoController.securityFilter);
-
     get("/jhu/login", ssoController.login);
+    get("/api/userProfile", ssoController.getUserProfile);
     get("/callback", ssoController.callback);
     post("/callback", ssoController.callback);
     get("/centralLogout", ssoController.centralLogout);
     get("/redirectToFrontend", ssoController.redirectToFrontend);
-    get("/api/userProfile", ssoController.getUserProfile);
 
-    get("/api/users", (req, res) -> {
-      try {
-        return gson.toJson(userDao.readAll());
-      } catch (DaoException ex) {
-        throw new ApiError(ex.getMessage(), 500);
-      }
-    });
-
-    get("/api/users/:userId", (req, res) -> {
-      try {
-        String userId = req.params("userId");
-        User user = userDao.read(userId);
-        if (user == null) {
-          throw new ApiError("Resource not found", 404); // Bad request
-        }
-        return gson.toJson(user);
-      } catch (DaoException ex) {
-        throw new ApiError(ex.getMessage(), 500);
-      }
-    });
-
-    post("/api/users", (req, res) -> {
-      try {
-        User user = gson.fromJson(req.body(), User.class);
-        userDao.create(user);
-        res.status(201);
-        return gson.toJson(user);
-      } catch (DaoException ex) {
-        throw new ApiError(ex.getMessage(), 500);
-      }
-    });
-
-    put("/api/users/:userId", (req, res) -> {
-      try {
-        String userId = req.params("userId");
-        User user = gson.fromJson(req.body(), User.class);
-        if (user.getId() == null) {
-          throw new ApiError("Incomplete data", 500);
-        }
-        if (!user.getId().equals(userId)) {
-          throw new ApiError("userId does not match the resource identifier", 400);
-        }
-        user = userDao.update(user.getId(), user);
-        if (user == null) {
-          throw new ApiError("Resource not found", 404);
-        }
-        return gson.toJson(user);
-      } catch (DaoException | JsonSyntaxException ex) {
-        throw new ApiError(ex.getMessage(), 500);
-      }
-    });
-
-    delete("/api/users/:userId", (req, res) -> {
-      try {
-        String userId = req.params("userId");
-        User user = userDao.delete(userId);
-        if (user == null) {
-          throw new ApiError("Resource not found", 404);   // No matching user
-        }
-        return gson.toJson(user);
-      } catch (DaoException ex) {
-        throw new ApiError(ex.getMessage(), 500);
-      }
-    });
+    get("/api/users", userController.getAllUsers);
+    get("/api/users/:userId", userController.getAUserGivenId);
+    post("/api/users", userController.createUser);
+    put("/api/users/:userId", userController.updateUser);
+    delete("/api/users/:userId", userController.deleteUser);
 
     //BEGIN WISHLIST ROUTES
 

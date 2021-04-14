@@ -27,11 +27,10 @@ public class PostController {
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
   private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
   private static PostDao postDao;
-  private static Gson gson;
+  private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
   public PostController(Jdbi jdbi) {
     postDao = new JdbiPostDao(jdbi);
-    gson = new GsonBuilder().disableHtmlEscaping().create();
   }
 
   /**
@@ -98,13 +97,13 @@ public class PostController {
 
   public Route updatePost = (Request req, Response res) -> {
     try {
-      String postUuid = req.params("postUuid");
+      String postId = req.params("postId");
       Post post = gson.fromJson(req.body(), Post.class);
       if (post.getId() == null) {
         throw new ApiError("Incomplete data", 500);
       }
-      if (!post.getId().equals(postUuid)) {
-        throw new ApiError("postUuid does not match the resource identifier", 400);
+      if (!post.getId().equals(postId)) {
+        throw new ApiError("postId does not match the resource identifier", 400);
       }
       post = postDao.update(post.getId(), post);
       if (post == null) {
@@ -118,8 +117,8 @@ public class PostController {
 
   public Route deletePost = (Request req, Response res) -> {
     try {
-      String postUuid = req.params("postUuid");
-      Post post = postDao.delete(postUuid);
+      String postId = req.params("postId");
+      Post post = postDao.delete(postId);
       if (post == null) {
         throw new ApiError("Resource not found", 404);   // No matching post
       }
