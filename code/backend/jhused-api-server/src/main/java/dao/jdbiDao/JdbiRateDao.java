@@ -91,13 +91,11 @@ public class JdbiRateDao implements RateDao {
   public Double readAvgRateOfASeller(String sellerId) throws DaoException {
     String sql = "SELECT ROUND(AVG(rate::numeric(10,3)),2) as average_rate FROM rate WHERE rate.seller_id = :sellerId";
     try {
-      Double average = jdbi.inTransaction(handle ->
+      return jdbi.inTransaction(handle ->
           handle.createQuery(sql)
               .bind("sellerId",sellerId)
               .mapTo(Double.class)
               .findOne().orElse(null));
-      average = average == null ? 0.0 : average;
-      return average;
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException(ex.getMessage(), ex);
     }

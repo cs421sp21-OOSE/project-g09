@@ -141,6 +141,11 @@ public class JdbiRateDaoTest {
   }
 
   @Test
+  void readAverageReturnNullNonExistingSeller() {
+    assertNull(rateDao.readAvgRateOfASeller("lskdjflsije"));
+  }
+
+  @Test
   void readReturnNullNonExistingIds() {
     assertNull(rateDao.read("lijsleifjsief", sampleUsers.get(1).getId()));
     assertNull(rateDao.read(sampleUsers.get(1).getId(), "lsiefliesjflisj"));

@@ -207,7 +207,11 @@ public class ApiServer {
     // END MESSAGE ROUTES
 
     // BEGIN RATE ROUTES
-    get("/api/rates/:sellerId", rateController.getRateOfASeller);
+    get("/api/rates/avg/:sellerId", rateController.getAvgRateOfASeller);
+    get("/api/rates/:sellerId/:raterId", rateController.getARateOfARaterToSeller);
+    post("/api/rates", rateController.createARate);
+    put("/api/rates/:sellerId/:raterId", rateController.updateARate);
+    delete("/api/rates/:sellerId/:raterId", rateController.deleteARate);
     //END RATE ROUTES
     after((req, res) -> res.type("application/json"));
   }
