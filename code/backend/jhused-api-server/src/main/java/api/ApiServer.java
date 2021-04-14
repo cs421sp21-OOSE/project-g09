@@ -152,6 +152,7 @@ public class ApiServer {
     UserController userController = new UserController(jdbi);
     WishlistController wishListController = new WishlistController(jdbi);
     MessageController messageController = new MessageController(jdbi);
+    RateController rateController = new RateController(jdbi);
 
     exception(ApiError.class, new ExceptionController());
 
@@ -205,6 +206,9 @@ public class ApiServer {
     delete("/api/messages", messageController.deleteAListOfMessages);
     // END MESSAGE ROUTES
 
+    // BEGIN RATE ROUTES
+    get("/api/rates/:sellerId", rateController.getRateOfASeller);
+    //END RATE ROUTES
     after((req, res) -> res.type("application/json"));
   }
 

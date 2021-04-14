@@ -14,7 +14,9 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -117,6 +119,28 @@ public class JdbiRateDaoTest {
   }
 
   @Test
+  void readAverageWorks() {
+    Map<String, Double> avg = new LinkedHashMap<>();
+    Map<String, Integer> cnt = new LinkedHashMap<>();
+    for (Rate rate : sampleRates) {
+      Double current = avg.get(rate.getSellerId());
+      if (current == null) {
+        current = (double) rate.getRate();
+        avg.put(rate.getSellerId(), current);
+        cnt.put(rate.getSellerId(), 1);
+      } else {
+        int n = cnt.get(rate.getSellerId());
+        current = (current * n + rate.getRate()) / (n + 1);
+        avg.put(rate.getSellerId(), current);
+        cnt.put(rate.getSellerId(), n + 1);
+      }
+    }
+
+    avg.forEach((key, value) -> assertEquals(rateDao.readAvgRateOfASeller(key),
+        ((double) Math.round(value * 100)) / 100));
+  }
+
+  @Test
   void readReturnNullNonExistingIds() {
     assertNull(rateDao.read("lijsleifjsief", sampleUsers.get(1).getId()));
     assertNull(rateDao.read(sampleUsers.get(1).getId(), "lsiefliesjflisj"));
@@ -134,9 +158,9 @@ public class JdbiRateDaoTest {
 
   @Test
   void updateThrowsDaoExceptionNullRate() {
-    assertThrows(DaoException.class, ()->{
-      Rate rate = new Rate(sampleRates.get(0).getRaterId(),sampleRates.get(0).getSellerId(),1);
-      rateDao.update(rate.getRaterId(),rate.getSellerId(),null);
+    assertThrows(DaoException.class, () -> {
+      Rate rate = new Rate(sampleRates.get(0).getRaterId(), sampleRates.get(0).getSellerId(), 1);
+      rateDao.update(rate.getRaterId(), rate.getSellerId(), null);
     });
   }
 
@@ -149,6 +173,6 @@ public class JdbiRateDaoTest {
 
   @Test
   void deleteReturnNullNonExistingRate() {
-    assertNull(rateDao.delete("lsieflijssliefjilsjf",sampleRates.get(0).getSellerId()));
+    assertNull(rateDao.delete("lsieflijssliefjilsjf", sampleRates.get(0).getSellerId()));
   }
 }
