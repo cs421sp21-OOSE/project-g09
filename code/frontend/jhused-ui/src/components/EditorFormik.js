@@ -6,8 +6,8 @@ import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
 import { useHistory, useParams } from "react-router-dom";
-import Header from "./Header";
 import DropAndView from "./DropAndView";
+import UnauthorizedAccess from "./UnauthorizedAccess";
 
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
@@ -41,8 +41,7 @@ const EditorFormik = (props) => {
         .get("/api/posts/" + postID)
         .then((response) => {
           console.log(response);
-          if(response.data.hashtags==undefined)
-            response.data.hashtags=[];
+          if (response.data.hashtags == undefined) response.data.hashtags = [];
           setInitialPostData(response.data);
           setIsLoaded(true);
         })
@@ -120,10 +119,9 @@ const EditorFormik = (props) => {
     images: Yup.array().min(1, "Please upload least one image"),
   });
 
-  if (userContext) {
+  if (userContext && userContext.loggedIn) {
     return (
       <div>
-        <Header search={true}/>
         <div className="min-h-screen flex items-center justify-center ">
           <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
@@ -133,7 +131,7 @@ const EditorFormik = (props) => {
               onSubmit={handleSubmit}
             >
               {(formik) => (
-                <form onSubmit={formik.handleSubmit} >
+                <form onSubmit={formik.handleSubmit}>
                   <div className="grid grid-cols-12 gap-x-6 gap-y-4">
                     <StdTextInput
                       name="title"
@@ -232,9 +230,7 @@ const EditorFormik = (props) => {
         </div>
       </div>
     );
-  } else {
-    return "";
-  }
+  } else return "";
 };
 
 export default EditorFormik;

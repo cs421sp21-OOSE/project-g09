@@ -5,6 +5,7 @@ const Context = createContext();
 
 const Provider = (props) => {
   const [user, setUser] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     axios
@@ -29,6 +30,7 @@ const Provider = (props) => {
       .then((response) => {
         console.log(response.data);
         setUser(response.data); //should be getting wishlist posts here too
+        setLoggedIn(true);
       })
       .catch((err) => {
         console.log(err);
@@ -36,7 +38,7 @@ const Provider = (props) => {
   }, []);
 
   return (
-    <Context.Provider value={{ user, setUser }}>
+    <Context.Provider value={{ user, setUser, loggedIn, setLoggedIn }}>
       {props.children}
     </Context.Provider>
   );

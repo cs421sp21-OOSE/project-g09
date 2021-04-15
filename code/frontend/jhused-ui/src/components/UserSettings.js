@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import Header from "./Header";
 import { UserContext } from "../state";
 import { Formik, Form, useField } from "formik";
 import * as Yup from "yup";
@@ -9,18 +8,15 @@ import axios from "axios";
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
 
-  if (userContext.user) {
+  if (userContext.user && userContext.loggedIn) {
     return (
       <div>
-        <Header search={true}/>
         <div className="flex justify-center w-full">
           <SettingForm user={userContext.user} />
         </div>
       </div>
     );
-  } else {
-    return "";
-  }
+  } else return "";
 };
 
 export default UserSettings;
