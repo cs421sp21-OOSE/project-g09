@@ -144,13 +144,33 @@ const ConversationsProvider = ({ children }) => {
 
   };
 
+  const getProfileImg = (id) => {
+    const img =
+        axios.get(`/api/users/${id}`)
+            .then((response) => {
+              // console.log("Inside test profileiMG")
+              // console.log(response.data.profileImage)
+              //
+              console.log("Inside profileImgs")
+              // console.log(profileImgs)
+              // console.log(profileImgs.get(id))
+              // imgMap.set(id, response.data.profileImage)
+              // console.log(imgMap)
+              return response.data.profileImage
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+    return img
+  };
+
   const formattedConversations = context.user? (conversations.map((conversation, index) => {
     const recipients = conversation.recipients.map(recipient => {
       const contact = contacts.find(contact => {
         return contact.id === recipient
       });
       const name = (contact && contact.name) || recipient;
-      return { id:recipient, name };
+      return { id:recipient, name, profileImg: contact.image};
     });
 
     const messages = conversation.messages.map(message => {

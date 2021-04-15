@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d674aa13-516b-41bd-9f03-172cca106027" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/components/chat/OpenConversation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/chat/OpenConversation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/lombok.config" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/lombok.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,17 +42,6 @@
     <property name="ts.external.directory.path" value="$PROJECT_DIR$/node_modules/typescript/lib" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -82,6 +72,7 @@
       <workItem from="1616998323751" duration="1043000" />
       <workItem from="1617820040896" duration="4923000" />
       <workItem from="1617943524273" duration="14025000" />
+      <workItem from="1618378044822" duration="26618000" />
     </task>
     <servers />
   </component>
