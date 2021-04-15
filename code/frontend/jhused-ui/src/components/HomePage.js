@@ -1,11 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import ImageGrid from "./ImageGrid";
 import axios from "../util/axios";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Header from "./Header";
-import * as QueryString from "query-string";
+import { SearchContext } from "../state";
+import Select from "./Select"
+
+const categories = [
+  { id: 1, name: "ALL", unavailable: false },
+  { id: 2, name: "FURNITURE", unavailable: false },
+  { id: 3, name: "CAR", unavailable: false },
+  { id: 4, name: "TV", unavailable: true },
+  { id: 5, name: "DESK", unavailable: false },
+  { id: 6, name: "OTHER", unavailable: false },
+];
+
+const sorts = [
+  { id: 1, name: "Most Recently Updated", unavailable: false },
+  { id: 2, name: "Least Recently Updated", unavailable: false },
+  { id: 3, name: "Most Recent", unavailable: false },
+  { id: 4, name: "Least Recent", unavailable: true },
+  { id: 5, name: "Price: Low to High", unavailable: false },
+  { id: 6, name: "Price: High to Low", unavailable: false },
+];
+
 
 const HomePage = () => {
+  const searchContext = useContext(SearchContext.Context);
+
   // All the posts
   const [posts, setPosts] = useState([]);
   // posts after filtering
@@ -19,16 +41,15 @@ const HomePage = () => {
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
 
-  const location = useLocation();
-  const params = QueryString.parse(location.search).search;
-
   // get all posts
   useEffect(() => {
+    //console.log(searchContext.searchTerm);
+    console.log("search term above");
     axios
       .get("/api/posts", {
         params: {
           sort: "update_time:desc",
-          keyword: params,
+          keyword: searchContext.searchTerm,
         },
       })
       .then((response) => {
@@ -37,7 +58,7 @@ const HomePage = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [setPosts]);
+  }, [setPosts, searchContext]);
 
   // filtering among searched posts
   useEffect(() => {
@@ -134,64 +155,14 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
-      <Header />
+      <Header search={true} />
       <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
-        <div className="">
-          {/*TODO: the categories are hard-coded for now*/}
-          <select
-            className="w-30 sm:w-40 rounded-md text-2xl bg-white focus:outline-none"
-            onChange={(event) => {
-              setSelectedCategory(event.target.value);
-            }}
-          >
-            <option className="text-sm md:text-2xl rounded-md block px-4 py-2 text-gray-700 hover:bg-gray-100">
-              ALL
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-gray-700 hover:bg-gray-100">
-              FURNITURE
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-gray-700 hover:bg-gray-100">
-              CAR
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-gray-700 hover:bg-gray-100">
-              TV
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2  text-gray-700 hover:bg-gray-100">
-              DESK
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              OTHER
-            </option>
-          </select>
+        <div className="menu-bar w-full sm:w-52">
+          <Select options={categories} setOptionSelected={setSelectedCategory}/>
         </div>
-
-        <div className="dropdown">
+        <div className="w-full sm:w-80">
           {/*TODO: the sorting options are hard-coded for now*/}
-          <select
-            className="w-30 sm:w-80 rounded-md text-2xl bg-white focus:outline-none"
-            onChange={(event) => {
-              setSortType(event.target.value);
-            }}
-          >
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Most Recently Updated
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Least Recently Updated
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Most Recent
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Least Recent
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Price: Low to High
-            </option>
-            <option className="text-sm md:text-2xl block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-              Price: High to Low
-            </option>
-          </select>
+          <Select options={sorts} setOptionSelected={setSortType}/>
         </div>
       </div>
       <div className="mx-12">

@@ -123,7 +123,7 @@ const EditorFormik = (props) => {
   if (userContext) {
     return (
       <div>
-        <Header />
+        <Header search={true}/>
         <div className="min-h-screen flex items-center justify-center ">
           <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
