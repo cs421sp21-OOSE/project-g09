@@ -33,7 +33,7 @@ public final class DataStore {
    * @return a list of sample Users.
    */
   public static List<User> sampleUsers() {
-    User user0 = new User("JHUsedAdmin", "JHUsed Administrator", "", "https://images6.fanpop"
+    User user0 = new User("JHUsedAdmin", "JHUsed Administrator", "ldibern1@jh.edu", "https://images6.fanpop"
         + ".com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "", new ArrayList<>(),
         new ArrayList<>());
     User user1 = new User("001" + "1".repeat(33), "Arya", "abc1@yahoo.com", "https://images6.fanpop"
@@ -85,7 +85,7 @@ public final class DataStore {
    * @return a list of sample wishlist posts.
    */
   public static List<WishlistPostSkeleton> sampleWishlistPosts() {
-    WishlistPostSkeleton post1 = new WishlistPostSkeleton("0".repeat(36), "001111111111111111111111111111111111");
+    WishlistPostSkeleton post1 = new WishlistPostSkeleton("0".repeat(36), "JHUsedAdmin");
     WishlistPostSkeleton post2 = new WishlistPostSkeleton("1".repeat(36), "001111111111111111111111111111111111");
     WishlistPostSkeleton post3 = new WishlistPostSkeleton("3".repeat(36), "002111111111111111111111111111111111");
     WishlistPostSkeleton post4 = new WishlistPostSkeleton("4".repeat(36), "003111111111111111111111111111111111");
