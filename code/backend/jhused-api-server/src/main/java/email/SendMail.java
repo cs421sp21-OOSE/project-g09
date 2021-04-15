@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class SendMail {
 
-    public static void main(Mail mail) {
+    public static void main(Mail mail) throws IOException {
 
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
         Request request = new Request();
