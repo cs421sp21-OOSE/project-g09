@@ -53,7 +53,7 @@ public class WishlistEmailsTest {
         Database.USE_TEST_DATABASE = false; // use production dataset
     }
 
-    //@Test
+    @Test
     void doNothing() {
 
     }
