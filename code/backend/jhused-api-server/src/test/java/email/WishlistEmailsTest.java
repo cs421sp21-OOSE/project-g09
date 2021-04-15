@@ -4,14 +4,13 @@ import dao.PostDao;
 import dao.jdbiDao.JdbiPostDao;
 import model.Post;
 import model.User;
+import email.WishlistEmails;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import util.database.DataStore;
 import util.database.Database;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -47,8 +46,15 @@ public class WishlistEmailsTest {
         Database.USE_TEST_DATABASE = false; // use production dataset
     }
 
-    @Test
+    //@Test
     void doNothing() {
 
     }
+
+    @Test
+    @DisplayName("send an email.")
+    void updateSendMail() throws IOException {
+        WishlistEmails.basicWishlistUpdateEmail(jdbi, "000000000000000000000000000000000000");
+    }
+
 }
