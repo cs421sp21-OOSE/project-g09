@@ -14,7 +14,7 @@ public class WUETemplate {
      * @param userEmail
      * @return
      */
-    public Mail basicWUEEmail(String userEmail) {
+    public static Mail basicWUEEmail(String userEmail) {
         Email from = new Email("jhusedemail@gmail.com");
         String subject = "JHUsed Wishlist Update";
         Email to = new Email("justthetechie@gmail.com");
