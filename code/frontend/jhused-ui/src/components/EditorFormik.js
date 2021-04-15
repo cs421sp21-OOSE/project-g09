@@ -119,7 +119,7 @@ const EditorFormik = (props) => {
     images: Yup.array().min(1, "Please upload least one image"),
   });
 
-  if (userContext && userContext.loggedIn) {
+  if (userContext) {
     return (
       <div>
         <div className="min-h-screen flex items-center justify-center ">

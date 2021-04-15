@@ -8,7 +8,7 @@ import axios from "axios";
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
 
-  if (userContext.user && userContext.loggedIn) {
+  if (userContext.user) {
     return (
       <div>
         <div className="flex justify-center w-full">

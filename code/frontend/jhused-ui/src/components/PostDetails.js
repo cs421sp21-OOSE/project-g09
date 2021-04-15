@@ -68,7 +68,7 @@ const PostDetails = (props) => {
                 <div className="sellerInfo">
                   <div>
                     Sold By
-                    {context.loggedIn ? (
+                    {context.user ? (
                       <a
                         href={`/user/${postUser.id}`}
                         className="hover:text-red-600"

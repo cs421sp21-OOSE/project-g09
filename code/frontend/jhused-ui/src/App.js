@@ -11,32 +11,39 @@ import UserSettings from "./components/UserSettings";
 import Header from "./components/Header";
 import { UserContext } from "./state";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
+import context from "react-bootstrap/esm/AccordionContext";
 
 const App = () => {
   const user = useContext(UserContext.Context);
 
   return (
     <div className="App">
-      <div className="jhused-header"></div>
+      <div className="jhused-header">
+        <Header search={true} />
+      </div>
       <Switch>
         <Route exact path="/user/:userID">
-          <Header search={true} />
-          <UserProfile />
+          {user.ready && user.user ? <UserProfile /> : <UnauthorizedAccess />}
         </Route>
 
         <Route exact path="/user/settings/:userID/">
-          <Header search={true} />
-          <UserSettings />
+          {user.ready && user.user ? <UserSettings /> : <UnauthorizedAccess />}
         </Route>
 
         <Route exact path="/editor/create">
-          <Header search={true} />
-          <EditorFormik mode="create" />
+          {user.ready && user.user ? (
+            <EditorFormik mode="create" />
+          ) : (
+            <UnauthorizedAccess />
+          )}
         </Route>
 
         <Route exact path="/editor/:postID">
-          <Header search={true} />
-          <EditorFormik mode="update" />
+          {user.ready && user.user ? (
+            <EditorFormik mode="update" />
+          ) : (
+            <UnauthorizedAccess />
+          )}
         </Route>
 
         <Route exact path="/editor/redirect/:requestStatus">
@@ -44,22 +51,18 @@ const App = () => {
         </Route>
 
         <Route exact path="/404">
-          <Header search={true} />
           <NotFoundPage />
         </Route>
 
         <Route exact path="/">
-          <Header search={true} />
           <HomePage />
         </Route>
 
         <Route exact path="/chat/:userID">
-          <Header search={true} />
-          <ChatPage />
+          {user.ready && user.user ? <ChatPage /> : <UnauthorizedAccess />}
         </Route>
 
         <Route exact path="/post/:postID">
-          <Header search={true} />
           <PostDetails />
         </Route>
       </Switch>
