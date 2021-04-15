@@ -41,7 +41,7 @@ const Conversations = () => {
           className="flex items-center flex-wrap md:flex-nowrap gap-x-4 rounded-xl group hover:bg-gray-500 px-2 py-2 border shadow-sm relative"
           key={index}
           action
-          onClick={() => selectConversationIndex(index)}
+          onClick={() => setMessageToRead({ index })}
           active={conversation.selected}
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="flex-none rounded-full w-12 h-12 object-cover overlfow-hidden text-blue-400 bg-white" viewBox="0 0 20 20" fill="currentColor">
