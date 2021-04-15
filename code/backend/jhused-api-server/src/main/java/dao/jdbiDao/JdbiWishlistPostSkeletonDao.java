@@ -96,6 +96,9 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
   public List<WishlistPostSkeleton> readAllFromPostId(String post_id) throws DaoException {
     String sql = "SELECT * FROM wishlist_post WHERE post_id = :post_id;";
 
+    //for debugging
+    System.out.println(post_id);
+
     try {
       return jdbi.inTransaction(handle ->
               handle.createQuery(sql)

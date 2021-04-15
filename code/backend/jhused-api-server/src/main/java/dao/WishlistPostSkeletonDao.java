@@ -54,5 +54,5 @@ public interface WishlistPostSkeletonDao {
      * @return
      * @throws DaoException
      */
-    public List<WishlistPostSkeleton> readAllFromPostId(String postId) throws DaoException;
+    List<WishlistPostSkeleton> readAllFromPostId(String postId) throws DaoException;
 }
