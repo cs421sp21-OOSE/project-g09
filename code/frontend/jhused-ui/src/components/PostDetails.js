@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import Location from "./Location";
 import Carousel from "./Carousel";
 import axios from "../util/axios";
-import Header from "./Header";
 import { UserContext } from "../state";
 import { useParams, useHistory } from "react-router-dom";
 import { useContacts } from "../state/ContactsProvider";
 import { useConversations } from "../state/ConversationsProvider";
+import Header from './Header'
 
 const PostDetails = (props) => {
   const params = useParams();
@@ -54,7 +54,7 @@ const PostDetails = (props) => {
   if (postUser && post) {
     return (
       <div>
-        <Header />
+        <Header search={true} />
         <div className="flex w-full justify-center align-center">
           <div className="my-8 block md:flex justify-center align-center w-full sm:w-11/12 bg-white ">
             <div className=" w-full md:w-3/5">
@@ -69,14 +69,18 @@ const PostDetails = (props) => {
                 />
                 <div className="sellerInfo">
                   <div>
-                    {" "}
-                    Sold By{" "}
-                    <a
-                      href={`/user/${postUser.id}`}
-                      className="hover:text-red-600"
-                    >
-                      {postUser.name}
-                    </a>
+                    Sold By
+                    {context.user ? (
+                      <a
+                        href={`/user/${postUser.id}`}
+                        className="hover:text-red-600"
+                      >
+                        {" "}
+                        {postUser.name}
+                      </a>
+                    ) : (
+                      ` ${postUser.name}`
+                    )}
                   </div>
                   <Location location={postUser.location} />
                 </div>
@@ -87,17 +91,13 @@ const PostDetails = (props) => {
                   <h1 className="font-semibold">${post.price}</h1>
                   <p className="text-xl">{post.description} </p>
                 </div>
-                {context.user ? (
+                {context.user && context.user.id !== postUser.id ? (
                   <div className="block my-3 space-y-3">
                     <button
                       className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold"
                       onClick={handleMessageSeller}
                     >
                       Message Seller
-                    </button>
-                    <button className="w-full bg-red-600 hover:bg-red-500 text-2xl text-white py-1 focus:outline-none font-semibold">
-                      {" "}
-                      Buy Now
                     </button>
                   </div>
                 ) : (

@@ -38,7 +38,7 @@ dependencies {
     implementation 'org.pac4j:pac4j-http:4.4.0'
     implementation 'org.pac4j:spark-pac4j:4.0.0'
     implementation 'org.pac4j:pac4j-saml-opensamlv3:4.4.0'
-//    implementation 'org.pac4j:pac4j-saml:4.4.0'
+    //implementation 'org.pac4j:pac4j-saml:4.4.0'
 
     //JavaSpark
     implementation 'com.sparkjava:spark-core:2.9.3'
@@ -52,6 +52,10 @@ dependencies {
     //Unirest, JavaSpark, HikariCP
     implementation 'com.konghq:unirest-java:3.11.09'
     implementation 'com.zaxxer:HikariCP:4.0.3'
+
+    //SendGrid
+    implementation 'com.sendgrid:sendgrid-java:4.7.2'
+
 }
 
 

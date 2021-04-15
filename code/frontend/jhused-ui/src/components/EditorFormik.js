@@ -6,13 +6,12 @@ import * as Yup from "yup";
 import Select from "react-select";
 import CreatableSelecet from "react-select";
 import { useHistory, useParams } from "react-router-dom";
-import Header from "./Header";
 import DropAndView from "./DropAndView";
+import Header from './Header';
 
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
-const btnStyle =
-  "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
+const btnStyle = "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
 
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
@@ -41,8 +40,7 @@ const EditorFormik = (props) => {
         .get("/api/posts/" + postID)
         .then((response) => {
           console.log(response);
-          if(response.data.hashtags==undefined)
-            response.data.hashtags=[];
+          if (response.data.hashtags == undefined) response.data.hashtags = [];
           setInitialPostData(response.data);
           setIsLoaded(true);
         })
@@ -123,7 +121,7 @@ const EditorFormik = (props) => {
   if (userContext) {
     return (
       <div>
-        <Header />
+        <Header search={true} />
         <div className="min-h-screen flex items-center justify-center ">
           <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
@@ -133,7 +131,7 @@ const EditorFormik = (props) => {
               onSubmit={handleSubmit}
             >
               {(formik) => (
-                <form onSubmit={formik.handleSubmit} >
+                <form onSubmit={formik.handleSubmit}>
                   <div className="grid grid-cols-12 gap-x-6 gap-y-4">
                     <StdTextInput
                       name="title"
@@ -219,7 +217,7 @@ const EditorFormik = (props) => {
                       <button
                         className={btnStyle}
                         type="submit"
-                        disabled={formik.isSubmitting}
+                        disabled={formik.isSubmitting || (props.mode === "Update" && formik.values.id === "")}
                       >
                         {props.mode === "create" ? "Submit" : "Update"}
                       </button>
@@ -232,9 +230,7 @@ const EditorFormik = (props) => {
         </div>
       </div>
     );
-  } else {
-    return "";
-  }
+  } else return "";
 };
 
 export default EditorFormik;
@@ -246,7 +242,7 @@ const StdTextInput = ({ ...props }) => {
     <div className={props.className}>
       <label className={fieldLabelStyle}>{props.label}</label>
       <input
-        className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
+        className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
         type="text"
         placeholder={props.placeholder}
         {...field}
@@ -269,7 +265,7 @@ const StdNumInput = ({ ...props }) => {
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input
-          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
+          className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
           type="number"
           placeholder={props.placeholder}
           {...field}
