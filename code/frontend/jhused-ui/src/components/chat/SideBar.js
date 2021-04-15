@@ -1,10 +1,11 @@
 import {Modal} from 'react-bootstrap';
-import {useState,useContext} from "react";
+import { useState, useContext } from "react";
 import Conversations from "./Conversations";
 import Contacts from "./Contacts";
 import NewContactModal from "./NewContactModal";
 import NewConversationModal from "./NewConversationModal";
 import { UserContext } from "../../state";
+import { useHistory } from 'react-router-dom'
 
 const CONVERSATIONS_KEY = 'conversations';
 const CONTACTS_KEY = 'contacts';
@@ -14,6 +15,7 @@ const SideBar = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const conversationsOpen = activeKey === CONVERSATIONS_KEY;
   const context = useContext(UserContext.Context);
+  const history = useHistory(); 
 
   const closeModal = () => {
     setModalOpen(false);
@@ -22,8 +24,17 @@ const SideBar = () => {
   return (
     <div className="w-32 md:w-64 flex-none pl-4 py-6">
       <div className="h-full flex flex-col">
-        <div className="font-black text-3xl px-2 -mt-2 mb-5">
+        {/* Chat header */}
+        <div className="font-black text-3xl px-2 -mt-2 mb-5 flex justify-between items-center">
           Chat
+          <button onClick={e => {
+            e.preventDefault();
+            history.push("/");
+          }}>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black hover:text-red-600 transition duration-300 east-in-out transform hover:scale-125" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+            </svg>
+          </button>
         </div>
         <div className="flex flex-wrap items-center gap-x-6 w-full px-2 bg-blue-100 rounded-2xl p-4">
           <div>
