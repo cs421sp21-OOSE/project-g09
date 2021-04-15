@@ -35,6 +35,10 @@ public class WishlistEmails {
         //get the wishlistPostSkeletons.
         List<WishlistPostSkeleton> updatedPostSkeletons =  skeletonDao.readAllFromPostId(postId);
 
+        if(updatedPostSkeletons.size() == 0) {
+            System.out.println("No wishlist-ed posts!");
+        }
+
         //create the user list.
         //List<User> users = new ArrayList<>();
 
@@ -47,6 +51,9 @@ public class WishlistEmails {
 
             //create the email.
             Mail mail = WUETemplate.basicWUEEmail(currentUser.getEmail());
+
+            //for debugging
+            System.out.println("Sending mail to: " + currentUser.getEmail());
 
             //send the email.
             try {
