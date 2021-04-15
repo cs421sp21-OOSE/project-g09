@@ -274,25 +274,6 @@ class JdbiPostDaoTest {
   }
 
   @Test
-  @DisplayName("updating a post works")
-  void updateSendMail() {
-    //create a post to send to the update method.
-    Post ogPost = new Post("000000000000000000000000000000000000", "001111111111111111111111111111111111",
-            "Dummy furnitulre", 31.3, SaleState.SALE,
-            "**Description ofa dummy furnitusdfsre",
-            DataStore.sampleImages(Category.FURNITURE),
-            DataStore.sampleHashtags(Category.FURNITURE),
-            Category.CAR,
-            "Location ossf dummy furniture"
-    );
-
-    //update the post
-    Post post = postDao.update("000000000000000000000000000000000000", ogPost);
-
-    //check to see if the email linked to the passed user received an email!
-  }
-
-  @Test
   @DisplayName("Update returns null for an invalid uuid")
   void updateReturnsNullInvalidCode() {
     Post ogPost = new Post("100", "Updated Title!", 100D, Category.CAR,
