@@ -3,6 +3,7 @@ import ImageGrid from "./ImageGrid";
 import Location from "./Location";
 import axios from "../util/axios";
 import Header from "./Header";
+import Rate from "./Rate";
 import { UserContext } from "../state";
 import { useHistory, useParams } from "react-router-dom";
 import "./UserProfile.css";
@@ -113,6 +114,9 @@ const UserProfile = (props) => {
                 <Location location={user.location} size="s" />
               </div>
             </div>
+          </div>
+          <div>
+              <Rate/>
           </div>
           <div className="space-x-10">
             <button
