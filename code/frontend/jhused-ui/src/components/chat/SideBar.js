@@ -55,7 +55,7 @@ const SideBar = () => {
               onClick={() => {setActiveKey(CONVERSATIONS_KEY)}}>
               Conversations</button>
             <button
-              class={`text-gray-600 py-2 block hover:text-blue-500 focus:outline-none
+              class={`text-gray-600 py-2 block hover:text-blue-500 focus:outline-none ml-2
               ${activeKey === CONTACTS_KEY ? "text-blue-500 border-b-2 font-medium border-blue-500" : ''}`}
               onClick={() => {setActiveKey(CONTACTS_KEY)}}>
               Contacts</button>
