@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/solid";
 
 const Select = (props) => {
   const [selected, setSelected] = useState(props.options[0]);
@@ -47,7 +46,7 @@ const Select = (props) => {
                 >
                   <Listbox.Options
                     static
-                    className="absolute right-0 w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                    className="absolute right-0 w-full py-1 mt-1 overflow-auto text-gray-700 bg-white rounded-md shadow-lg max-h-60 focus:outline-none sm:text-sm"
                   >
                     {props.options.map((option, optionIdx) => {
                       if (option.name !== selected.name) {

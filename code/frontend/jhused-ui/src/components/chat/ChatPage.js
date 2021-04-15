@@ -60,7 +60,7 @@ const ChatPage = () => {
 
   return (
     <div className="flex flex-col w-screen h-screen">
-      <Header search={false} />
+      <Header search={true} />
       <DashBoard className="flex-1"/>
     </div>
   )
