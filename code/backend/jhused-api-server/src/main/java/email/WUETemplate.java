@@ -17,7 +17,7 @@ public class WUETemplate {
     public static Mail basicWUEEmail(String userEmail) {
         Email from = new Email("jhusedemail@gmail.com");
         String subject = "JHUsed Wishlist Update";
-        Email to = new Email("justthetechie@gmail.com");
+        Email to = new Email(userEmail);
         Content content = new Content("text/plain", "One of your wishlist-ed posts has been updated!");
         Mail mail = new Mail(from, subject, to, content);
         return mail;
