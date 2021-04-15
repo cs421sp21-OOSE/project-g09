@@ -47,6 +47,7 @@ public final class Database {
     createPostsTableWithSampleData(jdbi, DataStore.samplePosts());
     createWishlistPostsTableWithSampleData(jdbi, DataStore.sampleWishlistPosts());
     createMessageTableWithSampleData(jdbi, DataStore.sampleMessages());
+    createRateTableWithSampleData(jdbi, DataStore.sampleRates());
   }
 
   /**
@@ -92,6 +93,39 @@ public final class Database {
 //    hc.setDataSource(ds);
 //    hc.setMaximumPoolSize(6);
     return Jdbi.create(ds).installPlugin(new PostgresPlugin());
+  }
+
+  public static void createRateTableWithSampleData(Jdbi jdbi, List<Rate> rates){
+    String sql = "CREATE TABLE IF NOT EXISTS rate("
+        + "rater_id VARCHAR(50) NOT NULL,"
+        + "seller_id VARCHAR(50) NOT NULL,"
+        + "rate INT NOT NULL,"
+        + "PRIMARY KEY(rater_id, seller_id),"
+        + "FOREIGN KEY (rater_id) "
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE,"
+        + "FOREIGN KEY (seller_id) "
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE"
+        + ");";
+    jdbi.useTransaction(handle -> {
+      handle.execute(sql);
+    });
+    insertSampleRates(jdbi, rates);
+  }
+
+  public static void insertSampleRates(Jdbi jdbi, List<Rate> samples) {
+    String sql = "INSERT INTO rate(rater_id, seller_id, rate) "
+        + "VALUES(:raterId, :sellerId, :rate) "
+        + "ON CONFLICT (rater_id,seller_id) DO UPDATE "
+        + "SET rate = :rate;";
+    jdbi.useTransaction(handle -> {
+      PreparedBatch batch = handle.prepareBatch(sql);
+      for (Rate rate : samples) {
+        batch.bindBean(rate).add();
+      }
+      batch.execute();
+    });
   }
 
   /**
@@ -187,6 +221,7 @@ public final class Database {
 
   public static void drop(Jdbi jdbi) {
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS rate");
       handle.execute("DROP TABLE IF EXISTS message;");
       handle.execute("DROP TABLE IF EXISTS wishlist_post;");
       handle.execute("DROP TABLE IF EXISTS post_hashtag;");

@@ -9,16 +9,10 @@ import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/chat/ChatPage";
 import UserSettings from "./components/UserSettings";
 import { UserContext } from "./state";
-import {SocketProvider} from "./state/SocketProvider";
-import {ContactsProvider} from "./state/ContactsProvider";
-import {ConversationsProvider} from "./state/ConversationsProvider";
 
 const App = () => {
-  const location = useLocation();
-  const background = location.state && location.state.background;
   const { user } = useContext(UserContext.Context);
   
-
   return (
     <div className="App">
       <div className="jhused-header"></div>
@@ -57,8 +51,6 @@ const App = () => {
         <Route exact path="/post/:postID" children={<PostDetails />} />
 
       </Switch>
-
-      {/**background && <Route path="/post/:postID" children={<PostDetails />} /> */}
     </div>
   );
 };
