@@ -4,6 +4,7 @@ import dao.HashtagDao;
 import dao.ImageDao;
 import dao.PostDao;
 import dao.PostHashtagDao;
+import email.WishlistEmails;
 import exceptions.DaoException;
 import model.Category;
 import model.Hashtag;
@@ -14,6 +15,7 @@ import org.jdbi.v3.core.statement.Query;
 import org.jdbi.v3.core.statement.StatementException;
 import util.jdbiResultSetHandler.ResultSetLinkedHashMapAccumulatorProvider;
 
+import java.io.IOException;
 import java.util.*;
 
 public class JdbiPostDao implements PostDao {
@@ -295,13 +297,17 @@ public class JdbiPostDao implements PostDao {
           List<Hashtag> createdHashtags = hashtagDao.create(toBeUpdatedHashtags);
           createdHashtags.forEach(hashtag -> toBeUpdatedHashtagsIds.add(hashtag.getId()));
           postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
+
+          //send emails!
+          WishlistEmails.basicWishlistUpdateEmail(jdbi, id);
+
         }
         return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID)
             .bind("id", post.getId())
             .reduceResultSet(new LinkedHashMap<>(), postAccumulator)
             .values()).stream().findFirst().orElse(null);
       });
-    } catch (StatementException | IllegalStateException | NullPointerException ex) { //otherwise, fail
+    } catch (StatementException | IllegalStateException | NullPointerException | IOException ex) { //otherwise, fail
       throw new DaoException("Unable to update this post! Check if missing fields.", ex);
     }
   }
