@@ -4,7 +4,6 @@ import './index.css';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import {BrowserRouter} from "react-router-dom";
-import {Router} from "react-router";
 import { UserContext, SearchContext } from "./state";
 import {ContactsProvider} from "./state/ContactsProvider";
 import {ConversationsProvider} from "./state/ConversationsProvider";

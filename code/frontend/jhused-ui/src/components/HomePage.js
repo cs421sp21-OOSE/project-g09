@@ -157,10 +157,10 @@ const HomePage = () => {
     <div className="home-page">
       <Header search={true} />
       <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
-        <div className="menu-bar w-30 sm:w-52">
+        <div className="menu-bar w-full sm:w-52">
           <Select options={categories} setOptionSelected={setSelectedCategory}/>
         </div>
-        <div className="w-80">
+        <div className="w-full sm:w-80">
           {/*TODO: the sorting options are hard-coded for now*/}
           <Select options={sorts} setOptionSelected={setSortType}/>
         </div>
