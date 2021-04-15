@@ -25,6 +25,7 @@ class ServerTest {
   private static final List<Post> samplePosts = DataStore.samplePosts();
   private static final List<User> sampleUsers = DataStore.sampleUsers();
   private static final List<Message> sampleMessages = DataStore.sampleMessages();
+  private static final List<Rate> sampleRates = DataStore.sampleRates();
   private final static String BASE_URL = "http://localhost:8080";
   private static final Gson gson = new Gson();
   private static Jdbi jdbi;
@@ -44,6 +45,7 @@ class ServerTest {
     Database.insertSampleUsers(jdbi, sampleUsers);
     Database.insertSamplePosts(jdbi, samplePosts);
     Database.insertSampleMessages(jdbi, sampleMessages);
+    Database.insertSampleRates(jdbi, sampleRates);
   }
 
   @AfterAll
@@ -452,9 +454,133 @@ class ServerTest {
     for (Message message : sampleMessages) {
       ids.add(message.getId());
     }
-    ids.set(0,"jjhhs");
+    ids.set(0, "jjhhs");
     HttpResponse<JsonNode> jsonResponse =
         Unirest.delete(URL).body(gson.toJson(ids)).asJson();
     assertEquals(400, jsonResponse.getStatus());
+  }
+
+  @Test
+  void getSellerAvgRateWorks() {
+    Map<String, Double> avg = new LinkedHashMap<>();
+    Map<String, Integer> cnt = new LinkedHashMap<>();
+    for (Rate rate : sampleRates) {
+      Double current = avg.get(rate.getSellerId());
+      if (current == null) {
+        current = (double) rate.getRate();
+        avg.put(rate.getSellerId(), current);
+        cnt.put(rate.getSellerId(), 1);
+      } else {
+        int n = cnt.get(rate.getSellerId());
+        current = (current * n + rate.getRate()) / (n + 1);
+        avg.put(rate.getSellerId(), current);
+        cnt.put(rate.getSellerId(), n + 1);
+      }
+    }
+    avg.forEach((key, value) -> {
+      final String URL = BASE_URL + "/api/rates/avg/" + key;
+      HttpResponse<JsonNode> jsonResponse =
+          Unirest.get(URL).asJson();
+      assertEquals(jsonResponse.getStatus(), 200);
+      assertEquals(((double) Math.round(value * 100)) / 100, jsonResponse.getBody().getObject().getDouble(
+          "averageRate"));
+    });
+  }
+
+  @Test
+  void getNonExistingSellerRateAvgReturn404() {
+    final String URL = BASE_URL + "/api/rates/avg/" + "lsjfilejlifsj";
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.get(URL).asJson();
+    assertEquals(jsonResponse.getStatus(), 404);
+  }
+
+  @Test
+  void getARateWorks() {
+    final String URL = BASE_URL + "/api/rates/{sellerId}/{raterId}";
+    for (Rate rate : sampleRates) {
+      HttpResponse<JsonNode> jsonResponse =
+          Unirest.get(URL)
+              .routeParam("sellerId", rate.getSellerId())
+              .routeParam("raterId", rate.getRaterId())
+              .asJson();
+      assertEquals(jsonResponse.getStatus(), 200);
+      assertEquals(rate, gson.fromJson(jsonResponse.getBody().getObject().toString(), Rate.class));
+    }
+  }
+
+  @Test
+  void getARateReturn404NoneExistingRate() {
+    final String URL = BASE_URL + "/api/rates/{sellerId}/{raterId}";
+    HttpResponse<JsonNode> jsonResponse =
+        Unirest.get(URL)
+            .routeParam("sellerId", "lijljijijiijj")
+            .routeParam("raterId", sampleRates.get(0).getRaterId())
+            .asJson();
+    assertEquals(jsonResponse.getStatus(), 404);
+  }
+
+  @Test
+  void postARateWorks() {
+    final String URL = BASE_URL + "/api/rates";
+    Rate rate = new Rate(sampleUsers.get(0).getId(), sampleUsers.get(1).getId(), 3);
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(rate)).asJson();
+    assertEquals(201, jsonResponse.getStatus());
+    assertEquals(rate, gson.fromJson(jsonResponse.getBody().getObject().toString(), Rate.class));
+  }
+
+  @Test
+  void postDuplicateRateReturn500() {
+    final String URL = BASE_URL + "/api/rates";
+    Rate rate = sampleRates.get(0);
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(rate)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+  }
+
+  @Test
+  void postInvalidRateReturn500() {
+    final String URL = BASE_URL + "/api/rates";
+    Rate rate = new Rate(sampleRates.get(0).getRaterId(), sampleRates.get(0).getSellerId(),
+        sampleRates.get(0).getRate());
+    rate.setRate(-1);
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(rate)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+    rate = new Rate(sampleRates.get(0).getRaterId(), sampleRates.get(0).getSellerId(), sampleRates.get(0).getRate());
+    rate.setSellerId(null);
+    jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(rate)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+    jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(Map.of("sellerId", "lsiejfiesjf"))).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+  }
+
+  @Test
+  void putRateWorks() {
+    final String URL = BASE_URL + "/api/rates/{sellerId}/{raterId}";
+    for (Rate rate : sampleRates) {
+      rate = new Rate(rate.getRaterId(), rate.getSellerId(), rate.getRate());
+      rate.setRate((rate.getRate() + 1) % 6);
+      HttpResponse<JsonNode> jsonResponse = Unirest.put(URL)
+          .routeParam("raterId", rate.getRaterId())
+          .routeParam("sellerId", rate.getSellerId())
+          .body(gson.toJson(rate)).asJson();
+      assertEquals(rate, gson.fromJson(jsonResponse.getBody().getObject().toString(), Rate.class));
+    }
+  }
+
+  @Test
+  void deleteRateWorks() {
+    final String URL = BASE_URL + "/api/rates/{sellerId}/{raterId}";
+    for (Rate rate : sampleRates) {
+      HttpResponse<JsonNode> jsonResponse = Unirest.delete(URL)
+          .routeParam("raterId", rate.getRaterId())
+          .routeParam("sellerId", rate.getSellerId())
+          .asJson();
+      assertEquals(rate, gson.fromJson(jsonResponse.getBody().getObject().toString(), Rate.class));
+    }
   }
 }
