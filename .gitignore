@@ -2,4 +2,5 @@
 .vscode/*
 .idea/*
 .gradle/*
-node_modules/*
+node_modules/*sendgrid.env
+sendgrid.env

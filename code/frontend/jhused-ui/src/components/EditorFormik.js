@@ -11,8 +11,7 @@ import UnauthorizedAccess from "./UnauthorizedAccess";
 
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
-const btnStyle =
-  "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
+const btnStyle = "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
 
 // Editor component with built-in Formik as data validation
 const EditorFormik = (props) => {
@@ -217,7 +216,7 @@ const EditorFormik = (props) => {
                       <button
                         className={btnStyle}
                         type="submit"
-                        disabled={formik.isSubmitting}
+                        disabled={formik.isSubmitting || (props.mode === "Update" && formik.values.id === "")}
                       >
                         {props.mode === "create" ? "Submit" : "Update"}
                       </button>
@@ -242,7 +241,7 @@ const StdTextInput = ({ ...props }) => {
     <div className={props.className}>
       <label className={fieldLabelStyle}>{props.label}</label>
       <input
-        className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
+        className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-3 py-1 block relative w-full"
         type="text"
         placeholder={props.placeholder}
         {...field}
@@ -265,7 +264,7 @@ const StdNumInput = ({ ...props }) => {
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input
-          className="appearance-none text-md rounded-lg rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
+          className="appearance-none text-md rounded-lg border border-gray-300 focus:outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700 hover:border-gray-400 px-5 py-1 block relative w-full"
           type="number"
           placeholder={props.placeholder}
           {...field}
