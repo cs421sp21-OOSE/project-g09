@@ -59,9 +59,9 @@ const ChatPage = () => {
   }, [addMessageToConversation, context.user.id, setConversations]) // Don't add conversations as dependency here
 
   return (
-    <div className='chat'>
+    <div className="flex flex-col w-screen h-screen">
       <Header search={false} />
-      <DashBoard />
+      <DashBoard className="flex-1"/>
     </div>
   )
 }

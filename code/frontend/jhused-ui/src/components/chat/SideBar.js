@@ -22,7 +22,7 @@ const SideBar = () => {
   return (
     <div className="w-32 md:w-64 flex-none pl-4 py-6">
       <div className="h-full flex flex-col">
-        <div className="font-black text-3xl px-2 mb-3">
+        <div className="font-black text-3xl px-2 -mt-2 mb-5">
           Chat
         </div>
         <div className="flex flex-wrap items-center gap-x-6 w-full px-2 bg-blue-100 rounded-2xl p-4">
