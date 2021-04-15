@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import ImageGrid from "./ImageGrid";
 import Location from "./Location";
 import axios from "../util/axios";
-import Header from "./Header";
 import Rate from "./Rate";
 import { UserContext } from "../state";
 import { useHistory, useParams } from "react-router-dom";
 import "./UserProfile.css";
+import Header from './Header';
+
 /**
  * Component for user profile page
  */
@@ -76,7 +77,7 @@ const UserProfile = (props) => {
   if (user && posts && userContext.user) {
     return (
       <div className="user-profile">
-        <Header search={false}/>
+        <Header search={true} />
         <div className="mx-12">
           <div className="flex my-4 relative">
             {userContext.user.id === params.userID ? (
@@ -154,9 +155,7 @@ const UserProfile = (props) => {
         </div>
       </div>
     );
-  } else {
-    return "";
-  }
+  } else return "";
 };
 
 export default UserProfile;

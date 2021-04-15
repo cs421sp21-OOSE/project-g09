@@ -1,10 +1,9 @@
-import React, { Fragment, useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ImageGrid from "./ImageGrid";
 import axios from "../util/axios";
-import { useLocation } from "react-router-dom";
-import Header from "./Header";
 import { SearchContext } from "../state";
 import Select from "./Select"
+import Header from './Header';
 
 const categories = [
   { id: 1, name: "ALL", unavailable: false },

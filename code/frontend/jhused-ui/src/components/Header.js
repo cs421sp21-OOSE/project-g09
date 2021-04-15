@@ -1,10 +1,12 @@
-import React, { useContext, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { UserContext } from '../state'
 import Logo from '../images/logo.png'
 import './Header.css'
 import { useHistory } from 'react-router-dom'
 import { useConversations } from '../state/ConversationsProvider'
 import {SearchContext} from "../state"
+import axios from "../util/axios";
+
 
 const Header = props => {
   const context = useContext(UserContext.Context)
@@ -12,8 +14,59 @@ const Header = props => {
   const searchContext = useContext(SearchContext.Context);
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState(searchContext.searchTerm)
-  const { conversations } = useConversations()
-  
+
+  const {
+    conversations,
+    setConversations,
+    addMessageToConversation
+  } = useConversations()
+
+  useEffect(() => {
+    if (context.user) {
+      const initialConversations = conversations.map(conversation => {
+        const recipients = conversation.recipients.map(recipient => {
+          return recipient.id
+        })
+        return {recipients, messages: []}
+      })
+      setConversations(initialConversations)
+      axios
+        .get(`/api/messages/${context.user.id}`)
+        .then(response => {
+          const historyMessages = response.data
+          const messagesAsReceiver = historyMessages.filter(message => {
+            return message.receiverId === context.user.id
+          })
+          const messagesAsSender = historyMessages.filter(message => {
+            return message.senderId === context.user.id
+          })
+          messagesAsReceiver.forEach(message => {
+            addMessageToConversation({
+              messageId: message.id,
+              recipients: [message.senderId],
+              text: message.message,
+              sender: message.senderId,
+              sentTime: message.sentTime.seconds,
+              read: message.read
+            })
+          })
+          messagesAsSender.forEach(message => {
+            addMessageToConversation({
+              messageId: message.id,
+              recipients: [message.receiverId],
+              text: message.message,
+              sender: context.user.id,
+              sentTime: message.sentTime.seconds,
+              read: true
+            })
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }, [addMessageToConversation, context.user, setConversations]) // Don't add conversations as dependency here
+
 
   return (
     <nav className='relative bg-white'>
