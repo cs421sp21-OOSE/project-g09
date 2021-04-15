@@ -97,7 +97,7 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
     String sql = "SELECT * FROM wishlist_post WHERE post_id = :post_id;";
 
     //for debugging
-    System.out.println(post_id);
+    /*System.out.println(post_id);*/
 
     try {
       return jdbi.inTransaction(handle ->

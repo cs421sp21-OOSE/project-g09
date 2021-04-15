@@ -31,9 +31,9 @@ public class WishlistEmails {
         List<WishlistPostSkeleton> wishlistPostSkeletons = skeletonDao.readAllFromPostId(postId);
 
         //for debugging
-        if(wishlistPostSkeletons.size() == 0) {
+        /*if(wishlistPostSkeletons.size() == 0) {
             System.out.println("No wishlist-ed posts!");
-        }
+        }*/
 
         //TODO eventually need to change this over to a bulk email method.
 
@@ -46,7 +46,7 @@ public class WishlistEmails {
             Mail mail = WUETemplate.basicWUEEmail(currentUser.getEmail());
 
             //for debugging
-            System.out.println("Sending mail to: " + currentUser.getEmail());
+            /*System.out.println("Sending mail to: " + currentUser.getEmail());*/
 
             //send the email.
             try {
