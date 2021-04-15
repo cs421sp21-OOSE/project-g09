@@ -79,7 +79,6 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
 
   }
 
-
   @Override
   public WishlistPostSkeleton deleteWishlistEntry(String post_id, String user_id) throws DaoException {
     String deleteWishlistEntrySql = "WITH deleted AS (DELETE FROM wishlist_post WHERE post_id=:post_id AND "
@@ -92,4 +91,24 @@ public class JdbiWishlistPostSkeletonDao implements WishlistPostSkeletonDao {
       throw new DaoException(ex.getMessage(), ex);
     }
   }
+
+  @Override
+  public List<WishlistPostSkeleton> readAllFromPostId(String post_id) throws DaoException {
+    String sql = "SELECT * FROM wishlist_post WHERE post_id = :post_id;";
+
+    //for debugging
+    /*System.out.println(post_id);*/
+
+    try {
+      return jdbi.inTransaction(handle ->
+              handle.createQuery(sql)
+                      .bind("post_id", post_id)
+                      .mapToBean(WishlistPostSkeleton.class)
+                      .list());
+    } catch (StatementException | IllegalStateException ex) {
+      throw new DaoException("Unable to read wishlist for post_id " + post_id, ex);
+    }
+
+  }
+
 }
