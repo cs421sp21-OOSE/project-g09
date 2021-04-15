@@ -3,6 +3,7 @@ import ImageGrid from "./ImageGrid";
 import axios from "../util/axios";
 import { SearchContext } from "../state";
 import Select from "./Select"
+import Header from './Header';
 
 const categories = [
   { id: 1, name: "ALL", unavailable: false },
@@ -153,6 +154,7 @@ const HomePage = () => {
 
   return (
     <div className="home-page">
+      <Header search={true} />
       <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
         <div className="menu-bar w-full sm:w-52">
           <Select options={categories} setOptionSelected={setSelectedCategory}/>

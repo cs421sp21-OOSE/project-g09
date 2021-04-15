@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/solid";
 
 const Select = (props) => {
   const [selected, setSelected] = useState(props.options[0]);

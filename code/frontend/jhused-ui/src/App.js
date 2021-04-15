@@ -18,32 +18,22 @@ const App = () => {
 
   return (
     <div className="App">
-      <div className="jhused-header">
-        <Header search={true} />
-      </div>
       <Switch>
         <Route exact path="/user/:userID">
-          {user.ready && user.user ? <UserProfile /> : <UnauthorizedAccess />}
+        {user.ready ? user.user ? <UserProfile /> : <UnauthorizedAccess /> : ""}
         </Route>
 
         <Route exact path="/user/settings/:userID/">
-          {user.ready && user.user ? <UserSettings /> : <UnauthorizedAccess />}
+        {user.ready ? user.user ? <UserSettings /> : <UnauthorizedAccess /> : ""}
         </Route>
 
         <Route exact path="/editor/create">
-          {user.ready && user.user ? (
-            <EditorFormik mode="create" />
-          ) : (
-            <UnauthorizedAccess />
-          )}
+        {user.ready ? user.user ? <EditorFormik mode="create" /> : <UnauthorizedAccess /> : ""}
+
         </Route>
 
         <Route exact path="/editor/:postID">
-          {user.ready && user.user ? (
-            <EditorFormik mode="update" />
-          ) : (
-            <UnauthorizedAccess />
-          )}
+        {user.ready ? user.user ? <EditorFormik mode="update" /> : <UnauthorizedAccess /> : ""}
         </Route>
 
         <Route exact path="/editor/redirect/:requestStatus">
@@ -59,7 +49,7 @@ const App = () => {
         </Route>
 
         <Route exact path="/chat/:userID">
-          {user.ready && user.user ? <ChatPage /> : <UnauthorizedAccess />}
+          {user.ready ? user.user ? <ChatPage /> : <UnauthorizedAccess /> : ""}
         </Route>
 
         <Route exact path="/post/:postID">

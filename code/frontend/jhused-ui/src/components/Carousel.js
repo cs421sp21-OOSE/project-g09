@@ -74,7 +74,7 @@ const Carousel = (props) => {
         <button
           className={`origin-top-right absolute right-3 top-0 ${
             inWishlist ? "text-red-600" : "text-gray-300 hover:text-red-600"
-          } focus:outline-none`}
+          } focus:outline-none `}
           onClick={() => handleWishlist(props.id)}
         >
           <svg
@@ -83,9 +83,9 @@ const Carousel = (props) => {
             fill="currentColor"
             className={`${
               inWishlist
-                ? ""
-                : "hover:w-10 hover:h-10 hover:sm:w-11 hover:sm:h-11"
-            } w-7 h-7 sm:w-10 sm:h-10 `}
+                ? "transition duration-300 east-in-out transform hover:scale-125"
+                : ""
+            } w-7 h-7 sm:w-10 sm:h-10`}
           >
             <path
               fillRule="evenodd"

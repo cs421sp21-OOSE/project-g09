@@ -4,6 +4,7 @@ import { Formik, Form, useField } from "formik";
 import * as Yup from "yup";
 import { storage } from "./firebase";
 import axios from "axios";
+import Header from './Header';
 
 const UserSettings = () => {
   const userContext = useContext(UserContext.Context);
@@ -11,6 +12,7 @@ const UserSettings = () => {
   if (userContext.user) {
     return (
       <div>
+        <Header search={true} />
         <div className="flex justify-center w-full">
           <SettingForm user={userContext.user} />
         </div>

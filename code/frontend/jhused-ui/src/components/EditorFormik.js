@@ -7,7 +7,7 @@ import Select from "react-select";
 import CreatableSelecet from "react-select";
 import { useHistory, useParams } from "react-router-dom";
 import DropAndView from "./DropAndView";
-import UnauthorizedAccess from "./UnauthorizedAccess";
+import Header from './Header';
 
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
@@ -121,6 +121,7 @@ const EditorFormik = (props) => {
   if (userContext) {
     return (
       <div>
+        <Header search={true} />
         <div className="min-h-screen flex items-center justify-center ">
           <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
