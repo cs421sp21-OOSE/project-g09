@@ -167,40 +167,19 @@ public class JdbiPostDao implements PostDao {
 
   @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
+    return readAllAdvanced(specified, searchQuery, sortParams, 0, 0);
+  }
+
+  @Override
+  public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams, int page,
+                                    int limit) {
     try {
       String sql = SELECT_POST_BASE;
-      // Handle category query parameter
-      // Adapted from searchCategory
+      sql = getSearchQueryForReadAllAdvanced(sql, specified, searchQuery, sortParams, page, limit);
       Category category = null;
       if (specified != null) {
         category = Category.valueOf(specified.toUpperCase()); // convert to enum
-        sql = sql + " WHERE " +
-            "post.category = CAST(:specifiedCategory AS Category)";
       }
-      // Handle keyword search
-      // Adapted from searchCategory
-      if (searchQuery != null) {
-        if (specified == null) {
-          sql = sql + " WHERE ";
-        } else {
-          sql = sql + " AND ";
-        }
-        sql = sql + "(post.title ILIKE :partialTitle OR " +
-            "post.description ILIKE :partialDescription OR " +
-            "post.location ILIKE :partialLocation)";
-      }
-      // Handle sort
-      // Adapted from readAll
-      if (sortParams != null && !sortParams.isEmpty()) {
-        StringBuilder sb = new StringBuilder(sql + " ORDER BY ");
-        for (String key : sortParams.keySet()) {
-          sb.append(key + " " + sortParams.get(key).toUpperCase() + ", ");
-        }
-        sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
-        sb.append(";");
-        sql = sb.toString();
-      }
-
       // Build query
       String finalSql = sql;
       Category finalCategory = category;
@@ -214,13 +193,18 @@ public class JdbiPostDao implements PostDao {
               .bind("partialDescription", "%" + searchQuery + "%")
               .bind("partialLocation", "%" + searchQuery + "%");
         }
+        if (page > 0 && limit > 0) {
+          query.bind("limit", limit)
+              .bind("offset", ((page - 1) * limit));
+        } else if (page < 0 || limit < 0) {
+          throw new DaoException("Invalid page or limit", null);
+        }
         return new ArrayList<>(query.reduceResultSet(new LinkedHashMap<>(), postAccumulator).values());
       });
 
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read post with the query parameters", ex);
     }
-
   }
 
   @Override
@@ -364,6 +348,60 @@ public class JdbiPostDao implements PostDao {
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to read a post with Category " + specified, ex);
     }
+  }
 
+  @Override
+  public int getTotalRowNum() throws DaoException {
+    String sql = "SELECT COUNT(post.id) FROM post;";
+    try {
+      return jdbi.inTransaction(handle ->
+          handle.createQuery(sql)
+              .mapTo(Integer.class)
+              .findOne().orElse(0));
+    } catch (StatementException | IllegalStateException | NullPointerException ex) {
+      throw new DaoException("Unable to get the number of rows in post table ", ex);
+    }
+  }
+
+  private String getSearchQueryForReadAllAdvanced(
+      String baseSql, String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) {
+    if (specified != null) {
+      baseSql = baseSql + " WHERE " +
+          "post.category = CAST(:specifiedCategory AS Category)";
+    }
+    // Handle keyword search
+    // Adapted from searchCategory
+    if (searchQuery != null) {
+      if (specified == null) {
+        baseSql = baseSql + " WHERE ";
+      } else {
+        baseSql = baseSql + " AND ";
+      }
+      baseSql = baseSql + "(post.title ILIKE :partialTitle OR " +
+          "post.description ILIKE :partialDescription OR " +
+          "post.location ILIKE :partialLocation)";
+    }
+    // Handle sort
+    // Adapted from readAll
+    StringBuilder sb = new StringBuilder(baseSql);
+    if (sortParams != null && !sortParams.isEmpty()) {
+      sb.append("ORDER BY ");
+      for (String key : sortParams.keySet()) {
+        sb.append(key).append(" ").append(sortParams.get(key).toUpperCase()).append(", ");
+      }
+      sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
+      if (page > 0 && limit > 0) {
+        sb.append(" LIMIT :limit OFFSET :offset");
+      }
+    }else if(page > 0 && limit > 0) {
+      // filter only valid page and limit
+        sb.append("ORDER BY ");
+        sb.append("post.id ");
+        sb.append(" LIMIT :limit OFFSET :offset");
+      }
+
+    sb.append(';');
+    baseSql = sb.toString();
+    return baseSql;
   }
 }
