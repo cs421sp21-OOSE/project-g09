@@ -240,6 +240,12 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
+  public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams, int page,
+                                    int limit) throws DaoException {
+    return null;
+  }
+
+  @Override
   public Post update(String id, Post post) throws DaoException {
     /**
      * SQL string to be given to database.
@@ -407,6 +413,11 @@ public class Sql2oPostDao implements PostDao {
       throw new DaoException("Unable to read a post with Category " + specified, ex);
     }
 
+  }
+
+  @Override
+  public int getTotalRowNum() throws DaoException {
+    return 0;
   }
 
   /**

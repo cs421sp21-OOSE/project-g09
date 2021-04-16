@@ -167,14 +167,15 @@ public class JdbiPostDao implements PostDao {
 
   @Override
   public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams) {
-    return readAllAdvanced(specified, searchQuery, sortParams, -1, -1);
+    return readAllAdvanced(specified, searchQuery, sortParams, 0, 0);
   }
 
   @Override
-  public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) {
+  public List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams, int page,
+                                    int limit) {
     try {
       String sql = SELECT_POST_BASE;
-      sql = getSearchQueryForReadAllAdvanced(sql, specified, searchQuery, sortParams);
+      sql = getSearchQueryForReadAllAdvanced(sql, specified, searchQuery, sortParams, page, limit);
       Category category = null;
       if (specified != null) {
         category = Category.valueOf(specified.toUpperCase()); // convert to enum
@@ -191,6 +192,12 @@ public class JdbiPostDao implements PostDao {
           query.bind("partialTitle", "%" + searchQuery + "%")
               .bind("partialDescription", "%" + searchQuery + "%")
               .bind("partialLocation", "%" + searchQuery + "%");
+        }
+        if (page > 0 && limit > 0) {
+          query.bind("limit", limit)
+              .bind("offset", ((page - 1) * limit));
+        } else if (page < 0 || limit < 0) {
+          throw new DaoException("Invalid page or limit", null);
         }
         return new ArrayList<>(query.reduceResultSet(new LinkedHashMap<>(), postAccumulator).values());
       });
@@ -357,7 +364,7 @@ public class JdbiPostDao implements PostDao {
   }
 
   private String getSearchQueryForReadAllAdvanced(
-      String baseSql, String specified, String searchQuery, Map<String, String> sortParams) {
+      String baseSql, String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) {
     if (specified != null) {
       baseSql = baseSql + " WHERE " +
           "post.category = CAST(:specifiedCategory AS Category)";
@@ -376,15 +383,23 @@ public class JdbiPostDao implements PostDao {
     }
     // Handle sort
     // Adapted from readAll
+    StringBuilder sb = new StringBuilder(baseSql);
     if (sortParams != null && !sortParams.isEmpty()) {
-      StringBuilder sb = new StringBuilder(baseSql + " ORDER BY ");
+      sb.append("ORDER BY ");
       for (String key : sortParams.keySet()) {
         sb.append(key).append(" ").append(sortParams.get(key).toUpperCase()).append(", ");
       }
       sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
-      sb.append(";");
-      baseSql = sb.toString();
     }
+
+    // filter only valid page and limit
+    if (page > 0 && limit > 0) {
+      sb.append("ORDER BY ");
+      sb.append("post.id ");
+      sb.append(" LIMIT :limit OFFSET :offset");
+    }
+    sb.append(';');
+    baseSql = sb.toString();
     return baseSql;
   }
 }

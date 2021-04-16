@@ -1,14 +1,21 @@
 package util.paginationSkeleton;
 
-import lombok.Data;
 import model.Post;
 
 import java.util.List;
 
-@Data
-public class PostPaginationSkeleton extends PaginationSkeleton{
+public class PostPaginationSkeleton extends PaginationSkeleton {
   List<Post> posts;
-  public PostPaginationSkeleton(){
+
+  public PostPaginationSkeleton() {
     super();
+  }
+
+  public void setPosts(List<Post> posts) {
+    this.posts = posts;
+  }
+
+  public List<Post> getPosts() {
+    return posts;
   }
 }
