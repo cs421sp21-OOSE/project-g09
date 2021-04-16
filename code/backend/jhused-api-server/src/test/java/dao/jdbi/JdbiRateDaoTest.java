@@ -81,7 +81,7 @@ public class JdbiRateDaoTest {
   void createOrUpdateWorks() {
     Rate newRate = new Rate(sampleUsers.get(1).getId(), sampleUsers.get(0).getId(), 4);
     assertEquals(newRate, rateDao.createOrUpdate(newRate.getRaterId(), newRate.getSellerId(), newRate));
-    Rate existingRate = sampleRates.get(0);
+    Rate existingRate = new Rate(sampleRates.get(0).getRaterId(),sampleRates.get(0).getSellerId(),sampleRates.get(0).getRate());
     existingRate.setRate((existingRate.getRate() + 1) % 6);
     assertEquals(existingRate, rateDao.createOrUpdate(existingRate.getRaterId(), existingRate.getSellerId(),
         existingRate));
@@ -155,7 +155,8 @@ public class JdbiRateDaoTest {
 
   @Test
   void updateWorks() {
-    for (Rate rate : sampleRates) {
+    for (Rate rate_ : sampleRates) {
+      Rate rate = new Rate(rate_.getRaterId(),rate_.getSellerId(),rate_.getRate());
       rate.setRate((rate.getRate() + 1) % 6);
       assertEquals(rate, rateDao.update(rate.getRaterId(), rate.getSellerId(), rate));
     }
