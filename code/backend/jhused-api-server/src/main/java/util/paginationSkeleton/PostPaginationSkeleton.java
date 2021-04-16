@@ -2,6 +2,7 @@ package util.paginationSkeleton;
 
 import model.Post;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostPaginationSkeleton extends PaginationSkeleton {
@@ -9,6 +10,7 @@ public class PostPaginationSkeleton extends PaginationSkeleton {
 
   public PostPaginationSkeleton() {
     super();
+    posts = new ArrayList<>();
   }
 
   public void setPosts(List<Post> posts) {

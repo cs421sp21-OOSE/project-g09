@@ -164,6 +164,7 @@ public class ApiServer {
 
     // BEGIN POST ROUTES
     get("/api/posts", postController.getPosts);
+    get("/api/v2/posts", postController.getPostsPagination);
     get("/api/posts/:postId", postController.getPostGivenId);
     post("/api/posts", postController.createPost);
     put("/api/posts/:postId", postController.updatePost);
