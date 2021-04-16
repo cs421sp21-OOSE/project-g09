@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.database.DataStore;
 import util.database.Database;
+import util.paginationSkeleton.PostPaginationSkeleton;
 
 import java.net.URISyntaxException;
 import java.util.*;
@@ -582,5 +583,39 @@ class ServerTest {
           .asJson();
       assertEquals(rate, gson.fromJson(jsonResponse.getBody().getObject().toString(), Rate.class));
     }
+  }
+
+  @Test
+  void getPostPaginationWorks() {
+    final String URL = BASE_URL + "/api/v2/posts";
+    int totalRow = samplePosts.size();
+    int limit = 3;
+    int page = 2;
+    int totalPage = totalRow / limit+1;
+    PostPaginationSkeleton postPaginationSkeleton = new PostPaginationSkeleton();
+    postPaginationSkeleton.getPagination().put("page", 1);
+    postPaginationSkeleton.getPagination().put("limit", 50);
+    postPaginationSkeleton.getPagination().put("last", 1);
+    postPaginationSkeleton.getPagination().put("total", totalRow);
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertEquals(postPaginationSkeleton.getPagination(), gson.fromJson(jsonResponse.getBody().getObject().toString(),
+        PostPaginationSkeleton.class).getPagination());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
+    final String sortQuery = "?keyword=lamp&sort=price:asc";
+    jsonResponse = Unirest.get(URL + sortQuery).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertEquals(postPaginationSkeleton.getPagination(), gson.fromJson(jsonResponse.getBody().getObject().toString(),
+        PostPaginationSkeleton.class).getPagination());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
+    postPaginationSkeleton.getPagination().put("page", page);
+    postPaginationSkeleton.getPagination().put("limit", limit);
+    postPaginationSkeleton.getPagination().put("last", totalPage);
+    postPaginationSkeleton.getPagination().put("total", totalRow);
+    jsonResponse = Unirest.get(URL + sortQuery + "&page=" + page + "&limit=" + limit).asJson();
+    assertEquals(200, jsonResponse.getStatus());
+    assertEquals(postPaginationSkeleton.getPagination(), gson.fromJson(jsonResponse.getBody().getObject().toString(),
+        PostPaginationSkeleton.class).getPagination());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
   }
 }

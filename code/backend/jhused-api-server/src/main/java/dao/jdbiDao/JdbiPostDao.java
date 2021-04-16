@@ -390,14 +390,16 @@ public class JdbiPostDao implements PostDao {
         sb.append(key).append(" ").append(sortParams.get(key).toUpperCase()).append(", ");
       }
       sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
-    }
+      if (page > 0 && limit > 0) {
+        sb.append(" LIMIT :limit OFFSET :offset");
+      }
+    }else if(page > 0 && limit > 0) {
+      // filter only valid page and limit
+        sb.append("ORDER BY ");
+        sb.append("post.id ");
+        sb.append(" LIMIT :limit OFFSET :offset");
+      }
 
-    // filter only valid page and limit
-    if (page > 0 && limit > 0) {
-      sb.append("ORDER BY ");
-      sb.append("post.id ");
-      sb.append(" LIMIT :limit OFFSET :offset");
-    }
     sb.append(';');
     baseSql = sb.toString();
     return baseSql;
