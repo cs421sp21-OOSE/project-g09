@@ -1,4 +1,4 @@
-package email;
+package email.Wishlist;
 
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;

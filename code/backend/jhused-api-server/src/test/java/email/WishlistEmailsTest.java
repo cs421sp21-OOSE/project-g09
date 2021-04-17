@@ -4,7 +4,7 @@ import dao.UserDao;
 import dao.jdbiDao.JdbiUserDao;
 import model.Post;
 import model.User;
-import email.WishlistEmails;
+import email.Wishlist.WishlistEmails;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;

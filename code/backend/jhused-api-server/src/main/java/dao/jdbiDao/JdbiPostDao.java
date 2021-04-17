@@ -4,7 +4,7 @@ import dao.HashtagDao;
 import dao.ImageDao;
 import dao.PostDao;
 import dao.PostHashtagDao;
-import email.WishlistEmails;
+import email.Wishlist.WishlistEmails;
 import exceptions.DaoException;
 import model.Category;
 import model.Hashtag;

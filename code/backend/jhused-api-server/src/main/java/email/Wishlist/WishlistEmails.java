@@ -1,17 +1,16 @@
-package email;
+package email.Wishlist;
 
 import com.sendgrid.helpers.mail.Mail;
 import dao.UserDao;
 import dao.WishlistPostSkeletonDao;
 import dao.jdbiDao.JdbiUserDao;
 import dao.jdbiDao.JdbiWishlistPostSkeletonDao;
+import email.SendMail;
 import model.User;
-import email.WUETemplate;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
