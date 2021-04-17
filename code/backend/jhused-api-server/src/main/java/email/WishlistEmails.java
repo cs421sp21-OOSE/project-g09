@@ -83,8 +83,8 @@ public class WishlistEmails {
             //get one user who has this post wishlist-ed
             User currentUser = userDao.read(skeleton.getUserId());
 
-            //create the email.
-            Mail mail = WUETemplate.basicWUEEmail(currentUser.getEmail());
+            //create the styled email.
+            Mail mail = WUETemplate.styledWUEEmail(currentUser.getEmail());
 
             //for debugging
             /*System.out.println("Sending mail to: " + currentUser.getEmail());*/
