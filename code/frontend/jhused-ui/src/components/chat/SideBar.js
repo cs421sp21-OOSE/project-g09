@@ -17,13 +17,10 @@ const SideBar = () => {
   const context = useContext(UserContext.Context);
   const history = useHistory(); 
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
 
   return (
     <div className="w-32 md:w-64 flex-none pl-4 py-6">
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col overflow-y-hidden">
         {/* Chat header */}
         <div className="font-black text-3xl px-2 -mt-2 mb-5 flex justify-between items-center">
           Chat
@@ -60,7 +57,9 @@ const SideBar = () => {
               onClick={() => {setActiveKey(CONTACTS_KEY)}}>
               Contacts</button>
           </nav>
-          <div className="  ">
+
+          {/* Conversation/Contact panel */}
+          <div className="overflow-y-auto">
             {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
           </div>
         </div>
@@ -71,12 +70,10 @@ const SideBar = () => {
           </button>
         </div>
 
-        <Modal show={modalOpen} onHide={closeModal}>
-          {conversationsOpen ?
-            <NewConversationModal closeModal={closeModal}/> :
-            <NewContactModal closeModal={closeModal}/>
-          }
-        </Modal>
+        {conversationsOpen ?
+          <NewConversationModal isOpen={modalOpen} setIsOpen={setModalOpen}/> :
+          <NewContactModal isOpen={modalOpen} setIsOpen={setModalOpen}/>
+        }
       </div>
     </div>
   );
