@@ -71,29 +71,28 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 # Iteration Backlog
 As a user, I want to have the chatting feature, so that I can coordinate with the person on the other end  
-As a user, I want to create a feedback system for buyer to rate Seller(Tentative)
-As a user, I want to give user option to flag a post(Tentative)
+As a user, I want to create a feedback system for buyer to rate Seller
+As a user, I want to send notification emails to users
 
 # Tasks
 - [ ] Issues to fix
   - [ ]  JHU Login completely broken in Safari (Bohua)
   - [ ]  Header w/o search bar for chat (sam)
-  - [ ]  Search without Browser Force Refresh, if possible (sam)
+  - [X]  Search without Browser Force Refresh, if possible (sam)
   - [ ]  Logout
-  - [ ]  Pagination
-  - [ ]  Chat Page
-    - [ ]  Differentiate read/unread messages, New messages notification (Junjie)
-    - [ ]  Frontend
-      - [ ]  Delete messages (chu)
-      - [ ]  Delete contacts (chu)
-      - [ ]  Add user profile (qiao)
+  - [ ]  Pagination (Bohua)
+  - [X]  Chat Page
+    - [X]  Differentiate read/unread messages, New messages notification (Junjie)
+    - [X]  Frontend
+      - [X]  Delete messages (chu)
+      - [X]  Delete contacts (chu)
+      - [X]  Add user profile (qiao)
   - [ ]  Wishlist post heart not turning red in time
-  - [ ]  Invite more people to test out web app
+  - [X]  Invite more people to test out web app
 
-(After the above issues are fixed, We will begin the following tentative features)
-- [ ] Email/Desktop Notification
-- [ ] Seller Feedback (ratings)
-- [ ] Flags for posts/users (inappropriate, etc)
+- [ ] User Stories
+  - [ ] Email/Desktop Notification
+  - [ ] Seller Feedback (ratings)
 
 # Retrospective
 
