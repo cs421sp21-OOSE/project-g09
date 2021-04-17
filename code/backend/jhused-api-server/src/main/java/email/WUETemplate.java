@@ -15,7 +15,7 @@ public class WUETemplate {
      * @return
      */
     public static Mail basicWUEEmail(String userEmail) {
-        Email from = new Email("jhusedemail@gmail.com");
+        Email from = new Email("jhusedemail@gmail.com", "JHUsed");
         String subject = "JHUsed Wishlist Update";
         Email to = new Email(userEmail);
         Content content = new Content("text/plain", "One of your wishlist-ed posts has been updated!");
@@ -29,7 +29,7 @@ public class WUETemplate {
      * @return
      */
     public static Mail styledWUEEmail(String userEmail) {
-        Email from = new Email("jhusedemail@gmail.com");
+        Email from = new Email("jhusedemail@gmail.com", "JHUsed");
         String subject = "JHUsed Wishlist Update";
         Email to = new Email(userEmail);
         Content content = new Content("text/html", "One of your wishlist posts has been updated!");
