@@ -1,6 +1,5 @@
 //import 'bootstrap/dist/css/bootstrap.min.css'
 import DashBoard from './DashBoard'
-import Header from '../Header'
 import {useContext, useEffect} from "react";
 import axios from "../../util/axios";
 import {useConversations} from "../../state/ConversationsProvider";
@@ -62,10 +61,7 @@ const ChatPage = () => {
   }, [addMessageToConversation, context.user, setConversations]) // Don't add conversations as dependency here
 
   return (
-    <div className="flex flex-col w-screen h-screen">
-      <Header search={true} />
-      <DashBoard className="flex-1"/>
-    </div>
+      <DashBoard />
   )
 }
 
