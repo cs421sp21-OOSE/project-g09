@@ -62,10 +62,10 @@ public class WelcomeEmailsTest {
         WelcomeEmails.basicWelcomeEmail("ldibern1@jh.edu");
     }
 
-    //@Test
+    @Test
     @DisplayName("send an email.")
     void updateSendStyledMail() throws IOException {
-        WishlistEmails.styledWishlistUpdateEmail(jdbi, "000000000000000000000000000000000000");
+        WelcomeEmails.styledWelcomeEmail("louie@artificialtalk.com");
     }
 
 }
