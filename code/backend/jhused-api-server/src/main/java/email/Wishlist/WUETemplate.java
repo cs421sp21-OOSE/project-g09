@@ -24,7 +24,7 @@ public class WUETemplate {
     }
 
     /**
-     * Returns the most basic text email.
+     * Returns the styled update email.
      * @param userEmail
      * @return
      */
