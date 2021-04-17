@@ -38,7 +38,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 ### Chatting box
 1. The user can chat with other users in this box.
 
-![](../assets/Wireframe/Wireframe-message-iteration3.png)
+![](../assets/Wireframe/Wireframe-message-iteration4.png)
 
 ### Reading a post
 (After clicking on a post)
@@ -48,7 +48,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 4. The user can visit the account page of the user who posted this post by clicking on the user's icon.
 5. The user can message the seller by clicking on the "Message Seller" button.
 
-![](../assets/Wireframe/Wireframe-PostDetail-iteration3.png)
+![](../assets/Wireframe/Wireframe-PostDetail-iteration4.png)
 
 ### Account page for user
 (After clicking on post on the account button)
@@ -67,10 +67,10 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 1. The user can edit location, preferred email,  preferred user name, and upload avatar (an image) in this editing page.  
 2. If it's the user's first login, this page contain default information based on user's JHED, other wise, it is filled with original values.  
 
-![](../assets/Wireframe/Wireframe-editUser-iteration3.png)
+![](../assets/Wireframe/Wireframe-editUser-iteration4.png)
 
 # Iteration Backlog
-As a user, I want to have the chatting feature, so that I can coordinate with the person on the other end  
+As a user, I want to have a chatting feature, so that I can coordinate with the person on the other end  
 As a user, I want to create a feedback system for buyer to rate Seller
 As a user, I want to send notification emails to users
 
@@ -81,18 +81,21 @@ As a user, I want to send notification emails to users
   - [X]  Search without Browser Force Refresh, if possible (sam)
   - [ ]  Logout
   - [ ]  Pagination (Bohua)
+  - [ ]  Delete Hashtag Server fails (Bohua)
   - [X]  Chat Page
     - [X]  Differentiate read/unread messages, New messages notification (Junjie)
     - [X]  Frontend
       - [X]  Delete messages (chu)
       - [X]  Delete contacts (chu)
       - [X]  Add user profile (qiao)
+      - [X]  Add Home button to go back
   - [ ]  Wishlist post heart not turning red in time
+  - [X]  Change UML to more readable (qiao)
   - [X]  Invite more people to test out web app
 
 - [ ] User Stories
-  - [ ] Email/Desktop Notification
-  - [ ] Seller Feedback (ratings)
+  - [ ] Email/Desktop Notification (Louie)
+  - [ ] Seller Feedback ratings (Bohua)
 
 # Retrospective
 
