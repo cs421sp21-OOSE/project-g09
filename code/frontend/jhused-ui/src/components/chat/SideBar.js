@@ -20,7 +20,7 @@ const SideBar = () => {
 
   return (
     <div className="w-32 md:w-64 flex-none pl-4 py-6">
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col overflow-y-hidden">
         {/* Chat header */}
         <div className="font-black text-3xl px-2 -mt-2 mb-5 flex justify-between items-center">
           Chat
@@ -57,7 +57,9 @@ const SideBar = () => {
               onClick={() => {setActiveKey(CONTACTS_KEY)}}>
               Contacts</button>
           </nav>
-          <div className="  ">
+
+          {/* Conversation/Contact panel */}
+          <div className="overflow-y-auto">
             {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
           </div>
         </div>

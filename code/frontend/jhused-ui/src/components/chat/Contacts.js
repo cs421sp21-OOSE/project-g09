@@ -31,7 +31,8 @@ const Contacts = () => {
       
       <DeleteConfirmModal 
         isOpen={isOpen} 
-        setIsOpen={setIsOpen} 
+        setIsOpen={setIsOpen}
+        deleteItem="contact" 
         deleteHandler={() => {
           deleteContact(contactFocused);
           setContactFocused(null);

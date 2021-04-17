@@ -1,6 +1,6 @@
 import { Dialog } from "@headlessui/react";
 
-function DeleteConfirmModal({ isOpen, setIsOpen, deleteHandler }) {
+function DeleteConfirmModal({ isOpen, setIsOpen, deleteHandler, deleteItem }) {
 
   return (
     <Dialog
@@ -13,10 +13,10 @@ function DeleteConfirmModal({ isOpen, setIsOpen, deleteHandler }) {
         
         <div className="z-20 bg-white rounded-2xl shadow-lg">
           <Dialog.Title as="h3" className="mx-6 my-6 text-lg font-medium">
-            Delete contact
+            {`Delete ${deleteItem}`}
           </Dialog.Title>
           <Dialog.Description as="p" className="mx-6 my-6">
-            Are you sure that you want to delete this contact?
+            {`Are you sure that you want to delete this ${deleteItem}?`}
           </Dialog.Description>
           <div className="mx-6 my-6 flex justify-end gap-x-4">
             <button
