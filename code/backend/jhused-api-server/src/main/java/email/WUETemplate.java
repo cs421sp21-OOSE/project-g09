@@ -31,13 +31,13 @@ public class WUETemplate {
     public static Mail styledWUEEmail(String userEmail) {
         Email from = new Email("jhusedemail@gmail.com");
         String subject = "JHUsed Wishlist Update";
-        Email to = new Email("ldibern1@jh.edu");
-        Content content = new Content("text/plain", "");
+        Email to = new Email(userEmail);
+        Content content = new Content("text/html", "One of your wishlist posts has been updated!");
         Mail mail = new Mail(from, subject, to, content);
 
         mail.setTemplateId("d-ba70e2cbac7b4a279e30a5e5119fb5bb");
 
-        //return mail;
+        return mail;
 
 
 
