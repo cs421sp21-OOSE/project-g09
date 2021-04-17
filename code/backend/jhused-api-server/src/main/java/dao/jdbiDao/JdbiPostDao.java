@@ -283,7 +283,10 @@ public class JdbiPostDao implements PostDao {
           postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
 
           //send emails!
-          WishlistEmails.basicWishlistUpdateEmail(jdbi, id);
+          //WishlistEmails.basicWishlistUpdateEmail(jdbi, id);
+
+          //send styled emails!
+          WishlistEmails.styledWishlistUpdateEmail(jdbi, id);
 
         }
         return new ArrayList<>(handle.createQuery(SELECT_POST_GIVEN_ID)

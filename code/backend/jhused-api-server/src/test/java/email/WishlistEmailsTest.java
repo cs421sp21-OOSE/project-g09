@@ -53,15 +53,21 @@ public class WishlistEmailsTest {
         Database.USE_TEST_DATABASE = false; // use production dataset
     }
 
-    @Test
+    //@Test
     void doNothing() {
 
     }
 
-    @Test
+    //@Test
     @DisplayName("send an email.")
     void updateSendMail() throws IOException {
         WishlistEmails.basicWishlistUpdateEmail(jdbi, "000000000000000000000000000000000000");
+    }
+
+    @Test
+    @DisplayName("send an email.")
+    void updateSendStyledMail() throws IOException {
+        WishlistEmails.styledWishlistUpdateEmail(jdbi, "000000000000000000000000000000000000");
     }
 
 }

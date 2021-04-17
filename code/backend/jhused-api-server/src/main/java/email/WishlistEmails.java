@@ -59,5 +59,46 @@ public class WishlistEmails {
 
     }
 
+    /**
+     * Sends emails to all users who have wishlist-ed the post with postId
+     * @param postId of updated post
+     */
+    public static void styledWishlistUpdateEmail(Jdbi jdbi, String postId) throws IOException {
+        WishlistPostSkeletonDao skeletonDao = new JdbiWishlistPostSkeletonDao(jdbi);
+        UserDao userDao = new JdbiUserDao(jdbi);
+
+
+        //get the wishlistPostSkeletons.
+        List<WishlistPostSkeleton> wishlistPostSkeletons = skeletonDao.readAllFromPostId(postId);
+
+        //for debugging
+        /*if(wishlistPostSkeletons.size() == 0) {
+            System.out.println("No wishlist-ed posts!");
+        }*/
+
+        //TODO eventually need to change this over to a bulk email method.
+
+        //for each skeleton, get the associated user.
+        for(WishlistPostSkeleton skeleton : wishlistPostSkeletons) {
+            //get one user who has this post wishlist-ed
+            User currentUser = userDao.read(skeleton.getUserId());
+
+            //create the styled email.
+            Mail mail = WUETemplate.styledWUEEmail(currentUser.getEmail());
+
+            //for debugging
+            /*System.out.println("Sending mail to: " + currentUser.getEmail());*/
+
+            //send the email.
+            try {
+                SendMail.main(mail);
+            } catch (IOException e) {
+                throw new IOException(e);
+            }
+
+        }
+
+    }
+
 
 }
