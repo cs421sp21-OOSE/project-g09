@@ -3,6 +3,7 @@ package dao.jdbiDao;
 import dao.PostDao;
 import dao.UserDao;
 import dao.WishlistPostSkeletonDao;
+import email.Welcome.WelcomeEmails;
 import exceptions.DaoException;
 import model.Post;
 import model.User;
@@ -11,6 +12,7 @@ import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.statement.StatementException;
 import util.jdbiResultSetHandler.ResultSetLinkedHashMapAccumulatorProvider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -106,11 +108,15 @@ public class JdbiUserDao implements UserDao {
             wishlistPostSkeletonDao.createWishListEntry(post.getId(), user.getId());
           }
         }
+
+        //send welcome email!
+        WelcomeEmails.basicWelcomeEmail(user.getEmail());
+
         return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
             .reduceResultSet(new LinkedHashMap<>(),
                 userAccumulator).values()).get(0);
       });
-    } catch (IllegalStateException | NullPointerException | StatementException ex) {
+    } catch (IllegalStateException | NullPointerException | StatementException | IOException ex) {
       throw new DaoException("Unable to create the image: " + ex.getMessage(), ex);
     }
   }
