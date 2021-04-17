@@ -35,6 +35,20 @@ public class WUETemplate {
         Content content = new Content("text/plain", "One of your wishlist-ed posts has been updated!");
         Mail mail = new Mail(from, subject, to, content);
         return mail;
+
+
+
+        Email from = new Email("test@example.com");
+        String subject = "I'm replacing the subject tag";
+        Email to = new Email("test@example.com");
+        Content content = new Content("text/html", "I'm replacing the <strong>body tag</strong>");
+        Mail mail = new Mail(from, subject, to, content);
+        mail.personalization.get(0).addSubstitution("-name-", "Example User");
+        mail.personalization.get(0).addSubstitution("-city-", "Denver");
+        mail.setTemplateId("13b8f94f-bcae-4ec6-b752-70d6cb59f932");
+
+
+
     }
 
 
