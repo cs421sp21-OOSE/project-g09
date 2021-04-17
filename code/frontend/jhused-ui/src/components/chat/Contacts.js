@@ -1,11 +1,11 @@
-import { Dialog } from "@headlessui/react";
 import { useState } from "react";
 import { useContacts } from "../../state/ContactsProvider";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 const Contacts = () => {
   const { contacts, deleteContact } = useContacts()
   const [isOpen, setIsOpen] = useState(false);
-  const [contactFocused, setcontactFocused] = useState(null);
+  const [contactFocused, setContactFocused] = useState(null);
   
   return (
     <div>
@@ -18,7 +18,7 @@ const Contacts = () => {
               onClick={(event) => {
                 event.preventDefault();
                 setIsOpen(true);
-                setcontactFocused(contact.id);
+                setContactFocused(contact.id);
                 // deleteContact(contact.id);
               }}>
               <svg xmlns="http://www.w3.org/2000/svg" className="text-black h-5 w-5 " viewBox="0 0 20 20" fill="currentColor">
@@ -28,8 +28,16 @@ const Contacts = () => {
           </li>
         ))}
       </ul>
-
-      <Dialog
+      
+      <DeleteConfirmModal 
+        isOpen={isOpen} 
+        setIsOpen={setIsOpen} 
+        deleteHandler={() => {
+          deleteContact(contactFocused);
+          setContactFocused(null);
+        }}
+      />
+      {/* <Dialog
         open={isOpen}
         onClose={setIsOpen}
         className="fixed inset-0 z-10"
@@ -68,7 +76,7 @@ const Contacts = () => {
             </div>
           </div>
         </div>
-      </Dialog>
+      </Dialog> */}
   </div>
   );
 };
