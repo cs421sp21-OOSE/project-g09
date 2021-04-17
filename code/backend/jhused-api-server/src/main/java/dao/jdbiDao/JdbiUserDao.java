@@ -109,8 +109,11 @@ public class JdbiUserDao implements UserDao {
           }
         }
 
-        //send welcome email!
-        WelcomeEmails.basicWelcomeEmail(user.getEmail());
+        //send basic text welcome email!
+        //WelcomeEmails.basicWelcomeEmail(user.getEmail());
+
+        //send styled welcome email!
+        WelcomeEmails.styledWelcomeEmail(user.getEmail());
 
         return new ArrayList<>(handle.createQuery(SELECT_USER_GIVEN_ID).bind("userId", user.getId())
             .reduceResultSet(new LinkedHashMap<>(),
