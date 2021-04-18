@@ -274,16 +274,22 @@ public class JdbiPostDao implements PostDao {
 
           for (Hashtag hashtag : post.getHashtags()) {
             if (deletePostHashtags.contains(hashtag)) {
-              deletePostHashtagsIds.remove(hashtag.getId());
+              deletePostHashtags.forEach(k -> {
+                if (k.equals(hashtag))
+                  deletePostHashtagsIds.remove(k.getId());
+              });
             } else if (!deletePostHashtags.contains(hashtag)) {
-              toBeUpdatedPostHashtags.add(hashtag);
-              if(hashtagDao.read(hashtag.getId())==null)
+              List<Hashtag> existingHashtags = hashtagDao.readAllExactCaseInsensitive(hashtag.getHashtag());
+              if (existingHashtags == null || existingHashtags.isEmpty())
                 toCreateHashtags.add(hashtag);
+              else
+                toBeUpdatedPostHashtags.addAll(existingHashtags);
             }
           }
           postHashtagDao.delete(post.getId(), deletePostHashtagsIds);
           List<String> toBeUpdatedPostHashtagsIds = new ArrayList<>();
-          hashtagDao.create(toCreateHashtags);
+          List<Hashtag> createdHashtags = hashtagDao.create(toCreateHashtags);
+          toBeUpdatedPostHashtags.addAll(createdHashtags);
           toBeUpdatedPostHashtags.forEach(hashtag -> toBeUpdatedPostHashtagsIds.add(hashtag.getId()));
           postHashtagDao.create(post.getId(), toBeUpdatedPostHashtagsIds);
 
@@ -401,12 +407,12 @@ public class JdbiPostDao implements PostDao {
       if (page > 0 && limit > 0) {
         sb.append(" LIMIT :limit OFFSET :offset");
       }
-    }else if(page > 0 && limit > 0) {
+    } else if (page > 0 && limit > 0) {
       // filter only valid page and limit
-        sb.append("ORDER BY ");
-        sb.append("post.id ");
-        sb.append(" LIMIT :limit OFFSET :offset");
-      }
+      sb.append("ORDER BY ");
+      sb.append("post.id ");
+      sb.append(" LIMIT :limit OFFSET :offset");
+    }
 
     sb.append(';');
     baseSql = sb.toString();
