@@ -249,13 +249,10 @@ public class JdbiPostDao implements PostDao {
             .bindBean(post).bind("id", id).mapToBean(Post.class).findFirst().orElse(null);
         if (updatedPost != null) {
           List<Image> toBeUpdatedImages = new ArrayList<>();
-          List<Hashtag> toBeUpdatedHashtags = new ArrayList<>();
           List<Image> deleteImages = imageDao.getImagesOfPost(post.getId());
           List<String> deleteImagesIds = new ArrayList<>();
           deleteImages.forEach(k -> deleteImagesIds.add(k.getId()));
-          List<Hashtag> deleteHashtags = hashtagDao.getHashtagsOfPost(post.getId());
-          List<String> deleteHashtagsIds = new ArrayList<>();
-          deleteHashtags.forEach(k -> deleteHashtagsIds.add(k.getId()));
+
           for (Image image : post.getImages()) {
             image.setPostId(post.getId());
             // if existing images contain yet, updated version doesn't
@@ -269,18 +266,26 @@ public class JdbiPostDao implements PostDao {
           imageDao.delete(deleteImagesIds);
           imageDao.create(toBeUpdatedImages);
 
+          List<Hashtag> toBeUpdatedPostHashtags = new ArrayList<>();
+          List<Hashtag> deletePostHashtags = hashtagDao.getHashtagsOfPost(post.getId());
+          List<String> deletePostHashtagsIds = new ArrayList<>();
+          List<Hashtag> toCreateHashtags = new ArrayList<>();
+          deletePostHashtags.forEach(k -> deletePostHashtagsIds.add(k.getId()));
+
           for (Hashtag hashtag : post.getHashtags()) {
-            if (deleteHashtags.contains(hashtag)) {
-              deleteHashtagsIds.remove(hashtag.getId());
-            } else if (!deleteHashtags.contains(hashtag)) {
-              toBeUpdatedHashtags.add(hashtag);
+            if (deletePostHashtags.contains(hashtag)) {
+              deletePostHashtagsIds.remove(hashtag.getId());
+            } else if (!deletePostHashtags.contains(hashtag)) {
+              toBeUpdatedPostHashtags.add(hashtag);
+              if(hashtagDao.read(hashtag.getId())==null)
+                toCreateHashtags.add(hashtag);
             }
           }
-          postHashtagDao.delete(post.getId(), deleteHashtagsIds);
-          List<String> toBeUpdatedHashtagsIds = new ArrayList<>();
-          List<Hashtag> createdHashtags = hashtagDao.create(toBeUpdatedHashtags);
-          createdHashtags.forEach(hashtag -> toBeUpdatedHashtagsIds.add(hashtag.getId()));
-          postHashtagDao.create(post.getId(), toBeUpdatedHashtagsIds);
+          postHashtagDao.delete(post.getId(), deletePostHashtagsIds);
+          List<String> toBeUpdatedPostHashtagsIds = new ArrayList<>();
+          hashtagDao.create(toCreateHashtags);
+          toBeUpdatedPostHashtags.forEach(hashtag -> toBeUpdatedPostHashtagsIds.add(hashtag.getId()));
+          postHashtagDao.create(post.getId(), toBeUpdatedPostHashtagsIds);
 
           //send emails!
           //WishlistEmails.basicWishlistUpdateEmail(jdbi, id);
