@@ -68,7 +68,7 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
               </div>
             </Dialog.Title>
 
-            <Dialog.Description>
+            <Dialog.Description className="mb-2"> 
               <form onSubmit={handleSubmit}>
                 {contacts.map(contact => (
                   <div className="mx-6 mb-6">

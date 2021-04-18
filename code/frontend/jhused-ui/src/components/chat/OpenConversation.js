@@ -45,7 +45,7 @@ const OpenConversation = () => {
   }, []);
 
   return(
-    <div className="flex-1 py-6 px-4">
+    <div className="flex-1 py-4 px-4">
       <div className="bg-gray-100 rounded-2xl h-full flex flex-col">
         <div className="w-full overflow-auto flex-1 my-4">
           <div className="flex flex-col space-y-4">
