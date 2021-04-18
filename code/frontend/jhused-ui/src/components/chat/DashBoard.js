@@ -7,7 +7,7 @@ const DashBoard = (props) => {
 
   return (
     <div className={props.className}>
-      <div className="flex flex-row w-full h-full">
+      <div className="flex flex-row w-full h-full overflow-auto">
         <SideBar />
         { selectedConversation && <OpenConversation />}
       </div>

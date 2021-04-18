@@ -34,7 +34,7 @@ const Conversations = () => {
   }
 
   return (
-    <ul className="flex flex-col w-full h-full my-4 gap-y-2 overflow-y-auto">
+    <ul className="flex flex-col w-full h-full my-4 px-2 gap-y-2 overflow-y-auto">
       {conversations.map((conversation, index) => (
         <li
           className="flex items-center flex-wrap md:flex-nowrap gap-x-4 rounded-xl group hover:bg-gray-500 px-2 py-2 border shadow-sm relative"

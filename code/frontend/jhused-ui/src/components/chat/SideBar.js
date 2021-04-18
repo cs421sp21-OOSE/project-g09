@@ -19,23 +19,25 @@ const SideBar = () => {
 
 
   return (
-    <div className="w-32 md:w-64 flex-none pl-4 py-6">
+    <div className="w-36 md:w-64 flex-none pl-4 py-4">
       <div className="h-full flex flex-col overflow-y-hidden">
         {/* Chat header */}
-        <div className="font-black text-3xl px-2 -mt-2 mb-5 flex justify-between items-center">
+        <div className="font-black text-3xl px-2 -mt-2 mb-2 flex justify-between items-center">
           Chat
           <button onClick={e => {
             e.preventDefault();
             history.push("/");
           }}>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-black hover:text-red-600 transition duration-300 east-in-out transform hover:scale-125" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 p-2 text-black hover:text-red-600 transition duration-300 east-in-out transform hover:scale-125" viewBox="0 0 20 20" fill="currentColor">
               <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
             </svg>
           </button>
         </div>
+        
+        {/* User profile content */}
         <div className="flex flex-wrap items-center gap-x-6 w-full px-2 bg-blue-100 rounded-2xl p-4">
           <div>
-            <img src={context.user.profileImage} alt="" className="h-24 w-24 rounded-full overflow-hidden object-cover"/>
+            <img src={context.user.profileImage} alt="" className="h-20 w-20 rounded-full overflow-hidden object-cover"/>
           </div>
           <div className="text-sm text-gray-500">
             ID: <span className="text-gray-700 truncate">{context.user.id}</span>
@@ -44,8 +46,9 @@ const SideBar = () => {
           </div>
         </div>
         
-        <div className="flex-1">
-          <nav class="flex flex-wrap justify-center gap-x-4">
+        {/* Navigation bar */}
+        <div className="flex-1 flex flex-col min-h-0">
+          <nav class="flex-none flex flex-wrap justify-center gap-x-4">
             <button
               class={`text-gray-600 py-2 block hover:text-blue-500 focus:outline-none
               ${activeKey === CONVERSATIONS_KEY ? "text-blue-500 border-b-2 font-medium border-blue-500" : ''}`}
@@ -59,12 +62,10 @@ const SideBar = () => {
           </nav>
 
           {/* Conversation/Contact panel */}
-          <div className="overflow-y-auto">
-            {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
-          </div>
+          {activeKey === CONVERSATIONS_KEY ? <Conversations /> : <Contacts />}
         </div>
 
-        <div>
+        <div className="flex-none">
           <button onClick={() => setModalOpen(true)} className="w-full rounded-full focus:outline-none text-white font-semibold bg-blue-600 hover:bg-blue-800 py-1.5 text-sm md:text-base px-1">
             New {conversationsOpen ? 'Conversations' : 'Contacts'}
           </button>
