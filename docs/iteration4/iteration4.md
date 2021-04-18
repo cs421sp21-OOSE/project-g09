@@ -76,37 +76,47 @@ As a user, I want to send notification emails to users
 
 # Tasks
 - [ ] Issues to fix
-  - [ ]  JHU Login completely broken in Safari (Bohua)
-  - [ ]  Header w/o search bar for chat (sam)
+  - [ ]  JHU Login completely broken in Safari
+  - [X]  Header w/o search bar for chat (sam)
   - [X]  Search without Browser Force Refresh, if possible (sam)
-  - [ ]  Logout
-  - [ ]  Pagination (Bohua)
-  - [ ]  Delete Hashtag Server fails (Bohua)
+  - [X]  Logout
+  - [X]  Pagination (Bohua)
+  - [ ]  Delete Hashtag Server fails
   - [X]  Chat Page
     - [X]  Differentiate read/unread messages, New messages notification (Junjie)
     - [X]  Frontend
       - [X]  Delete messages (chu)
       - [X]  Delete contacts (chu)
-      - [X]  Add user profile (qiao)
+      - [X]  Add user profile Image(qiao)
       - [X]  Add Home button to go back
-  - [ ]  Wishlist post heart not turning red in time
+  - [X]  Wishlist post heart not turning red in time
   - [X]  Change UML to more readable (qiao)
   - [X]  Invite more people to test out web app
 
-- [ ] User Stories
-  - [ ] Email/Desktop Notification (Louie)
-  - [ ] Seller Feedback ratings (Bohua)
+- [X] User Stories
+  - [X] Email/Desktop Notification (Louie)
+  - [X] Seller Feedback ratings (Bohua)
 
 # Retrospective
 
 What we have done:
-*
+We have fixed the follwing issues with out app forcing itself to refresh when searching for an item.
+We have implemented a logout function
+We have created pagination
+We have added photo to users in the conversation and contact and chat interface.
+We have added home button in chat
+We have created notification for messages unread
+We have enabled contact deletion
+We have changed UML to a clearer version
+We have updated changes on our app interfaces to wireframe description
+We have added a seller feedback rating system
+We have added email notification system
 
 What we have not done:
-*
+We have not fixed the bug that causes safari SSO login problem due to the fact we have to wait for dependency upgrade
+We have not made the application go beyond CRUD for this iteration, but we have researched some ideas including using google's api to filter out inappropriate images, and using opencv's Grabout to render item images
 
-Challenges
-*
-
-How should we improve:
-*
+What we have learned:
+We have learned new skills such as sending out notification, enabling log out etc.
+We have improved on our skills to debug such as using more features in chrome's developer tools
+We have also learned that fixing existing bugs in application is crucial and often more important than implementing new features
