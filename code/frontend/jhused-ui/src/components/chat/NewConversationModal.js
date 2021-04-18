@@ -76,7 +76,7 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
                       <Form.Check
                         type="checkbox"
                         value={selectedContactIds.includes(contact.id)}
-                        label={contact.name}
+                        label={" "+ contact.name}
                         onChange={() => handleCheckBoxChange(contact.id)}/>
                     </Form.Group>
                   </div>
