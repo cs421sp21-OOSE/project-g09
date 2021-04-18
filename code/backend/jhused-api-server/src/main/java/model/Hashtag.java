@@ -1,8 +1,10 @@
 package model;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 public class Hashtag {
+  @EqualsAndHashCode.Exclude
   private String id;
   private String hashtag;
 
