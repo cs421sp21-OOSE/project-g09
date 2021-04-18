@@ -43,7 +43,7 @@ const Conversations = () => {
           onClick={() => setMessageToRead({ index })}
           active={conversation.selected}
         >
-          <img src={conversation.recipients[0]} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+          <img src={conversation.recipients[0].profileImg} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
           <div className="flex-col truncate">
             <div className="font-semibold group-hover:text-white">
               {conversation.recipients.map(recipient => recipient.name).join(', ')}
