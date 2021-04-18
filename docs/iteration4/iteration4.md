@@ -42,7 +42,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ### Reading a post
 (After clicking on a post)
-1. The user will see a pop up showing the title, image, and text description of the post clicked on.
+1. The user will be directed to the post page showing the title, image, and text description etc. of the post clicked on.
 2. The user will see the images in a slide show of images, along with a list of small images on the left of the slide show.
 3. The user can click on the arrows in the main window or the small image list to switch images
 4. The user can visit the account page of the user who posted this post by clicking on the user's icon.
@@ -56,11 +56,11 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 2. The user can click on the home button to go back to the homepage where all posts are displayed.
 3. The user can open the chat box in his/her account page to view messages.
 4. The user can start a chat when visiting other's account page by clicking a button.
-5. The user can click on a button to open an edit pop up to edit the user's information.
+5. The user can click on the top right button to open an edit pop up to edit the user's information.
+6. The user can visit posts listed and wishlist posts in their account by clicking on corresponding button.
+7. The user can click on the pencil on the top right of a post to edit that post
 
-![](../assets/Wireframe/Wireframe-MyProfile-iteration3.png)
-
-![](../assets/Wireframe/Wireframe-OtherUserProfile-iteration3.png)
+![](../assets/Wireframe/Wireframe-MyProfile-iteration4.png)
 
 ### Account information editing page
 
@@ -68,6 +68,14 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 2. If it's the user's first login, this page contain default information based on user's JHED, other wise, it is filled with original values.  
 
 ![](../assets/Wireframe/Wireframe-editUser-iteration4.png)
+
+### Post editing page
+
+1. The user can edit the post details such as title, price, location images etc. by simply deleting or replacing the part
+2. The user can update the post when finished by clicking the update button
+3. The user can delete the post by clicking the delete button on the left bottom.
+
+![](../assets/Wireframe/Wireframe-editPost-iteration4.png)
 
 # Iteration Backlog
 As a user, I want to have a chatting feature, so that I can coordinate with the person on the other end  
