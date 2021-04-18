@@ -204,3 +204,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+
+### custom
+# use for tentative experiments
+src/main/java/experimentsendgrid.env
+src/main/java/experiment

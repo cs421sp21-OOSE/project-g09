@@ -5,5 +5,5 @@ package model;
  * Might need to be moved to util or other packages?
  */
 public enum Category {
-  FURNITURE, DESK, CAR, TV
+  FURNITURE, DESK, CAR, TV, OTHER
 }

@@ -1,13 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import './index.css';
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import {BrowserRouter} from "react-router-dom";
+import { UserContext, SearchContext } from "./state";
+import {ContactsProvider} from "./state/ContactsProvider";
+import {ConversationsProvider} from "./state/ConversationsProvider";
+import {SocketProvider} from "./state/SocketProvider";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+    <UserContext.Provider>
+      <SocketProvider>
+        <ContactsProvider>
+          <ConversationsProvider>
+            <SearchContext.Provider >
+              <App />
+            </SearchContext.Provider>
+          </ConversationsProvider>
+        </ContactsProvider>
+      </SocketProvider>
+    </UserContext.Provider>
+  </BrowserRouter>,
   document.getElementById("root")
 );
 

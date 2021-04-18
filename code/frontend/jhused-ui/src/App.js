@@ -1,37 +1,63 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import ImageGrid from "./ImageGrid";
+import React, { useContext } from "react";
+import HomePage from "./components/HomePage";
+import { Switch, Route } from "react-router-dom";
+import PostDetails from "./components/PostDetails";
+import UserProfile from "./components/UserProfile";
+import EditorFormik from "./components/EditorFormik";
+import RedirectPage from "./components/RedirectPage";
+import NotFoundPage from "./components/NotFoundPage";
+import ChatPage from "./components/chat/ChatPage";
+import UserSettings from "./components/UserSettings";
+import Header from "./components/Header";
+import { UserContext } from "./state";
+import UnauthorizedAccess from "./components/UnauthorizedAccess";
+import context from "react-bootstrap/esm/AccordionContext";
 
-const axios = require("axios").default;
-axios.defaults.baseURL = "https://jhused-api-server.herokuapp.com/";
-// axios.defaults.baseURL = "http://localhost:4567/";
-class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      welcom: "Loading...",
-    };
-  }
+const App = () => {
+  const user = useContext(UserContext.Context);
 
-  async componentDidMount() {
-    axios.get("").then((response) => {
-      console.log(response);
-      const message = response.data;
-      this.setState({
-        welcom: message.message,
-      });
-      console.log(this.state.welcom);
-    });
-  }
+  return (
+    <div className="App">
+      <Switch>
+        <Route exact path="/user/:userID">
+        {user.ready ? user.user ? <UserProfile /> : <UnauthorizedAccess /> : ""}
+        </Route>
 
-  render() {
-    return (
-      <div className="App">
-        <ImageGrid />
-      </div>
-    );
-  }
-}
+        <Route exact path="/user/settings/:userID/">
+        {user.ready ? user.user ? <UserSettings /> : <UnauthorizedAccess /> : ""}
+        </Route>
+
+        <Route exact path="/editor/create">
+        {user.ready ? user.user ? <EditorFormik mode="create" /> : <UnauthorizedAccess /> : ""}
+
+        </Route>
+
+        <Route exact path="/editor/:postID">
+        {user.ready ? user.user ? <EditorFormik mode="update" /> : <UnauthorizedAccess /> : ""}
+        </Route>
+
+        <Route exact path="/editor/redirect/:requestStatus">
+          <RedirectPage />
+        </Route>
+
+        <Route exact path="/404">
+          <NotFoundPage />
+        </Route>
+
+        <Route exact path="/">
+          <HomePage />
+        </Route>
+
+        <Route exact path="/chat/:userID">
+          {user.ready ? user.user ? <ChatPage /> : <UnauthorizedAccess /> : ""}
+        </Route>
+
+        <Route exact path="/post/:postID">
+          <PostDetails />
+        </Route>
+      </Switch>
+    </div>
+  );
+};
 
 export default App;

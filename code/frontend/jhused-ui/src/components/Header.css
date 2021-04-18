@@ -1,0 +1,7 @@
+.open {
+    display: unset;
+}
+
+.closed {
+    display: none;
+}
