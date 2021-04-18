@@ -107,7 +107,7 @@ As a user, I want to send notification emails to users
 
 # Retrospective
 
-What we have done:
+# What we have done:
 We have fixed the follwing issues with out app forcing itself to refresh when searching for an item.
 We have implemented a logout function
 We have created pagination
@@ -120,11 +120,11 @@ We have updated changes on our app interfaces to wireframe description
 We have added a seller feedback rating system
 We have added email notification system
 
-What we have not done:
+# What we have not done:
 We have not fixed the bug that causes safari SSO login problem due to the fact we have to wait for dependency upgrade
 We have not made the application go beyond CRUD for this iteration, but we have researched some ideas including using google's api to filter out inappropriate images, and using opencv's Grabout to render item images
 
-What we have learned:
+# What we have learned:
 We have learned new skills such as sending out notification, enabling log out etc.
 We have improved on our skills to debug such as using more features in chrome's developer tools
 We have also learned that fixing existing bugs in application is crucial and often more important than implementing new features
