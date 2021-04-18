@@ -73,8 +73,7 @@ public class JdbiWishListPostSkeletonDaoTest {
   @Test
   void readAllFromPostIDWorks() {
     List<WishlistPostSkeleton> wishlistPostSkeletons = wishlistPostSkeletonDao.readAllFromPostId("000000000000000000000000000000000000");
-
-    assertEquals("", wishlistPostSkeletons.get(0).getPostId());
+    assertEquals("000000000000000000000000000000000000", wishlistPostSkeletons.get(0).getPostId());
   }
 
 }
