@@ -2,6 +2,7 @@ import {useContext, useCallback, useState, useEffect} from "react";
 import {useConversations} from "../../state/ConversationsProvider";
 import { UserContext } from "../../state";
 import axios from "../../util/axios";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 const OpenConversation = () => {
   const userContext = useContext(UserContext.Context); // for getting user avatr
@@ -13,6 +14,9 @@ const OpenConversation = () => {
       node.scrollIntoView({ smooth: true })
     }
   }, []);
+  const [isOpen, setIsOpen] = useState(false); // control delete message confirm modal
+  const [messageFocused, setMessageFocused] = useState(null); // control which message to delete
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -41,7 +45,7 @@ const OpenConversation = () => {
   }, []);
 
   return(
-    <div className="flex-1 py-6 px-4">
+    <div className="flex-1 py-4 px-4">
       <div className="bg-gray-100 rounded-2xl h-full flex flex-col">
         <div className="w-full overflow-auto flex-1 my-4">
           <div className="flex flex-col space-y-4">
@@ -68,7 +72,9 @@ const OpenConversation = () => {
                       {!message.fromMe ? (null) : (
                         <button className="invisible group-hover:visible focus:outline-none" onClick={(event) => {
                           event.preventDefault();
-                          deleteMessageFromConversation(message);
+                          setIsOpen(true);
+                          setMessageFocused(message);
+                          // deleteMessageFromConversation(message);
                         }}>
                           <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-400 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
@@ -114,6 +120,16 @@ const OpenConversation = () => {
           </form>
         </div>
       </div>
+
+      <DeleteConfirmModal 
+        isOpen={isOpen} 
+        setIsOpen={setIsOpen}
+        deleteItem="message" 
+        deleteHandler={() => {
+          deleteMessageFromConversation(messageFocused);
+          setMessageFocused(null);
+        }}
+      />
     </div>
   );
 };

@@ -2,13 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d674aa13-516b-41bd-9f03-172cca106027" name="Default Changelist" comment="">
-<<<<<<< HEAD
-=======
       <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/dao/jdbiDao/JdbiUserDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/dao/jdbiDao/JdbiUserDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
->>>>>>> b0bb8ee6f261d14294d922c6ab40b89ad7d87a10
       <change beforePath="$PROJECT_DIR$/src/state/ConversationsProvider.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/state/ConversationsProvider.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,11 +75,7 @@
       <workItem from="1616998323751" duration="1043000" />
       <workItem from="1617820040896" duration="4923000" />
       <workItem from="1617943524273" duration="14025000" />
-<<<<<<< HEAD
-      <workItem from="1618378044822" duration="35092000" />
-=======
       <workItem from="1618378044822" duration="34705000" />
->>>>>>> b0bb8ee6f261d14294d922c6ab40b89ad7d87a10
     </task>
     <servers />
   </component>

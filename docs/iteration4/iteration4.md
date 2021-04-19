@@ -42,7 +42,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ### Reading a post
 (After clicking on a post)
-1. The user will see a pop up showing the title, image, and text description of the post clicked on.
+1. The user will be directed to the post page showing the title, image, and text description etc. of the post clicked on.
 2. The user will see the images in a slide show of images, along with a list of small images on the left of the slide show.
 3. The user can click on the arrows in the main window or the small image list to switch images
 4. The user can visit the account page of the user who posted this post by clicking on the user's icon.
@@ -56,11 +56,11 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 2. The user can click on the home button to go back to the homepage where all posts are displayed.
 3. The user can open the chat box in his/her account page to view messages.
 4. The user can start a chat when visiting other's account page by clicking a button.
-5. The user can click on a button to open an edit pop up to edit the user's information.
+5. The user can click on the top right button to open an edit pop up to edit the user's information.
+6. The user can visit posts listed and wishlist posts in their account by clicking on corresponding button.
+7. The user can click on the pencil on the top right of a post to edit that post
 
-![](../assets/Wireframe/Wireframe-MyProfile-iteration3.png)
-
-![](../assets/Wireframe/Wireframe-OtherUserProfile-iteration3.png)
+![](../assets/Wireframe/Wireframe-MyProfile-iteration4.png)
 
 ### Account information editing page
 
@@ -69,6 +69,14 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ![](../assets/Wireframe/Wireframe-editUser-iteration4.png)
 
+### Post editing page
+
+1. The user can edit the post details such as title, price, location images etc. by simply deleting or replacing the part
+2. The user can update the post when finished by clicking the update button
+3. The user can delete the post by clicking the delete button on the left bottom.
+
+![](../assets/Wireframe/Wireframe-editPost-iteration4.png)
+
 # Iteration Backlog
 As a user, I want to have a chatting feature, so that I can coordinate with the person on the other end  
 As a user, I want to create a feedback system for buyer to rate Seller
@@ -76,37 +84,47 @@ As a user, I want to send notification emails to users
 
 # Tasks
 - [ ] Issues to fix
-  - [ ]  JHU Login completely broken in Safari (Bohua)
-  - [ ]  Header w/o search bar for chat (sam)
+  - [ ]  JHU Login completely broken in Safari
+  - [X]  Header w/o search bar for chat (sam)
   - [X]  Search without Browser Force Refresh, if possible (sam)
-  - [ ]  Logout
-  - [ ]  Pagination (Bohua)
-  - [ ]  Delete Hashtag Server fails (Bohua)
+  - [X]  Logout
+  - [X]  Pagination (Bohua)
+  - [ ]  Delete Hashtag Server fails
   - [X]  Chat Page
     - [X]  Differentiate read/unread messages, New messages notification (Junjie)
     - [X]  Frontend
       - [X]  Delete messages (chu)
       - [X]  Delete contacts (chu)
-      - [X]  Add user profile (qiao)
+      - [X]  Add user profile Image(qiao)
       - [X]  Add Home button to go back
-  - [ ]  Wishlist post heart not turning red in time
+  - [X]  Wishlist post heart not turning red in time
   - [X]  Change UML to more readable (qiao)
   - [X]  Invite more people to test out web app
 
-- [ ] User Stories
-  - [ ] Email/Desktop Notification (Louie)
-  - [ ] Seller Feedback ratings (Bohua)
+- [X] User Stories
+  - [X] Email/Desktop Notification (Louie)
+  - [X] Seller Feedback ratings (Bohua)
 
 # Retrospective
 
 What we have done:
-*
+* We have fixed the follwing issues with out app forcing itself to refresh when searching for an item.
+* We have implemented a logout function
+* We have created pagination
+* We have added photo to users in the conversation and contact and chat interface.
+* We have added home button in chat
+* We have created notification for messages unread
+* We have enabled contact deletion
+* We have changed UML to a clearer version
+* We have updated changes on our app interfaces to wireframe description
+* We have added a seller feedback rating system
+* We have added email notification system
 
 What we have not done:
-*
+* We have not fixed the bug that causes safari SSO login problem due to the fact we have to wait for dependency upgrade
+* We have not made the application go beyond CRUD for this iteration, but we have researched some ideas including using google's api to filter out inappropriate images, and using opencv's Grabout to render item images
 
-Challenges
-*
-
-How should we improve:
-*
+# What we have learned:
+* We have learned new skills such as sending out notification, enabling log out etc.
+* We have improved on our skills to debug such as using more features in chrome's developer tools
+* We have also learned that fixing existing bugs in application is crucial and often more important than implementing new features
