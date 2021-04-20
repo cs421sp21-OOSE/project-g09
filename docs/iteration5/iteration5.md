@@ -90,8 +90,9 @@ As a user, I want to send notification emails to users
   - [ ]  chat page is not showing the correct user profiles
   - [ ]  limit seller ratings to the buyer
   - [ ]  Invite more people to test out web app (everyone)
+    - [ ] Fix bugs as we find/are notified about them. (everyone)
 
-- [X] User Stories
+- [ ] User Stories
   - [ ] Pagination (Backend:Bohua, Frontend:Sam)
   - [ ] Marking post as sold
   - [ ] Email confirmations for (email changes) (Louie)
