@@ -39,7 +39,7 @@ npm start
 Open Intellj
 Open Project in code/backend/jhused-api-server
 Refresh Gradle
-Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: awesomeexpressshop@gmail.com Pass: Johnshopkins6!).
+Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: jhusedatheroku@gmail.com Pass: Johnshopkins6!).
 Run api/ApiServer
 ```
 Then the server should be running on the [localhost:8080](http://localhost:8080)
@@ -87,7 +87,7 @@ git clone https://github.com/cs421sp21-homework/project-g09.git
 Open Intellj
 Open Project in code/backend/jhused-api-server
 Refresh Gradle
-Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: awesomeexpressshop@gmail.com Pass: Johnshopkins6!).
+Setup Environment Value for DATABASE_URL for api/ApiServer, which can be found at heroku (Account: jhusedatheroku@gmail.com Pass: Johnshopkins6!).
 Edit what you want
 Run api/ApiServer
 visit http://localhost:8080
