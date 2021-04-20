@@ -78,9 +78,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 ![](../assets/Wireframe/Wireframe-editPost-iteration4.png)
 
 # Iteration Backlog
-As a user, I want to have a chatting feature, so that I can coordinate with the person on the other end  
-As a user, I want to create a feedback system for buyer to rate Seller
-As a user, I want to send notification emails to users
+All original user stories complete!
 
 # Tasks
 - [ ] Issues to fix
@@ -95,7 +93,7 @@ As a user, I want to send notification emails to users
 - [ ] User Stories
   - [ ] Pagination (Backend:Bohua, Frontend:Sam)
   - [ ] Marking post as sold
-  - [ ] Email confirmations for (email changes) (Louie)
+  - [ ] Email confirmations for email changes (Louie)
   - [ ] Email Preferences (Louie)
   - [ ] chat notification sound (Junjie)
 
