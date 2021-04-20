@@ -189,7 +189,8 @@ public class JdbiPostDao implements PostDao {
           query.bind("specifiedCategory", finalCategory);
         }
         if (searchQuery != null) {
-          query.bind("partialTitle", "%" + searchQuery + "%")
+          query.bind("hashtagQuery", "%" + searchQuery + "%")
+              .bind("partialTitle", "%" + searchQuery + "%")
               .bind("partialDescription", "%" + searchQuery + "%")
               .bind("partialLocation", "%" + searchQuery + "%");
         }
@@ -365,13 +366,38 @@ public class JdbiPostDao implements PostDao {
   }
 
   @Override
-  public int getTotalRowNum() throws DaoException {
-    String sql = "SELECT COUNT(post.id) FROM post;";
+  public int getTotalRowNum(
+      String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) throws DaoException {
     try {
-      return jdbi.inTransaction(handle ->
-          handle.createQuery(sql)
-              .mapTo(Integer.class)
-              .findOne().orElse(0));
+      String sql = getSearchQueryForReadAllAdvanced("SELECT COUNT(post.id) FROM post",
+          specified, searchQuery, sortParams, page, limit);
+      Category category = null;
+      if (specified != null) {
+        category = Category.valueOf(specified.toUpperCase()); // convert to enum
+      }
+      Category finalCategory = category;
+      return jdbi.inTransaction(handle -> {
+        // Build query
+        Query query = handle.createQuery(sql);
+        if (specified != null) {
+          query.bind("specifiedCategory", finalCategory);
+        }
+        if (searchQuery != null) {
+          query.bind("hashtagQuery", "%" + searchQuery + "%")
+              .bind("partialTitle", "%" + searchQuery + "%")
+              .bind("partialDescription", "%" + searchQuery + "%")
+              .bind("partialLocation", "%" + searchQuery + "%");
+        }
+        if (page > 0 && limit > 0) {
+          query.bind("limit", limit)
+              .bind("offset", ((page - 1) * limit));
+        } else if (page < 0 || limit < 0) {
+          throw new DaoException("Invalid page or limit", null);
+        }
+        return query
+            .mapTo(Integer.class)
+            .findOne().orElse(0);
+      });
     } catch (StatementException | IllegalStateException | NullPointerException ex) {
       throw new DaoException("Unable to get the number of rows in post table ", ex);
     }
@@ -379,25 +405,27 @@ public class JdbiPostDao implements PostDao {
 
   private String getSearchQueryForReadAllAdvanced(
       String baseSql, String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) {
+    String preSql = "WITH post AS (SELECT post.* FROM post ";
+    if (searchQuery != null) {
+      preSql = preSql + "LEFT JOIN post_hashtag ON post.id = post_hashtag.post_id "
+          + "LEFT JOIN hashtag ON post_hashtag.hashtag_id = hashtag.id ";
+    }
+
     if (specified != null) {
-      baseSql = baseSql + " WHERE " +
+      preSql = preSql + " WHERE " +
           "post.category = CAST(:specifiedCategory AS Category)";
     }
     // Handle keyword search
     // Adapted from searchCategory
     if (searchQuery != null) {
-      if (specified == null) {
-        baseSql = baseSql + " WHERE ";
-      } else {
-        baseSql = baseSql + " AND ";
-      }
-      baseSql = baseSql + "(post.title ILIKE :partialTitle OR " +
-          "post.description ILIKE :partialDescription OR " +
-          "post.location ILIKE :partialLocation)";
+      preSql = preSql + (specified == null ? " WHERE " : " AND ") + "(hashtag.hashtag ILIKE :hashtagQuery OR "
+          + "post.title ILIKE :partialTitle OR "
+          + "post.description ILIKE :partialDescription OR "
+          + "post.location ILIKE :partialLocation)";
     }
     // Handle sort
     // Adapted from readAll
-    StringBuilder sb = new StringBuilder(baseSql);
+    StringBuilder sb = new StringBuilder(preSql);
     if (sortParams != null && !sortParams.isEmpty()) {
       sb.append("ORDER BY ");
       for (String key : sortParams.keySet()) {
@@ -414,7 +442,7 @@ public class JdbiPostDao implements PostDao {
       sb.append(" LIMIT :limit OFFSET :offset");
     }
 
-    sb.append(';');
+    sb.append(") ").append(baseSql).append(';');
     baseSql = sb.toString();
     return baseSql;
   }
