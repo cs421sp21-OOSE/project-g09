@@ -3,10 +3,7 @@ package dao.jdbi;
 import dao.PostDao;
 import dao.jdbiDao.JdbiPostDao;
 import exceptions.DaoException;
-import model.Category;
-import model.Post;
-import model.SaleState;
-import model.User;
+import model.*;
 import org.jdbi.v3.core.Jdbi;
 import org.junit.jupiter.api.*;
 import util.database.DataStore;
@@ -17,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -175,7 +173,7 @@ class JdbiPostDaoTest {
     sortParams.put("price", "desc");
     List<Post> posts = postDao.readAllAdvanced(null, null, sortParams);
     assertNotEquals(0, posts.size());
-    assertEquals(true, Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
+    assertTrue(Math.abs(posts.get(0).getPrice() - 20000D) < THRESHOLD);
   }
 
   @Test
@@ -211,7 +209,14 @@ class JdbiPostDaoTest {
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
     List<Post> posts = postDao.readAllAdvanced(null, query, sortParams);
-    assertEquals("Coffee cup", posts.get(0).getTitle());
+    Double minPrice = posts.get(0).getPrice();
+    for(Post post:posts) {
+      assertTrue(post.getPrice().compareTo(minPrice)>=0);
+      AtomicBoolean hashtagContain = new AtomicBoolean(false);
+      post.getHashtags().forEach(k->{if(k.getHashtag().contains(query)) hashtagContain.set(true);});
+      assertTrue(post.getTitle().contains(query)||post.getLocation().contains(query)||
+          post.getDescription().contains(query)|| hashtagContain.get());
+    }
   }
 
   @Test
@@ -229,7 +234,7 @@ class JdbiPostDaoTest {
     sortParams.put("price", "asc");
     List<Post> posts = postDao.readAllAdvanced(category, null, sortParams);
     assertNotEquals(0, posts.size());
-    assertEquals("1998 Toyota car", posts.get(0).getTitle());
+    assertTrue(posts.get(0).getTitle().contains("car"));
   }
 
   @Test
@@ -238,7 +243,10 @@ class JdbiPostDaoTest {
     String keyword = "lamp";
     List<Post> posts = postDao.readAllAdvanced(category, keyword, null);
     assertEquals(1, posts.size());
-    assertEquals("Minimalist lamp", posts.get(0).getTitle());
+    AtomicBoolean hashtagContain = new AtomicBoolean(false);
+    posts.get(0).getHashtags().forEach(k->{if(k.getHashtag().contains("lamp")) hashtagContain.set(true);});
+    assertTrue((posts.get(0).getTitle().contains("lamp")||posts.get(0).getLocation().contains("lamp")||
+        posts.get(0).getDescription().contains("lamp")|| hashtagContain.get())&&posts.get(0).getCategory().toString().equalsIgnoreCase(category));
   }
 
   @Test
@@ -248,7 +256,7 @@ class JdbiPostDaoTest {
     Map<String, String> sortParams = new LinkedHashMap<>();
     sortParams.put("price", "asc");
     List<Post> posts = postDao.readAllAdvanced(category, keyword, sortParams);
-    assertEquals(2, posts.size());
+    assertEquals(3, posts.size());
     assertEquals("Coffee cup", posts.get(0).getTitle());
 
   }

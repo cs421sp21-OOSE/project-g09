@@ -425,25 +425,28 @@ public class JdbiPostDao implements PostDao {
     }
     // Handle sort
     // Adapted from readAll
-    StringBuilder sb = new StringBuilder(preSql);
+    StringBuilder query = new StringBuilder(preSql);
+    StringBuilder sortQuery = new StringBuilder();
     if (sortParams != null && !sortParams.isEmpty()) {
-      sb.append("ORDER BY ");
+      sortQuery.append("ORDER BY ");
       for (String key : sortParams.keySet()) {
-        sb.append(key).append(" ").append(sortParams.get(key).toUpperCase()).append(", ");
+        sortQuery.append(key).append(" ").append(sortParams.get(key).toUpperCase()).append(", ");
       }
-      sb.delete(sb.length() - 2, sb.length()); // remove the extra comma and space
+      sortQuery.delete(sortQuery.length() - 2, sortQuery.length()); // remove the extra comma and space
+      query.append(sortQuery);
       if (page > 0 && limit > 0) {
-        sb.append(" LIMIT :limit OFFSET :offset");
+        query.append(" LIMIT :limit OFFSET :offset");
       }
     } else if (page > 0 && limit > 0) {
       // filter only valid page and limit
-      sb.append("ORDER BY ");
-      sb.append("post.id ");
-      sb.append(" LIMIT :limit OFFSET :offset");
+      sortQuery.append("ORDER BY ");
+      sortQuery.append("post.id ");
+      query.append(sortQuery);
+      query.append(" LIMIT :limit OFFSET :offset");
     }
 
-    sb.append(") ").append(baseSql).append(';');
-    baseSql = sb.toString();
+    query.append(") ").append(baseSql).append(sortQuery).append(';');
+    baseSql = query.toString();
     return baseSql;
   }
 }
