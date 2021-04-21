@@ -591,18 +591,32 @@ class ServerTest {
     int totalRow = samplePosts.size();
     int limit = 3;
     int page = 2;
-    int totalPage = totalRow / limit+1;
+    int totalPage = totalRow / 50 + 1;
     PostPaginationSkeleton postPaginationSkeleton = new PostPaginationSkeleton();
     postPaginationSkeleton.getPagination().put("page", 1);
     postPaginationSkeleton.getPagination().put("limit", 50);
-    postPaginationSkeleton.getPagination().put("last", 1);
     postPaginationSkeleton.getPagination().put("total", totalRow);
+    postPaginationSkeleton.getPagination().put("last", totalPage);
     HttpResponse<JsonNode> jsonResponse = Unirest.get(URL).asJson();
     assertEquals(200, jsonResponse.getStatus());
     assertEquals(postPaginationSkeleton.getPagination(), gson.fromJson(jsonResponse.getBody().getObject().toString(),
         PostPaginationSkeleton.class).getPagination());
     assertNotEquals(0, jsonResponse.getBody().getArray().length());
     final String sortQuery = "?keyword=lamp&sort=price:asc";
+    totalRow = 0;
+    for (Post post : samplePosts) {
+      String query = "lamp";
+      if (post.getTitle().contains(query) || post.getLocation().contains(query) ||
+          post.getDescription().contains(query))
+        ++totalRow;
+      else {
+        if (post.getHashtags() != null && !post.getHashtags().isEmpty())
+          totalRow += post.getHashtags().stream().filter(k -> k.getHashtag().contains(query)).count();
+      }
+    }
+    totalPage = totalRow / limit + 1;
+    postPaginationSkeleton.getPagination().put("total", totalRow);
+    postPaginationSkeleton.getPagination().put("last", totalPage);
     jsonResponse = Unirest.get(URL + sortQuery).asJson();
     assertEquals(200, jsonResponse.getStatus());
     assertEquals(postPaginationSkeleton.getPagination(), gson.fromJson(jsonResponse.getBody().getObject().toString(),

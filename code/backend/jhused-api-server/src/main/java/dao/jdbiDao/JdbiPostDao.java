@@ -175,7 +175,7 @@ public class JdbiPostDao implements PostDao {
                                     int limit) {
     try {
       String sql = SELECT_POST_BASE;
-      sql = getSearchQueryForReadAllAdvanced(sql, specified, searchQuery, sortParams, page, limit);
+      sql = getSearchQueryForReadAllAdvanced(sql, specified, searchQuery, sortParams, page, limit, true);
       Category category = null;
       if (specified != null) {
         category = Category.valueOf(specified.toUpperCase()); // convert to enum
@@ -370,7 +370,7 @@ public class JdbiPostDao implements PostDao {
       String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) throws DaoException {
     try {
       String sql = getSearchQueryForReadAllAdvanced("SELECT COUNT(post.id) FROM post",
-          specified, searchQuery, sortParams, page, limit);
+          specified, searchQuery, sortParams, page, limit, false);
       Category category = null;
       if (specified != null) {
         category = Category.valueOf(specified.toUpperCase()); // convert to enum
@@ -404,8 +404,9 @@ public class JdbiPostDao implements PostDao {
   }
 
   private String getSearchQueryForReadAllAdvanced(
-      String baseSql, String specified, String searchQuery, Map<String, String> sortParams, int page, int limit) {
-    String preSql = "WITH post AS (SELECT post.* FROM post ";
+      String baseSql, String specified, String searchQuery, Map<String, String> sortParams,
+      int page, int limit, boolean appendOrderQuery) {
+    String preSql = "WITH post AS (SELECT DISTINCT(post.*) FROM post ";
     if (searchQuery != null) {
       preSql = preSql + "LEFT JOIN post_hashtag ON post.id = post_hashtag.post_id "
           + "LEFT JOIN hashtag ON post_hashtag.hashtag_id = hashtag.id ";
@@ -421,14 +422,14 @@ public class JdbiPostDao implements PostDao {
       preSql = preSql + (specified == null ? " WHERE " : " AND ") + "(hashtag.hashtag ILIKE :hashtagQuery OR "
           + "post.title ILIKE :partialTitle OR "
           + "post.description ILIKE :partialDescription OR "
-          + "post.location ILIKE :partialLocation)";
+          + "post.location ILIKE :partialLocation) ";
     }
     // Handle sort
     // Adapted from readAll
     StringBuilder query = new StringBuilder(preSql);
     StringBuilder sortQuery = new StringBuilder();
     if (sortParams != null && !sortParams.isEmpty()) {
-      sortQuery.append("ORDER BY ");
+      sortQuery.append(" ORDER BY ");
       for (String key : sortParams.keySet()) {
         sortQuery.append(key).append(" ").append(sortParams.get(key).toUpperCase()).append(", ");
       }
@@ -439,13 +440,13 @@ public class JdbiPostDao implements PostDao {
       }
     } else if (page > 0 && limit > 0) {
       // filter only valid page and limit
-      sortQuery.append("ORDER BY ");
+      sortQuery.append(" ORDER BY ");
       sortQuery.append("post.id ");
       query.append(sortQuery);
       query.append(" LIMIT :limit OFFSET :offset");
     }
 
-    query.append(") ").append(baseSql).append(sortQuery).append(';');
+    query.append(") ").append(baseSql).append(appendOrderQuery?sortQuery:"").append(';');
     baseSql = query.toString();
     return baseSql;
   }
