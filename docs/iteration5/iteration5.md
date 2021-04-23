@@ -86,7 +86,7 @@ As a user, I want to see other people’s location information, so that I can bu
   - [ ]  Fix Heroku (Junjie)
   - [ ]  Frontend did not pass existing hashtag id to backend.
   - [ ]  Duplicate hashtag crash
-  - [ ]  chat page is not showing the correct user profiles
+  - [ ]  chat page is not showing the correct user profiles (Chu)
   - [ ]  limit seller ratings to the buyer
   - [ ]  Invite more people to test out web app (everyone)
     - [ ] Fix bugs as we find/are notified about them. (everyone)
