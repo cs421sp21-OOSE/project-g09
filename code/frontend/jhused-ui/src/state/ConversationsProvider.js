@@ -144,19 +144,8 @@ const ConversationsProvider = ({ children }) => {
 
   };
 
-
-  const formattedConversations = context.user? (conversations.map((conversation, index) => {
-    const recipients = conversation.recipients.map(recipient => {
-      const contact = contacts.find(contact => {
-        return contact.id === recipient
-      });
-      const name = (contact && contact.name) || recipient;
-
-      const contactImg = contact != null ? contact.image : defaultProfileImage
-      return { id:recipient, name, profileImg: contactImg};
-    });
-
-    const messages = conversation.messages.map(message => {
+  const processConversation = (conversation, index, recipients) => {
+    let messages = conversation.messages.map(message => {
       const contact = contacts.find(contact => {
         return contact.id === message.sender
       });
@@ -167,7 +156,26 @@ const ConversationsProvider = ({ children }) => {
     messages.sort((a, b) => (a.sentTime > b.sentTime) ? 1 : -1)
     const selected = index === selectedConversationIndex;
     return { ...conversation, messages, recipients, selected };
+  };
+
+  const processRecipients = (recipients) => {
+
+    return recipients.map(recipient => {
+      const contact = contacts.find(contact => {
+        return contact.id === recipient
+      });
+      const name = (contact && contact.name) || recipient;
+
+      const contactImg = contact != null ? contact.image : defaultProfileImage
+      return { id:recipient, name, image: contactImg};
+    });
+  }
+
+  const formattedConversations = context.user? (conversations.map((conversation, index) => {
+    return processConversation(conversation, index, processRecipients(conversation.recipients));
   })) : [];
+
+  
 
   const value = {
     conversations: formattedConversations,

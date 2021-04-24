@@ -303,7 +303,7 @@ const SelectWraper = ({ ...props }) => {
     singleValue: (provided, state) => ({
       ...provided,
       padding: 0,
-      margin: "0px 0px",
+      margin: '0px 0px',
     }),
   };
 
@@ -318,7 +318,15 @@ const SelectWraper = ({ ...props }) => {
           props.onChange(props.name, obj.value);
         }}
         onBlur={() => props.onBlur(props.name, true)}
-        styles={customStyles}
+        // styles={customStyles}
+        theme={theme => ({
+          ...theme,
+          borderRadius: '0.5rem', 
+          colors: {
+            ...theme.colors,
+            primary: 'rgba(29, 78, 216)',
+          },
+        })}
       />
       {props.touched && props.error ? (
         <div className={errorMsgStyle}>{props.error}</div>
@@ -382,6 +390,14 @@ const CreatableWrapper = ({ ...props }) => {
         onInputChange={handleTagInputChange}
         onKeyDown={handleTagKeyDown}
         onChange={handleCreatableChange}
+        theme={theme => ({
+          ...theme,
+          borderRadius: '0.5rem', 
+          colors: {
+            ...theme.colors,
+            primary: 'rgba(29, 78, 216)',
+          },
+        })}
       />
     </div>
   );
