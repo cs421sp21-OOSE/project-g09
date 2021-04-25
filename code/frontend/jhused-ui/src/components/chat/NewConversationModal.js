@@ -15,15 +15,16 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
   };
 
   const handleCheckBoxChange = (contactId) => {
-    setSelectedContactIds(prevSelectedContactIds => {
-      if (prevSelectedContactIds.includes(contactId)) {
-        return prevSelectedContactIds.filter(prevId => {
-          return contactId !== prevId
-        })
-      } else {
-        return [...prevSelectedContactIds, contactId]
-      }
-    })
+    // setSelectedContactIds(prevSelectedContactIds => {
+    //   if (prevSelectedContactIds.includes(contactId)) {
+    //     return prevSelectedContactIds.filter(prevId => {
+    //       return contactId !== prevId
+    //     })
+    //   } else {
+    //     return [...prevSelectedContactIds, contactId]
+    //   }
+    // })
+    setSelectedContactIds([contactId]);
   };
 
   return (
@@ -72,10 +73,11 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
                 {contacts.map(contact => (
                   <div className="mx-10 mb-6 flex items-center">
                     <input 
-                      type="checkbox" 
+                      type="radio"
                       className="h-5 w-5"
                       id={contact.id} 
                       name={contact.id} 
+                      checked={selectedContactIds.length !== 0 && selectedContactIds[0] === contact.id}
                       value={selectedContactIds.includes(contact.id)}
                       onChange={() => handleCheckBoxChange(contact.id)}
                     />
