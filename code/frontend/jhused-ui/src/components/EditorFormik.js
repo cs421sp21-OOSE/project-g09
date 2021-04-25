@@ -40,7 +40,7 @@ const EditorFormik = (props) => {
         .get("/api/posts/" + postID)
         .then((response) => {
           console.log(response);
-          if (response.data.hashtags == undefined) response.data.hashtags = [];
+          if (response.data.hashtags === undefined) response.data.hashtags = [];
           setInitialPostData(response.data);
           setIsLoaded(true);
         })
@@ -299,13 +299,6 @@ const StdTextArea = ({ ...props }) => {
 
 // Wrapper for react-select single select component to be compatible with Formik
 const SelectWraper = ({ ...props }) => {
-  const customStyles = {
-    singleValue: (provided, state) => ({
-      ...provided,
-      padding: 0,
-      margin: '0px 0px',
-    }),
-  };
 
   return (
     <div className={props.className}>
