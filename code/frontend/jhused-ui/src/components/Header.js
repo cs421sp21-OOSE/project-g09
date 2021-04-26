@@ -14,12 +14,13 @@ const Header = props => {
   const searchContext = useContext(SearchContext.Context);
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState(searchContext.searchTerm)
+  const {conversations, setConversations, addMessageToConversation} = useConversations()
+  const [update, setUpdate] = useState(false)
 
-  const {
-    conversations,
-    setConversations,
-    addMessageToConversation
-  } = useConversations()
+  // force update whenever new messages are received
+  useEffect(() => {
+    setUpdate(!update)
+  },[conversations])
 
   useEffect(() => {
     if (context.user) {
@@ -66,7 +67,6 @@ const Header = props => {
         })
     }
   }, [addMessageToConversation, context.user, setConversations]) // Don't add conversations as dependency here
-
 
   return (
     <nav className='relative bg-white'>
