@@ -2,8 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import ImageGrid from "./ImageGrid";
 import axios from "../util/axios";
 import { SearchContext } from "../state";
-import Select from "./Select"
-import Header from './Header';
+import Select from "./Select";
+import Header from "./Header";
+import Pagination from "./Pagination";
 
 const categories = [
   { id: 1, name: "ALL", unavailable: false },
@@ -23,7 +24,6 @@ const sorts = [
   { id: 6, name: "Price: High to Low", unavailable: false },
 ];
 
-
 const HomePage = () => {
   const searchContext = useContext(SearchContext.Context);
 
@@ -41,7 +41,7 @@ const HomePage = () => {
   const [sortedPosts, setSortedPosts] = useState([]);
 
   const [pageInfo, setPageInfo] = useState(null);
-  const [pageLinks, setPageLinks] = useState(null)
+  const [pageLinks, setPageLinks] = useState(null);
 
   // get all posts
   useEffect(() => {
@@ -56,6 +56,8 @@ const HomePage = () => {
       })
       .then((response) => {
         setPosts(response.data.posts);
+        setPageInfo(response.data.pagination);
+        setPageLinks(response.data.links);
       })
       .catch((error) => {
         console.log(error);
@@ -155,24 +157,63 @@ const HomePage = () => {
     );
   };
 
-  return (
-    <div className="home-page">
-      <Header search={true} />
-      <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
-        <div className="menu-bar w-full sm:w-52">
-          <Select options={categories} setOptionSelected={setSelectedCategory}/>
+  const updatePage = (link) => {
+    if (!link) {
+      link = "api/v2/posts?page=1&limit=3";
+    } else {
+      link = `api/v2/${link.substring(44)}`;
+    }
+    console.log("next page link is...");
+    console.log(link);
+    axios
+      .get(link, {
+        params: {
+          sort: "update_time:desc",
+          keyword: searchContext.searchTerm,
+        },
+      })
+      .then((response) => {
+        setPosts(response.data.posts);
+        console.log("updating page");
+        console.log(response.data.posts);
+        setPageInfo(response.data.pagination);
+        setPageLinks(response.data.links);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  if (pageInfo) {
+    return (
+      <div className="home-page">
+        <Header search={true} />
+        <div className="my-3 sm:my-5 px-4 block sm:flex sm:space-x-6 sm:px-12">
+          <div className="menu-bar w-full sm:w-52">
+            <Select
+              options={categories}
+              setOptionSelected={setSelectedCategory}
+            />
+          </div>
+          <div className="w-full sm:w-80">
+            {/*TODO: the sorting options are hard-coded for now*/}
+            <Select options={sorts} setOptionSelected={setSortType} />
+          </div>
         </div>
-        <div className="w-full sm:w-80">
-          {/*TODO: the sorting options are hard-coded for now*/}
-          <Select options={sorts} setOptionSelected={setSortType}/>
+        <div className="mx-12">
+          {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
+          <ImageGrid posts={sortedPosts} />
+        </div>
+        <div>
+          <Pagination
+            pages={pageInfo}
+            links={pageLinks}
+            onUpdate={updatePage}
+          />
         </div>
       </div>
-      <div className="mx-12">
-        {/*TODO: sorting should be done on "filteredPosts" array before it is passed to ImageGrid*/}
-        <ImageGrid posts={sortedPosts} />
-      </div>
-    </div>
-  );
+    );
+  } else return "";
 };
 
 export default HomePage;
