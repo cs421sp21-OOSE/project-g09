@@ -48,6 +48,7 @@ public final class Database {
     createWishlistPostsTableWithSampleData(jdbi, DataStore.sampleWishlistPosts());
     createMessageTableWithSampleData(jdbi, DataStore.sampleMessages());
     createRateTableWithSampleData(jdbi, DataStore.sampleRates());
+    createPostVisitTableWithSampleData(jdbi, DataStore.samplePostVisits());
   }
 
   /**
@@ -95,7 +96,42 @@ public final class Database {
     return Jdbi.create(ds).installPlugin(new PostgresPlugin());
   }
 
-  public static void createRateTableWithSampleData(Jdbi jdbi, List<Rate> rates){
+  /**
+   * create post_visit table with samples
+   * @param jdbi jdbi
+   * @param postVisits samples
+   */
+  public static void createPostVisitTableWithSampleData(Jdbi jdbi, List<PostVisit> postVisits) {
+    String sql = "CREATE TABLE IF NOT EXISTS post_visit("
+        + "post_id VARCHAR(50) NOT NULL,"
+        + "user_id VARCHAR(50) NOT NULL,"
+        + "PRIMARY KEY (post_id, user_id),"
+        + "FOREIGN KEY (post_id) " // Note: no comma here
+        + "REFERENCES post(id) "
+        + "ON DELETE CASCADE,"
+        + "FOREIGN KEY (user_id) " // Note: no comma here
+        + "REFERENCES jhused_user(id) "
+        + "ON DELETE CASCADE"
+        + ")";
+    jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS post_visit;");
+      handle.execute(sql);
+    });
+  }
+
+  public static void insertSamplePostVisit(Jdbi jdbi, List<PostVisit> samples) {
+    String sql = "INSERT INTO post_visit(user_id, post_id) "
+        + "VALUES(:userId, :postId);";
+    jdbi.useTransaction(handle -> {
+      PreparedBatch batch = handle.prepareBatch(sql);
+      for (PostVisit postVisit : samples) {
+        batch.bindBean(postVisit).add();
+      }
+      batch.execute();
+    });
+  }
+
+  public static void createRateTableWithSampleData(Jdbi jdbi, List<Rate> rates) {
     String sql = "CREATE TABLE IF NOT EXISTS rate("
         + "rater_id VARCHAR(50) NOT NULL,"
         + "seller_id VARCHAR(50) NOT NULL,"
@@ -221,6 +257,7 @@ public final class Database {
 
   public static void drop(Jdbi jdbi) {
     jdbi.useTransaction(handle -> {
+      handle.execute("DROP TABLE IF EXISTS post_visit");
       handle.execute("DROP TABLE IF EXISTS rate");
       handle.execute("DROP TABLE IF EXISTS message;");
       handle.execute("DROP TABLE IF EXISTS wishlist_post;");
