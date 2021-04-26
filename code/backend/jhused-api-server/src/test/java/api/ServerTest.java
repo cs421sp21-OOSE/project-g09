@@ -18,6 +18,7 @@ import util.paginationSkeleton.PostPaginationSkeleton;
 
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +28,7 @@ class ServerTest {
   private static final List<User> sampleUsers = DataStore.sampleUsers();
   private static final List<Message> sampleMessages = DataStore.sampleMessages();
   private static final List<Rate> sampleRates = DataStore.sampleRates();
+  private static final List<PostVisit> samplePostVisits = DataStore.samplePostVisits();
   private final static String BASE_URL = "http://localhost:8080";
   private static final Gson gson = new Gson();
   private static Jdbi jdbi;
@@ -47,6 +49,7 @@ class ServerTest {
     Database.insertSamplePosts(jdbi, samplePosts);
     Database.insertSampleMessages(jdbi, sampleMessages);
     Database.insertSampleRates(jdbi, sampleRates);
+    Database.insertSamplePostVisit(jdbi,samplePostVisits);
   }
 
   @AfterAll
@@ -631,5 +634,74 @@ class ServerTest {
     assertEquals(postPaginationSkeleton.getPagination(), gson.fromJson(jsonResponse.getBody().getObject().toString(),
         PostPaginationSkeleton.class).getPagination());
     assertNotEquals(0, jsonResponse.getBody().getArray().length());
+  }
+
+  @Test
+  void postViewWorks() {
+    PostVisit postVisit = new PostVisit("JHUsedAdmin","3".repeat(36));
+    final String URL = BASE_URL + "/api/posts/visits";
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(postVisit)).asJson();
+    assertEquals(201, jsonResponse.getStatus());
+    assertNotEquals(0, jsonResponse.getBody().getArray().length());
+  }
+
+  @Test
+  void postDuplicatePostVisitReturn400(){
+    PostVisit postVisit = new PostVisit("JHUsedAdmin","0".repeat(36));
+    final String URL = BASE_URL + "/api/posts/visits";
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(postVisit)).asJson();
+    assertEquals(400, jsonResponse.getStatus());
+  }
+
+  @Test
+  void postViewInvalidIdReturn500() {
+    PostVisit postVisit = new PostVisit("JHjiaefjijUsedAdmin","3".repeat(36));
+    final String URL = BASE_URL + "/api/posts/visits";
+    HttpResponse<JsonNode> jsonResponse = Unirest.post(URL)
+        .body(gson.toJson(postVisit)).asJson();
+    assertEquals(500, jsonResponse.getStatus());
+  }
+
+  @Test
+  void readPostViewWorks() {
+    final String URL = BASE_URL + "/api/posts/visits/{postId}/{userId}";
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL)
+        .routeParam("postId","0".repeat(36)).routeParam("userId","JHUsedAdmin").asJson();
+    assertEquals(200,jsonResponse.getStatus());
+    assertEquals(new PostVisit("JHUsedAdmin", "0".repeat(36)),
+        gson.fromJson(jsonResponse.getBody().getObject().toString(),PostVisit.class));
+  }
+
+  @Test
+  void readPostVisitNonExisting404() {
+    final String URL = BASE_URL + "/api/posts/visits/{postId}/{userId}";
+    HttpResponse<JsonNode> jsonResponse = Unirest.get(URL)
+        .routeParam("postId","0".repeat(36)).routeParam("userId","JHUsedAdmlsiejfiljin").asJson();
+    assertEquals(404,jsonResponse.getStatus());
+  }
+
+  @Test
+  void viewCountWorks() {
+    final String URL = BASE_URL + "/api/posts/visits/{postId}";
+    AtomicReference<HttpResponse<JsonNode>> jsonResponse = new AtomicReference<>(Unirest.get(URL)
+        .routeParam("postId", "lsieliesjf").asJson());
+    assertEquals(0, jsonResponse.get().getBody().getObject().getInt("viewCount"));
+    Map<String, Integer> viewCnt = new LinkedHashMap<>();
+    for(PostVisit postVisit:samplePostVisits){
+      Integer cnt = viewCnt.get(postVisit.getPostId());
+      if(cnt==null){
+        viewCnt.put(postVisit.getPostId(),1);
+      }else{
+        cnt+=1;
+        viewCnt.put(postVisit.getPostId(),cnt);
+      }
+    }
+    viewCnt.forEach((k,v)->{
+      jsonResponse.set(Unirest.get(URL)
+          .routeParam("postId", k).asJson());
+      assertEquals(v, jsonResponse.get().getBody().getObject().getInt("viewCount"));
+    });
   }
 }

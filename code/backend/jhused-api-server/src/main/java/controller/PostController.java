@@ -119,8 +119,12 @@ public class PostController {
   public Route createPost = (Request req, Response res) -> {
     try {
       Post post = gson.fromJson(req.body(), Post.class);
-      postDao.create(post);
-      res.status(201);
+      Post createdPost = postDao.create(post);
+      if(createdPost!=null)
+        res.status(201);
+      else {
+        throw new ApiError("Unable to create the post",400);
+      }
       return gson.toJson(post);
     } catch (DaoException ex) {
       throw new ApiError(ex.getMessage(), 500);
