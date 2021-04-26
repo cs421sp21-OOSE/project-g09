@@ -320,6 +320,11 @@ const SelectWraper = ({ ...props }) => {
             primary: 'rgba(29, 78, 216)',
           },
         })}
+        styles={{
+          placeholder: () => ({
+            color: 'rgba(156, 163, 175)',
+          })
+        }}
       />
       {props.touched && props.error ? (
         <div className={errorMsgStyle}>{props.error}</div>
@@ -368,7 +373,7 @@ const CreatableWrapper = ({ ...props }) => {
 
   return (
     <div className={props.className}>
-      <lable className={fieldLabelStyle}>{props.label}</lable>
+      <label className={fieldLabelStyle}>{props.label}</label>
       <CreatableSelecet
         components={{ DropdownIndicator: null }}
         inputValue={tagInput || ""}
@@ -391,6 +396,11 @@ const CreatableWrapper = ({ ...props }) => {
             primary: 'rgba(29, 78, 216)',
           },
         })}
+        styles={{
+          placeholder: () => ({
+            color: 'rgba(156, 163, 175)',
+          })
+        }}
       />
     </div>
   );
