@@ -48,7 +48,7 @@ const HomePage = () => {
     //console.log(searchContext.searchTerm);
     console.log("search term above");
     axios
-      .get("api/v2/posts?page=1&limit=3", {
+      .get("api/v2/posts?page=1&limit=4", {
         params: {
           sort: "update_time:desc",
           keyword: searchContext.searchTerm,
@@ -163,6 +163,7 @@ const HomePage = () => {
     } else {
       link = `api/v2/${link.substring(44)}`;
     }
+
     console.log("next page link is...");
     console.log(link);
     axios
@@ -175,7 +176,7 @@ const HomePage = () => {
       .then((response) => {
         setPosts(response.data.posts);
         console.log("updating page");
-        console.log(response.data.posts);
+        console.log(response.data);
         setPageInfo(response.data.pagination);
         setPageLinks(response.data.links);
       })
