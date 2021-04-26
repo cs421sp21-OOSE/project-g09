@@ -19,6 +19,7 @@ const ConversationsProvider = ({ children }) => {
   const socket = useSocket();
   const context = useContext(UserContext.Context);
   const defaultProfileImage = 'https://i.redd.it/v2h2px8w5piz.png'
+
   const readMessagesInConversation = useCallback( ({ index }) => {
     setConversations(prevConversations => {
     const newConversations = prevConversations.map((conversation, idx) => {
@@ -153,7 +154,7 @@ const ConversationsProvider = ({ children }) => {
       const name = (contact && contact.name) || recipient;
 
       const contactImg = contact != null ? contact.image : defaultProfileImage
-      return { id:recipient, name, profileImg: contactImg};
+      return { id:recipient, name, image: contactImg};
     });
 
     const messages = conversation.messages.map(message => {

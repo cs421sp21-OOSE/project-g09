@@ -1,4 +1,3 @@
-//import 'bootstrap/dist/css/bootstrap.min.css'
 import DashBoard from './DashBoard'
 import Header from '../Header'
 

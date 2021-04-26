@@ -3,10 +3,60 @@ import Dropzone from "react-dropzone";
 import { storage } from "./firebase";
 import { nanoid } from 'nanoid';
 
-const DropAndView = (props) => {
+
+function DropAndView(props) {
   
   // Model object {..., {uid}: {file:..., dataUrl:..., webUrl:..., progress:...}}
+  // The model object is the only state of truth of this component covering not only image url but also upload progress
+  // The DropAndView component relies on the "model" object to display images
+  // THe model obejct is updated through the reducer hook
   const [model, dispatch] = useReducer(reducer, {});
+
+  // Complete action {type: ..., uid: ..., data: {same as model} }
+  function reducer(prevState, action) {
+    if (action.type === "add") {
+      let curState ={...prevState, 
+        [action.uid]: {...action.data}
+      };
+
+      return curState;
+    }
+    else if (action.type === "remove") {
+      let curState = {...prevState};
+      URL.revokeObjectURL(prevState[action.uid].dataUrl); // remove data URL to avoid memory leak
+      // Remove web url if it exists
+      if (action.form && prevState[action.uid].webUrl) {
+        let newValues = action.form.values;
+        let indexRemoval = newValues.findIndex((image) => (image.id === action.uid));
+        if (indexRemoval >= 0) {
+          newValues.splice(indexRemoval, 1)
+        }
+        action.form.setValue(newValues);
+      }
+      delete curState[action.uid];
+      return curState;
+    }
+    else if (action.type === "progress") {
+      let curState = {...prevState, 
+        [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
+      };
+      return curState;
+    }
+    else if (action.type === "upload") {
+      let curState = {...prevState, 
+        [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
+      };
+      return curState;
+    }
+    else if (action.type === "upload-complete") {
+      // Update the form data once all uploads are complete
+      action.form.setValue(Object.values(prevState).map(val => val.webUrl));
+    }
+    else {
+      throw new Error("Invalid action type");
+    }
+
+  }
 
   // Populate form values into the dropzone
   useEffect(() => {
@@ -25,63 +75,54 @@ const DropAndView = (props) => {
   }, [])
 
   const handleOnDrop = (acceptedFiles) => {
+    let images = [];
     acceptedFiles.forEach((curFile) => {
+      let curUid = nanoid();
       dispatch({
         type: "add", 
-        uid:nanoid(),
+        uid: curUid,
         data: {
           file: curFile, 
           dataUrl: URL.createObjectURL(curFile),
         }
-      })
+      });
+      uploadImage(curFile, curUid, dispatch, images);
     });
   };
 
-  const handleUpload = (event) => {
-    event.stopPropagation()
-    event.preventDefault();
-    let images = [];
-
-    Array.from(Object.keys(model)).forEach(uid => {
-
-      if (model[uid].webUrl) { // do not upload if url has already been uploaded
-        return;
-      }
-
-      const uploadTask = storage.ref(`images/${model[uid].file.name}`).put(model[uid].file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const curProgress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          dispatch({type: "progress", uid: uid, data: {progress: curProgress}});
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            console.log("File available at ", downloadURL);
-            images.push({
-              id: uid,
-              postId: "",
-              url: downloadURL,
-            });
-            dispatch({
-              type: "upload",
-              uid: uid,
-              data: {webUrl: downloadURL}
-            });
-            if (props.onChange) {
-              props.onChange(props.name, [...props.value, ...images]);
-            }
-          });
-        }
+const uploadImage = (file, uid, dispatch, images) => {
+  const uploadTask = storage.ref(`images/${file.name}`).put(file);
+  uploadTask.on(
+    "state_changed",
+    (snapshot) => {
+      const curProgress = Math.round(
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
       );
-    });
-    console.log(images);
-  };
+      dispatch({type: "progress", uid: uid, data: {progress: curProgress}});
+    },
+    (error) => {
+      console.log(error);
+    },
+    () => {
+      uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+        console.log("File available at ", downloadURL);
+        dispatch({
+          type: "upload",
+          uid: uid,
+          data: {webUrl: downloadURL}
+        });
+        images.push({
+          id: uid,
+          postId: "",
+          url: downloadURL,
+        });
+        if (props.onChange) {
+          props.onChange(props.name, [...props.value, ...images]);
+        }
+      });
+    }
+  );
+};
 
   return (
     <div className={props.className}>
@@ -103,14 +144,10 @@ const DropAndView = (props) => {
                     setValue: (newValue) => props.onChange(props.name, newValue),
                   }}
                 />) : 
-                ("Drag and drop your images here")
+                (<div className="w-full min-h-full flex justify-center items-center text-gray-400">
+                  Drag and drop your images here
+                </div>)
             }
-            <button 
-              className="absolute bottom-0 right-0 text-sm text-gray-700 font-medium bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 focus:bg-gray-50 font-bold py-0.5 px-1 m-2"
-              onClick={handleUpload}
-            >
-              Upload
-            </button>
           </div>
         )}
       </Dropzone>
@@ -123,6 +160,7 @@ const DropAndView = (props) => {
 
 export default DropAndView;
 
+// Thumb view component for displaying images
 const Thumb = (props) => {
   const handleOnClik = (event) => {
     event.stopPropagation();
@@ -156,6 +194,7 @@ const Thumb = (props) => {
   );
 };
 
+// Grid of the thumb view components
 const ThumbGrid = (props) => {
   return (
     <div className="flex flex-wrap gap-3 justify-items-center outline-none focus:ring-2 focus:ring-blue-700">
@@ -173,48 +212,6 @@ const ThumbGrid = (props) => {
   );
 }
 
-// Complete action {type: ..., uid: ..., data: {same as model} }
-function reducer(prevState, action) {
-  if (action.type === "add") {
-    let curState ={...prevState, 
-      [action.uid]: {...action.data}
-    };
-    return curState;
-  }
-  else if (action.type === "remove") {
-    let curState = {...prevState};
-    URL.revokeObjectURL(prevState[action.uid].dataUrl); // remove data URL to avoid memory leak
-    // Remove web url if it exists
-    if (action.form && prevState[action.uid].webUrl) {
-      let newValues = action.form.values;
-      let indexRemoval = newValues.findIndex((image) => (image.id === action.uid));
-      if (indexRemoval >= 0) {
-        newValues.splice(indexRemoval, 1)
-      }
-      action.form.setValue(newValues);
-    }
-    delete curState[action.uid];
-    return curState;
-  }
-  else if (action.type === "progress") {
-    let curState = {...prevState, 
-      [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
-    };
-    return curState;
-  }
-  else if (action.type === "upload") {
-    let curState = {...prevState, 
-      [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
-    };
-    return curState;
-  }
-  else if (action.type === "upload-complete") {
-    // Update the form data once all uploads are complete
-    action.form.setValue(Object.values(prevState).map(val => val.webUrl));
-  }
-  else {
-    throw new Error("Invalid action type");
-  }
 
-}
+
 
