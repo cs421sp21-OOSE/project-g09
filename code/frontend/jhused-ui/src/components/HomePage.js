@@ -12,6 +12,12 @@ const categories = [
   { id: 4, name: "TV", unavailable: true },
   { id: 5, name: "DESK", unavailable: false },
   { id: 6, name: "OTHER", unavailable: false },
+  { id: 7, name: "OTHER", unavailable: false },
+  { id: 8, name: "OTHER", unavailable: false },
+  { id: 9, name: "OTHER", unavailable: false },
+  { id: 10, name: "OTHER", unavailable: false },
+  { id: 11, name: "OTHER", unavailable: false },
+
 ];
 
 const sorts = [
