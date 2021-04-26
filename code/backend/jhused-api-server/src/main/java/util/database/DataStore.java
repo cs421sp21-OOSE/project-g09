@@ -80,16 +80,18 @@ public final class DataStore {
   }
 
   public static List<PostVisit> samplePostVisits() {
-    PostVisit post1 = new PostVisit("JHUsedAdmin", "0".repeat(36));
-    PostVisit post2 = new PostVisit("001111111111111111111111111111111111", "1".repeat(36));
-    PostVisit post3 = new PostVisit("002111111111111111111111111111111111", "3".repeat(36));
-    PostVisit post4 = new PostVisit("003111111111111111111111111111111111", "4".repeat(36));
-    PostVisit post5 = new PostVisit("004111111111111111111111111111111111", "5".repeat(36));
-    PostVisit post6 = new PostVisit("005111111111111111111111111111111111", "6".repeat(36));
-    PostVisit post7 = new PostVisit("005222222222222222222222222222222222", "7".repeat(36));
-    PostVisit post8 = new PostVisit("007111111111111111111111111111111111", "7".repeat(36));
-    return new ArrayList<>(Arrays.asList(post1, post2, post3, post4, post5, post6,
-        post7, post8));
+    List<PostVisit> postVisits = new ArrayList<>();
+    postVisits.add(new PostVisit("JHUsedAdmin", "0".repeat(36)));
+    postVisits.add(new PostVisit("001111111111111111111111111111111111", "1".repeat(36)));
+    postVisits.add(new PostVisit("001111111111111111111111111111111111", "3".repeat(36)));
+    postVisits.add(new PostVisit("002111111111111111111111111111111111", "3".repeat(36)));
+    postVisits.add(new PostVisit("003111111111111111111111111111111111", "4".repeat(36)));
+    postVisits.add(new PostVisit("003111111111111111111111111111111111", "3".repeat(36)));
+    postVisits.add(new PostVisit("004111111111111111111111111111111111", "5".repeat(36)));
+    postVisits.add(new PostVisit("005111111111111111111111111111111111", "6".repeat(36)));
+    postVisits.add(new PostVisit("005222222222222222222222222222222222", "7".repeat(36)));
+    postVisits.add(new PostVisit("007111111111111111111111111111111111", "7".repeat(36)));
+    return postVisits;
   }
 
   /**
