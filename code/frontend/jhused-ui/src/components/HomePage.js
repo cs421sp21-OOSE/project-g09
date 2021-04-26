@@ -40,19 +40,22 @@ const HomePage = () => {
   // posts after sorting
   const [sortedPosts, setSortedPosts] = useState([]);
 
+  const [pageInfo, setPageInfo] = useState(null);
+  const [pageLinks, setPageLinks] = useState(null)
+
   // get all posts
   useEffect(() => {
     //console.log(searchContext.searchTerm);
     console.log("search term above");
     axios
-      .get("/api/posts", {
+      .get("api/v2/posts?page=1&limit=3", {
         params: {
           sort: "update_time:desc",
           keyword: searchContext.searchTerm,
         },
       })
       .then((response) => {
-        setPosts(response.data);
+        setPosts(response.data.posts);
       })
       .catch((error) => {
         console.log(error);
