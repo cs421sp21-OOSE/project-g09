@@ -13,10 +13,7 @@ import util.database.DataStore;
 import util.database.Database;
 
 import java.net.URISyntaxException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -349,5 +346,21 @@ class JdbiPostDaoTest {
     assertTrue(postDao.getCategory(null).isEmpty());
   }
 
-
+  @Test
+  @DisplayName("Test new category works")
+  void addPostFromCategoryFree() {
+    Post free = new Post(UUID.randomUUID().toString(), "001" + "1".repeat(33),
+        "Free furniture", 0D, SaleState.SALE,
+        "Description of free furniture",
+        DataStore.sampleImages(Category.FURNITURE),
+        DataStore.sampleHashtags(Category.FURNITURE),
+        Category.FREE,
+        "Location of free item"
+    );
+    Post c2 = postDao.create(free);
+    System.out.println(c2);
+    free.setCreateTime(c2.getCreateTime());
+    free.setUpdateTime(c2.getUpdateTime());
+    assertEquals(free, c2);
+  }
 }
