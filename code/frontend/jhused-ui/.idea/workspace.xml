@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d674aa13-516b-41bd-9f03-172cca106027" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/model/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/model/Category.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/util/database/DataStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/util/database/DataStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/test/java/dao/jdbi/JdbiPostDaoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/test/java/dao/jdbi/JdbiPostDaoTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EditorFormik.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditorFormik.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/HomePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HomePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +73,7 @@
       <workItem from="1617820040896" duration="4923000" />
       <workItem from="1617943524273" duration="14025000" />
       <workItem from="1618378044822" duration="34705000" />
-      <workItem from="1619468529158" duration="3134000" />
+      <workItem from="1619468529158" duration="4020000" />
     </task>
     <servers />
   </component>
