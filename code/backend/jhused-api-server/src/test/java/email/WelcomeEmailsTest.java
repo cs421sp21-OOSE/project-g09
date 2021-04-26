@@ -56,16 +56,16 @@ public class WelcomeEmailsTest {
 
     }
 
-    @Test
-    @DisplayName("send an email.")
-    void updateSendMail() throws IOException {
-        WelcomeEmails.basicWelcomeEmail("ldibern1@jh.edu");
-    }
-
-    @Test
-    @DisplayName("send an email.")
-    void updateSendStyledMail() throws IOException {
-        WelcomeEmails.styledWelcomeEmail("louie@artificialtalk.com");
-    }
+//    @Test
+//    @DisplayName("send an email.")
+//    void updateSendMail() throws IOException {
+//        WelcomeEmails.basicWelcomeEmail("ldibern1@jh.edu");
+//    }
+//
+//    @Test
+//    @DisplayName("send an email.")
+//    void updateSendStyledMail() throws IOException {
+//        WelcomeEmails.styledWelcomeEmail("louie@artificialtalk.com");
+//    }
 
 }

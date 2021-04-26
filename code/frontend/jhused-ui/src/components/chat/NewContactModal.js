@@ -1,6 +1,5 @@
 import {Fragment, useRef} from "react";
 import { useContacts } from "../../state/ContactsProvider";
-import axios from "axios";
 import { Dialog, Transition } from "@headlessui/react";
 
 const NewContactModal = ({ isOpen, setIsOpen }) => {
@@ -10,14 +9,8 @@ const NewContactModal = ({ isOpen, setIsOpen }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let id = idRef.current.value;
-    axios.get(`/api/users/${id}`).then((response) => {
-        console.log("Contact is loaded here", response);
-        let image = response.data.profileImage;
-        createContact(idRef.current.value, nameRef.current.value, image);
-        setIsOpen(false);
-      }
-    );
+    let status = createContact(idRef.current.value, nameRef.current.value);
+    setIsOpen(false);
   };
 
   return (

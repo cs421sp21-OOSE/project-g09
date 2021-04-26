@@ -58,7 +58,7 @@ public class PostController {
         if (page < 0 || limit < 0)
           throw new ApiError("Page or limit present but invalid.", 400);
       }
-      int totalRow = postDao.getTotalRowNum();
+      int totalRow = postDao.getTotalRowNum(categoryString, keyword, sortParams,0,0);
       int totalPage = totalRow / limit + 1;
 
       PostPaginationSkeleton postPaginationSkeleton = new PostPaginationSkeleton();
@@ -71,7 +71,7 @@ public class PostController {
       postPaginationSkeleton.getLinks().put("last", String.format(request, totalPage));
       postPaginationSkeleton.getLinks().put("prev", String.format(request, page == 1 ? 1 : (page - 1)));
       postPaginationSkeleton.getLinks().put("next", String.format(request, totalPage > page ? (page + 1) : (page)));
-      postPaginationSkeleton.setPosts(postDao.readAllAdvanced(categoryString,keyword,sortParams,page,limit));
+      postPaginationSkeleton.setPosts(postDao.readAllAdvanced(categoryString, keyword, sortParams, page, limit));
 
       return gson.toJson(postPaginationSkeleton);
 
@@ -119,8 +119,12 @@ public class PostController {
   public Route createPost = (Request req, Response res) -> {
     try {
       Post post = gson.fromJson(req.body(), Post.class);
-      postDao.create(post);
-      res.status(201);
+      Post createdPost = postDao.create(post);
+      if(createdPost!=null)
+        res.status(201);
+      else {
+        throw new ApiError("Unable to create the post",400);
+      }
       return gson.toJson(post);
     } catch (DaoException ex) {
       throw new ApiError(ex.getMessage(), 500);

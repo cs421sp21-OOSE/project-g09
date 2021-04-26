@@ -1,4 +1,3 @@
-import { Form } from "react-bootstrap";
 import { useContacts } from '../../state/ContactsProvider'
 import {Fragment, useState} from "react";
 import { useConversations } from '../../state/ConversationsProvider'
@@ -16,15 +15,16 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
   };
 
   const handleCheckBoxChange = (contactId) => {
-    setSelectedContactIds(prevSelectedContactIds => {
-      if (prevSelectedContactIds.includes(contactId)) {
-        return prevSelectedContactIds.filter(prevId => {
-          return contactId !== prevId
-        })
-      } else {
-        return [...prevSelectedContactIds, contactId]
-      }
-    })
+    // setSelectedContactIds(prevSelectedContactIds => {
+    //   if (prevSelectedContactIds.includes(contactId)) {
+    //     return prevSelectedContactIds.filter(prevId => {
+    //       return contactId !== prevId
+    //     })
+    //   } else {
+    //     return [...prevSelectedContactIds, contactId]
+    //   }
+    // })
+    setSelectedContactIds([contactId]);
   };
 
   return (
@@ -71,14 +71,17 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
             <Dialog.Description className="mb-2"> 
               <form onSubmit={handleSubmit}>
                 {contacts.map(contact => (
-                  <div className="mx-6 mb-6">
-                    <Form.Group controlId={contact.id} key={contact.id}>
-                      <Form.Check
-                        type="checkbox"
-                        value={selectedContactIds.includes(contact.id)}
-                        label={" "+ contact.name}
-                        onChange={() => handleCheckBoxChange(contact.id)}/>
-                    </Form.Group>
+                  <div className="mx-10 mb-6 flex items-center">
+                    <input 
+                      type="radio"
+                      className="h-5 w-5"
+                      id={contact.id} 
+                      name={contact.id} 
+                      checked={selectedContactIds.length !== 0 && selectedContactIds[0] === contact.id}
+                      value={selectedContactIds.includes(contact.id)}
+                      onChange={() => handleCheckBoxChange(contact.id)}
+                    />
+                    <label className="text-lg ml-2" for={contact.id}>{contact.name}</label>
                   </div>
                 ))}
                 <div className="flex justify-end py-2 pr-4 gap-x-2">
