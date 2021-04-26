@@ -333,10 +333,10 @@ class JdbiPostDaoTest {
   @Test
   @DisplayName("returns posts with specified category")
   void getPostsFromCategory() {
-    List<Post> posts = postDao.getCategory(Category.DESK);
+    List<Post> posts = postDao.getCategory(Category.FURNITURE);
 
     for (Post thisPost : posts) {
-      assertEquals(thisPost.getCategory(), Category.DESK);
+      assertEquals(thisPost.getCategory(), Category.FURNITURE);
     }
   }
 
