@@ -153,6 +153,7 @@ public class ApiServer {
     WishlistController wishListController = new WishlistController(jdbi);
     MessageController messageController = new MessageController(jdbi);
     RateController rateController = new RateController(jdbi);
+    PostVisitController postVisitController = new PostVisitController(jdbi);
 
     exception(ApiError.class, new ExceptionController());
 
@@ -214,6 +215,12 @@ public class ApiServer {
     put("/api/rates/:sellerId/:raterId", rateController.updateARate);
     delete("/api/rates/:sellerId/:raterId", rateController.deleteARate);
     //END RATE ROUTES
+
+    // BEGIN POST VISIT ROUTES
+    post("/api/posts/visits", postVisitController.postView);
+    get("/api/posts/visits/:postId/:userId", postVisitController.getPostVisit);
+    get("/api/posts/visits/:postId", postVisitController.getViewCount);
+    // END POST VISIT ROUTES
     after((req, res) -> res.type("application/json"));
   }
 

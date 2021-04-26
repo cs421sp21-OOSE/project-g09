@@ -21,8 +21,8 @@ public final class DataStore {
     List<User> users = sampleUsers();
     int totalUsers = users.size();
     for (int i = 1; i < totalUsers; ++i) {
-      rates.add(new Rate(users.get(i).getId(), users.get(1 + (i + 1) % (totalUsers - 1)).getId(),(i+3)%6));
-      rates.add(new Rate(users.get(i).getId(), users.get(1 + (i + 2) % (totalUsers - 1)).getId(),(i+2)%6));
+      rates.add(new Rate(users.get(i).getId(), users.get(1 + (i + 1) % (totalUsers - 1)).getId(), (i + 3) % 6));
+      rates.add(new Rate(users.get(i).getId(), users.get(1 + (i + 2) % (totalUsers - 1)).getId(), (i + 2) % 6));
     }
     return rates;
   }
@@ -77,6 +77,21 @@ public final class DataStore {
       }
     }
     return ret;
+  }
+
+  public static List<PostVisit> samplePostVisits() {
+    List<PostVisit> postVisits = new ArrayList<>();
+    postVisits.add(new PostVisit("JHUsedAdmin", "0".repeat(36)));
+    postVisits.add(new PostVisit("001111111111111111111111111111111111", "1".repeat(36)));
+    postVisits.add(new PostVisit("001111111111111111111111111111111111", "3".repeat(36)));
+    postVisits.add(new PostVisit("002111111111111111111111111111111111", "3".repeat(36)));
+    postVisits.add(new PostVisit("003111111111111111111111111111111111", "4".repeat(36)));
+    postVisits.add(new PostVisit("003111111111111111111111111111111111", "3".repeat(36)));
+    postVisits.add(new PostVisit("004111111111111111111111111111111111", "5".repeat(36)));
+    postVisits.add(new PostVisit("005111111111111111111111111111111111", "6".repeat(36)));
+    postVisits.add(new PostVisit("005222222222222222222222222222222222", "7".repeat(36)));
+    postVisits.add(new PostVisit("007111111111111111111111111111111111", "7".repeat(36)));
+    return postVisits;
   }
 
   /**
@@ -355,4 +370,5 @@ public final class DataStore {
         + "to JHUsed.", false));
     return messages;
   }
+
 }
