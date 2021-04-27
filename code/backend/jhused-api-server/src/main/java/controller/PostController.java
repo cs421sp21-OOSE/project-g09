@@ -66,7 +66,7 @@ public class PostController {
       postPaginationSkeleton.getPagination().put("limit", limit);
       postPaginationSkeleton.getPagination().put("last", totalPage);
       postPaginationSkeleton.getPagination().put("total", totalRow);
-      String request = (ApiServer.BACKEND_URL + "/api/posts?page=%d&limit=" + limit);
+      String request = (ApiServer.BACKEND_URL + "/api/v2/posts?page=%d&limit=" + limit);
       postPaginationSkeleton.getLinks().put("first", String.format(request, 1));
       postPaginationSkeleton.getLinks().put("last", String.format(request, totalPage));
       postPaginationSkeleton.getLinks().put("prev", String.format(request, page == 1 ? 1 : (page - 1)));
