@@ -174,7 +174,7 @@ const EditorFormik = (props) => {
                         SPORTING_GOODS: { value: "SPORTING_GOODS", label: "Sporting Goods" },
                         APPAREL: { value: "APPAREL", label: "Apparel" },
                         MUSIC_INSTRUMENT: { value: "MUSIC_INSTRUMENT", label: "Music instrument" },
-                        HOME_GOODS: { value: "HOME_GOODS", label: "Home goods" },
+                        HOME_GOODS: { value: "HOME_GOODS", label: "Home Goods" },
                         OFFICE_SUPPLY: { value: "OFFICE_SUPPLY", label: "Office Supply" },
                         FREE: { value: "FREE", label: "Free" },
                         OTHER: { value: "OTHER", label: "Other" }
