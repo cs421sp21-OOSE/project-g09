@@ -1,5 +1,6 @@
 import {useConversations} from "../../state/ConversationsProvider";
 import axios from "axios";
+import {useEffect, useState} from "react";
 
 const Conversations = () => {
   const { conversations, selectConversationIndex, readMessagesInConversation } = useConversations()
@@ -32,6 +33,13 @@ const Conversations = () => {
         })
     })
   }
+
+  const [update, setUpdate] = useState(false)
+
+  // force update whenever new messages are received
+  useEffect(() => {
+    setUpdate(!update)
+  },[conversations])
 
   return (
     <ul className="flex flex-col w-full h-full my-4 px-2 gap-y-2 overflow-y-auto">
