@@ -6,7 +6,7 @@ const ChatPage = () => {
 
   return (
     <div className="flex flex-col w-screen h-screen">
-      <Header search={true} />
+      <Header search={false} />
       <DashBoard className="flex-1 min-h-0"/>
     </div>
   )
