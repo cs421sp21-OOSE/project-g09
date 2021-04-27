@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d674aa13-516b-41bd-9f03-172cca106027" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/model/Category.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/model/Category.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/util/database/DataStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/util/database/DataStore.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/test/java/dao/jdbi/JdbiPostDaoTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/test/java/dao/jdbi/JdbiPostDaoTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/controller/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/dao/jdbiDao/JdbiPostDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../backend/jhused-api-server/src/main/java/dao/jdbiDao/JdbiPostDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/EditorFormik.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/EditorFormik.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/HomePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/HomePage.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
