@@ -11,3 +11,6 @@ https://www.figma.com/file/ntj4tyvRwBb0rTz64jYbuq/Wireframe?node-id=0%3A1
 
 ## Icons
 https://heroicons.com/
+
+# Presentation Slides
+https://docs.google.com/presentation/d/1RhoJ6Jz3F7AY1W-FAkCut2jftXQaKuenDjZlFd8zMIQ/edit?usp=sharing

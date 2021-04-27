@@ -27,7 +27,7 @@ public class PostController {
       "create_time", "update_time", "location");
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
-  private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
+  private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "car", "electronics", "property_rental", "sporting_goods", "apparel", "music_instrument", "home_goods", "office_supply", "free", "other");
   private static PostDao postDao;
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
@@ -58,7 +58,7 @@ public class PostController {
         if (page < 0 || limit < 0)
           throw new ApiError("Page or limit present but invalid.", 400);
       }
-      int totalRow = postDao.getTotalRowNum();
+      int totalRow = postDao.getTotalRowNum(categoryString, keyword, sortParams,0,0);
       int totalPage = totalRow / limit + 1;
 
       PostPaginationSkeleton postPaginationSkeleton = new PostPaginationSkeleton();
@@ -66,12 +66,12 @@ public class PostController {
       postPaginationSkeleton.getPagination().put("limit", limit);
       postPaginationSkeleton.getPagination().put("last", totalPage);
       postPaginationSkeleton.getPagination().put("total", totalRow);
-      String request = (ApiServer.BACKEND_URL + "/api/posts?page=%d&limit=" + limit);
+      String request = (ApiServer.BACKEND_URL + "/api/v2/posts?page=%d&limit=" + limit);
       postPaginationSkeleton.getLinks().put("first", String.format(request, 1));
       postPaginationSkeleton.getLinks().put("last", String.format(request, totalPage));
       postPaginationSkeleton.getLinks().put("prev", String.format(request, page == 1 ? 1 : (page - 1)));
       postPaginationSkeleton.getLinks().put("next", String.format(request, totalPage > page ? (page + 1) : (page)));
-      postPaginationSkeleton.setPosts(postDao.readAllAdvanced(categoryString,keyword,sortParams,page,limit));
+      postPaginationSkeleton.setPosts(postDao.readAllAdvanced(categoryString, keyword, sortParams, page, limit));
 
       return gson.toJson(postPaginationSkeleton);
 
@@ -94,7 +94,6 @@ public class PostController {
       String keyword = req.queryParams("keyword"); // use keyword for search
       String sort = req.queryParams("sort");
       Map<String, String> sortParams = handleSortParam(sort);
-
       List<Post> posts = postDao.readAllAdvanced(categoryString, keyword, sortParams);
       return gson.toJson(posts);
 
@@ -119,8 +118,12 @@ public class PostController {
   public Route createPost = (Request req, Response res) -> {
     try {
       Post post = gson.fromJson(req.body(), Post.class);
-      postDao.create(post);
-      res.status(201);
+      Post createdPost = postDao.create(post);
+      if(createdPost!=null)
+        res.status(201);
+      else {
+        throw new ApiError("Unable to create the post",400);
+      }
       return gson.toJson(post);
     } catch (DaoException ex) {
       throw new ApiError(ex.getMessage(), 500);

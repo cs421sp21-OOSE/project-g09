@@ -55,6 +55,7 @@ public interface PostDao {
    * @throws DaoException A generic exception for CRUD operations.
    */
   List<Post> readAllFromUser(String userId) throws DaoException;
+
   /**
    * Get all method which can handle all query parameters
    *
@@ -73,13 +74,14 @@ public interface PostDao {
    * @param specified   category to be searched in
    * @param searchQuery A search term.
    * @param sortParams  map of sort keys and sort orders
-   * @param page the page of the pagination
-   * @param limit the size of a page
+   * @param page        the page of the pagination
+   * @param limit       the size of a page
    * @return list of matching posts with the sorted order
    * @throws DaoException A generic exception for CRUD operations.
    */
   List<Post> readAllAdvanced(String specified, String searchQuery, Map<String, String> sortParams, int page, int limit)
       throws DaoException;
+
   /**
    * Update the title of a Posts provided its id.
    *
@@ -126,7 +128,8 @@ public interface PostDao {
    */
   List<Post> getCategory(Category specified) throws DaoException;
 
-  int getTotalRowNum() throws DaoException;
+  int getTotalRowNum(String specified, String searchQuery, Map<String, String> sortParams, int page, int limit)
+      throws DaoException;
 }
 
 

@@ -4,6 +4,8 @@ import {useContacts} from "./ContactsProvider";
 import {useSocket} from "./SocketProvider";
 import { UserContext } from "./";
 import axios from "axios";
+import useSound from 'use-sound';
+import newMessageNotification from "../sounds/newMessageNotification.mp3"
 
 const ConversationsContext = React.createContext();
 
@@ -19,6 +21,8 @@ const ConversationsProvider = ({ children }) => {
   const socket = useSocket();
   const context = useContext(UserContext.Context);
   const defaultProfileImage = 'https://i.redd.it/v2h2px8w5piz.png'
+  const [play] = useSound(newMessageNotification, {volume: 0.25})
+
   const readMessagesInConversation = useCallback( ({ index }) => {
     setConversations(prevConversations => {
     const newConversations = prevConversations.map((conversation, idx) => {
@@ -55,7 +59,7 @@ const ConversationsProvider = ({ children }) => {
     }
   };
 
-  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
+  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read, sound} ) => {
     setConversations(prevConversations => {
       let madeChange = false;
       const newMessage = { messageId, sender, text, sentTime, read };
@@ -82,6 +86,12 @@ const ConversationsProvider = ({ children }) => {
         ]
       }
     });
+    console.log(sound)
+    // ring the bell if sound is ture
+    if (sound === true) {
+      console.log("making sound")
+      play()
+    }
   }, [setConversations]);
 
   const deleteMessageFromConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
@@ -136,7 +146,7 @@ const ConversationsProvider = ({ children }) => {
       .then((response) => {
         socket.emit('send-message', { messageId:response.data.id, recipients, text, sentTime:sentTime });
         addMessageToConversation({ messageId:response.data.id,
-          recipients, text, sender:context.user.id, sentTime:sentTime, read:true});
+          recipients, text, sender:context.user.id, sentTime:sentTime, read:true, sound:false});
       })
       .catch((error) => {
         console.log(error);
@@ -153,7 +163,7 @@ const ConversationsProvider = ({ children }) => {
       const name = (contact && contact.name) || recipient;
 
       const contactImg = contact != null ? contact.image : defaultProfileImage
-      return { id:recipient, name, profileImg: contactImg};
+      return { id:recipient, name, image: contactImg};
     });
 
     const messages = conversation.messages.map(message => {

@@ -40,7 +40,7 @@ const EditorFormik = (props) => {
         .get("/api/posts/" + postID)
         .then((response) => {
           console.log(response);
-          if (response.data.hashtags == undefined) response.data.hashtags = [];
+          if (response.data.hashtags === undefined) response.data.hashtags = [];
           setInitialPostData(response.data);
           setIsLoaded(true);
         })
@@ -112,7 +112,7 @@ const EditorFormik = (props) => {
       .max(100, "Must be 100 characters or less")
       .required("Please provide a location"),
     category: Yup.string()
-      .oneOf(["FURNITURE", "CAR", "DESK", "TV", "OTHER"], "Invalid a category")
+      .oneOf(["FURNITURE", "CAR", "ELECTRONICS", "PROPERTY_RENTAL", "SPORTING_GOODS", "APPAREL", "MUSIC_INSTRUMENT", "HOME_GOODS", "OFFICE_SUPPLY", "FREE", "OTHER"], "Invalid a category")
       .required("Please select a category"),
     description: Yup.string().required("Please provide a description"),
     images: Yup.array().min(1, "Please upload least one image"),
@@ -169,9 +169,15 @@ const EditorFormik = (props) => {
                       options={{
                         FURNITURE: { value: "FURNITURE", label: "Furniture" },
                         CAR: { value: "CAR", label: "Car" },
-                        TV: { value: "TV", label: "TV" },
-                        DESK: { value: "DESK", label: "Desk" },
-                        OTHER: { value: "OTHER", label: "Other" },
+                        ELECTRONICS: { value: "ELECTRONICS", label: "Electronics" },
+                        PROPERTY_RENTAL: { value: "PROPERTY_RENTAL", label: "Property Rental" },
+                        SPORTING_GOODS: { value: "SPORTING_GOODS", label: "Sporting Goods" },
+                        APPAREL: { value: "APPAREL", label: "Apparel" },
+                        MUSIC_INSTRUMENT: { value: "MUSIC_INSTRUMENT", label: "Music instrument" },
+                        HOME_GOODS: { value: "HOME_GOODS", label: "Home Goods" },
+                        OFFICE_SUPPLY: { value: "OFFICE_SUPPLY", label: "Office Supply" },
+                        FREE: { value: "FREE", label: "Free" },
+                        OTHER: { value: "OTHER", label: "Other" }
                       }}
                       label="Category"
                       placeholder="Select"
@@ -299,13 +305,6 @@ const StdTextArea = ({ ...props }) => {
 
 // Wrapper for react-select single select component to be compatible with Formik
 const SelectWraper = ({ ...props }) => {
-  const customStyles = {
-    singleValue: (provided, state) => ({
-      ...provided,
-      padding: 0,
-      margin: "0px 0px",
-    }),
-  };
 
   return (
     <div className={props.className}>
@@ -318,7 +317,20 @@ const SelectWraper = ({ ...props }) => {
           props.onChange(props.name, obj.value);
         }}
         onBlur={() => props.onBlur(props.name, true)}
-        styles={customStyles}
+        // styles={customStyles}
+        theme={theme => ({
+          ...theme,
+          borderRadius: '0.5rem', 
+          colors: {
+            ...theme.colors,
+            primary: 'rgba(29, 78, 216)',
+          },
+        })}
+        styles={{
+          placeholder: () => ({
+            color: 'rgba(156, 163, 175)',
+          })
+        }}
       />
       {props.touched && props.error ? (
         <div className={errorMsgStyle}>{props.error}</div>
@@ -367,7 +379,7 @@ const CreatableWrapper = ({ ...props }) => {
 
   return (
     <div className={props.className}>
-      <lable className={fieldLabelStyle}>{props.label}</lable>
+      <label className={fieldLabelStyle}>{props.label}</label>
       <CreatableSelecet
         components={{ DropdownIndicator: null }}
         inputValue={tagInput || ""}
@@ -382,6 +394,19 @@ const CreatableWrapper = ({ ...props }) => {
         onInputChange={handleTagInputChange}
         onKeyDown={handleTagKeyDown}
         onChange={handleCreatableChange}
+        theme={theme => ({
+          ...theme,
+          borderRadius: '0.5rem', 
+          colors: {
+            ...theme.colors,
+            primary: 'rgba(29, 78, 216)',
+          },
+        })}
+        styles={{
+          placeholder: () => ({
+            color: 'rgba(156, 163, 175)',
+          })
+        }}
       />
     </div>
   );

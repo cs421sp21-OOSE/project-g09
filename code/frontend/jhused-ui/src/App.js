@@ -8,10 +8,8 @@ import RedirectPage from "./components/RedirectPage";
 import NotFoundPage from "./components/NotFoundPage";
 import ChatPage from "./components/chat/ChatPage";
 import UserSettings from "./components/UserSettings";
-import Header from "./components/Header";
 import { UserContext } from "./state";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
-import context from "react-bootstrap/esm/AccordionContext";
 
 const App = () => {
   const user = useContext(UserContext.Context);

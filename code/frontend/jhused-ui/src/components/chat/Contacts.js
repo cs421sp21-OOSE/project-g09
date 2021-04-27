@@ -8,8 +8,8 @@ const Contacts = () => {
   const [contactFocused, setContactFocused] = useState(null);
   
   return (
-    <div className="overflow-y-auto">
-      <ul className="flex flex-col w-full h-full my-4 px-2 gap-y-2" >
+    <div className="flex-1 overflow-y-auto my-4">
+      <ul className="flex flex-col w-full h-full  px-2 gap-y-2" >
         {contacts.map(contact => (
           <li className="flex items-center flex-wrap gap-x-4 px-2 py-2 border shadow-sm rounded-xl group hover:bg-gray-500 relative" key={contact.id}>
             <img className="flex-none rounded-full w-12 h-12 object-cover overlfow-hidden"src={contact.image} alt=""/>

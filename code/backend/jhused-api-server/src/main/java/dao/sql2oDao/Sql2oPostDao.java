@@ -416,9 +416,11 @@ public class Sql2oPostDao implements PostDao {
   }
 
   @Override
-  public int getTotalRowNum() throws DaoException {
+  public int getTotalRowNum(String specified, String searchQuery, Map<String, String> sortParams, int page,
+                            int limit) throws DaoException {
     return 0;
   }
+
 
   /**
    * Convert a list of maps returned by sql2o to a List of Post.

@@ -1,4 +1,3 @@
-import {Modal} from 'react-bootstrap';
 import { useState, useContext } from "react";
 import Conversations from "./Conversations";
 import Contacts from "./Contacts";
@@ -16,7 +15,6 @@ const SideBar = () => {
   const conversationsOpen = activeKey === CONVERSATIONS_KEY;
   const context = useContext(UserContext.Context);
   const history = useHistory(); 
-
 
   return (
     <div className="w-36 md:w-64 flex-none pl-4 py-4">
@@ -48,15 +46,15 @@ const SideBar = () => {
         
         {/* Navigation bar */}
         <div className="flex-1 flex flex-col min-h-0">
-          <nav class="flex-none flex flex-wrap justify-center gap-x-4">
+          <nav className="flex-none flex flex-wrap justify-center">
             <button
-              class={`text-gray-600 py-2 block hover:text-blue-500 focus:outline-none
-              ${activeKey === CONVERSATIONS_KEY ? "text-blue-500 border-b-2 font-medium border-blue-500" : ''}`}
+              className={`flex-1 text-gray-600 py-2 block hover:text-blue-600 focus:outline-none
+              ${activeKey === CONVERSATIONS_KEY ? "text-blue-600 border-b-3 font-medium border-blue-600" : ''}`}
               onClick={() => {setActiveKey(CONVERSATIONS_KEY)}}>
               Conversations</button>
             <button
-              class={`text-gray-600 py-2 block hover:text-blue-500 focus:outline-none ml-2
-              ${activeKey === CONTACTS_KEY ? "text-blue-500 border-b-2 font-medium border-blue-500" : ''}`}
+              className={`flex-1 text-gray-600 py-2 block hover:text-blue-600 focus:outline-none
+              ${activeKey === CONTACTS_KEY ? "text-blue-600 border-b-3 font-medium border-blue-600" : ''}`}
               onClick={() => {setActiveKey(CONTACTS_KEY)}}>
               Contacts</button>
           </nav>
