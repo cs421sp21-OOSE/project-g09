@@ -5,7 +5,6 @@ import './Header.css'
 import { useHistory } from 'react-router-dom'
 import { useConversations } from '../state/ConversationsProvider'
 import {SearchContext} from "../state"
-import axios from "../util/axios";
 
 const Header = props => {
   const context = useContext(UserContext.Context)
