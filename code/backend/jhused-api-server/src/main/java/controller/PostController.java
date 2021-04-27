@@ -27,7 +27,7 @@ public class PostController {
       "create_time", "update_time", "location");
   // Admissible sort types
   private static final Set<String> ORDER_KEYS = Set.of("asc", "desc");
-  private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "desk", "car", "tv");
+  private static final Set<String> CATEGORY_KEYS = Set.of("furniture", "car", "electronics", "property_rental", "sporting_goods", "apparel", "music_instrument", "home_goods", "office_supply", "free", "other");
   private static PostDao postDao;
   private static final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 
@@ -94,7 +94,6 @@ public class PostController {
       String keyword = req.queryParams("keyword"); // use keyword for search
       String sort = req.queryParams("sort");
       Map<String, String> sortParams = handleSortParam(sort);
-
       List<Post> posts = postDao.readAllAdvanced(categoryString, keyword, sortParams);
       return gson.toJson(posts);
 

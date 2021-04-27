@@ -156,11 +156,11 @@ public final class DataStore {
         "Hampden"
     );
     Post p2 = new Post("1".repeat(36), "002" + "1".repeat(33),
-        "Samsung TV brand new", 489.99D, SaleState.SALE,
+        "Samsung ELECTRONICS brand new", 489.99D, SaleState.SALE,
         "Samsung, brand new, what else to say?",
-        sampleImages("2".repeat(36), "3".repeat(36), Category.TV),
-        sampleHashtags(Category.TV),
-        Category.TV,
+        sampleImages("2".repeat(36), "3".repeat(36), Category.ELECTRONICS),
+        sampleHashtags(Category.ELECTRONICS),
+        Category.ELECTRONICS,
         "BestBuy"
     );
     Post p3 = new Post("3".repeat(36), "003" + "1".repeat(33),
@@ -174,9 +174,9 @@ public final class DataStore {
     Post p4 = new Post("4".repeat(36), "004" + "1".repeat(33),
         "Vintage office desk", 129.99D, SaleState.SALE,
         "I bought from IKEA",
-        sampleImages("6".repeat(36), "7".repeat(36), Category.DESK),
-        sampleHashtags(Category.DESK),
-        Category.DESK,
+        sampleImages("6".repeat(36), "7".repeat(36), Category.FREE),
+        sampleHashtags(Category.FREE),
+        Category.FREE,
         "Carlyle"
     );
     Post p5 = new Post("5".repeat(36), "005" + "1".repeat(33),
@@ -206,9 +206,9 @@ public final class DataStore {
     Post p8 = new Post("8".repeat(36), "005" + "2".repeat(33),
         "1998 Toyota car", 7100D, SaleState.SOLD,
         "It still works",
-        sampleImages("15".repeat(18), "16".repeat(18), Category.TV),
-        sampleHashtags(Category.TV),
-        Category.TV,
+        sampleImages("15".repeat(18), "16".repeat(18), Category.ELECTRONICS),
+        sampleHashtags(Category.ELECTRONICS),
+        Category.ELECTRONICS,
         "Towson"
     );
     Post p9 = new Post("9".repeat(36), "005" + "2".repeat(33),
@@ -247,7 +247,7 @@ public final class DataStore {
     List<Image> images = new ArrayList<>();
 
     switch (category) {
-      case TV:
+      case ELECTRONICS:
         images.add(new Image(uuid1, "https://images.samsung.com/is/image/samsung/levant-uhd-tu8500" +
             "-ua55tu8500uxtw-frontblack-229855928?$720_576_PNG$"));
         images.add(new Image(uuid2, "https://images.samsung.com/is/image/samsung/ca-uhdtv-nu7090" +
@@ -259,7 +259,7 @@ public final class DataStore {
         images.add(new Image(uuid2, "https://hips.hearstapps.com/amv-prod-gp.s3.amazonaws.com/gearpatrol/" +
             "wp-content/uploads/2019/10/Buy-a-Kia-Telluride-Instead-gear-patrol-slide-1.jpg"));
         break;
-      case DESK:
+      case FREE:
         images.add(new Image(uuid1, "https://1i9wu42vzknf1h4zwf2to5aq-wpengine.netdna-ssl" +
             ".com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg"));
         images.add(new Image(uuid2, "https://cdn.shopify.com/s/files/1/0075/2815/3206/products/426789547" +
@@ -286,7 +286,7 @@ public final class DataStore {
     String uuid2 = UUID.randomUUID().toString();
 
     switch (category) {
-      case TV:
+      case ELECTRONICS:
         images.add(new Image(uuid1, "https://images.samsung.com/is/image/samsung/levant-uhd-tu8500" +
             "-ua55tu8500uxtw-frontblack-229855928?$720_576_PNG$"));
         images.add(new Image(uuid2, "https://images.samsung.com/is/image/samsung/ca-uhdtv-nu7090" +
@@ -298,7 +298,7 @@ public final class DataStore {
         images.add(new Image(uuid2, "https://hips.hearstapps.com/amv-prod-gp.s3.amazonaws.com/gearpatrol/" +
             "wp-content/uploads/2019/10/Buy-a-Kia-Telluride-Instead-gear-patrol-slide-1.jpg"));
         break;
-      case DESK:
+      case FREE:
         images.add(new Image(uuid1, "https://1i9wu42vzknf1h4zwf2to5aq-wpengine.netdna-ssl" +
             ".com/wp-content/uploads/2019/02/x_AN-1981_YthDeskPROF_o_s_.jpg"));
         images.add(new Image(uuid2, "https://cdn.shopify.com/s/files/1/0075/2815/3206/products/426789547" +
@@ -322,7 +322,7 @@ public final class DataStore {
     List<Hashtag> hashtags = new ArrayList<>();
 
     switch (category) {
-      case TV:
+      case ELECTRONICS:
         hashtags.add(new Hashtag("0".repeat(36), "samsung"));
         hashtags.add(new Hashtag("1".repeat(36), "4k"));
         break;
@@ -330,7 +330,7 @@ public final class DataStore {
         hashtags.add(new Hashtag("2".repeat(36), "lexus"));
         hashtags.add(new Hashtag("3".repeat(36), "toyota"));
         break;
-      case DESK:
+      case FREE:
         hashtags.add(new Hashtag("4".repeat(36), "ikea"));
         hashtags.add(new Hashtag("5".repeat(36), "4leg"));
         break;
