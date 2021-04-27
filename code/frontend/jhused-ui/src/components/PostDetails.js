@@ -20,6 +20,8 @@ const PostDetails = (props) => {
   const [post, setPost] = useState(null);
   const [postUser, setPostUser] = useState(null);
 
+  const [viewCount, setViewCount] = useState(0);
+
   useEffect(() => {
     const postPath = "/api/posts/" + params.postID;
 
@@ -42,6 +44,49 @@ const PostDetails = (props) => {
         console.log(err);
       });
   }, []);
+
+  useEffect(()=>{
+    if (context.user) {
+      const visitPath =
+        "/api/posts/visits/" + params.postID + "/" + context.user.id;
+      const visitPathPost = "/api/posts/visits";
+      axios
+        .get(visitPath)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((err) => {
+          console.log(err.response.status);
+          if (err.response.status == 404) {
+            axios
+              .post(visitPathPost, {
+                postId: params.postID,
+                userId: context.user.id,
+              })
+              .then((response) => {
+                console.log(response.data);
+                setViewCount(viewCount+1);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        });
+    }
+  })
+
+  useEffect(()=>{
+    const viewCountPath = "/api/posts/visits/"+params.postID;
+
+    axios.get(viewCountPath)
+    .then((response)=>{
+      console.log(response.data);
+      setViewCount(response.data['viewCount']);
+    })
+    .catch((err)=>{
+      console.log(err);
+    });
+  },[viewCount]);
 
   const handleMessageSeller = () => {
     if (context.user) {
@@ -103,6 +148,15 @@ const PostDetails = (props) => {
                 ) : (
                   ""
                 )}
+                <p className="font-black text-base text-gray-400">
+                  Viewed by
+                  <div className="container inline bg-green-200 rounded-md">
+                    <p className="text-bold text-lg text-blue-400 inline">
+                      {" "}{viewCount}{" "}
+                    </p>
+                  </div>
+                  users.
+                </p>
               </div>
             </div>
           </div>
