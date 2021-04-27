@@ -5,6 +5,8 @@ import './Header.css'
 import { useHistory } from 'react-router-dom'
 import { useConversations } from '../state/ConversationsProvider'
 import {SearchContext} from "../state"
+import axios from "../util/axios";
+
 
 const Header = props => {
   const context = useContext(UserContext.Context)
@@ -14,6 +16,7 @@ const Header = props => {
   const [searchTerm, setSearchTerm] = useState(searchContext.searchTerm)
   const {conversations, setConversations, addMessageToConversation} = useConversations()
   const [update, setUpdate] = useState(false)
+
   // force update whenever new messages are received
   useEffect(() => {
     setUpdate(!update)
@@ -45,8 +48,7 @@ const Header = props => {
               text: message.message,
               sender: message.senderId,
               sentTime: message.sentTime.seconds,
-              read: message.read,
-              sound: false
+              read: message.read
             })
           })
           messagesAsSender.forEach(message => {
@@ -56,8 +58,7 @@ const Header = props => {
               text: message.message,
               sender: context.user.id,
               sentTime: message.sentTime.seconds,
-              read: true,
-              sound: false
+              read: true
             })
           })
         })
