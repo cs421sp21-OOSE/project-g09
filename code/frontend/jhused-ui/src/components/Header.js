@@ -7,7 +7,6 @@ import { useConversations } from '../state/ConversationsProvider'
 import {SearchContext} from "../state"
 import axios from "../util/axios";
 
-
 const Header = props => {
   const context = useContext(UserContext.Context)
   const history = useHistory()
@@ -16,7 +15,6 @@ const Header = props => {
   const [searchTerm, setSearchTerm] = useState(searchContext.searchTerm)
   const {conversations, setConversations, addMessageToConversation} = useConversations()
   const [update, setUpdate] = useState(false)
-
   // force update whenever new messages are received
   useEffect(() => {
     setUpdate(!update)
@@ -48,7 +46,8 @@ const Header = props => {
               text: message.message,
               sender: message.senderId,
               sentTime: message.sentTime.seconds,
-              read: message.read
+              read: message.read,
+              sound: false
             })
           })
           messagesAsSender.forEach(message => {
@@ -58,7 +57,8 @@ const Header = props => {
               text: message.message,
               sender: context.user.id,
               sentTime: message.sentTime.seconds,
-              read: true
+              read: true,
+              sound: false
             })
           })
         })
