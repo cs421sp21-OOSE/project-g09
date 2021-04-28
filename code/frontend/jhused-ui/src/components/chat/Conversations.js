@@ -49,7 +49,7 @@ const Conversations = () => {
           key={index}
           onClick={() => setMessageToRead({ index })}
         >
-          <img src={conversation.recipients[0].image || ""} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+          <img src={conversation.recipients[0].image || ""} alt="" className="flex-none h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
           <div className="flex-col truncate">
             <div className="font-semibold group-hover:text-white">
               {conversation.recipients.map(recipient => recipient.name).join(', ')}
