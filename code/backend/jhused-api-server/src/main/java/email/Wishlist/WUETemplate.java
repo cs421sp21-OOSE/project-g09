@@ -1,6 +1,7 @@
 package email.Wishlist;
 
 import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.ASM;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 
@@ -37,6 +38,9 @@ public class WUETemplate {
 
         //set the templateId from the sendgrid website.
         mail.setTemplateId("d-ba70e2cbac7b4a279e30a5e5119fb5bb");
+        ASM asm = new ASM();
+        asm.setGroupId(16635);
+        mail.setASM(asm);
 
         return mail;
     }
