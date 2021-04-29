@@ -173,4 +173,13 @@ class JdbiUserDaoTest {
 //    assertNull(userDao.delete(null));
 //  }
 
+  @Test
+  @DisplayName("checking to see if email sends upon user email change.")
+  void emailConfirmationSends() {
+    User updatedUser = new User("JHUsedAdmin", "JHUsed Administrator", "louie@artificialtalk.com", "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "");
+
+    userDao.update("JHUsedAdmin", updatedUser);
+
+  }
+
 }
