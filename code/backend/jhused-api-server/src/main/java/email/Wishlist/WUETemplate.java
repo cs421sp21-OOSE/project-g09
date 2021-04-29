@@ -1,6 +1,7 @@
 package email.Wishlist;
 
 import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.ASM;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 
@@ -20,6 +21,11 @@ public class WUETemplate {
         Email to = new Email(userEmail);
         Content content = new Content("text/plain", "One of your wishlist-ed posts has been updated!");
         Mail mail = new Mail(from, subject, to, content);
+
+        ASM asm = new ASM();
+        asm.setGroupId(16720);
+        mail.setASM(asm);
+
         return mail;
     }
 
@@ -37,6 +43,9 @@ public class WUETemplate {
 
         //set the templateId from the sendgrid website.
         mail.setTemplateId("d-ba70e2cbac7b4a279e30a5e5119fb5bb");
+        ASM asm = new ASM();
+        asm.setGroupId(16720);
+        mail.setASM(asm);
 
         return mail;
     }

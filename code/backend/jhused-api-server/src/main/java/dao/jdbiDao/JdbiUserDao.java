@@ -3,6 +3,7 @@ package dao.jdbiDao;
 import dao.PostDao;
 import dao.UserDao;
 import dao.WishlistPostSkeletonDao;
+import email.Confirmation.ConfirmationEmails;
 import email.Welcome.WelcomeEmails;
 import exceptions.DaoException;
 import model.Post;
@@ -149,6 +150,20 @@ public class JdbiUserDao implements UserDao {
         + "WHERE id = :userId RETURNING *) "
         + "SELECT * FROM updated;";
     try {
+      //grab the old user before we replace it
+      User oldUser = read(userId);
+
+      //check if the emails are different
+      if(!oldUser.getEmail().equals(user.getEmail())) {
+        //send basic text email confirmation to original email
+        //ConfirmationEmails.basicConfirmationEmail(oldUser.getEmail());
+
+        //send styled email confirmation to original email
+        ConfirmationEmails.styledConfirmationEmail(oldUser.getEmail());
+
+      }
+
+      //continue with updating process.
       if (user.getPosts() == null) {
         user.setPosts(new ArrayList<>());
       }
@@ -208,7 +223,7 @@ public class JdbiUserDao implements UserDao {
                 userAccumulator).values()).get(0);
       });
 
-    } catch (IllegalStateException | StatementException | NullPointerException ex) {
+    } catch (IllegalStateException | StatementException | NullPointerException | IOException ex) {
       throw new DaoException("Unable to update the hashtag: " + ex.getMessage(), ex);
     }
   }

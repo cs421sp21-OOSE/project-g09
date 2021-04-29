@@ -83,22 +83,20 @@ As a user, I want to see other people’s location information, so that I can bu
 
 # Tasks
 - [ ] Issues to fix
-  - [ ]  Fix Heroku (Junjie)
+  - [x]  Fix Heroku (Junjie)
   - [ ]  Frontend did not pass existing hashtag id to backend.
   - [ ]  Duplicate hashtag crash
-  - [ ]  chat page is not showing the correct user profiles (Chu)
-  - [ ]  limit seller ratings to the buyer
-  - [ ]  Invite more people to test out web app (everyone)
+  - [x]  chat page is not showing the correct user profiles (Chu)
+  - [x]  Invite more people to test out web app (everyone)
     - [ ] Fix bugs as we find/are notified about them. (everyone)
 
 - [ ] User Stories
   - [ ] Pagination (Backend:Bohua, Frontend:Sam)
   - [ ] Marking post as sold
-  - [ ] Email confirmations for email changes (Louie)
-  - [ ] Email Preferences (Louie)
-  - [ ] chat notification sound (Junjie)
-  - [ ] Post View Count
-  - [ ] Sort by locations
+  - [x] Email confirmations for email changes (Louie)
+  - [x] Email Preferences (Louie)
+  - [x] chat notification sound (Junjie)
+  - [x] Post View Count
 
 # Retrospective
 
