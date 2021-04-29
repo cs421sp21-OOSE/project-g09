@@ -243,6 +243,10 @@ public class JdbiPostDao implements PostDao {
       }
       if (post.getHashtags() == null) {
         post.setHashtags(new ArrayList<>());
+      }else{
+        Set<Hashtag> hashtags = new HashSet<>(post.getHashtags());
+        post.getHashtags().clear();
+        post.getHashtags().addAll(hashtags);
       }
 
       return jdbi.inTransaction(handle -> {
@@ -280,7 +284,7 @@ public class JdbiPostDao implements PostDao {
                   deletePostHashtagsIds.remove(k.getId());
               });
             } else if (!deletePostHashtags.contains(hashtag)) {
-              List<Hashtag> existingHashtags = hashtagDao.readAllExactCaseInsensitive(hashtag.getHashtag());
+              List<Hashtag> existingHashtags = hashtagDao.readAllExactCaseSensitive(hashtag.getHashtag());
               if (existingHashtags == null || existingHashtags.isEmpty())
                 toCreateHashtags.add(hashtag);
               else

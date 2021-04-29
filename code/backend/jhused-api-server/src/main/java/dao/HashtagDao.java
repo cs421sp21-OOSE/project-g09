@@ -54,6 +54,14 @@ public interface HashtagDao {
   List<Hashtag> readAll(String hashtagQuery) throws DaoException;
 
   /**
+   * Read all hashtags that match exactly
+   * @param hashtagQuery
+   * @return
+   * @throws DaoException
+   */
+  List<Hashtag> readAllExactCaseSensitive(String hashtagQuery) throws DaoException;
+
+  /**
    * Read all hashtags that match exactly but case insensitive
    * @param hashtagQuery
    * @return
