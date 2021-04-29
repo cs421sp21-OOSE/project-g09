@@ -10,9 +10,17 @@ const categories = [
   { id: 1, name: "ALL", unavailable: false },
   { id: 2, name: "FURNITURE", unavailable: false },
   { id: 3, name: "CAR", unavailable: false },
-  { id: 4, name: "TV", unavailable: true },
-  { id: 5, name: "DESK", unavailable: false },
-  { id: 6, name: "OTHER", unavailable: false },
+  { id: 4, name: "ELECTRONICS", unavailable: true },
+  { id: 5, name: "PROPERTY_RENTAL", unavailable: false },
+  { id: 6, name: "SPORTING_GOODS", unavailable: false },
+  { id: 7, name: "APPAREL", unavailable: false },
+  { id: 8, name: "MUSIC_INSTRUMENT", unavailable: false },
+  { id: 9, name: "HOME_GOODS", unavailable: false },
+  { id: 10, name: "OFFICE_SUPPLY", unavailable: false },
+  { id: 11, name: "FREE", unavailable: false },
+  { id: 12, name: "OTHER", unavailable: false },
+
+
 ];
 
 const sorts = [

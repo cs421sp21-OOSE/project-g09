@@ -4,6 +4,7 @@ import {useContacts} from "./ContactsProvider";
 import {useSocket} from "./SocketProvider";
 import { UserContext } from "./";
 import axios from "axios";
+import newMessageNotification from "../sounds/newMessageNotification.wav"
 
 const ConversationsContext = React.createContext();
 
@@ -19,6 +20,7 @@ const ConversationsProvider = ({ children }) => {
   const socket = useSocket();
   const context = useContext(UserContext.Context);
   const defaultProfileImage = 'https://i.redd.it/v2h2px8w5piz.png'
+  const audio = new Audio(newMessageNotification)
 
   const readMessagesInConversation = useCallback( ({ index }) => {
     setConversations(prevConversations => {
@@ -56,7 +58,7 @@ const ConversationsProvider = ({ children }) => {
     }
   };
 
-  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
+  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read, sound=false} ) => {
     setConversations(prevConversations => {
       let madeChange = false;
       const newMessage = { messageId, sender, text, sentTime, read };
@@ -83,6 +85,10 @@ const ConversationsProvider = ({ children }) => {
         ]
       }
     });
+    // ring the bell if sound is ture
+    if (sound === true) {
+      audio.play()
+    }
   }, [setConversations]);
 
   const deleteMessageFromConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read} ) => {
@@ -130,14 +136,13 @@ const ConversationsProvider = ({ children }) => {
         nanos: 212877000
       }
     }
-
     axios.post("/api/messages", messageToDB,
       {params: { isList: false }
       })
       .then((response) => {
         socket.emit('send-message', { messageId:response.data.id, recipients, text, sentTime:sentTime });
         addMessageToConversation({ messageId:response.data.id,
-          recipients, text, sender:context.user.id, sentTime:sentTime, read:true});
+          recipients, text, sender:context.user.id, sentTime:sentTime, read:true, sound:false});
       })
       .catch((error) => {
         console.log(error);

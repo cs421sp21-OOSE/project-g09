@@ -106,13 +106,14 @@ const EditorFormik = (props) => {
       .max(100, "Must be 100 characters or less")
       .required("Please give it a title"),
     price: Yup.number()
-      .min(0, "Cannot be smaller than zero")
+      .min(0, "Must be positive number")
+      .max(99999, "Must be less than $99,999")
       .required("Please give it a price"),
     location: Yup.string()
       .max(100, "Must be 100 characters or less")
       .required("Please provide a location"),
     category: Yup.string()
-      .oneOf(["FURNITURE", "CAR", "DESK", "TV", "OTHER"], "Invalid a category")
+      .oneOf(["FURNITURE", "CAR", "ELECTRONICS", "PROPERTY_RENTAL", "SPORTING_GOODS", "APPAREL", "MUSIC_INSTRUMENT", "HOME_GOODS", "OFFICE_SUPPLY", "FREE", "OTHER"], "Invalid a category")
       .required("Please select a category"),
     description: Yup.string().required("Please provide a description"),
     images: Yup.array().min(1, "Please upload least one image"),
@@ -169,9 +170,15 @@ const EditorFormik = (props) => {
                       options={{
                         FURNITURE: { value: "FURNITURE", label: "Furniture" },
                         CAR: { value: "CAR", label: "Car" },
-                        TV: { value: "TV", label: "TV" },
-                        DESK: { value: "DESK", label: "Desk" },
-                        OTHER: { value: "OTHER", label: "Other" },
+                        ELECTRONICS: { value: "ELECTRONICS", label: "Electronics" },
+                        PROPERTY_RENTAL: { value: "PROPERTY_RENTAL", label: "Property Rental" },
+                        SPORTING_GOODS: { value: "SPORTING_GOODS", label: "Sporting Goods" },
+                        APPAREL: { value: "APPAREL", label: "Apparel" },
+                        MUSIC_INSTRUMENT: { value: "MUSIC_INSTRUMENT", label: "Music instrument" },
+                        HOME_GOODS: { value: "HOME_GOODS", label: "Home Goods" },
+                        OFFICE_SUPPLY: { value: "OFFICE_SUPPLY", label: "Office Supply" },
+                        FREE: { value: "FREE", label: "Free" },
+                        OTHER: { value: "OTHER", label: "Other" }
                       }}
                       label="Category"
                       placeholder="Select"
@@ -336,20 +343,32 @@ const SelectWraper = ({ ...props }) => {
 // Wrapper for react-select creatable component to be compatiable with Formik
 const CreatableWrapper = ({ ...props }) => {
   const [tagInput, setTagInput] = useState(""); // State for tag input
+  const [dupliateExists, setDuplateExists] = useState(false);
 
   const handleTagInputChange = (inputValue) => {
-    setTagInput(inputValue);
+    let curInput = removeHashSymbol(inputValue);
+    setTagInput(curInput);
+    if (isDuplicate(curInput)) {
+      setDuplateExists(false);
+    }
   };
 
   const handleTagKeyDown = (event) => {
     if (!tagInput) return;
     switch (event.key) {
       case "Enter":
-        props.onChange(props.name, [
-          ...props.value,
-          { hashtag: removeHashtag(tagInput) },
-        ]);
-        setTagInput("");
+        // Only append hashtags if there isn't a existing one
+        if (isDuplicate(removeHashSymbol(tagInput)))  {
+          setDuplateExists(false);
+          props.onChange(props.name, [
+            ...props.value,
+            { hashtag: removeHashSymbol(tagInput) },
+          ]);
+          setTagInput("");
+        }
+        else {
+          setDuplateExists(true);
+        }
         event.preventDefault();
         break;
       default:
@@ -363,13 +382,18 @@ const CreatableWrapper = ({ ...props }) => {
     );
   };
 
-  // Helper method to remove the preceding hashtags
-  const removeHashtag = (val) => {
+  // Helper method to remove the preceding hashtag symbol
+  const removeHashSymbol = (val) => {
     if (val.startsWith("#")) {
       val = val.slice(1, val.length);
     }
     return val;
   };
+
+  // Helper method to check if there is already a hashtag in the value prop matching the current input value
+  const isDuplicate = (inputValue) => {
+    return (props.value.filter((val) => val.hashtag === inputValue).length === 0)
+  }
 
   return (
     <div className={props.className}>
@@ -402,6 +426,9 @@ const CreatableWrapper = ({ ...props }) => {
           })
         }}
       />
+      {dupliateExists ? (
+        <div className={errorMsgStyle}>Please do not use dupliate hashtags</div>
+      ) : null}
     </div>
   );
 };

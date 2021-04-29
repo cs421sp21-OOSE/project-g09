@@ -1,5 +1,6 @@
 import {useConversations} from "../../state/ConversationsProvider";
 import axios from "axios";
+import {useEffect, useState} from "react";
 
 const Conversations = () => {
   const { conversations, selectConversationIndex, readMessagesInConversation } = useConversations()
@@ -33,6 +34,13 @@ const Conversations = () => {
     })
   }
 
+  const [update, setUpdate] = useState(false)
+
+  // force update whenever new messages are received
+  useEffect(() => {
+    setUpdate(!update)
+  },[conversations])
+
   return (
     <ul className="flex flex-col w-full h-full my-4 px-2 gap-y-2 overflow-y-auto">
       {conversations.map((conversation, index) => (
@@ -41,7 +49,7 @@ const Conversations = () => {
           key={index}
           onClick={() => setMessageToRead({ index })}
         >
-          <img src={conversation.recipients[0].image || ""} alt="" className="h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
+          <img src={conversation.recipients[0].image || ""} alt="" className="flex-none h-6 w-6 sm:h-12 sm:w-12 rounded-full overflow-hidden object-cover"/>
           <div className="flex-col truncate">
             <div className="font-semibold group-hover:text-white">
               {conversation.recipients.map(recipient => recipient.name).join(', ')}
