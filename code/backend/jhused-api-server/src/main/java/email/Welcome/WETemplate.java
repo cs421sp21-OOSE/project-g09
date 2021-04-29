@@ -21,6 +21,11 @@ public class WETemplate {
         Email to = new Email(userEmail);
         Content content = new Content("text/plain", "Welcome to JHUsed!");
         Mail mail = new Mail(from, subject, to, content);
+
+        ASM asm = new ASM();
+        asm.setGroupId(16722);
+        mail.setASM(asm);
+
         return mail;
     }
 
