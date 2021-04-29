@@ -56,10 +56,16 @@ public class ConfirmationEmailsTest {
 
     }
 
-    @Test
+    //@Test
     @DisplayName("send an email.")
     void updateSendMail() throws IOException {
         ConfirmationEmails.basicConfirmationEmail("ldibern1@jh.edu");
+    }
+
+    @Test
+    @DisplayName("send an email.")
+    void styledSendMail() throws IOException {
+        ConfirmationEmails.styledConfirmationEmail("ldibern1@jh.edu");
     }
 
 }
