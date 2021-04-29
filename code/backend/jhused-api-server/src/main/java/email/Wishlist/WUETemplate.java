@@ -39,7 +39,7 @@ public class WUETemplate {
         //set the templateId from the sendgrid website.
         mail.setTemplateId("d-ba70e2cbac7b4a279e30a5e5119fb5bb");
         ASM asm = new ASM();
-        asm.setGroupId(16635);
+        asm.setGroupId(16720);
         mail.setASM(asm);
 
         return mail;
