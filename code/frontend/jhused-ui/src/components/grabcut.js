@@ -5,17 +5,13 @@ import {useOpenCv} from 'opencv-react';
 const Grabcut = (props) => {
   const fgStrokeColor={color:"#c0392b",value:{r:192,g:57,b:43}};
   const boxStrokeColor = { color: "blue" };
-  const imgSrc =
-    "https://firebasestorage.googleapis.com/v0/b/jhused-ui.appspot.com/o/images%2FIMG_1419.JPEG?alt=media&token=341b596e-18bb-4b5b-b863-005c50a2b372";
 
   const { loaded, cv } = useOpenCv();
   const canvasRef = useRef(null);
   const imgCanvasRef = useRef(null);
   const canvasShowRef = useRef(null);
   const [ctx, setCtx] = useState(null);
-  const [imgCtx, setImgCtx] = useState(null);
   const [img, setImg] = useState(null);
-  const [imgMat, setImgMat] = useState(null);
   const [selectMode, setSelectMode] = useState(0); //0 is box, 1 is foregound, 2 is background
   const [downloadLink, setDownloadLink] = useState(null);
   const [rect, setRect] = useState({x:0,y:0,width:0,height:0});
@@ -31,7 +27,7 @@ const Grabcut = (props) => {
 
   useEffect(() => {
     if (canvasRef && loaded && imgCanvasRef) {
-      console.log(canvasRef);
+      //console.log(canvasRef);
       const canvas = canvasRef.current;
       const imgCanvas = imgCanvasRef.current;
       var ctx = canvas.getContext("2d");
@@ -42,17 +38,17 @@ const Grabcut = (props) => {
       });
       setCtx(ctx);
       var imgCtx = imgCanvas.getContext('2d');
-      setImgCtx(imgCtx);
-      console.log(imgCanvas);
+      //console.log(imgCanvas);
       var image = new Image();
       image.crossOrigin = "anonymous";
       image.src=props.grabCutEditUrl;
-      console.log("image.src: ",image.src);
+      //console.log("image.src: ",image.src);
     //   image.src =
     //   "https://firebasestorage.googleapis.com/v0/b/jhused-ui.appspot.com/o/images%2FJrSnimtjHouoCPsG.jpg?alt=media&token=1dbb2c32-ac91-411b-8792-bedde5a9d101";
       image.addEventListener(
         "load",
         function () {
+          console.log(image);
           canvas.width=500;
           canvas.height=500;
           var scaleFactor = Math.min(
@@ -73,23 +69,23 @@ const Grabcut = (props) => {
           image.width = imgCanvas.width;
           image.height = imgCanvas.height;
           setImg(image);
-          console.log(image);
+          //console.log(image);
         },
         false
       );
     } else {
-      console.log("canvasRef not loaded");
+      //console.log("canvasRef not loaded");
     }
   }, [canvasRef, loaded, imgCanvasRef, props]);
 
   function getFirebasePath(src){
     let folder = src.match(/o\/[^;]+%/)[0];
     folder = folder.replace("o/","").replace("%","/");
-    console.log(folder);
+    //console.log(folder);
     let filename = src.match(/o\/[^;]+%[^;]+\?/)[0];
     filename = filename.replace("%","/").replace("o/","").replace("?","");
 
-    console.log(filename);
+    //console.log(filename);
     return filename;
   }
 
@@ -124,22 +120,22 @@ const Grabcut = (props) => {
       let mask = new cv.Mat();
       let bgdModel = new cv.Mat();
       let fgdModel = new cv.Mat();
-      console.log(rect);
+      //console.log(rect);
       let cvRect = new cv.Rect(rect.x,rect.y,rect.width==0?(canvas.width-rect.x):rect.width,rect.height==0?(canvas.height-rect.y):rect.height);
       let src = cv.imread(img);
       cv.cvtColor(src, src, cv.COLOR_RGBA2RGB, 0);
-      console.log(src.data);
-      console.log(src.type());
-      console.log(mask.type());
+      //console.log(src.data);
+      //console.log(src.type());
+      //console.log(mask.type());
       try{
       cv.grabCut(src, mask, cvRect, bgdModel, fgdModel, 1, cv.GC_INIT_WITH_RECT);
       }catch(err){
-        console.log(err);
+        //console.log(err);
       }
-      console.log("after grabcut");
+      //console.log("after grabcut");
       let imageMat = cv.matFromImageData(imageData);
       cv.cvtColor(imageMat, imageMat, cv.COLOR_RGBA2RGB, 0);
-      console.log(imageMat.data);
+      //console.log(imageMat.data);
       let cnt=0;
       for (let i = 0; i < imageMat.rows; i++) {
         for (let j = 0; j < imageMat.cols; j++) {
@@ -150,7 +146,7 @@ const Grabcut = (props) => {
             g===fgStrokeColor.value.g&&
             b===fgStrokeColor.value.b)
             {
-              mask.ucharPtr(i,j)[0]=cv.GC_FGD;
+              mask.ucharPtr(i,j)[0]=cv.GC_PR_FGD;
             }else if (
               (r >= 240 &&
                 r <= 255 &&
@@ -163,21 +159,21 @@ const Grabcut = (props) => {
                 r === b &&
                 g === b)
             ) {
-              mask.ucharPtr(i, j)[0] = cv.GC_BGD;
+              mask.ucharPtr(i, j)[0] = cv.GC_PR_BGD;
               cnt += 1;
             }
         }
       }
-      console.log("cnt: ",cnt);
+      //console.log("cnt: ",cnt);
       try{
       cv.grabCut(src, mask, cvRect, bgdModel, fgdModel, 1, cv.GC_INIT_WITH_MASK);
       }catch(err){
-        console.log(err);
+        //console.log(err);
       }
-      console.log(mask.data);
-      console.log(mask.cols);
-      console.log(mask.data);
-      console.log(mask.type());
+      //console.log(mask.data);
+      //console.log(mask.cols);
+      //console.log(mask.data);
+      //console.log(mask.type());
       for (let i = 0; i < src.rows; i++) {
         for (let j = 0; j < src.cols; j++) {
             if (mask.ucharPtr(i, j)[0] === cv.GC_BGD || mask.ucharPtr(i, j)[0] === cv.GC_PR_BGD) {
@@ -187,11 +183,11 @@ const Grabcut = (props) => {
             }
         }
     }
-    console.log(src.data);
+    //console.log(src.data);
     let canvasShow = canvasShowRef.current;
     cv.imshow(canvasShow,src);
     downloadLinkGen(canvasShow);
-    console.log("after imshow");
+    //console.log("after imshow");
     bgdModel.delete();
     fgdModel.delete();
     // src.delete();
@@ -256,22 +252,32 @@ const Grabcut = (props) => {
   return (
     <div className="bg-white rounded px-4 py-4 mt-6 mb-6 border top-0">
       <p className="font-sans text-xl font-bold text-center">GrabCut</p>
-      <button onClick={() => setSelectMode(0)}>Box the object</button>
-      <button onClick={() => setSelectMode(1)}>Foreground Select</button>
-      <button onClick={() => setSelectMode(2)}>Background Select</button>
-      <button onClick={() => cut()}>Extract Foreground</button>
-      {downloadLink ? (
-        <button>
-          <a href={downloadLink} download="download">
-            Download as jpeg
-          </a>
+      <div className="grid grid-flow-cols grid-cols-5 gap-4 mb-4 mt-4">
+        <button
+          className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3"
+          onClick={() => setSelectMode(0)}
+        >
+          Box the object
         </button>
-      ) : (
-        ""
-      )}
+        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3" onClick={() => setSelectMode(1)}>Foreground Select</button>
+        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3" onClick={() => setSelectMode(2)}>Background Select</button>
+        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3" onClick={() => cut()}>Extract Foreground</button>
+        {downloadLink ? (
+          <button>
+            <a href={downloadLink} download="download" className="bg-green-700 rounded-lg hover:bg-green-800 text-white font-bold py-2 px-3">
+              Download as png
+            </a>
+          </button>
+        ) : (
+          ""
+        )}
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="container relative">
-          <canvas className="bottomLayer object-center" ref={imgCanvasRef}></canvas>
+          <canvas
+            className="bottomLayer object-center"
+            ref={imgCanvasRef}
+          ></canvas>
           <canvas
             className="topLayer"
             ref={canvasRef}
@@ -286,7 +292,12 @@ const Grabcut = (props) => {
           </canvas>
         </div>
         <div className="container relative">
-          <canvas ref={canvasShowRef} width="500" height="500" className="object-center"></canvas>
+          <canvas
+            ref={canvasShowRef}
+            width="500"
+            height="500"
+            className="object-center"
+          ></canvas>
         </div>
       </div>
     </div>
