@@ -51,7 +51,7 @@ public class WelcomeEmailsTest {
         Database.USE_TEST_DATABASE = false; // use production dataset
     }
 
-    @Test
+    //@Test
     void doNothing() {
 
     }
