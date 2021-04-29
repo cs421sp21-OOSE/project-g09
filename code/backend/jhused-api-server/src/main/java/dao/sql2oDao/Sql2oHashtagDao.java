@@ -79,6 +79,11 @@ public class Sql2oHashtagDao implements HashtagDao {
   }
 
   @Override
+  public List<Hashtag> readAllExactCaseSensitive(String hashtagQuery) throws DaoException {
+    return null;
+  }
+
+  @Override
   public Hashtag update(String id, Hashtag hashtag) throws DaoException {
     String sql = "WITH updated AS ("
         + "UPDATE hashtag SET hashtag = :hashtag WHERE id = :id RETURNING *"
