@@ -2,10 +2,10 @@ import React from "react";
 
 const Pagination = (props) => {
   return (
-    <div className="page-buttons">
+    <div className="flex justify-center mb-10 mt-3 mx-auto text-2xl">
       {props.pages.page > 1 && props.pages.last > 1 ? (
         <div
-          className="page-button"
+          className="page-button mx-2 hover:text-red-600 cursor-default hover:cursor-pointer"
           id="first-page"
           onClick={(event) => {
             props.onUpdate(props.links.first);
@@ -18,7 +18,7 @@ const Pagination = (props) => {
       )}
       {props.pages.page > 2 ? (
         <div
-          className="page-button"
+          className="page-button mx-2 cursor-default hover:text-red-600 hover:cursor-pointer"
           id="prev-page"
           onClick={(event) => {
             props.onUpdate(props.links.prev);
@@ -30,7 +30,7 @@ const Pagination = (props) => {
         ""
       )}
       {props.pages.page !== 0 && props.pages.last > 1 ? (
-        <div className="page-button" id="current-page">
+        <div className="page-button mx-2 cursor-default hover:text-red-600 hover:cursor-pointer" id="current-page">
           {props.pages.page}
         </div>
       ) : (
@@ -38,7 +38,7 @@ const Pagination = (props) => {
       )}
       {props.pages.page < props.pages.last-1 ? (
         <div
-          className="page-button"
+          className="page-button mx-2 cursor-default hover:text-red-600 hover:cursor-pointer"
           id="next-page"
           onClick={(event) => {
             props.onUpdate(props.links.next);
@@ -51,7 +51,7 @@ const Pagination = (props) => {
       )}
       {props.pages.page < props.pages.last ? (
         <div
-          className="page-button"
+          className="page-button mx-2 cursor-default hover:text-red-600 hover:cursor-pointer"
           id="last-page"
           onClick={(event) => {
             props.onUpdate(props.links.last);

@@ -56,7 +56,7 @@ const HomePage = () => {
     //console.log(searchContext.searchTerm);
     console.log("search term above");
     axios
-      .get("api/v2/posts?page=1&limit=4", {
+      .get("api/v2/posts?page=1&limit=20", {
         params: {
           sort: "update_time:desc",
           keyword: searchContext.searchTerm,
@@ -169,7 +169,7 @@ const HomePage = () => {
     if (!link) {
       link = "api/v2/posts?page=1&limit=3";
     } else {
-      link = `api/v2/${link.substring(44)}`;
+      link = `api/${link.substring(44)}`;
     }
 
     console.log("next page link is...");
