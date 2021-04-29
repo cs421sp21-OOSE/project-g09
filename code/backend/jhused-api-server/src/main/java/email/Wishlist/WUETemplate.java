@@ -21,6 +21,11 @@ public class WUETemplate {
         Email to = new Email(userEmail);
         Content content = new Content("text/plain", "One of your wishlist-ed posts has been updated!");
         Mail mail = new Mail(from, subject, to, content);
+
+        ASM asm = new ASM();
+        asm.setGroupId(16720);
+        mail.setASM(asm);
+
         return mail;
     }
 
