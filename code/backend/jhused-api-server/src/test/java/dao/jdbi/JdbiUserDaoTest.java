@@ -136,22 +136,22 @@ class JdbiUserDaoTest {
 //    assertEquals(user, ret);
 //  }
 //
-  @Test
-  void updateWishListAddAndDelete() {
-    User newUser = DataStore.getNewUserForTest();
-    userDao.create(newUser);
-    List<Post> wishlist = newUser.getWishlist();
-    System.out.println(wishlist);
-    wishlist.remove(0);
-    System.out.println(wishlist);
-
-    Post toAddWishPost = DataStore.samplePosts().get(2);
-    wishlist.add(toAddWishPost);
-    newUser.setWishlist(wishlist);
-    User updatedUser = userDao.update(newUser.getId(), newUser);
-    System.out.println(updatedUser.getWishlist());
-    assertEquals(newUser, updatedUser);
-  }
+//  @Test
+//  void updateWishListAddAndDelete() {
+//    User newUser = DataStore.getNewUserForTest();
+//    userDao.create(newUser);
+//    List<Post> wishlist = newUser.getWishlist();
+//    System.out.println(wishlist);
+//    wishlist.remove(0);
+//    System.out.println(wishlist);
+//
+//    Post toAddWishPost = DataStore.samplePosts().get(2);
+//    wishlist.add(toAddWishPost);
+//    newUser.setWishlist(wishlist);
+//    User updatedUser = userDao.update(newUser.getId(), newUser);
+//    System.out.println(updatedUser.getWishlist());
+//    assertEquals(newUser, updatedUser);
+//  }
 
 //  @Test
 //  void delete() {
@@ -172,5 +172,14 @@ class JdbiUserDaoTest {
 //  void deleteThrowsExceptionIncompleteData() {
 //    assertNull(userDao.delete(null));
 //  }
+
+  @Test
+  @DisplayName("checking to see if email sends upon user email change.")
+  void emailConfirmationSends() {
+    User updatedUser = new User("JHUsedAdmin", "JHUsed Administrator", "louie@artificialtalk.com", "https://images6.fanpop.com/image/photos/33700000/Arya-Stark-arya-stark-33779443-1600-1200.jpg", "");
+
+    userDao.update("JHUsedAdmin", updatedUser);
+
+  }
 
 }
