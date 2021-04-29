@@ -13,7 +13,18 @@ public class ConfirmationEmails {
      * @param oldUserEmail to confirm change
      */
     public static void basicConfirmationEmail(String oldUserEmail) throws IOException {
+        //create the email.
+        Mail mail = WETemplate.basicWEEmail(oldUserEmail);
 
+        //for debugging
+        /*System.out.println("Sending mail to: " + oldUserEmail);*/
+
+        //send the email.
+        try {
+            SendMail.main(mail);
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
 
 
     }
