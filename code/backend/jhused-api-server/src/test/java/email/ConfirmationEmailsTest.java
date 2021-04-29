@@ -2,17 +2,17 @@ package email;
 
 import dao.UserDao;
 import dao.jdbiDao.JdbiUserDao;
+import email.Confirmation.ConfirmationEmails;
+import email.Wishlist.WishlistEmails;
 import model.Post;
 import model.User;
 import model.WishlistPostSkeleton;
 import org.jdbi.v3.core.Jdbi;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import util.database.DataStore;
 import util.database.Database;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -51,8 +51,15 @@ public class ConfirmationEmailsTest {
         Database.USE_TEST_DATABASE = false; // use production dataset
     }
 
-    @Test
+    //@Test
     void doNothing() {
 
     }
+
+    @Test
+    @DisplayName("send an email.")
+    void updateSendMail() throws IOException {
+        ConfirmationEmails.basicConfirmationEmail("ldibern1@jh.edu");
+    }
+
 }
