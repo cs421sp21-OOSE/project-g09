@@ -18,10 +18,21 @@ public class CETemplate {
                 "unauthorized access.");
         Mail mail = new Mail(from, subject, to, content);
 
+        //assign the unsubscribe groupId
         ASM asm = new ASM();
         asm.setGroupId(16635);
         mail.setASM(asm);
 
+        //create the mailSettings object
+        MailSettings settings = new MailSettings();
+
+        //create and assign the basic setting object to true
+        Setting setting = new Setting();
+        setting.setEnable(true);
+
+        //set this email's bypass list management to true.
+        settings.setBypassListManagement(setting);
+        mail.setMailSettings(settings);
 
         return mail;
     }
@@ -57,7 +68,6 @@ public class CETemplate {
         //set this email's bypass list management to true.
         settings.setBypassListManagement(setting);
         mail.setMailSettings(settings);
-
 
         return mail;
     }
