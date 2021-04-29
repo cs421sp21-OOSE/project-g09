@@ -14,7 +14,7 @@ public class ConfirmationEmails {
      */
     public static void basicConfirmationEmail(String oldUserEmail) throws IOException {
         //create the email.
-        Mail mail = WETemplate.basicWEEmail(oldUserEmail);
+        Mail mail = CETemplate.basicCEEmail(oldUserEmail);
 
         //for debugging
         /*System.out.println("Sending mail to: " + oldUserEmail);*/
