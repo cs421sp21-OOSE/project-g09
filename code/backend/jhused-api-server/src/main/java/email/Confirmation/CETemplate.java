@@ -37,7 +37,7 @@ public class CETemplate {
         Mail mail = new Mail(from, subject, to, content);
 
         //set the templateId from the sendgrid website.
-        mail.setTemplateId("d-ba70e2cbac7b4a279e30a5e5119fb5bb");
+        mail.setTemplateId("d-bbc8e61119514a60be047bb9e913e50e");
 
         return mail;
     }
