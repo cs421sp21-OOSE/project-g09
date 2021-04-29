@@ -20,6 +20,11 @@ public class CETemplate {
                 "unauthorized access.");
         Mail mail = new Mail(from, subject, to, content);
 
+        ASM asm = new ASM();
+        asm.setGroupId(16635);
+        mail.setASM(asm);
+
+
         return mail;
     }
 
@@ -38,6 +43,10 @@ public class CETemplate {
 
         //set the templateId from the sendgrid website.
         mail.setTemplateId("d-bbc8e61119514a60be047bb9e913e50e");
+
+        ASM asm = new ASM();
+        asm.setGroupId(16635);
+        mail.setASM(asm);
 
         return mail;
     }
