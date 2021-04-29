@@ -8,6 +8,8 @@ import CreatableSelecet from "react-select";
 import { useHistory, useParams } from "react-router-dom";
 import DropAndView from "./DropAndView";
 import Header from './Header';
+import Grabcut from './grabcut';
+import {OpenCvProvider} from 'opencv-react';
 
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
@@ -33,6 +35,7 @@ const EditorFormik = (props) => {
 
   // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does.
   const [isLoaded, setIsLoaded] = useState(false);
+  const [grabCutEditUrl, setGrabCutEditUrl] = useState("");
 
   useEffect(() => {
     if (props.mode === "update") {
@@ -123,11 +126,20 @@ const EditorFormik = (props) => {
     images: Yup.array().min(1, "Please upload least one image"),
   });
 
+  const showGrabCut=(url)=>{
+    if(grabCutEditUrl=="")
+      setGrabCutEditUrl(url);
+    else if(url!=grabCutEditUrl)
+      setGrabCutEditUrl(url);
+    else
+      setGrabCutEditUrl("");
+  }
+
   if (userContext) {
     return (
       <div>
         <Header search={true} />
-        <div className="min-h-screen flex items-center justify-center ">
+        <div className="min-h-screen flex items-center justify-center flex-row">
           <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
               enableReinitialize={true}
@@ -174,15 +186,33 @@ const EditorFormik = (props) => {
                       options={{
                         FURNITURE: { value: "FURNITURE", label: "Furniture" },
                         CAR: { value: "CAR", label: "Car" },
-                        ELECTRONICS: { value: "ELECTRONICS", label: "Electronics" },
-                        PROPERTY_RENTAL: { value: "PROPERTY_RENTAL", label: "Property Rental" },
-                        SPORTING_GOODS: { value: "SPORTING_GOODS", label: "Sporting Goods" },
+                        ELECTRONICS: {
+                          value: "ELECTRONICS",
+                          label: "Electronics",
+                        },
+                        PROPERTY_RENTAL: {
+                          value: "PROPERTY_RENTAL",
+                          label: "Property Rental",
+                        },
+                        SPORTING_GOODS: {
+                          value: "SPORTING_GOODS",
+                          label: "Sporting Goods",
+                        },
                         APPAREL: { value: "APPAREL", label: "Apparel" },
-                        MUSIC_INSTRUMENT: { value: "MUSIC_INSTRUMENT", label: "Music instrument" },
-                        HOME_GOODS: { value: "HOME_GOODS", label: "Home Goods" },
-                        OFFICE_SUPPLY: { value: "OFFICE_SUPPLY", label: "Office Supply" },
+                        MUSIC_INSTRUMENT: {
+                          value: "MUSIC_INSTRUMENT",
+                          label: "Music instrument",
+                        },
+                        HOME_GOODS: {
+                          value: "HOME_GOODS",
+                          label: "Home Goods",
+                        },
+                        OFFICE_SUPPLY: {
+                          value: "OFFICE_SUPPLY",
+                          label: "Office Supply",
+                        },
                         FREE: { value: "FREE", label: "Free" },
-                        OTHER: { value: "OTHER", label: "Other" }
+                        OTHER: { value: "OTHER", label: "Other" },
                       }}
                       label="Category"
                       placeholder="Select"
@@ -228,6 +258,7 @@ const EditorFormik = (props) => {
                       error={formik.errors.images}
                       isLoaded={isLoaded}
                       className="col-span-full"
+                      showGrabCut={showGrabCut}
                     />
 
                     {props.mode === "update" && (
@@ -245,7 +276,10 @@ const EditorFormik = (props) => {
                       <button
                         className={btnStyle}
                         type="submit"
-                        disabled={formik.isSubmitting || (props.mode === "Update" && formik.values.id === "")}
+                        disabled={
+                          formik.isSubmitting ||
+                          (props.mode === "Update" && formik.values.id === "")
+                        }
                       >
                         {props.mode === "create" ? "Submit" : "Update"}
                       </button>
@@ -255,6 +289,13 @@ const EditorFormik = (props) => {
               )}
             </Formik>
           </div>
+          {grabCutEditUrl === "" ? (
+            ""
+          ) : (
+            <OpenCvProvider openCvPath="/opencv/opencv.js">
+              <Grabcut grabCutEditUrl={grabCutEditUrl}/>
+            </OpenCvProvider>
+          )}
         </div>
       </div>
     );

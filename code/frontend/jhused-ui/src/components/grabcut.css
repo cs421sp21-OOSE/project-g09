@@ -1,0 +1,22 @@
+/* .container{
+    display:inline-block;
+    width:500px; 
+    height:500px;
+    margin: 0; 
+    position:relative; 
+    border-radius: 10px; 
+    padding:0;
+} */
+
+.bottomLayer{
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:0;
+}
+.topLayer{
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:1;
+}
