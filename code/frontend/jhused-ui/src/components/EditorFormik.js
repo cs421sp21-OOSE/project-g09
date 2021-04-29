@@ -8,8 +8,7 @@ import CreatableSelecet from "react-select";
 import { useHistory, useParams } from "react-router-dom";
 import DropAndView from "./DropAndView";
 import Header from './Header';
-import Grabcut from './grabcut';
-import {OpenCvProvider} from 'opencv-react';
+
 
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
@@ -35,7 +34,6 @@ const EditorFormik = (props) => {
 
   // This state will be passed down to the DropAndView component so that it will load the form image url into its model state by firing up useEffect only after form has received data from the get request. Otherwise, the DropAndView ill fire up useEffect before the form does.
   const [isLoaded, setIsLoaded] = useState(false);
-  const [grabCutEditUrl, setGrabCutEditUrl] = useState("");
 
   useEffect(() => {
     if (props.mode === "update") {
@@ -126,14 +124,6 @@ const EditorFormik = (props) => {
     images: Yup.array().min(1, "Please upload least one image"),
   });
 
-  const showGrabCut=(url)=>{
-    if(grabCutEditUrl=="")
-      setGrabCutEditUrl(url);
-    else if(url!=grabCutEditUrl)
-      setGrabCutEditUrl(url);
-    else
-      setGrabCutEditUrl("");
-  }
 
   if (userContext) {
     return (
@@ -258,7 +248,6 @@ const EditorFormik = (props) => {
                       error={formik.errors.images}
                       isLoaded={isLoaded}
                       className="col-span-full"
-                      showGrabCut={showGrabCut}
                     />
 
                     {props.mode === "update" && (
@@ -289,14 +278,7 @@ const EditorFormik = (props) => {
               )}
             </Formik>
           </div>
-          {grabCutEditUrl === "" ? (
-            ""
-          ) : (
-            <OpenCvProvider openCvPath="/opencv/opencv.js">
-              <Grabcut grabCutEditUrl={grabCutEditUrl}/>
-            </OpenCvProvider>
-          )}
-        </div>
+       </div>
       </div>
     );
   } else return "";

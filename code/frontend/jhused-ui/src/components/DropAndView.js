@@ -1,7 +1,10 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import Dropzone from "react-dropzone";
 import { storage } from "./firebase";
 import { nanoid } from 'nanoid';
+import Grabcut from './grabcut';
+import {OpenCvProvider} from 'opencv-react';
+import { Dialog } from "@headlessui/react";
 
 
 function DropAndView(props) {
@@ -11,6 +14,18 @@ function DropAndView(props) {
   // The DropAndView component relies on the "model" object to display images
   // THe model obejct is updated through the reducer hook
   const [model, dispatch] = useReducer(reducer, {});
+
+
+  const [grabCutEditUrl, setGrabCutEditUrl] = useState("");
+
+  const showGrabCut=(url)=>{
+    if (grabCutEditUrl === "")
+      setGrabCutEditUrl(url);
+    else if (url !== grabCutEditUrl)
+      setGrabCutEditUrl(url);
+    else
+      setGrabCutEditUrl("");
+  }
 
   // Complete action {type: ..., uid: ..., data: {same as model} }
   function reducer(prevState, action) {
@@ -139,7 +154,7 @@ const uploadImage = (file, uid, dispatch, images) => {
                 (<ThumbGrid 
                   data={model} 
                   onDelete={dispatch} 
-                  showGrabCut={props.showGrabCut}
+                  showGrabCut={showGrabCut}
                   form={{
                     values: props.value, 
                     setValue: (newValue) => props.onChange(props.name, newValue),
@@ -155,6 +170,31 @@ const uploadImage = (file, uid, dispatch, images) => {
       {props.touched && props.error ? (
         <div className="block text-sm text-red-500">{props.error};</div>
       ) : null}
+
+      {/* OpenCv Modal */}
+      <Dialog 
+        open={grabCutEditUrl !== ""} 
+        onClose={() => setGrabCutEditUrl("")}
+        className="fixed inset-0 z-10"
+      >
+        <div className="w-full h-full flex justify-center items-center">
+          <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
+          
+          <div className="max-h-72 max-w-3xl overflow-auto z-20 rounded-2xl shadow-xl bg-white">
+            <Dialog.Title>
+              <div className="text-lg font-medium">
+                Remove Background
+              </div>
+            </Dialog.Title>
+            
+            <Dialog.Description>
+              <OpenCvProvider openCvPath="/opencv/opencv.js">
+                  <Grabcut grabCutEditUrl={grabCutEditUrl}/>
+              </OpenCvProvider>
+            </Dialog.Description>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
