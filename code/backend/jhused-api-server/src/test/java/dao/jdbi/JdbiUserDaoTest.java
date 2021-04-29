@@ -136,22 +136,22 @@ class JdbiUserDaoTest {
 //    assertEquals(user, ret);
 //  }
 //
-  @Test
-  void updateWishListAddAndDelete() {
-    User newUser = DataStore.getNewUserForTest();
-    userDao.create(newUser);
-    List<Post> wishlist = newUser.getWishlist();
-    System.out.println(wishlist);
-    wishlist.remove(0);
-    System.out.println(wishlist);
-
-    Post toAddWishPost = DataStore.samplePosts().get(2);
-    wishlist.add(toAddWishPost);
-    newUser.setWishlist(wishlist);
-    User updatedUser = userDao.update(newUser.getId(), newUser);
-    System.out.println(updatedUser.getWishlist());
-    assertEquals(newUser, updatedUser);
-  }
+//  @Test
+//  void updateWishListAddAndDelete() {
+//    User newUser = DataStore.getNewUserForTest();
+//    userDao.create(newUser);
+//    List<Post> wishlist = newUser.getWishlist();
+//    System.out.println(wishlist);
+//    wishlist.remove(0);
+//    System.out.println(wishlist);
+//
+//    Post toAddWishPost = DataStore.samplePosts().get(2);
+//    wishlist.add(toAddWishPost);
+//    newUser.setWishlist(wishlist);
+//    User updatedUser = userDao.update(newUser.getId(), newUser);
+//    System.out.println(updatedUser.getWishlist());
+//    assertEquals(newUser, updatedUser);
+//  }
 
 //  @Test
 //  void delete() {
