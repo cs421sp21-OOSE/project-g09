@@ -115,6 +115,10 @@ const EditorFormik = (props) => {
     category: Yup.string()
       .oneOf(["FURNITURE", "CAR", "ELECTRONICS", "PROPERTY_RENTAL", "SPORTING_GOODS", "APPAREL", "MUSIC_INSTRUMENT", "HOME_GOODS", "OFFICE_SUPPLY", "FREE", "OTHER"], "Invalid a category")
       .required("Please select a category"),
+    saleState: Yup.string()
+      .oneOf(["SALE", "SOLD", "DEALING"], "Invalid a saleState")
+      .default("SALE")
+      .required("Please select a saleState"),
     description: Yup.string().required("Please provide a description"),
     images: Yup.array().min(1, "Please upload least one image"),
   });
@@ -162,7 +166,7 @@ const EditorFormik = (props) => {
                       onChange={formik.setFieldValue}
                       onBlur={formik.setFieldTouched}
                       label="Hashtags"
-                      className="col-span-8"
+                      className="col-span-12"
                     />
 
                     <SelectWraper
@@ -187,6 +191,23 @@ const EditorFormik = (props) => {
                       onBlur={formik.setFieldTouched}
                       touched={formik.touched.category}
                       error={formik.errors.category}
+                      className="col-span-8"
+                    />
+
+                    <SelectWraper
+                      name="saleState"
+                      options={{
+                        SALE: { value: "SALE", label: "Sale" },
+                        SOLD: { value: "SOLD", label: "Sold" },
+                        DEALING: { value: "DEALING", label: "Dealing" }
+                      }}
+                      label="saleState"
+                      placeholder="Select"
+                      value={formik.values.saleState}
+                      onChange={formik.setFieldValue}
+                      onBlur={formik.setFieldTouched}
+                      touched={formik.touched.saleState}
+                      error={formik.errors.saleState}
                       className="col-span-4"
                     />
 
