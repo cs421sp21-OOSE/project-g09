@@ -63,7 +63,7 @@ public class ConfirmationEmailsTest {
     }
 
     @Test
-    @DisplayName("send an email.")
+    @DisplayName("send a styled email.")
     void styledSendMail() throws IOException {
         ConfirmationEmails.styledConfirmationEmail("ldibern1@jh.edu");
     }

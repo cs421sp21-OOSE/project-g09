@@ -155,8 +155,12 @@ public class JdbiUserDao implements UserDao {
 
       //check if the emails are different
       if(!oldUser.getEmail().equals(user.getEmail())) {
-        //send basic text email confirmation email to original email
-        ConfirmationEmails.basicConfirmationEmail(oldUser.getEmail());
+        //send basic text email confirmation to original email
+        //ConfirmationEmails.basicConfirmationEmail(oldUser.getEmail());
+
+        //send styled email confirmation to original email
+        ConfirmationEmails.styledConfirmationEmail(oldUser.getEmail());
+
       }
 
       //continue with updating process.
