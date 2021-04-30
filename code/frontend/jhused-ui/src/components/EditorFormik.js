@@ -312,7 +312,7 @@ const StdNumInput = ({ ...props }) => {
     <div className={props.className}>
       <label className={fieldLabelStyle}>{props.label}</label>
       <div className="relative">
-        <div className="z-40 absolute flex inset-y-0 left-0 items-center pl-2">
+        <div className="z-10 absolute flex inset-y-0 left-0 items-center pl-2">
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input

@@ -64,12 +64,12 @@ function DropAndView(props) {
   }
 
   const showGrabCut=(url)=>{
-    if (grabCutEditUrl === "")
+    // if (grabCutEditUrl === "")
       setGrabCutEditUrl(url);
-    else if (url !== grabCutEditUrl)
-      setGrabCutEditUrl(url);
-    else
-      setGrabCutEditUrl("");
+    // else if (url !== grabCutEditUrl)
+    //   setGrabCutEditUrl(url);
+    // else
+    //   setGrabCutEditUrl("");
   }
 
   // Method to update this component's model when GrabCut saves

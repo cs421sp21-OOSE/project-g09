@@ -26,7 +26,7 @@ const Grabcut = (props) => {
   }, [loaded, cv]);
 
   useEffect(() => {
-    if (canvasRef && loaded && imgCanvasRef) {
+    if (canvasRef && loaded && imgCanvasRef && canvasShowRef) {
       //console.log(canvasRef);
       const canvas = canvasRef.current;
       const imgCanvas = imgCanvasRef.current;
@@ -76,7 +76,7 @@ const Grabcut = (props) => {
     } else {
       //console.log("canvasRef not loaded");
     }
-  }, [canvasRef, loaded, imgCanvasRef, props]);
+  }, [canvasRef, loaded, imgCanvasRef, canvasShowRef, props]);
 
   function getFirebasePath(src){
     let folder = src.match(/o\/[^;]+%/)[0];
@@ -297,13 +297,13 @@ const Grabcut = (props) => {
         {/* Left canvas */}
         <div className="flex flex-col items-center">
           {/* Wrap canvas so that it can be a block */}
-          <div className="relative w-48 h-48 border-2 border-dashed">
+          <div className="relative w-500 h-500 border-2 border-dashed">
             <canvas
-              className="absolute top-0 left-0 w-full h-full z-0"
+              className="absolute top-0 left-0 z-0"
               ref={imgCanvasRef}
             />
             <canvas
-              className="absolute top-0 left-0 w-full h-full z-1"
+              className="absolute top-0 left-0 z-1"
               ref={canvasRef}
               onMouseMove={draw}
               onMouseDown={handleMouseDown}
@@ -318,10 +318,10 @@ const Grabcut = (props) => {
 
         {/* Right canvas */}
         <div className="flex flex-col items-center">
-          <div className="relative w-48 h-48 border-2 border-dashed">
+          <div className="relative w-500 h-500 border-2 border-dashed">
             <canvas
               ref={canvasShowRef}
-              className="absolute top-0 left-0 w-full h-full"
+              className="absolute top-0 left-0" 
             />
           </div>
           <div className="text-center">After</div>
