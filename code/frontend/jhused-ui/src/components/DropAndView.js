@@ -196,10 +196,10 @@ const uploadImage = (file, uid, dispatch, images, updateArray) => {
         className="fixed inset-0 z-10"
         static={false}
       >
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="w-full h-full py-4 flex justify-center items-center">
           <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
           
-          <div className="overflow-auto z-20 shadow-xl rounded bg-white">
+          <div className="max-h-full overflow-auto z-20 shadow-xl rounded bg-white">
             <Dialog.Title>
               <div className="text-center text-lg font-bold pt-4">
                 Image Background Remover
