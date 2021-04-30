@@ -14,18 +14,8 @@ function DropAndView(props) {
   // The DropAndView component relies on the "model" object to display images
   // THe model obejct is updated through the reducer hook
   const [model, dispatch] = useReducer(reducer, {});
-
-
   const [grabCutEditUrl, setGrabCutEditUrl] = useState("");
-
-  const showGrabCut=(url)=>{
-    if (grabCutEditUrl === "")
-      setGrabCutEditUrl(url);
-    else if (url !== grabCutEditUrl)
-      setGrabCutEditUrl(url);
-    else
-      setGrabCutEditUrl("");
-  }
+  const [grabUid, setGrabUid] = useState("");
 
   // Complete action {type: ..., uid: ..., data: {same as model} }
   function reducer(prevState, action) {
@@ -71,6 +61,20 @@ function DropAndView(props) {
       throw new Error("Invalid action type");
     }
 
+  }
+
+  const showGrabCut=(url)=>{
+    if (grabCutEditUrl === "")
+      setGrabCutEditUrl(url);
+    else if (url !== grabCutEditUrl)
+      setGrabCutEditUrl(url);
+    else
+      setGrabCutEditUrl("");
+  }
+
+  // Method to update this component's model when GrabCut saves
+  const updateOnGrab = (file, uid) => {
+    uploadImage(file, uid, dispatch, []);
   }
 
   // Populate form values into the dropzone
@@ -155,6 +159,7 @@ const uploadImage = (file, uid, dispatch, images) => {
                   data={model} 
                   onDelete={dispatch} 
                   showGrabCut={showGrabCut}
+                  setGrabUid={setGrabUid}
                   form={{
                     values: props.value, 
                     setValue: (newValue) => props.onChange(props.name, newValue),
@@ -173,24 +178,31 @@ const uploadImage = (file, uid, dispatch, images) => {
 
       {/* OpenCv Modal */}
       <Dialog 
-        open={grabCutEditUrl !== ""} 
-        onClose={() => setGrabCutEditUrl("")}
+        open={grabUid !== ""} 
+        onClose={() => setGrabUid("")}
         className="fixed inset-0 z-10"
       >
         <div className="w-full h-full flex justify-center items-center">
-          <Dialog.Overlay className="fixed inset-0 bg-black opacity-50" />
+          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
           
-          <div className="max-h-72 max-w-3xl overflow-auto z-20 rounded-2xl shadow-xl bg-white">
+          <div className="h-96 max-w-2xl overflow-auto z-20 shadow-xl bg-white">
             <Dialog.Title>
-              <div className="text-lg font-medium">
-                Remove Background
+              <div className="text-center text-lg font-bold pt-4">
+                Image Background Remover
               </div>
             </Dialog.Title>
             
             <Dialog.Description>
-              <OpenCvProvider openCvPath="/opencv/opencv.js">
-                  <Grabcut grabCutEditUrl={grabCutEditUrl}/>
-              </OpenCvProvider>
+              <div className="mx-6 my-4">
+                <OpenCvProvider openCvPath="/opencv/opencv.js">
+                    <Grabcut 
+                      grabCutEditUrl={grabCutEditUrl} 
+                      closeModal={() => setGrabUid("")}
+                      onSave={updateOnGrab}
+                      grabUid={grabUid}
+                    />
+                </OpenCvProvider>
+              </div>
             </Dialog.Description>
           </div>
         </div>
@@ -207,6 +219,7 @@ const Thumb = (props) => {
     event.stopPropagation();
     console.log("props: ",props.url);
     props.showGrabCut(props.url);
+    props.setGrabUid(props.uid);
   }
   const handleOnClik = (event) => {
     event.stopPropagation();
@@ -257,10 +270,11 @@ const ThumbGrid = (props) => {
         <Thumb 
           key={uid} 
           uid={uid} 
-          url={props.data[uid].dataUrl || props.data[uid].webUrl}
+          url={props.data[uid].webUrl || props.data[uid].dataUrl}
           progress={props.data[uid].progress || 0}
           onDelete={props.onDelete}
           showGrabCut={props.showGrabCut}
+          setGrabUid={props.setGrabUid}
           form={props.form}
         />
       ))}

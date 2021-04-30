@@ -249,57 +249,93 @@ const Grabcut = (props) => {
     setDownloadLink(canvas.toDataURL("image/png"));
   }
 
+  // Handler for saving newly cut images
+  const handleOnSave = (event) => {
+    event.preventDefault();
+    let canvas = canvasShowRef.current; // this is canvas with the new image
+    canvas.toBlob((blob) => {
+      props.onSave(blob, props.grabUid)
+    });
+    props.closeModal();
+  };
+
   return (
-    <div className="bg-white rounded px-4 py-4 mt-6 mb-6 border top-0">
-      <p className="font-sans text-xl font-bold text-center">GrabCut</p>
+    <div className="flex flex-col border-t px-4">
+      {/* Control panel */}
       <div className="grid grid-flow-cols grid-cols-5 gap-4 mb-4 mt-4">
         <button
-          className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3"
+          className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-3"
           onClick={() => setSelectMode(0)}
         >
-          Box the object
+          Box object
         </button>
-        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3" onClick={() => setSelectMode(1)}>Foreground Select</button>
-        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3" onClick={() => setSelectMode(2)}>Background Select</button>
-        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3" onClick={() => cut()}>Extract Foreground</button>
+        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-1 focus:outline-none" onClick={() => setSelectMode(1)}>Foreground Select</button>
+        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-1 focus:outline-none" onClick={() => setSelectMode(2)}>Background Select</button>
+        <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-1 focus:outline-none" onClick={() => cut()}>Extract Foreground</button>
         {downloadLink ? (
-          <button>
-            <a href={downloadLink} download="download" className="bg-green-700 rounded-lg hover:bg-green-800 text-white font-bold py-2 px-3">
-              Download as png
-            </a>
-          </button>
+          <a href={downloadLink} download="download" className="text-sm bg-green-700 rounded-lg hover:bg-green-800 text-white font-bold py-2 px-3 focus:outline-none text-center">
+            Download as png
+          </a>
         ) : (
           ""
         )}
       </div>
+
+      {/* Image panel */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="container relative">
-          <canvas
-            className="bottomLayer object-center"
-            ref={imgCanvasRef}
-          ></canvas>
-          <canvas
-            className="topLayer"
-            ref={canvasRef}
-            width="500"
-            height="500"
-            onMouseMove={draw}
-            onMouseDown={handleMouseDown}
-            onMouseEnter={setPosition}
-            // onMouseUp={handleMouseUp}
-          >
-            You need to enable Javascript to use this app.
-          </canvas>
-        </div>
-        <div className="container relative">
-          <canvas
-            ref={canvasShowRef}
-            width="500"
-            height="500"
-            className="object-center"
-          ></canvas>
+        {/* Left canvas */}
+        <div className="flex flex-col items-center">
+          {/* Wrap canvas so that it can be a block */}
+          <div className="relative w-48 h-48 border-2 border-dashed">
+            <canvas
+              className="absolute top-0 left-0 w-full h-full z-0"
+              ref={imgCanvasRef}
+            />
+            <canvas
+              className="absolute top-0 left-0 w-full h-full z-1"
+              ref={canvasRef}
+              onMouseMove={draw}
+              onMouseDown={handleMouseDown}
+              onMouseEnter={setPosition}
+              // onMouseUp={handleMouseUp}
+            >
+              You need to enable Javascript to use this app.
+            </canvas>
+          </div>
+          <div className="text-center">Before</div>
+        </div>  
+
+        {/* Right canvas */}
+        <div className="flex flex-col items-center">
+          <div className="relative w-48 h-48 border-2 border-dashed">
+            <canvas
+              ref={canvasShowRef}
+              className="absolute top-0 left-0 w-full h-full"
+            />
+          </div>
+          <div className="text-center">After</div>
         </div>
       </div>
+
+      {/* Modal control panel */}
+      <div className="flex justify-end gap-4">
+        <button 
+          className="border bg-gray-50 px-3 py-0.5 rounded hover:bg-gray-100 focus:bg-gray-200 focus:outline-none"
+          onClick={handleOnSave}
+        >
+          Save
+        </button>
+        <button 
+          className="border bg-gray-50 px-3 py-0.5 rounded hover:bg-gray-100 focus:bg-gray-200 focus:outline-none"
+          onClick={(e) => {
+            e.preventDefault();
+            props.closeModal();
+          }}
+        >
+          Cancel
+        </button>
+      </div>
+
     </div>
   );
 };
