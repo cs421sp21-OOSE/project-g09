@@ -9,6 +9,7 @@ import { useHistory, useParams } from "react-router-dom";
 import DropAndView from "./DropAndView";
 import Header from './Header';
 
+
 const fieldLabelStyle = "text-md font-bold text-gray-700 block mb-1";
 const errorMsgStyle = "block text-sm text-red-500";
 const btnStyle = "bg-blue-700 rounded-lg hover:bg-blue-800 text-white font-bold py-2 px-3";
@@ -123,11 +124,12 @@ const EditorFormik = (props) => {
     images: Yup.array().min(1, "Please upload least one image"),
   });
 
+
   if (userContext) {
     return (
       <div>
         <Header search={true} />
-        <div className="min-h-screen flex items-center justify-center ">
+        <div className="min-h-screen flex items-center justify-center flex-row">
           <div className="max-w-xl w-full bg-white rounded px-4 py-4 mt-6 mb-6 border">
             <Formik
               enableReinitialize={true}
@@ -174,15 +176,33 @@ const EditorFormik = (props) => {
                       options={{
                         FURNITURE: { value: "FURNITURE", label: "Furniture" },
                         CAR: { value: "CAR", label: "Car" },
-                        ELECTRONICS: { value: "ELECTRONICS", label: "Electronics" },
-                        PROPERTY_RENTAL: { value: "PROPERTY_RENTAL", label: "Property Rental" },
-                        SPORTING_GOODS: { value: "SPORTING_GOODS", label: "Sporting Goods" },
+                        ELECTRONICS: {
+                          value: "ELECTRONICS",
+                          label: "Electronics",
+                        },
+                        PROPERTY_RENTAL: {
+                          value: "PROPERTY_RENTAL",
+                          label: "Property Rental",
+                        },
+                        SPORTING_GOODS: {
+                          value: "SPORTING_GOODS",
+                          label: "Sporting Goods",
+                        },
                         APPAREL: { value: "APPAREL", label: "Apparel" },
-                        MUSIC_INSTRUMENT: { value: "MUSIC_INSTRUMENT", label: "Music instrument" },
-                        HOME_GOODS: { value: "HOME_GOODS", label: "Home Goods" },
-                        OFFICE_SUPPLY: { value: "OFFICE_SUPPLY", label: "Office Supply" },
+                        MUSIC_INSTRUMENT: {
+                          value: "MUSIC_INSTRUMENT",
+                          label: "Music instrument",
+                        },
+                        HOME_GOODS: {
+                          value: "HOME_GOODS",
+                          label: "Home Goods",
+                        },
+                        OFFICE_SUPPLY: {
+                          value: "OFFICE_SUPPLY",
+                          label: "Office Supply",
+                        },
                         FREE: { value: "FREE", label: "Free" },
-                        OTHER: { value: "OTHER", label: "Other" }
+                        OTHER: { value: "OTHER", label: "Other" },
                       }}
                       label="Category"
                       placeholder="Select"
@@ -245,7 +265,10 @@ const EditorFormik = (props) => {
                       <button
                         className={btnStyle}
                         type="submit"
-                        disabled={formik.isSubmitting || (props.mode === "Update" && formik.values.id === "")}
+                        disabled={
+                          formik.isSubmitting ||
+                          (props.mode === "Update" && formik.values.id === "")
+                        }
                       >
                         {props.mode === "create" ? "Submit" : "Update"}
                       </button>
@@ -255,7 +278,7 @@ const EditorFormik = (props) => {
               )}
             </Formik>
           </div>
-        </div>
+       </div>
       </div>
     );
   } else return "";
@@ -289,7 +312,7 @@ const StdNumInput = ({ ...props }) => {
     <div className={props.className}>
       <label className={fieldLabelStyle}>{props.label}</label>
       <div className="relative">
-        <div className="z-40 absolute flex inset-y-0 left-0 items-center pl-2">
+        <div className="z-10 absolute flex inset-y-0 left-0 items-center pl-2">
           <span className="text-gray-500 text-md">$</span>
         </div>
         <input
