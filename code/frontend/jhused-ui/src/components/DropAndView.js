@@ -53,15 +53,6 @@ function DropAndView(props) {
       };
       return curState;
     }
-    else if (action.type === 're-upload') {
-      let curState = {...prevState, 
-        [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
-      };
-      // Update form data
-      let newValues = Object.values(curState).map(val => val.webUrl);
-      action.handler(props.name, newValues);
-      return curState;
-    }
     else if (action.type === "upload-complete") {
       // Update the form data once all uploads are complete
       action.form.setValue(Object.values(prevState).map(val => val.webUrl));
@@ -121,7 +112,7 @@ function DropAndView(props) {
 // Method for uploading images to firebase
 // Use the boolean argument updateFlag to control how to update form image array 
 const uploadImage = (file, uid, dispatch, images, updateArray) => {
-  const uploadTask = storage.ref(`images/${file.name}`).put(file);
+  const uploadTask = storage.ref(`images/${uid}`).put(file);
   uploadTask.on(
     "state_changed",
     (snapshot) => {
