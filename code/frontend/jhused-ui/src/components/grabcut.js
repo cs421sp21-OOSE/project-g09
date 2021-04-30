@@ -252,19 +252,22 @@ const Grabcut = (props) => {
   // Handler for saving newly cut images
   const handleOnSave = (event) => {
     event.preventDefault();
-    let canvas = canvasShowRef.current; // this is canvas with the new image
-    canvas.toBlob((blob) => {
-      props.onSave(blob, props.grabUid)
-    });
-    props.closeModal();
+    if (downloadLink) {
+      console.log(downloadLink);
+      let canvas = canvasShowRef.current; // this is canvas with the new image
+      canvas.toBlob((blob) => {
+        props.onSave(blob, props.grabUid)
+      });
+      props.closeModal();
+    }
   };
 
   return (
-    <div className="flex flex-col border-t px-4">
+    <div className="flex flex-col border-t">
       {/* Control panel */}
       <div className="grid grid-flow-cols grid-cols-5 gap-4 mb-4 mt-4">
         <button
-          className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-3"
+          className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-3 focus:outline-none"
           onClick={() => setSelectMode(0)}
         >
           Box object
@@ -272,12 +275,20 @@ const Grabcut = (props) => {
         <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-1 focus:outline-none" onClick={() => setSelectMode(1)}>Foreground Select</button>
         <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-1 focus:outline-none" onClick={() => setSelectMode(2)}>Background Select</button>
         <button className="bg-blue-700 rounded-lg hover:bg-blue-800 text-sm text-white font-bold py-2 px-1 focus:outline-none" onClick={() => cut()}>Extract Foreground</button>
+        {/* <button
+          className="text-sm bg-green-700 rounded-lg hover:bg-green-800 text-white font-bold py-2 px-3 focus:outline-none text-center" 
+          onclick={`location.href='${downloadLink || ""}';`}
+        >
+          Download
+        </button> */}
         {downloadLink ? (
           <a href={downloadLink} download="download" className="text-sm bg-green-700 rounded-lg hover:bg-green-800 text-white font-bold py-2 px-3 focus:outline-none text-center">
             Download as png
           </a>
         ) : (
-          ""
+          <button className="text-sm bg-green-700 rounded-lg hover:bg-green-800 text-white font-bold py-2 px-3 opacity-50 focus:outline-none text-center">
+            Download as png
+          </button>
         )}
       </div>
 
@@ -320,7 +331,7 @@ const Grabcut = (props) => {
       {/* Modal control panel */}
       <div className="flex justify-end gap-4">
         <button 
-          className="border bg-gray-50 px-3 py-0.5 rounded hover:bg-gray-100 focus:bg-gray-200 focus:outline-none"
+          className="border bg-black text-white px-3 py-0.5 rounded hover:border-black hover:bg-gray-50 hover:text-black focus:outline-none"
           onClick={handleOnSave}
         >
           Save

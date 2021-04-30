@@ -53,6 +53,15 @@ function DropAndView(props) {
       };
       return curState;
     }
+    else if (action.type === 're-upload') {
+      let curState = {...prevState, 
+        [action.uid]: {...prevState[action.uid], ...action.data} // need to deep spread previous state data
+      };
+      // Update form data
+      let newValues = Object.values(curState).map(val => val.webUrl);
+      action.handler(props.name, newValues);
+      return curState;
+    }
     else if (action.type === "upload-complete") {
       // Update the form data once all uploads are complete
       action.form.setValue(Object.values(prevState).map(val => val.webUrl));
@@ -74,7 +83,7 @@ function DropAndView(props) {
 
   // Method to update this component's model when GrabCut saves
   const updateOnGrab = (file, uid) => {
-    uploadImage(file, uid, dispatch, []);
+    uploadImage(file, uid, dispatch, [], false);
   }
 
   // Populate form values into the dropzone
@@ -105,11 +114,13 @@ function DropAndView(props) {
           dataUrl: URL.createObjectURL(curFile),
         }
       });
-      uploadImage(curFile, curUid, dispatch, images);
+      uploadImage(curFile, curUid, dispatch, images, true);
     });
   };
 
-const uploadImage = (file, uid, dispatch, images) => {
+// Method for uploading images to firebase
+// Use the boolean argument updateFlag to control how to update form image array 
+const uploadImage = (file, uid, dispatch, images, updateArray) => {
   const uploadTask = storage.ref(`images/${file.name}`).put(file);
   uploadTask.on(
     "state_changed",
@@ -135,8 +146,19 @@ const uploadImage = (file, uid, dispatch, images) => {
           postId: "",
           url: downloadURL,
         });
-        if (props.onChange) {
+        if (updateArray && props.onChange) {
           props.onChange(props.name, [...props.value, ...images]);
+        }
+        else {
+          let newValues = props.value.map(obj => {
+            if (obj.id === uid) {
+              return {id: obj.id, postId: obj.postId, url: downloadURL};
+            }
+            else {
+              return obj;
+            }
+          });
+          props.onChange(props.name, newValues);
         }
       });
     }
@@ -181,11 +203,12 @@ const uploadImage = (file, uid, dispatch, images) => {
         open={grabUid !== ""} 
         onClose={() => setGrabUid("")}
         className="fixed inset-0 z-10"
+        static={false}
       >
         <div className="w-full h-full flex justify-center items-center">
           <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
           
-          <div className="h-96 max-w-2xl overflow-auto z-20 shadow-xl bg-white">
+          <div className="overflow-auto z-20 shadow-xl rounded bg-white">
             <Dialog.Title>
               <div className="text-center text-lg font-bold pt-4">
                 Image Background Remover
