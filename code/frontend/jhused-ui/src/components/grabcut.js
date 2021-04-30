@@ -57,6 +57,12 @@ const Grabcut = (props) => {
           );
           canvas.width = image.width * scaleFactor;
           canvas.height = image.height * scaleFactor;
+          console.log(canvas.parentNode);
+          canvas.parentNode.style.width = canvas.width*1.1+"px";
+          canvas.parentNode.style.height = canvas.height*1.1+"px";
+          canvasShowRef.current.parentNode.style.width = canvas.width*1.1+"px";
+          canvasShowRef.current.parentNode.style.height = canvas.height*1.1+"px";
+          console.log(canvas.parentNode.height);
           imgCanvas.width = canvas.width;
           imgCanvas.height = canvas.height;
           imgCtx.drawImage(
@@ -297,7 +303,7 @@ const Grabcut = (props) => {
         {/* Left canvas */}
         <div className="flex flex-col items-center">
           {/* Wrap canvas so that it can be a block */}
-          <div className="relative w-500 h-500 border-2 border-dashed">
+          <div className="relative border-2 border-dashed">
             <canvas
               className="absolute top-0 left-0 z-0"
               ref={imgCanvasRef}
