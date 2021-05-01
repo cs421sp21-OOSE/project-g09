@@ -16,8 +16,9 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
   * Message(model): model of messages communicated between users
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
-![](../assets/UML/Server_with_controller.png)
 ![](../assets/UML/model.png)
+![](../assets/UML/Server_with_controller.png)
+![](../assets/UML/controller_with_dao.png)
 ![](../assets/UML/UML-iteration4.png)
 
 
