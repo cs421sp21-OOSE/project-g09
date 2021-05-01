@@ -19,8 +19,6 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 ![](../assets/UML/model.png)
 ![](../assets/UML/Server_with_controller.png)
 ![](../assets/UML/controller_with_dao.png)
-![](../assets/UML/UML-iteration4.png)
-
 
 # Wireframe & Use-case
 
@@ -80,6 +78,10 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ![](../assets/Wireframe/Wireframe-editPost-iteration4.png)
 
+### GrabCut image
+
+1. The user can use Grabcut OpenCV to separate background from the item
+2. The user can save the processed image to local drive
 
 # Iteration Backlog
 As a user, I want to see the count of views of a post, so that I can check how popular that post is
