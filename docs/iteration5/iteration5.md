@@ -7,12 +7,13 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 # OO Design
 * Front end (view): React app to render UI
 * Backend
-  * Server (controller): processing HTTP requests and sending responses
+  * ApiServer: set jdbi, connect heroku, calls controllers
+  * Controller: postController, messageController, SSOControler, wishlistController etc. that handles http requests
+  * PostDao: dact access object interface for the model class to provide DB operations
+  * JdbiPostDao: concrete implementation of the PostDao interface
   * Post-related (model)(Including image, hashtag): model representation of posts created by users in the app
   * User-realated (model)(Including models such as wishlistskeleton): model representation of users in the app
   * Message(model): model of messages communicated between users
-  * PostDao: dact access object interface for the model class to provide DB operations
-  * JdbiPostDao: concrete implementation of the PostDao interface
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
 
@@ -76,6 +77,7 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 3. The user can delete the post by clicking the delete button on the left bottom.
 
 ![](../assets/Wireframe/Wireframe-editPost-iteration4.png)
+
 
 # Iteration Backlog
 As a user, I want to see the count of views of a post, so that I can check how popular that post is
