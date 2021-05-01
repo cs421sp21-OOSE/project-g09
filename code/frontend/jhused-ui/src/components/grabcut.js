@@ -58,10 +58,10 @@ const Grabcut = (props) => {
           canvas.width = image.width * scaleFactor;
           canvas.height = image.height * scaleFactor;
           console.log(canvas.parentNode);
-          canvas.parentNode.style.width = canvas.width*1.1+"px";
-          canvas.parentNode.style.height = canvas.height*1.1+"px";
-          canvasShowRef.current.parentNode.style.width = canvas.width*1.1+"px";
-          canvasShowRef.current.parentNode.style.height = canvas.height*1.1+"px";
+          canvas.parentNode.style.width = (canvas.width+4)+"px";
+          canvas.parentNode.style.height = (canvas.height+4)+"px";
+          canvasShowRef.current.parentNode.style.width = (canvas.width+4)+"px";
+          canvasShowRef.current.parentNode.style.height = (canvas.height+4)+"px";
           console.log(canvas.parentNode.height);
           imgCanvas.width = canvas.width;
           imgCanvas.height = canvas.height;
