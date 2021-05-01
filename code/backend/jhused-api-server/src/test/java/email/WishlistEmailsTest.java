@@ -64,7 +64,7 @@ public class WishlistEmailsTest {
         WishlistEmails.basicWishlistUpdateEmail(jdbi, "000000000000000000000000000000000000");
     }
 
-    @Test
+    //@Test
     @DisplayName("send an email.")
     void updateSendStyledMail() throws IOException {
         WishlistEmails.styledWishlistUpdateEmail(jdbi, "000000000000000000000000000000000000");

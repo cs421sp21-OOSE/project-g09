@@ -4,8 +4,7 @@ import {useContacts} from "./ContactsProvider";
 import {useSocket} from "./SocketProvider";
 import { UserContext } from "./";
 import axios from "axios";
-import useSound from 'use-sound';
-import newMessageNotification from "../sounds/newMessageNotification.mp3"
+import newMessageNotification from "../sounds/newMessageNotification.wav"
 
 const ConversationsContext = React.createContext();
 
@@ -21,7 +20,7 @@ const ConversationsProvider = ({ children }) => {
   const socket = useSocket();
   const context = useContext(UserContext.Context);
   const defaultProfileImage = 'https://i.redd.it/v2h2px8w5piz.png'
-  const [play] = useSound(newMessageNotification, {volume: 0.25})
+  const audio = new Audio(newMessageNotification)
 
   const readMessagesInConversation = useCallback( ({ index }) => {
     setConversations(prevConversations => {
@@ -59,7 +58,7 @@ const ConversationsProvider = ({ children }) => {
     }
   };
 
-  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read, sound} ) => {
+  const addMessageToConversation = useCallback(( {messageId, recipients, text, sender, sentTime, read, sound=false} ) => {
     setConversations(prevConversations => {
       let madeChange = false;
       const newMessage = { messageId, sender, text, sentTime, read };
@@ -86,11 +85,9 @@ const ConversationsProvider = ({ children }) => {
         ]
       }
     });
-    console.log(sound)
     // ring the bell if sound is ture
     if (sound === true) {
-      console.log("making sound")
-      play()
+      audio.play()
     }
   }, [setConversations]);
 
@@ -139,7 +136,6 @@ const ConversationsProvider = ({ children }) => {
         nanos: 212877000
       }
     }
-
     axios.post("/api/messages", messageToDB,
       {params: { isList: false }
       })

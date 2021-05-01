@@ -13,12 +13,16 @@ module.exports = {
     minHeight: {
       ...defaultTheme.minHeight,
       "20": "5rem",
+    },
+    spacing: {
+      ...defaultTheme.spacing,
+      "500":"31.5rem",
     }
-
   },
   variants: {
     extend: {
-      visibility: ['group-hover']
+      visibility: ['group-hover'],
+      cursor: ['hover', 'focus']
     },
   },
   plugins: [],

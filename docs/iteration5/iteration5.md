@@ -7,17 +7,18 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 # OO Design
 * Front end (view): React app to render UI
 * Backend
-  * Server (controller): processing HTTP requests and sending responses
+  * ApiServer: set jdbi, connect heroku, calls controllers
+  * Controller: postController, messageController, SSOControler, wishlistController etc. that handles http requests
+  * PostDao: dact access object interface for the model class to provide DB operations
+  * JdbiPostDao: concrete implementation of the PostDao interface
   * Post-related (model)(Including image, hashtag): model representation of posts created by users in the app
   * User-realated (model)(Including models such as wishlistskeleton): model representation of users in the app
   * Message(model): model of messages communicated between users
-  * PostDao: dact access object interface for the model class to provide DB operations
-  * JdbiPostDao: concrete implementation of the PostDao interface
   * Datastore: utility class to provide samples.
   * Database: utility class to refresh database, provide databaseurl, and generate sql2o.
-
-![](../assets/UML/UML-iteration4.png)
-
+![](../assets/UML/model.png)
+![](../assets/UML/Server_with_controller.png)
+![](../assets/UML/controller_with_dao.png)
 
 # Wireframe & Use-case
 
@@ -77,28 +78,34 @@ Tuesday, Wednesday, Thursday, 10-11pm EST
 
 ![](../assets/Wireframe/Wireframe-editPost-iteration4.png)
 
+### GrabCut image
+
+1. The user can use Grabcut OpenCV to separate background from the item
+2. The user can save the processed image to local drive
+
+![](../assets/Wireframe/Wireframe-grabCut.png)
+
+
 # Iteration Backlog
 As a user, I want to see the count of views of a post, so that I can check how popular that post is
 As a user, I want to see other people’s location information, so that I can buy from others close to me
 
 # Tasks
 - [ ] Issues to fix
-  - [ ]  Fix Heroku (Junjie)
+  - [x]  Fix Heroku (Junjie)
   - [ ]  Frontend did not pass existing hashtag id to backend.
   - [ ]  Duplicate hashtag crash
-  - [ ]  chat page is not showing the correct user profiles (Chu)
-  - [ ]  limit seller ratings to the buyer
-  - [ ]  Invite more people to test out web app (everyone)
+  - [x]  chat page is not showing the correct user profiles (Chu)
+  - [x]  Invite more people to test out web app (everyone)
     - [ ] Fix bugs as we find/are notified about them. (everyone)
 
 - [ ] User Stories
   - [ ] Pagination (Backend:Bohua, Frontend:Sam)
   - [ ] Marking post as sold
-  - [ ] Email confirmations for email changes (Louie)
-  - [ ] Email Preferences (Louie)
-  - [ ] chat notification sound (Junjie)
-  - [ ] Post View Count
-  - [ ] Sort by locations
+  - [x] Email confirmations for email changes (Louie)
+  - [x] Email Preferences (Louie)
+  - [x] chat notification sound (Junjie)
+  - [x] Post View Count
 
 # Retrospective
 

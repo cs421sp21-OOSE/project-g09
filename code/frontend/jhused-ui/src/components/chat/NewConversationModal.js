@@ -1,5 +1,5 @@
 import { useContacts } from '../../state/ContactsProvider'
-import {Fragment, useState} from "react";
+import {Fragment, useEffect, useState} from "react";
 import { useConversations } from '../../state/ConversationsProvider'
 import { Dialog, Transition } from "@headlessui/react";
 
@@ -7,11 +7,23 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
   const [selectedContactIds, setSelectedContactIds] = useState([]);
   const { contacts } = useContacts();
   const { createConversation } = useConversations();
+  const [selected, setSelected] = useState(false);
+
+  useEffect(()=>{
+    if(selectedContactIds&&selectedContactIds.length!==0) {
+      setSelected(true);
+    }
+    else{
+      setSelected(false);
+    }
+  },[selectedContactIds]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    createConversation(selectedContactIds);
-    setIsOpen(false);
+    if(selected) {
+      e.preventDefault();
+      createConversation(selectedContactIds);
+      setIsOpen(false);
+    }
   };
 
   const handleCheckBoxChange = (contactId) => {
@@ -85,12 +97,26 @@ const NewConversationModal = ({ isOpen, setIsOpen }) => {
                   </div>
                 ))}
                 <div className="flex justify-end py-2 pr-4 gap-x-2">
-                  <button 
-                    className="px-3 py-1 font-normal text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 shadow-sm" 
-                    type="submit"
-                  >
-                    Create
-                  </button>
+                {
+                  selected?(
+                    <button 
+                      className="px-3 py-1 font-normal text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 shadow-sm" 
+                      type="submit"
+                    >
+                      Create
+                    </button>
+                  ):(
+                    <button
+                      className="disabled:opacity-50 px-3 py-1 font-normal text-white bg-blue-200 rounded-lg hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-200 shadow-sm" 
+                      onClick={(e)=>{
+                        e.preventDefault();
+                      }}
+                      // type="submit"
+                    >
+                      Create
+                    </button>
+                  )
+                }
                   <button 
                       className="px-3 py-1 font-normal border text-gray-800 border-gray-300 rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 shadow-sm"
                       onClick={(e) => {

@@ -80,6 +80,17 @@ public class JdbiHashtagDao implements HashtagDao {
   }
 
   @Override
+  public List<Hashtag> readAllExactCaseSensitive(String hashtagQuery) throws DaoException {
+    try {
+      return jdbi.inTransaction(handle ->
+          handle.createQuery("SELECT * FROM hashtag WHERE hashtag.hashtag LIKE :hashtagQuery;")
+              .bind("hashtagQuery", hashtagQuery).mapToBean(Hashtag.class).list());
+    } catch (IllegalStateException | StatementException ex) {
+      throw new DaoException("Unable to read hashtags from the database: " + ex.getMessage(), ex);
+    }
+  }
+
+  @Override
   public List<Hashtag> readAllExactCaseInsensitive(String hashtagQuery) throws DaoException {
     try {
       return jdbi.inTransaction(handle ->
@@ -161,7 +172,7 @@ public class JdbiHashtagDao implements HashtagDao {
 
     try {
       return jdbi.inTransaction(handle -> {
-        List<Hashtag> existingHashtags = handle.createQuery("SELECT * FROM hashtag WHERE hashtag.hashtag ILIKE "
+        List<Hashtag> existingHashtags = handle.createQuery("SELECT * FROM hashtag WHERE hashtag.hashtag LIKE "
             + ":hashtagQuery;")
             .bind("hashtagQuery", hashtag.getHashtag()).mapToBean(Hashtag.class).list();
         if (existingHashtags.isEmpty()) {

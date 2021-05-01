@@ -65,6 +65,7 @@ Gradle 6.7
 React 17.0.1  
 Tailwind 2.0.4 for css framework  
 Formik 2.2.6  for user input validation  
+Opencv.js 3.4.0 for grabcut  
 
 ##### Build Tool & Package Manager:
 Node.js 14.16.0
@@ -74,7 +75,6 @@ What is needed to set up the dev environment. For instance, global dependencies 
 [Java >=11](https://adoptopenjdk.net/)  
 [Intellij 2020.3.2](https://www.jetbrains.com/idea/)  
 [Node >= 10.16 and npm >= 5.6](https://nodejs.org/en/)  
-
 
 ### Setting up Dev
 

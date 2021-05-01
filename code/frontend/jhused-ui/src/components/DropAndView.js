@@ -1,7 +1,10 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import Dropzone from "react-dropzone";
 import { storage } from "./firebase";
 import { nanoid } from 'nanoid';
+import Grabcut from './grabcut';
+import {OpenCvProvider} from 'opencv-react';
+import { Dialog } from "@headlessui/react";
 
 
 function DropAndView(props) {
@@ -11,6 +14,8 @@ function DropAndView(props) {
   // The DropAndView component relies on the "model" object to display images
   // THe model obejct is updated through the reducer hook
   const [model, dispatch] = useReducer(reducer, {});
+  const [grabCutEditUrl, setGrabCutEditUrl] = useState("");
+  const [grabUid, setGrabUid] = useState("");
 
   // Complete action {type: ..., uid: ..., data: {same as model} }
   function reducer(prevState, action) {
@@ -58,6 +63,20 @@ function DropAndView(props) {
 
   }
 
+  const showGrabCut=(url)=>{
+    // if (grabCutEditUrl === "")
+      setGrabCutEditUrl(url);
+    // else if (url !== grabCutEditUrl)
+    //   setGrabCutEditUrl(url);
+    // else
+    //   setGrabCutEditUrl("");
+  }
+
+  // Method to update this component's model when GrabCut saves
+  const updateOnGrab = (file, uid) => {
+    uploadImage(file, uid, dispatch, [], false);
+  }
+
   // Populate form values into the dropzone
   useEffect(() => {
     props.value.forEach(image => dispatch({
@@ -86,12 +105,14 @@ function DropAndView(props) {
           dataUrl: URL.createObjectURL(curFile),
         }
       });
-      uploadImage(curFile, curUid, dispatch, images);
+      uploadImage(curFile, curUid, dispatch, images, true);
     });
   };
 
-const uploadImage = (file, uid, dispatch, images) => {
-  const uploadTask = storage.ref(`images/${file.name}`).put(file);
+// Method for uploading images to firebase
+// Use the boolean argument updateFlag to control how to update form image array 
+const uploadImage = (file, uid, dispatch, images, updateArray) => {
+  const uploadTask = storage.ref(`images/${uid}`).put(file);
   uploadTask.on(
     "state_changed",
     (snapshot) => {
@@ -116,8 +137,19 @@ const uploadImage = (file, uid, dispatch, images) => {
           postId: "",
           url: downloadURL,
         });
-        if (props.onChange) {
+        if (updateArray && props.onChange) {
           props.onChange(props.name, [...props.value, ...images]);
+        }
+        else {
+          let newValues = props.value.map(obj => {
+            if (obj.id === uid) {
+              return {id: obj.id, postId: obj.postId, url: downloadURL};
+            }
+            else {
+              return obj;
+            }
+          });
+          props.onChange(props.name, newValues);
         }
       });
     }
@@ -139,6 +171,8 @@ const uploadImage = (file, uid, dispatch, images) => {
                 (<ThumbGrid 
                   data={model} 
                   onDelete={dispatch} 
+                  showGrabCut={showGrabCut}
+                  setGrabUid={setGrabUid}
                   form={{
                     values: props.value, 
                     setValue: (newValue) => props.onChange(props.name, newValue),
@@ -154,6 +188,39 @@ const uploadImage = (file, uid, dispatch, images) => {
       {props.touched && props.error ? (
         <div className="block text-sm text-red-500">{props.error};</div>
       ) : null}
+
+      {/* OpenCv Modal */}
+      <Dialog 
+        open={grabUid !== ""} 
+        onClose={() => setGrabUid("")}
+        className="fixed inset-0 z-10"
+        static={false}
+      >
+        <div className="w-full h-full py-4 flex justify-center items-center">
+          <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+          
+          <div className="max-h-full overflow-auto z-20 shadow-xl rounded bg-white">
+            <Dialog.Title>
+              <div className="text-center text-lg font-bold pt-4">
+                Image Background Remover
+              </div>
+            </Dialog.Title>
+            
+            <Dialog.Description>
+              <div className="mx-6 my-4">
+                <OpenCvProvider openCvPath="/opencv/opencv.js">
+                    <Grabcut 
+                      grabCutEditUrl={grabCutEditUrl} 
+                      closeModal={() => setGrabUid("")}
+                      onSave={updateOnGrab}
+                      grabUid={grabUid}
+                    />
+                </OpenCvProvider>
+              </div>
+            </Dialog.Description>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
@@ -162,6 +229,12 @@ export default DropAndView;
 
 // Thumb view component for displaying images
 const Thumb = (props) => {
+  const handleEditClick = (event)=>{
+    event.stopPropagation();
+    console.log("props: ",props.url);
+    props.showGrabCut(props.url);
+    props.setGrabUid(props.uid);
+  }
   const handleOnClik = (event) => {
     event.stopPropagation();
     props.onDelete({
@@ -180,6 +253,15 @@ const Thumb = (props) => {
         >
           <svg className="text-red-500 hover:text-red-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+          </svg>
+        </div>
+        <div 
+          className="bg-white absolute top-0 left-0 w-4 h-4 rounded-full"
+          onClick={handleEditClick}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="text-blue-500 hover:text-blue-800" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+            <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
           </svg>
         </div>
       </div>
@@ -202,9 +284,11 @@ const ThumbGrid = (props) => {
         <Thumb 
           key={uid} 
           uid={uid} 
-          url={props.data[uid].dataUrl || props.data[uid].webUrl}
+          url={props.data[uid].webUrl || props.data[uid].dataUrl}
           progress={props.data[uid].progress || 0}
           onDelete={props.onDelete}
+          showGrabCut={props.showGrabCut}
+          setGrabUid={props.setGrabUid}
           form={props.form}
         />
       ))}
