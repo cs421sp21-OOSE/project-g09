@@ -91,22 +91,44 @@ As a user, I want to see the count of views of a post, so that I can check how p
 As a user, I want to see other people’s location information, so that I can buy from others close to me
 
 # Tasks
-- [ ] Issues to fix
+- [x] Issues to fix
   - [x]  Fix Heroku (Junjie)
-  - [ ]  Frontend did not pass existing hashtag id to backend.
-  - [ ]  Duplicate hashtag crash
+  - [x]  Frontend did not pass existing hashtag id to backend.
+  - [x]  Duplicate hashtag crash
   - [x]  chat page is not showing the correct user profiles (Chu)
   - [x]  Invite more people to test out web app (everyone)
-    - [ ] Fix bugs as we find/are notified about them. (everyone)
+    - [x] Fix bugs as we find/are notified about them. (everyone)
 
-- [ ] User Stories
-  - [ ] Pagination (Backend:Bohua, Frontend:Sam)
-  - [ ] Marking post as sold
+- [x] User Stories
+  - [x] Pagination (Backend:Bohua, Frontend:Sam)
+  - [x] Marking post as sold
   - [x] Email confirmations for email changes (Louie)
   - [x] Email Preferences (Louie)
   - [x] chat notification sound (Junjie)
   - [x] Post View Count
 
 # Retrospective
+What we have done:
+* Finished up the last couple user stories:
+  * Implemented marking posts as sold on the seller side
+  * Users will now receive chat notification sounds
+  * Users can now see how many times a post has been viewed
+  * Users will now get emails when they change their email to confirm
+  * Users can now unsubscribe from all emails, wishlist emails, and/or newsletter emails
 
+* Fixed a lot of little and big bugs:
+  * We needed to switch heroku accounts because we used up our free time (most likely since we were running three different deployments)
+  * Fixed an issue with old conversations not have profile images
+  * Fixed an issue with hashatgs when you added the same hashtag twice
+  * Fixed an issue where the front end did not pass hashtag id to backend
+  * Fixed an issue where emails were not being sent at all
+  * Fixed an issue where email confirmations were not being sent if the user had globally unsubscribed
+  
 # What we have learned:
+During this iteration we learned how even the smallest bugs can be tricky to squash.
+The focus of this iteration was mainly on bug fixing and polishing the application overall.
+While we did not implement a lot of new user stories, we spent the majority of our time fixing bugs we knew about and new ones as we found them.
+We also tested out a new feature that allows users to remove the background of images and just keep the foreground.
+
+All in all, this iteration was spent debugging, and experimenting with new features as we decided what to keep and what to toss.
+We learned that debugging and fixing little bugs is sometimes just as difficult as first building the application. Tests are supremely important.
