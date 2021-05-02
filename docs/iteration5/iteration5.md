@@ -131,3 +131,4 @@ While we did not implement a lot of new user stories, we spent the majority of o
 We also tested out a new feature that allows users to remove the background of images and just keep the foreground.
 
 All in all, this iteration was spent debugging, and experimenting with new features as we decided what to keep and what to toss.
+We learned that debugging and fixing little bugs is sometimes just as difficult as first building the application. Tests are supremely important.
